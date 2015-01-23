@@ -21,7 +21,6 @@ saveDVH(x, file="", ...)
 data(dataMZ)
 res <- showDVH(dataMZ, byPat=TRUE, select=c("HEART", "AMYOCL"))
 \dontrun{
-# not run
 saveDVH(res, "out.pdf")
 }
 }

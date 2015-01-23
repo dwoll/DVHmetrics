@@ -16,8 +16,8 @@ DIV15]{scrartcl}
 %\usepackage{geometry}
 %\geometry{verbose,tmargin=2.2cm,bmargin=2.2cm,lmargin=2.2cm,rmargin=2.2cm}
 \usepackage{url}
-\usepackage{amsmath}
-\usepackage{bm}
+%\usepackage{amsmath}
+%\usepackage{bm}
 %\usepackage{authblk}
 \usepackage{graphicx}
 \usepackage[pdftex,%
@@ -40,6 +40,7 @@ pdftitle={Analyzing dose-volume histograms using DVHmetrics for R},%
 pdfauthor={Daniel Wollschlaeger, Heiko Karle},%
 colorlinks=false]{hyperref}
 \usepackage{breakurl}
+\usepackage{apacite}                     % after hyperref
 
 %%%%---------------------------------------------------------------------------
 %%%%---------------------------------------------------------------------------
@@ -93,7 +94,7 @@ options(replace.assign=TRUE, useFancyQuotes=FALSE, show.signif.stars=FALSE, digi
 %%%%---------------------------------------------------------------------------
 %%%%---------------------------------------------------------------------------
 
-\texttt{DVHmetrics} is an add-on package for the free statistical environment \textsf{R}\footnote{Project homepage: \url{http://r-project.org/} -- free short introductions to \textsf{R} can be found at\\ \url{http://www.splusbook.com/RIntro/RCourse.pdf} and \url{http://www.statmethods.net/}.} with applications in radiation oncology. It provides functionality to read dose-volume-histogram (DVH) text files, calculate DVH metrics, and to plot DVHs. In addition, it checks and visualizes quality assurance constraints for the DVH.\footnote{For a solution that also reads files in DICOM-RT format and has a broader scope in supporting radiation oncology, see the \texttt{RadOnc} package for \textsf{R}: \url{http://CRAN.R-project.org/package=RadOnc}.}
+\texttt{DVHmetrics} is an add-on package for the free statistical environment \textsf{R} \footnote{Project homepage: \url{http://r-project.org/} -- free short introductions to \textsf{R} can be found at\\ \url{http://www.splusbook.com/RIntro/RCourse.pdf} and \url{http://www.statmethods.net/}.} \cite{RDevelopmentCoreTeam2008c} with applications in radiation oncology. It provides functionality to read dose-volume-histogram (DVH) text files, calculate DVH metrics, and to plot DVHs. In addition, it checks and visualizes quality assurance constraints for the DVH.\footnote{For a solution that also reads files in DICOM-RT format and has a broader scope in supporting radiation oncology, see the \texttt{RadOnc} package for \textsf{R}: \url{http://CRAN.R-project.org/package=RadOnc}.}
 
 %%%%---------------------------------------------------------------------------
 %%%%---------------------------------------------------------------------------
@@ -106,7 +107,7 @@ options(replace.assign=TRUE, useFancyQuotes=FALSE, show.signif.stars=FALSE, digi
 
 %%%%---------------------------------------------------------------------------
 %%%%---------------------------------------------------------------------------
-\section{Web application}
+\subsection{Web application}
 \label{sec:webApp}
 %%%%---------------------------------------------------------------------------
 %%%%---------------------------------------------------------------------------
@@ -129,7 +130,7 @@ For users who are unfamiliar with \textsf{R}, the web application \texttt{DVHshi
 
 %%%%---------------------------------------------------------------------------
 %%%%---------------------------------------------------------------------------
-\section{\textsf{R} interace}
+\subsection{\textsf{R} interace}
 \label{sec:Rinter}
 %%%%---------------------------------------------------------------------------
 %%%%---------------------------------------------------------------------------
@@ -493,6 +494,14 @@ saveDVH(sc, file="c:/folder/dvhConstraint.pdf")
 %%%%---------------------------------------------------------------------------
 
 The authors thank Marcus Stockinger for ideas on checking quality assurance constraints.
+
+%%%%---------------------------------------------------------------------------
+%%%%---------------------------------------------------------------------------
+
+\bibliographystyle{apacite}
+\renewcommand{\BAvailFrom}{URL\ }
+\renewcommand{\APACrefURL}{URL\ }
+\bibliography{lit}
 
 %%%%---------------------------------------------------------------------------
 %%%%---------------------------------------------------------------------------

@@ -53,7 +53,6 @@ Returns an object of class \code{DVHLstLst}. This is a list (one component with 
 }
 \examples{
 \dontrun{
-# not run
 # pick DVH files interactively
 res <- readDVH()
 res

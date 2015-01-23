@@ -27,7 +27,6 @@ A \code{data.frame} with columns \code{patID}, \code{structure}, \code{constrain
 }
 \examples{
 \dontrun{
-# not run
 readConstraint("constraint.txt")
 readConstraint()
 }

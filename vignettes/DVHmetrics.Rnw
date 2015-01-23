@@ -1,0 +1,500 @@
+\documentclass[11pt,%
+parskip=half,%
+paper=a4,%
+headings=small,%
+DIV15]{scrartcl}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage[latin1]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[final,babel,activate=TRUE]{microtype}
+%%\usepackage[sc]{mathpazo}
+\usepackage{lmodern}
+\usepackage{upquote}
+%\usepackage{geometry}
+%\geometry{verbose,tmargin=2.2cm,bmargin=2.2cm,lmargin=2.2cm,rmargin=2.2cm}
+\usepackage{url}
+\usepackage{amsmath}
+\usepackage{bm}
+%\usepackage{authblk}
+\usepackage{graphicx}
+\usepackage[pdftex,%
+unicode=true,%
+pdfusetitle,%
+bookmarks=true,%
+plainpages=false,%
+colorlinks=true,%
+linkcolor=blue,%
+citecolor=blue,%
+filecolor=blue,%
+urlcolor=blue,%
+%bookmarksopen=true,%
+%bookmarksopenlevel=2,%
+breaklinks=false,%
+%pdfborder={0 0 1},%
+pdfpagelabels=true,%
+backref=false,%
+pdftitle={Analyzing dose-volume histograms using DVHmetrics for R},%
+pdfauthor={Daniel Wollschlaeger, Heiko Karle},%
+colorlinks=false]{hyperref}
+\usepackage{breakurl}
+
+%%%%---------------------------------------------------------------------------
+%%%%---------------------------------------------------------------------------
+
+\ifdefined\hlstd
+\renewcommand{\hlstd}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\fi
+
+\ifdefined\hlcom
+\renewcommand{\hlcom}[1]{\textcolor[rgb]{0.5,0.4,0.5}{#1}}%
+\fi
+
+%%%%---------------------------------------------------------------------------
+%%%%---------------------------------------------------------------------------
+
+%\VignetteIndexEntry{Analyzing dose-volume histograms using DVHmetrics}
+%\VignetteDepends{DVHmetrics}
+%\VignetteKeywords{DVHmetrics}
+%\VignettePackage{DVHmetrics}
+%\VignetteEngine{knitr::knitr}
+%%%\VignetteEngine{knitr::rmarkdown}
+%%%%\SweaveOpts{engine=R}
+
+\begin{document}
+
+\title{Analyzing dose-volume histograms using \texttt{DVHmetrics} for \textsf{R}}
+\author{Daniel Wollschlaeger\\
+        \url{wollschlaeger@uni-mainz.de}
+        \and
+        Heiko Karle\\
+        \url{karle@uni-mainz.de}}
+\date{University Medical Center Mainz, Germany}
+
+%%%%---------------------------------------------------------------------------
+%%%%---------------------------------------------------------------------------
+
+<<setup, echo=FALSE, include=FALSE, cache=FALSE>>=
+# set global chunk options
+knitr::opts_chunk$set(fig.align='center', fig.show='hold')
+knitr::opts_chunk$set(tidy=FALSE, message=FALSE, warning=FALSE, comment=NA)
+options(replace.assign=TRUE, useFancyQuotes=FALSE, show.signif.stars=FALSE, digits=4, width=70)
+@
+
+\maketitle
+\tableofcontents
+
+%%%%---------------------------------------------------------------------------
+%%%%---------------------------------------------------------------------------
+\section{Introduction}
+\label{sec:introduction}
+%%%%---------------------------------------------------------------------------
+%%%%---------------------------------------------------------------------------
+
+\texttt{DVHmetrics} is an add-on package for the free statistical environment \textsf{R}\footnote{Project homepage: \url{http://r-project.org/} -- free short introductions to \textsf{R} can be found at\\ \url{http://www.splusbook.com/RIntro/RCourse.pdf} and \url{http://www.statmethods.net/}.} with applications in radiation oncology. It provides functionality to read dose-volume-histogram (DVH) text files, calculate DVH metrics, and to plot DVHs. In addition, it checks and visualizes quality assurance constraints for the DVH.\footnote{For a solution that also reads files in DICOM-RT format and has a broader scope in supporting radiation oncology, see the \texttt{RadOnc} package for \textsf{R}: \url{http://CRAN.R-project.org/package=RadOnc}.}
+
+%%%%---------------------------------------------------------------------------
+%%%%---------------------------------------------------------------------------
+\section{Interfaces}
+\label{sec:interfaces}
+%%%%---------------------------------------------------------------------------
+%%%%---------------------------------------------------------------------------
+
+\texttt{DVHmetrics} provides two interfaces geared towards users with different levels of familiarity with \textsf{R}.
+
+%%%%---------------------------------------------------------------------------
+%%%%---------------------------------------------------------------------------
+\section{Web application}
+\label{sec:webApp}
+%%%%---------------------------------------------------------------------------
+%%%%---------------------------------------------------------------------------
+
+For users who are unfamiliar with \textsf{R}, the web application \texttt{DVHshiny}\footnote{\url{http://dwoll.shinyapps.io/DVHshiny/} -- The source code can be found at \url{https://github.com/dwoll/DVHshiny}.} provides interactive access to the functionality of \texttt{DVHmetrics} without the need to use \textsf{R} syntax (fig.\ \ref{fig:DVHshiny01}, \ref{fig:DVHshiny02}). This web application can also be installed locally, or can be deployed in an intranet from local IT services.\footnote{To install, use function \texttt{install\_github("dwoll/DVHshiny)} from package \texttt{devtools}.}
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=10cm]{DVHshiny01}
+\label{fig:DVHshiny01}
+\caption{Calculating DVH metrics in \texttt{DVHshiny}}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=10cm]{DVHshiny02}
+\label{fig:DVHshiny02}
+\caption{Visualizing DVH constraints in \texttt{DVHshiny}}
+\end{figure}
+
+%%%%---------------------------------------------------------------------------
+%%%%---------------------------------------------------------------------------
+\section{\textsf{R} interace}
+\label{sec:Rinter}
+%%%%---------------------------------------------------------------------------
+%%%%---------------------------------------------------------------------------
+
+Users familiar with \textsf{R} can use the \texttt{DVHmetrics} package from the \textsf{R} command line as demonstrated in this document. This facilitates statistical post-processing of results with the full capabilities of \textsf{R}. To install \texttt{DVHmetrics}, you need a current version of \textsf{R} (and, preferably, the free development environment \textsf{R}Studio\footnote{\url{http://www.rstudio.com/ide/download/desktop}}) and be online:
+
+<<cIntro1, eval=FALSE>>=
+install.packages("DVHmetrics")
+@
+
+After installing \texttt{DVHmetrics}, you should be able to run:
+
+<<cIntro2>>=
+## load DVHmetrics package - required for all following tasks
+library(DVHmetrics, verbose=FALSE)
+
+## run an analysis on built-in data
+getMetric(dataMZ, metric="DMEAN", structure="HEART")
+@
+
+Function \texttt{getMetric()} used above is explained in section \ref{sec:getMetric}.
+
+%%%%---------------------------------------------------------------------------
+%%%%---------------------------------------------------------------------------
+\section{Read DVH data from Eclipse or Cadplan}
+\label{sec:readData}
+%%%%---------------------------------------------------------------------------
+%%%%---------------------------------------------------------------------------
+
+To import DVH data into \textsf{R}, it should be exported as a text file from Varian Eclipse (Version 10 or 11) or Cadplan. Cumulative and differential DVHs are supported, as are sum plans. The measurement unit for absolute dose can be Gy or cGy, the measurement unit for volume has to be cm$^{3}$. DVH text files can be read with \texttt{readDVH()}.
+
+Example: Read one Eclipse file \texttt{dvhFile.txt} from folder \texttt{"c:/folder"} and save the result in object \texttt{res}.\footnote{Note that the way to indicate the path to these files is different from the usual Windows style path: Instead of writing the backslash \texttt{"\textbackslash\textbackslash"} as folder separator, the forward slash \texttt{/} must be used.}
+
+<<cReadData1a, eval=FALSE>>=
+res <- readDVH("c:/folder/dvhFile.txt", type="Eclipse")
+@
+
+Basic information about the files can be displayed with \texttt{print()}, or just by entering the name of a DVH object at the prompt -- here used with built-in DVHs from 3 patients with radiotherapy after breast cancer surgery, each with 7 heart structures.\footnote{Data courtesy of Department of Radiation Oncology (Prof. Dr. Schmidberger), University Medical Center Mainz, Germany.}
+
+<<cReadData1b, echo=TRUE>>=
+print(dataMZ)
+print(dataMZ, verbose=TRUE)   # more information
+@
+
+Multiple files with the same name pattern can be specified using wildcards like \texttt{*}. Example: Read all Cadplan files with the file name pattern \texttt{dvhFile*.txt} from folder \texttt{"c:/folder"} and save the result in object \texttt{res}.
+
+<<cReadData2, eval=FALSE>>=
+res <- readDVH("c:/folder/dvhFile*.txt", type="Cadplan")
+@
+
+When no file pattern is specified, multiple files can be selected using the standard Windows file picker dialogue. On MacOS and Linux, only a single file can be selected interactively.
+
+<<cReadData4, eval=FALSE>>=
+res <- readDVH(type="Eclipse")           # opens file picker
+@
+
+For DVH files from a sum plan, prescribed dose can be encoded in the plan name like \texttt{name\_70Gy\_etc}. It will then be assumed that ``\% for dose'' is 100.
+
+<<cReadData5, eval=FALSE>>=
+res <- readDVH("c:/folder/*", type="Eclipse", planInfo="doseRx")
+@
+
+%%%%---------------------------------------------------------------------------
+%%%%---------------------------------------------------------------------------
+\section{DVH metrics}
+\label{sec:metrics}
+%%%%---------------------------------------------------------------------------
+%%%%---------------------------------------------------------------------------
+
+%%%%---------------------------------------------------------------------------
+%%%%---------------------------------------------------------------------------
+\subsection{Calculate DVH metrics}
+\label{sec:getMetric}
+%%%%---------------------------------------------------------------------------
+%%%%---------------------------------------------------------------------------
+
+Function \texttt{getMetric()} calculates freely-defined DVH metrics based on data that has been read in as demonstrated in section \ref{sec:readData}. \texttt{getMetric()} has the following options:
+
+\begin{itemize}
+\item Option \texttt{x}: The DVH data.
+\item Option \texttt{metric}:
+\begin{itemize}
+\item A \emph{pre-specified} DVH metric is one of the following character strings:
+\begin{itemize}
+\item \texttt{"DMEAN"}: The volume-weighted mean dose of the structure.
+\item \texttt{"DMIN"}: The minimum dose of the structure.
+\item \texttt{"DMAX"}: The maximum dose of the structure.
+\item \texttt{"DSD"}: The standard deviation of the dose in the structure.
+\item \texttt{"DRX"}: The prescription dose.
+\end{itemize}
+\item A \emph{free} DVH metric is a character string which has 3 mandatory elements and one optional element in the following order:
+\begin{itemize}
+\item 1$^{\mathrm{st}}$ letter \texttt{"D"} or \texttt{"V"}: \texttt{"D"} If the requested value is a dose, \texttt{"V"} if it is a volume.
+\item 2$^{\mathrm{nd}}$ element \texttt{$\langle$number$\rangle$}: If the first letter is \texttt{"D"}, this gives the volume for which the dose value of the cumulative DVH should be reported. If the first letter is \texttt{"V"}, this gives the dose for which the volume value of the cumulative DVH should be reported.
+\item 3$^{\mathrm{rd}}$ element \texttt{$\langle$measurement unit$\rangle$}: The measurement unit for the 2$^{\mathrm{nd}}$ element of the metric. Absolute volumes are indicated by \texttt{"CC"} for cm$^{3}$, relative volumes by \texttt{"\%"}. Absolute doses are indicated by \texttt{"Gy"} for Gray or \texttt{"cGy"} for Centigray, relative doses by \texttt{"\%"}.
+\item Optional 4$^{\mathrm{th}}$ element \texttt{\_$\langle$measurement unit$\rangle$}: The measurement unit of the output value. Possible units are as for the 3$^{\mathrm{rd}}$ element. If missing, dose is reported as absolute dose in the measurement unit used in the DVH. Volume is then reported as relative volume in \%.
+\end{itemize}
+\item Example metrics are listed in table \ref{tab:metrics}. Metrics are calculated using linear interpolation between actual DVH points -- without extrapolating beyond the observed volume or dose.
+\end{itemize}
+
+\item Option \texttt{patID}: Which patient IDs should be analyzed. IDs can be regular expressions matched against those found in the DVH files. Also supply \texttt{fixed=TRUE} for exact matching.
+
+\item Option \texttt{structure}: Which structure should be analyzed. Structure names can be regular expressions matched against those found in the DVH files. Also supply \texttt{fixed=TRUE} for exact matching.
+
+\item Option \texttt{sortBy}: Results can be sorted according to these variables:
+\begin{itemize}
+\item \texttt{"observed"}: observed value of the metric
+\item \texttt{"structure"}: structure for which metric is calculated
+\item \texttt{"metric"}: type of calculated metric
+\item \texttt{"patID"}: patient ID
+\end{itemize}
+
+\item Option \texttt{splitBy}: Results can be divided into different tables according to these variables:
+\begin{itemize}
+\item \texttt{"structure"}: structure for which metric is calculated
+\item \texttt{"metric"}: type of calculated metric
+\item \texttt{"patID"}: patient ID
+\end{itemize}
+\end{itemize}
+
+\begin{table}[!htbp]
+\caption{Examples for possible DVH metrics}
+\label{tab:metrics}
+\centering
+\begin{tabular}{lllll}
+metric                & reference       & unit ref & result          & unit result \\\hline
+\texttt{"V10Gy"}      & absolute dose   & Gy       & relative volume & \% \\
+\texttt{"V10cGy\_CC"} & absolute dose   & cGy      & absolute volume & cm$^{3}$ \\
+\texttt{"V10\%"}      & relative dose   & \%       & relative volume & \% \\
+\texttt{"V10\%\_CC"}  & relative dose   & \%       & absolute volume & cm$^{3}$ \\\hline
+\texttt{"D10CC"}      & absolute volume & cm$^{3}$ & absolute dose   & as in DVH \\
+\texttt{"D10\%\_cGy"} & relative volume & \%       & absolute dose   & cGy \\\hline
+\texttt{"DMEAN"}      & ---             & ---      & absolute dose   & as in DVH \\
+\texttt{"DSD"}        & ---             & ---      & absolute dose   & as in DVH \\
+\texttt{"DMIN"}       & ---             & ---      & absolute dose   & as in DVH \\
+\texttt{"DMAX"}       & ---             & ---      & absolute dose   & as in DVH \\
+\end{tabular}
+\end{table}
+
+If volume or dose values outside the range of possible values for a structure are requested, metrics cannot be calculated, and the result will be \texttt{NA} with a warning.
+
+In the following examples, we use object \texttt{dataMZ} that is built into the \texttt{DVHmetrics} package. \texttt{dataMZ} was the result from reading 3 Eclipse DVH files, each with 7 structures -- as demonstrated in section \ref{sec:readData}.
+
+Calculate metric \texttt{DMEAN} for all structures for all patients in \texttt{dataMZ}.
+
+<<cMetrics1>>=
+getMetric(dataMZ, metric="DMEAN")
+@
+
+Calculate metric \texttt{D5cc} just for structure \texttt{HEART} for all patients in \texttt{dataMZ}.
+
+<<cMetrics2>>=
+getMetric(dataMZ, metric="D5cc", structure="HEART")
+@
+
+Calculate metric \texttt{D5cc} just for structure \texttt{HEART} for all patients in \texttt{dataMZ}, and sort result by the value of the metric.
+
+<<cMetrics3>>=
+getMetric(dataMZ, metric="D5cc", structure="HEART", sortBy="observed")
+@
+
+Calculate metrics \texttt{D10\%} and \texttt{V1Gy} for structures containing \texttt{AMYOC} or \texttt{VALVE} for patient IDs containing \texttt{23} in \texttt{dataMZ} and sort result by metric and observed value.
+
+<<cMetrics4>>=
+getMetric(dataMZ, metric=c("D10%", "V1Gy"),
+          structure=c("AMYO", "VALVE"),
+          patID="23",
+          sortBy=c("metric", "observed"))
+@
+
+Calculate metrics \texttt{DMEAN} and \texttt{D5cc} for structure \texttt{HEART} for all patients in \texttt{dataMZ}, sort by value of the metric, and split the output such that one table is generated for each metric.
+
+<<cMetrics5>>=
+getMetric(dataMZ, metric=c("DMEAN", "D5cc"), structure="HEART",
+          sortBy="observed", splitBy="metric")
+@
+
+Calculate metrics \texttt{DMEAN} and \texttt{D5cc} for structures \texttt{HEART} and \texttt{AOVALVE} for all patients in \texttt{dataMZ}, sort by observed value, and split the output such that one table is generated for each combination of structure and metric. Store result in object \texttt{met} that can be saved later.
+
+<<cMetrics6>>=
+met <- getMetric(dataMZ, metric=c("DMEAN", "D5cc"),
+                 structure=c("HEART", "AOVALVE"),
+                 sortBy="observed",
+                 splitBy=c("structure", "metric"))
+met
+@
+
+%%%%---------------------------------------------------------------------------
+%%%%---------------------------------------------------------------------------
+\subsection{Save DVH metrics to file}
+\label{sec:saveMetric}
+%%%%---------------------------------------------------------------------------
+%%%%---------------------------------------------------------------------------
+
+The calculated DVH metrics can be saved to tab-delimited text files with \texttt{saveMetric()}. These files are easy to import, e.\,g., in spreadsheets like Excel or other statistics programs. Assume object \texttt{met} has been calculated before as demonstrated in section \ref{sec:getMetric}.
+
+If \texttt{met} is not split into different tables, the following command saves \texttt{met} to the file \texttt{metrics.txt}. If \texttt{met} is divided into multiple tables, this saves \texttt{met} into different files that all have the name pattern \texttt{metrics\_NAME.txt}, where \texttt{NAME} stands, e.\,g., for the names of different structures.
+
+<<cMetricsSave1, eval=FALSE>>=
+saveMetric(met, file="c:/folder/metrics.txt")
+@
+
+Per default, numbers use the \texttt{.} as decimal separator. This can be changed with option \texttt{dec=","} .
+
+<<cMetricsSave2, eval=FALSE>>=
+saveMetric(met, file="c:/folder/metrics.txt", dec=",")
+@
+
+If text should be set in quotes in the output file, use \texttt{quote=TRUE} .
+
+<<cMetricsSave3, eval=FALSE>>=
+saveMetric(met, file="c:/folder/metrics.txt", quote=TRUE)
+@
+
+%%%%---------------------------------------------------------------------------
+%%%%---------------------------------------------------------------------------
+\section{Cumulative DVH diagrams}
+\label{sec:plot}
+%%%%---------------------------------------------------------------------------
+%%%%---------------------------------------------------------------------------
+
+%%%%---------------------------------------------------------------------------
+%%%%---------------------------------------------------------------------------
+\subsection{Plot cumulative DVH diagrams}
+\label{sec:showDVH}
+%%%%---------------------------------------------------------------------------
+%%%%---------------------------------------------------------------------------
+
+Cumulative as well as differential DVH diagrams can be generated with \texttt{showDVH()}. If you are using \textsf{R}Studio, all produced diagrams are accessible in the plots tab by clicking on the left and right arrows. Depending on the option \texttt{byPat}, each DVH diagram either shows 1 patient with multiple structures (\texttt{byPat=TRUE}) or 1 structure with multiple patients (\texttt{byPat=FALSE}).
+
+<<cPlots1, out.width='3in'>>=
+showDVH(dataMZ, byPat=TRUE)
+@
+
+Patient IDs and structures can be selected with the \texttt{patID="$\langle$ID$\rangle$"} option and the \texttt{structure="$\langle$NAME$\rangle$"} option. Both accept regular expressions. For exact matching, also supply \texttt{fixed=TRUE}. By default, all patients/structures are shown.
+
+<<cPlots2, out.width='3in'>>=
+showDVH(dataMZ, byPat=FALSE, patID="P234")
+@
+
+By default, the relative DVH is shown. Absolute volume can be plotted with the \texttt{rel=FALSE} option. For differential DVH, set \texttt{cumul=FALSE}.
+
+<<cPlots3, out.width='3in'>>=
+## match strcuture containing "VALVE" and "AMYOC"
+showDVH(dataMZ, cumul=FALSE, rel=FALSE,
+        structure=c("VALVE", "AMYOC"))
+@
+
+Option \texttt{thresh} allows to restrict the range of the $x$-axis such that only volumes larger than \texttt{thresh} appear. Use option \texttt{show=FALSE} to prevent the diagrams from being shown if you just need the returned object (here: \texttt{dvhPlot}) to later save the diagrams to file.
+
+<<cPlots4, out.width='3in'>>=
+## just save the diagram but don't show it
+dvhPlot <- showDVH(dataMZ, structure=c("HEART", "AOVALVE", "AVNODE"),
+                   rel=FALSE, thresh=0.001, show=FALSE)
+@
+
+%%%%---------------------------------------------------------------------------
+%%%%---------------------------------------------------------------------------
+\subsection{Save cumulative DVH diagrams to file}
+\label{sec:saveDVH}
+%%%%---------------------------------------------------------------------------
+%%%%---------------------------------------------------------------------------
+
+DVH diagrams can be saved to file using \texttt{saveDVH()}. A file name pattern can then be supplied to option \texttt{file}. By using different file extensions like \texttt{.pdf}, \texttt{.jpg}, \texttt{.png}, different graphics formats can be automatically selected. In addition, the width and height of the diagram can be specified in inch.
+
+<<cPlotsSave, eval=FALSE>>=
+saveDVH(dvhPlot, file="c:/folder/dvh.pdf", width=7, height=5)
+@
+
+%%%%---------------------------------------------------------------------------
+%%%%---------------------------------------------------------------------------
+\section{Quality assurance constraints on the dose-volume relationship}
+\subsection{Define constraints}
+\label{sec:defConstraints}
+%%%%---------------------------------------------------------------------------
+%%%%---------------------------------------------------------------------------
+
+For quality assurance, it is possible to define, check, and visualize quality assurance constraints on the dose-volume relationship for DVHs. A DVH constraint is a character string that consists of 3 parts: The DVH metric (see section \ref{sec:getMetric}), a comparison operator among \texttt{<, >, <=, >=}, and the reference value together with the measurement unit -- one among among \texttt{Gy, cGy, cc, \%}. For constraints involving the relative dose, the DVH must contain the prescription dose.
+
+Some example constraints are \texttt{"V10Gy > 80\%"} (at least 80\% of the structure should have received 10Gy), \texttt{"V20\% < 10CC"} (at most 10cm$^{3}$ of the structure should have received 20\% of the prescription dose), or \texttt{"D10CC > 500cGy"} (The ``hottest'' 10cm$^{3}$ of the structure should have received at least 500cGy).
+
+A DVH constraint can apply to a specific patient or to all patients, and to a specific structure or to all structures.
+\begin{itemize}
+\item If constraints apply to all patients/structures in \texttt{x}, the constraint can be a \texttt{character} vector with elements like the examples above.
+\item If constraints apply only to some patients/structures, the constraint must be a data frame with variables \texttt{constraint}, \texttt{patID} and \texttt{structure}. Each row then defines one constraint and its scope: \texttt{constraint} must be a character string with one constraint definition as in the examples above. \texttt{patID} must be either a character string with a valid patient ID or \texttt{"*"} if the the constraint applies to all patients. \texttt{structure} must be either a character string with a valid structure or \texttt{"*"} if the the constraint applies to all structures. If variable \texttt{patID} is missing from the data frame, the constraints apply to all available patients. If variable \texttt{structure} is missing from the data frame, the constraints apply to all available structures.
+\end{itemize}
+
+Alternatively, it is possible to specify a set of constraints as a table in a text file with 1 row per constraint and 1 column for the constraint expression, structure, and patient ID. A table like this can be created in Excel, be exported to a tab-delimited text-file, and be read in by \texttt{readConstraints()}. The resulting data frame used here is built into the \texttt{DVHmetrics} package.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=10cm]{constraintsExcel}
+\caption{Defining constraints in Excel}
+\end{figure}
+
+<<cConstrDef2, eval=FALSE>>=
+dataConstr <- readConstraints("constraints.txt", dec=".", sep="\t")
+@
+
+The constraint data frame \texttt{dataConstr} is built into \texttt{DVHmetrics} and applies to the \texttt{dataMZ} DVH data.
+
+<<cConstrDef3, echo=TRUE>>=
+dataConstr
+@
+
+For checking constraints, and for calculating the difference between the observed DVH and the constraint, the DVH is linearly interpolated.
+
+%%%%---------------------------------------------------------------------------
+%%%%---------------------------------------------------------------------------
+\subsection{Check constraints}
+\label{sec:checkConstraint}
+%%%%---------------------------------------------------------------------------
+%%%%---------------------------------------------------------------------------
+
+Constraints are checked with \texttt{checkConstraint()}. The output returns information on the observed value of the tested metric, on the compliance with respect to this metric, and on the absolute/relative deviation in volume as well as in dose to the specified constraint value. The units for the absolute deviation are those used in the constraint expression. When the constraint defines a point in dose-volume space, \texttt{checkConstraint()} reports another quantitative measure for the degree of violation: The closest point on the DVH to the constraint as well as its Euclidean distance to the constraint point.
+
+As an example, we use the DVHs that are built into the \texttt{DVHmetrics} package.
+
+<<cConstrCheck1, echo=TRUE>>=
+## store result in object cc to save to file later
+cc <- checkConstraint(dataMZ, constr=dataConstr)
+print(cc, digits=2)            # show output with 2 decimal places
+@
+
+The result from a constraint check can be saved with function \texttt{saveConstraint()} that works like \texttt{saveMetric()} (see section \ref{sec:saveMetric}).
+
+<<cConstrCheck2, eval=FALSE>>=
+saveConstraint(cc, file="c:/folder/constrCheck.txt")
+@
+
+%%%%---------------------------------------------------------------------------
+%%%%---------------------------------------------------------------------------
+\subsection{Visualize constraints}
+\label{sec:showConstraint}
+%%%%---------------------------------------------------------------------------
+%%%%---------------------------------------------------------------------------
+
+Constraints that define a point in dose-volume space can be visualized in a DVH with relative volume or absolute volume. The constraints will be converted to match the DVH plot. Only structures with constraints are shown. The diagram also shows the point on the DVH closest to the constraint. This can be verified visually only if the aspect ratio of the diagram is 1.
+
+As in \texttt{showDVH()} (see section \ref{sec:showDVH}), either one diagram per patient with multiple structures is shown (\texttt{byPat=TRUE}), or one diagram per structure with multiple patients (\texttt{byPat=FALSE}).
+
+<<cConstrShow1, out.width='3in', echo=TRUE>>=
+## plot relative volume
+showConstraint(dataMZ, constr=dataConstr, byPat=TRUE)
+
+## plot absolute volume - store result in sc to save to file later
+sc <- showConstraint(dataMZ, constr=dataConstr,
+                     byPat=FALSE, rel=FALSE)
+@
+
+The result can be saved using \texttt{saveDVH()} as demonstrated in section \ref{sec:saveDVH}.
+
+<<cConstrShow2, eval=FALSE>>=
+saveDVH(sc, file="c:/folder/dvhConstraint.pdf")
+@
+
+%%%%---------------------------------------------------------------------------
+%%%%---------------------------------------------------------------------------
+\section*{Acknowledgements}
+%%%%---------------------------------------------------------------------------
+%%%%---------------------------------------------------------------------------
+
+The authors thank Marcus Stockinger for ideas on checking quality assurance constraints.
+
+%%%%---------------------------------------------------------------------------
+%%%%---------------------------------------------------------------------------
+
+\end{document}

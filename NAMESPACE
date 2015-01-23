@@ -1,0 +1,37 @@
+importFrom(utils, read.table, write.table)
+importFrom(ggplot2, ggplot, aes_string, geom_point, geom_line, ggtitle, ggsave)
+importFrom(ggplot2, coord_cartesian, annotation_custom, theme_bw, xlab, ylab)
+importFrom(ggplot2, scale_shape_manual, scale_y_continuous)
+importFrom(grid, gpar, segmentsGrob, arrow, unit, grobTree)
+importFrom(reshape2, melt, dcast)
+
+export(readConstraint,
+       checkConstraint,
+       showConstraint,
+       saveConstraint,
+       getMetric,
+       saveMetric,
+       readDVH,
+       showDVH,
+       saveDVH,
+       harmoConstrDVH)
+
+S3method(saveMetric,      data.frame)
+S3method(saveMetric,      list)
+S3method(print,           DVHs)
+S3method(print,           DVHLst)
+S3method(print,           DVHLstLst)
+S3method(getMetric,       DVHs)
+S3method(getMetric,       DVHLst)
+S3method(getMetric,       DVHLstLst)
+S3method(checkConstraint, DVHs)
+S3method(checkConstraint, DVHLst)
+S3method(checkConstraint, DVHLstLst)
+S3method(showConstraint,  DVHs)
+S3method(showConstraint,  DVHLst)
+S3method(showConstraint,  DVHLstLst)
+S3method(showDVH,         DVHs)
+S3method(showDVH,         DVHLst)
+S3method(showDVH,         DVHLstLst)
+S3method(harmoConstrDVH,  DVHLst)
+S3method(harmoConstrDVH,  DVHLstLst)

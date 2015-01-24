@@ -16,7 +16,7 @@ shinyServer(function(input, output) {
             } else if(input$DVHin == '2') {
                 if(!is.null(input$DVHupload)) {
                     types <- c('1'="Eclipse", '2'="Cadplan")
-                    plans <- c('1'="none", '2'="doseRx")
+                    plans <- c('1'="none",    '2'="doseRx")
                     argL  <- list(x=input$DVHupload$datapath,
                                   type=types[input$DVHtype],
                                   planInfo=plans[input$DVHplanInfo])

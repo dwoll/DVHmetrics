@@ -2,7 +2,7 @@
 
 ## Analyze Dose-Volume Histograms and Check Constraints using R
 
-`DVHmetrics` provides functionality for the anaylsis of dose-volume histograms in radiation oncology:
+`DVHmetrics` provides functionality for the analysis of dose-volume histograms in radiation oncology:
 
  * Read dose-volume-histogram (DVH) text files
  * Calculate free DVH metrics, show DVH diagrams

@@ -4,23 +4,23 @@
 \docType{package}
 \title{Analyze Dose-Volume Histograms and Check Constraints}
 \description{
-Functionality for radiation oncology:
-Read dose-volume histogram (DVH) text files,
-calculate free DVH metrics, show DVH diagrams,
+Functionality for analyzing dose-volume histograms
+(DVH) in radiation oncology: Read DVH text files,
+calculate DVH metrics, show DVH diagrams,
 check and visualize quality assurance constraints
-for the DVH.
+for the DVH. Includes shiny-based web application.
 }
 \details{
 \tabular{ll}{
 Package: \tab DVHmetrics\cr
 Type: \tab Package\cr
 Version: \tab 0.1\cr
-Date: \tab 2015-01-17\cr
+Date: \tab 2015-01-26\cr
 License: \tab GPL (>= 2)\cr
 }
 }
 \author{
-Daniel Wollschlaeger
+Daniel Wollschlaeger and Heiko Karle
 
 Maintainer: Daniel Wollschlaeger <wollschlaeger@uni-mainz.de>
 }

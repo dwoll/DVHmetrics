@@ -11,17 +11,17 @@ function(x, constr, byPat=TRUE, semSign=FALSE,
          sortBy=c("none", "observed", "compliance", "structure",
                   "constraint", "patID", "deltaV", "deltaD", "dstMin")) {
     x <- if(byPat) {
-        setNames(list(x), x$patID)
-    } else {
         setNames(list(x), x$structure)
+    } else {
+        setNames(list(x), x$patID)
     }
 
-    class(x) <- c("DVHLst", "list")
-    attr(dvhL, which="byPat") <- byPat
+    class(x) <- "DVHLst"
+    attr(x, which="byPat") <- byPat
 
     #NextMethod("checkConstraint")
     checkConstraint.DVHLst(x, constr=constr, byPat=byPat, semSign=semSign,
-                            sortBy=sortBy)
+                           sortBy=sortBy)
 }
 
 ## with byPat=TRUE

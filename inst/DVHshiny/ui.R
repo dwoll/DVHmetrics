@@ -6,7 +6,7 @@ source("helper.R")
 
 shinyUI(fluidPage(
     #theme="bootstrap.css",
-    titlePanel("Analyze DVH constraints using DVHmetrics"),
+    titlePanel("Analyze dose-volume histograms using DVHmetrics"),
     sidebarLayout(
         sidebarPanel(width=3,
             conditionalPanel(condition="input.task == 'DVH data'",

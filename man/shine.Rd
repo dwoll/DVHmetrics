@@ -11,7 +11,7 @@ shine(...)
   \item{...}{Arguments passed to \code{\link[shiny]{runApp}}.}
 }
 \details{
-This function calls \code{\link[shiny]{runApp}} to run the included DVHshiny application.
+This function calls \code{\link[shiny]{runApp}} to run the included DVHshiny application. See \code{vignette("DVHshiny")} for documentation.
 }
 \seealso{
 \code{\link[shiny]{runApp}}

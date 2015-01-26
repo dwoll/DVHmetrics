@@ -1,0 +1,274 @@
+\documentclass[11pt,%
+parskip=half,%
+paper=a4,%
+headings=small,%
+DIV15]{scrartcl}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage[latin1]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[final,babel,activate=TRUE]{microtype}
+%%\usepackage[sc]{mathpazo}
+\usepackage{lmodern}
+\usepackage{upquote}
+%\usepackage{geometry}
+%\geometry{verbose,tmargin=2.2cm,bmargin=2.2cm,lmargin=2.2cm,rmargin=2.2cm}
+\usepackage{url}
+%\usepackage{amsmath}
+%\usepackage{bm}
+%\usepackage{authblk}
+\usepackage{graphicx}
+\usepackage[pdftex,%
+unicode=true,%
+pdfusetitle,%
+bookmarks=true,%
+plainpages=false,%
+colorlinks=true,%
+linkcolor=blue,%
+citecolor=blue,%
+filecolor=blue,%
+urlcolor=blue,%
+%bookmarksopen=true,%
+%bookmarksopenlevel=2,%
+breaklinks=false,%
+%pdfborder={0 0 1},%
+pdfpagelabels=true,%
+backref=false,%
+pdftitle={Using the DVHmetrics web application},%
+pdfauthor={Daniel Wollschlaeger, Heiko Karle}]{hyperref}
+\usepackage{breakurl}
+\usepackage{apacite}                     % after hyperref
+
+%%%%---------------------------------------------------------------------------
+%%%%---------------------------------------------------------------------------
+
+\ifdefined\hlstd
+\renewcommand{\hlstd}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\fi
+
+\ifdefined\hlcom
+\renewcommand{\hlcom}[1]{\textcolor[rgb]{0.5,0.4,0.5}{#1}}%
+\fi
+
+%%%%---------------------------------------------------------------------------
+%%%%---------------------------------------------------------------------------
+
+%\VignetteIndexEntry{Using the DVHmetrics web application}
+%\VignetteDepends{DVHmetrics}
+%\VignetteKeywords{DVHmetrics}
+%\VignettePackage{DVHmetrics}
+%\VignetteEngine{knitr::knitr}
+%%%\VignetteEngine{knitr::rmarkdown}
+%%%%\SweaveOpts{engine=R}
+
+\begin{document}
+
+\title{Using the \texttt{DVHmetrics} web application}
+\author{Daniel Wollschlaeger\\
+        \url{wollschlaeger@uni-mainz.de}
+        \and
+        Heiko Karle\\
+        \url{karle@uni-mainz.de}}
+\date{University Medical Center Mainz, Germany}
+
+%%%%---------------------------------------------------------------------------
+%%%%---------------------------------------------------------------------------
+
+<<setup, echo=FALSE, include=FALSE, cache=FALSE>>=
+# set global chunk options
+knitr::opts_chunk$set(fig.align='center', fig.show='hold')
+knitr::opts_chunk$set(tidy=FALSE, message=FALSE, warning=FALSE, comment=NA)
+options(replace.assign=TRUE, useFancyQuotes=FALSE, show.signif.stars=FALSE, digits=4, width=70)
+@
+
+\maketitle
+\tableofcontents
+
+%%%%---------------------------------------------------------------------------
+%%%%---------------------------------------------------------------------------
+\section{Introduction}
+\label{sec:introduction}
+%%%%---------------------------------------------------------------------------
+%%%%---------------------------------------------------------------------------
+
+\texttt{DVHmetrics} is an add-on package for the free statistical environment \textsf{R} \cite{RDevelopmentCoreTeam2008c} with applications in radiation oncology. It provides functionality to read dose-volume-histogram (DVH) text files, to calculate DVH metrics, and to plot DVHs. In addition, it checks and visualizes quality assurance constraints for the DVH.
+
+This document outlines the web application built into \texttt{DVHmetrics}. For information on how to install the package, for an overview of its functionality, and for usage from the \textsf{R} command line, see the main walk-through with:
+
+<<cIntro, eval=FALSE>>=
+vignette("DVHmetrics")
+@
+
+%%%%---------------------------------------------------------------------------
+%%%%---------------------------------------------------------------------------
+\section{The \texttt{DVHmetrics} web application}
+\label{sec:webApp}
+%%%%---------------------------------------------------------------------------
+%%%%---------------------------------------------------------------------------
+
+For users who are unfamiliar with \textsf{R}, \texttt{DVHmetrics} includes a \texttt{shiny}-based web application \cite{RStudioShiny2014} running locally that eliminates the need to use \textsf{R} syntax.\footnote{This app is also available online in a public install: \url{http://dwoll.shinyapps.io/DVHshiny/}} This web application can also be deployed in an intranet from local IT services.\footnote{To install separately, use function \texttt{install\_github("dwoll/DVHshiny")} from package \texttt{devtools} \cite{Wickham2014b}.} After installing \texttt{DVHmetrics}, you can start the web application in an external web browser (fig.\ \ref{fig:appFileOpen}, \ref{fig:appMetrics}, \ref{fig:appShowDVH}, \ref{fig:appCheckConstr}, \ref{fig:appShowConstr}) from the command line:
+
+<<cWebApp, eval=FALSE>>=
+shine()    # opens web browser with DVHmetrics web application
+@
+
+The web application has a two-column layout: The top of the right column shows a tab list for selecting different analysis tasks. The bottom of the right column shows the current output for the selected task. The left column presents options for the task.
+
+%%%%---------------------------------------------------------------------------
+%%%%---------------------------------------------------------------------------
+\section{Read DVH data from Eclipse or Cadplan}
+\label{sec:readData}
+%%%%---------------------------------------------------------------------------
+%%%%---------------------------------------------------------------------------
+
+To import DVH data into the \texttt{DVHmetrics} web application, select the \textsf{DVH data} tab (fig.\ \ref{fig:appFileOpen}). All further analyses will be based on the data defined here.
+
+In the left panel, either choose the built-in DVH data from three patients with radiotherapy after breast cancer surgery,\footnote{Data courtesy of Department of Radiation Oncology (Prof. Dr. Schmidberger), University Medical Center Mainz, Germany.} or upload DVH data from text files. The file picker dialogue allows for selecting multiple files. In the following description, we use the built-in DVH data. After choosing the appropriate input format, click the \textsf{Apply} button to finish importing.
+
+Depending on the last option in the left column, the right panel will either display short or more detailed information on the currently active DVH data.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=10cm]{appFileOpen}
+\caption{Simultaneously importing multiple DVH text files into the \texttt{DVHmetrics} web application}
+\label{fig:appFileOpen}
+\end{figure}
+
+%%%%---------------------------------------------------------------------------
+%%%%---------------------------------------------------------------------------
+\section{Calculate DVH metrics}
+\label{sec:metrics}
+%%%%---------------------------------------------------------------------------
+%%%%---------------------------------------------------------------------------
+
+To calculate DVH metrics, select the \textsf{Metrics} tab (fig.\ \ref{fig:appMetrics}). The metrics can be defined in the text input field in the top left column as a comma-separated list, e.\,g., \textsf{DMEAN, D1cc, V10Gy}.\footnote{See the help file \texttt{?getMetric} for the definition of a DVH metric.} Below the input field, the left column shows checkboxes for the available patient IDs and for the available structures as extracted from the currently active data. The metrics are applied to the selected patients and structures.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=10cm]{appMetrics}
+\caption{Simultaneously calculate several DVH metrics for multiple patients and structures in the \texttt{DVHmetrics} web application}
+\label{fig:appMetrics}
+\end{figure}
+
+The output table is shown in the right column. It can be sorted according to multiple criteria that can be selected at the bottom of the left column. The output table has a variable maximum number of entries and automatically flows over into multiple pages if more metrics need to be displayed. The input fields below each column allow for restricting the visible output to just those rows that contain the entered text.
+
+The output can be saved to a text file with the \textsf{Save as text file} download button below the table. The decimal separator and column separator can be selected. The created file is easy to import into a spreadsheet program like Excel, or into other statistics programs.
+
+%%%%---------------------------------------------------------------------------
+%%%%---------------------------------------------------------------------------
+\section{Plot DVH diagrams}
+\label{sec:plot}
+%%%%---------------------------------------------------------------------------
+%%%%---------------------------------------------------------------------------
+
+To plot DVH diagrams for the currently active data, select the \textsf{Show DVH} tab (fig.\ \ref{fig:appShowDVH}). Depending on the first option in the left column, each DVH diagram either shows one patient with multiple structures, or one structure with multiple patients. Below, the left column shows checkboxes for the available patient IDs and for the available structures as extracted from the currently active data. The DVH either shows the relative or the absolute volume on the $y$-axis. The \textsf{Threshold volume} slider allows to restrict the range of the $x$-axis such that only relative volumes larger than the selected percentage appear. Finally, either choose to plot the cumulative DVH, or the differential DVH.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=10cm]{appShowDVH}
+\caption{Simultaneously visualize multiple DVHs for several patients in the \texttt{DVHmetrics} web application}
+\label{fig:appShowDVH}
+\end{figure}
+
+The right column shows the generated DVH plots. With the \textsf{Save as PDF} download button, they can be saved to a single pdf document that contains as many pages as there are separate diagrams. The \textsf{Save as JPEGs} download button generates \texttt{.jpg} image files and puts them into a zip-file for download.
+
+%%%%---------------------------------------------------------------------------
+%%%%---------------------------------------------------------------------------
+\section{Quality assurance constraints on the dose-volume relationship}
+%%%%---------------------------------------------------------------------------
+%%%%---------------------------------------------------------------------------
+
+For quality assurance, it is possible to define, check, and visualize constraints on the dose-volume relationship for DVHs.
+
+%%%%---------------------------------------------------------------------------
+%%%%---------------------------------------------------------------------------
+\subsection{Check constraints}
+\label{sec:checkConstraint}
+%%%%---------------------------------------------------------------------------
+%%%%---------------------------------------------------------------------------
+
+To check constraints, select the \textsf{Check constraints} tab (fig.\ \ref{fig:appCheckConstr}). All further constraint checking will be based on the constraints defined here.
+
+In the left panel, either choose the built-in constraints that apply to the built-in DVH data, or upload a single text file with self-defined constraints. Another option is to paste constraints into a text input field as a simple table that has the same format as a text file. Each element of the table has to be put in quotes. See the help file \texttt{?checkConstraint} for the definition of a DVH constraint, and for possible formats of tables in text files. Some examples are shown in table \ref{tab:constrPaste}.
+
+\begin{table}
+\caption{Example for pasted constraints.}
+\label{tab:constrPaste}
+\begin{tabular}{lll}
+\multicolumn{3}{l}{Constraints that apply to all patients and to all structures}\\\hline
+\texttt{"D10cc < 20\%"}  & &\\
+\texttt{"V5cGy > 100cc"} & &\\
+\texttt{"DMEAN < 10Gy"}  & &\\
+& & \\
+\multicolumn{3}{l}{Constraints that apply to some patients and to all structures}\\\hline
+\texttt{"constraint"}    & \texttt{"patID"} &\\
+\texttt{"D10cc < 20\%"}  & \texttt{"P123"}  &\\
+\texttt{"V5cGy > 100cc"} & \texttt{"*"}     &\\
+\texttt{"DMEAN < 10Gy"}  & \texttt{"P234"}  &\\
+& & \\
+\multicolumn{3}{l}{Constraints that apply to some patients and to some structures}\\\hline
+\texttt{"constraint"}    & \texttt{"patID"} & \texttt{"structure"}\\
+\texttt{"D10cc < 20\%"}  & \texttt{"P123"}  & \texttt{"*"}\\
+\texttt{"V5cGy > 100cc"} & \texttt{"*"}     & \texttt{"HEART"}\\
+\texttt{"DMEAN < 10Gy"}  & \texttt{"P234"}  & \texttt{"AOVALVE"}\\\hline
+\end{tabular}
+\end{table}
+
+After choosing the appropriate input format, click the \textsf{Apply} button to finish importing. In the following description, we use the constraint data frame \texttt{dataConstr} that is built into the \texttt{DVHmetrics} package.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=10cm]{appCheckConstr}
+\caption{Check whether DVHs satisfy or violate several constraints in the \texttt{DVHmetrics} web application}
+\label{fig:appCheckConstr}
+\end{figure}
+
+The output table is shown in the right column and contains information on variables that may be (de-) selected at the bottom of the left column. The table can be sorted according to multiple criteria that can be selected at the bottom of the left column. The output table has a selectable maximum number of entries and automatically flows over into multiple pages if more metrics need to be displayed. The input fields below each column allow for filtering the visible output to just those rows that contain the entered text in the corresponding column.
+
+The output table lists information on the observed value of the tested metric, on the compliance with respect to this metric, and on the deviation in volume as well as in dose to the specified constraint value. When the constraint defines a point in dose-volume space, the table reports the Euclidean distance to the constraint point as another quantitative measure for the degree of violation. Checkbox \textsf{Semantic negative sign} controls the meaning of the sign of the observed dose/volume differences between DVHs and constraints. If checked, negative differences indicate constraint compliance, and positive differences indicate constraint violations. Unchecked, the algebraic differences are shown as-is.
+
+The output can be saved to a text file with the \textsf{Save as text file} download button below the table. The decimal separator and column separator can be selected. The created file is easy to import into a spreadsheet program like Excel, or into other statistics programs.
+
+%%%%---------------------------------------------------------------------------
+%%%%---------------------------------------------------------------------------
+\subsection{Visualize constraints}
+\label{sec:showConstraint}
+%%%%---------------------------------------------------------------------------
+%%%%---------------------------------------------------------------------------
+
+To visualize constraints that define a point in dose-volume space, select the \textsf{Show constraints} tab (fig.\ \ref{fig:appShowConstr}). Depending on the first option in the left column, each DVH diagram either shows one patient with multiple structures, or one structure with multiple patients. The DVH either shows the relative or the absolute volume on the $y$-axis. The \textsf{Threshold volume} slider allows to restrict the range of the $x$-axis such that only relative volumes larger than the selected percentage appear.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=10cm]{appShowConstr}
+\caption{Visualize DVH constraints in the \texttt{DVHmetrics} web application}
+\label{fig:appShowConstr}
+\end{figure}
+
+The right column shows cumulative DVH diagrams for those patients and structures within the scope of the currently active constraints. The constraints are marked as arrows with colors that correspond to the structure they apply to. Different symbols indicate different constraints. The direction of the arrows indicate where the DVH curve is supposed to pass relative to the constraint point. This allows for easy visual verification if a constraint is satisfied or violated. The diagrams also show the points on the DVH curves closest to the applicable constraint. This can be verified visually only if the aspect ratio of the diagram is 1 .
+
+With the \textsf{Save as PDF} download button, the diagrams can be saved to a single pdf document that contains as many pages as there are separate diagrams. The \textsf{Save as JPEGs} download button generates \texttt{.jpg} image files and puts them into a zip-file for download.
+
+%%%%---------------------------------------------------------------------------
+%%%%---------------------------------------------------------------------------
+\section{Technical information}
+\label{sec:technical}
+%%%%---------------------------------------------------------------------------
+%%%%---------------------------------------------------------------------------
+
+The \textsf{About} tab provides background information on technical details: It lists authors, \textsf{R} packages used by \texttt{DVHmetrics}, and how to obtain the source code for the web application.
+
+%%%%---------------------------------------------------------------------------
+%%%%---------------------------------------------------------------------------
+
+\bibliographystyle{apacite}
+\renewcommand{\BAvailFrom}{URL\ }
+\renewcommand{\APACrefURL}{URL\ }
+\bibliography{lit}
+
+%%%%---------------------------------------------------------------------------
+%%%%---------------------------------------------------------------------------
+
+\end{document}

@@ -22,7 +22,7 @@ function(x, byPat=TRUE) {
             attr(y, which="byPat") <- TRUE
             ## collect structures
             structs  <- unique(vapply(y, function(z) z$structure, character(1)))
-            class(y) <- c("DVHLst", "list")
+            class(y) <- "DVHLst"
             setNames(y, structs)
         })
     } else {
@@ -42,13 +42,13 @@ function(x, byPat=TRUE) {
             attr(y, which="byPat") <- FALSE
             ## collect patients
             patIDs   <- unique(vapply(y, function(z) z$patID, character(1)))
-            class(y) <- c("DVHLst", "list")
+            class(y) <- "DVHLst"
             setNames(y, patIDs)
         })
     }
 
     ## add byPat flag and assign DVHLstLst class
     attr(xReorg, which="byPat") <- byPat
-    class(xReorg) <- c("DVHLstLst", "list")
+    class(xReorg) <- "DVHLstLst"
     xReorg
 }

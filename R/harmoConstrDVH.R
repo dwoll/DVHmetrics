@@ -37,7 +37,7 @@ function(x, constr, byPat=TRUE) {
     constrShared <- constr[sharedNames]
 
     attr(xShared, which="byPat") <- byPat
-    class(xShared) <- c("DVHLst", "list")
+    class(xShared) <- "DVHLst"
     
     return(list(x=xShared, constr=constrShared))
 }
@@ -70,7 +70,7 @@ function(x, constr, byPat=TRUE) {
     constrShared <- constr[sharedNames]
 
     attr(xShared, which="byPat") <- byPat
-    class(xShared) <- c("DVHLstLst", "list")
+    class(xShared) <- "DVHLstLst"
     
     return(list(x=xShared, constr=constrShared))
 }

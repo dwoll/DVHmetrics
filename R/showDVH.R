@@ -10,13 +10,13 @@ showDVH.DVHs <-
 function(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL,
          rel=TRUE, guessX=TRUE, thresh=1, show=TRUE, ...) {
     x <- if(byPat) {
-        setNames(list(x), x$patID)
-    } else {
         setNames(list(x), x$structure)
+    } else {
+        setNames(list(x), x$patID)
     }
 
-    class(x) <- c("DVHLst", "list")
-    attr(dvhL, which="byPat") <- byPat
+    class(x) <- "DVHLst"
+    attr(x, which="byPat") <- byPat
 
     #NextMethod("showDVH")
     showDVH.DVHLst(x, cumul=cumul, byPat=byPat, patID=patID, structure=structure,
@@ -156,7 +156,7 @@ function(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL,
 
     diagL <- Map(showDVH, x, cumul=cumul, byPat=byPat, rel=rel,
                  patID=list(patID), structure=list(structure),
-                 guessX=guessX, thresh=thresh, ...)
+                 guessX=guessX, thresh=thresh, show=show, ...)
 
     return(invisible(diagL))
 }

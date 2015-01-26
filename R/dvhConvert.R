@@ -133,7 +133,7 @@ function(x, toType=c("asis", "cumulative", "differential"),
 
     dvhL <- Map(dvhConvert, x, toType=toType, toDoseUnit=toDoseUnit)
     names(dvhL) <- names(x)
-    class(dvhL) <- c("DVHLst", "list")
+    class(dvhL) <- "DVHLst"
     attr(dvhL, which="byPat") <- attributes(x)$byPat
 
     return(dvhL)
@@ -148,7 +148,7 @@ function(x, toType=c("asis", "cumulative", "differential"),
 
     dvhLL <- Map(dvhConvert, x, toType=toType, toDoseUnit=toDoseUnit)
     names(dvhLL) <- names(x)
-    class(dvhLL) <- c("DVHLstLst", "list")
+    class(dvhLL) <- "DVHLstLst"
     attr(dvhLL, which="byPat") <- attributes(x)$byPat
 
     return(dvhLL)

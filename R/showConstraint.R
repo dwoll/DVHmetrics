@@ -7,13 +7,13 @@ function(x, constr, byPat=TRUE, rel=TRUE, guessX=TRUE, thresh=1) {
 showConstraint.DVHs <-
 function(x, constr, byPat=TRUE, rel=TRUE, guessX=TRUE, thresh=1) {
     x <- if(byPat) {
-        setNames(list(x), x$patID)
-    } else {
         setNames(list(x), x$structure)
+    } else {
+        setNames(list(x), x$patID)
     }
 
-    class(x) <- c("DVHLst", "list")
-    ## don't set byPat attribute to make x usable with byPat=TRUE, and byPat=FALSE
+    class(x) <- "DVHLst"
+    attr(x, which="byPat") <- byPat
 
     #NextMethod("showConstraint")
     showConstraint.DVHLst(x, constr=constr, byPat=byPat,
@@ -218,7 +218,7 @@ function(x, constr, byPat=TRUE, rel=TRUE, guessX=TRUE, thresh=1) {
     ## get DVH plot for relevant structures / IDs
     diag <- showDVH(xConstrSub$x,
                     cumul=TRUE, byPat=byPat, rel=rel, guessX=guessX,
-                    thresh=thresh, showMe=FALSE)
+                    thresh=thresh, show=FALSE)
 
     ## add constraint arrow to plot
     diagC <- if(byPat) {

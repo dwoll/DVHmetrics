@@ -1,22 +1,3 @@
-## TODO
-## readDVH() -> if x is a directory, read all files in it
-## differential -> cumulative: doses are interval mid-points
-## make getMetrics(), showDVH(), checkConstraints(), showConstraints() work with RadOnc objects
-## read Cadplan relVol, Pinnacle, Helax, TomoTherapy Hi-Art
-## constraint wedges as custom geoms
-## harmonize structures by reading equivalence file, possibly with regex
-
-## build
-#"c:\program files\r\r-3.1.0\bin\x64\Rcmd.exe" INSTALL --build DVHmetrics_0.1.tar.gz
-#"c:\program files\r\r-3.1.0\bin\x64\Rcmd.exe" build DVHmetrics --resave-data --compact-vignettes="both"
-#"c:\program files\r\r-3.1.0\bin\x64\Rcmd.exe" check DVHmetrics_0.1.tar.gz --as-cran
-#install.packages("d:/daniel_work/workspace/DVHmetrics_0.1.tar.gz", repos=NULL, type="source")
-
-#"c:\program files\r\r-devel\bin\x64\Rcmd.exe" INSTALL --build DVHmetrics_0.1.tar.gz
-#"c:\program files\r\r-devel\bin\x64\Rcmd.exe" build DVHmetrics --resave-data --compact-vignettes="both"
-#"c:\program files\r\r-devel\bin\x64\Rcmd.exe" check DVHmetrics_0.1.tar.gz --as-cran
-#install.packages("h:/workspace/DVHmetrics_0.1.tar.gz", repos=NULL, type="source")
-
 #####---------------------------------------------------------------------------
 ## trim whitespace on beginning/end of string
 trimWS <- function(x, side="both")  {
@@ -311,7 +292,7 @@ parseEclipse <- function(x, planInfo=FALSE) {
         }
 
         ## set class
-        class(DVH) <- c("DVHs", "list")
+        class(DVH) <- "DVHs"
         return(DVH)
     }
 
@@ -321,7 +302,7 @@ parseEclipse <- function(x, planInfo=FALSE) {
                  doseRx=doseRx, isoDoseRx=isoDoseRx, doseUnit=doseUnit)
     dvhL <- lapply(structList, getDVH, info=info)
     names(dvhL) <- sapply(dvhL, function(y) y$structure)
-    class(dvhL) <- c("DVHLst", "list")
+    class(dvhL) <- "DVHLst"
     attr(dvhL, which="byPat") <- TRUE
 
     return(dvhL)
@@ -382,7 +363,7 @@ parseCadplan <- function(x, planInfo=FALSE) {
     }
 
     getDVHtype <- function(ll) {
-        line <- ll[grep("^(Cumulative|Differential) Dose Volume.+", ll)]
+        line <- ll[grep("^(Cumulative|Differential) (Dose Volume.+|DVH)", ll)]
         elem <- sub("^(Cumulative|Differential).+", "\\1", line, perl=TRUE, ignore.case=TRUE)
         tolower(trimWS(elem))
     }
@@ -558,7 +539,7 @@ parseCadplan <- function(x, planInfo=FALSE) {
         }
 
         ## set class
-        class(DVH) <- c("DVHs", "list")
+        class(DVH) <- "DVHs"
         return(DVH)
     }
 
@@ -566,7 +547,7 @@ parseCadplan <- function(x, planInfo=FALSE) {
     info <- list(patID=patID, patName=patName, plan=plan, DVHtype=DVHtype)
     dvhL <- lapply(structList, getDVH, info)
     names(dvhL) <- sapply(dvhL, function(y) y$structure)
-    class(dvhL) <- c("DVHLst", "list")
+    class(dvhL) <- "DVHLst"
     attr(dvhL, which="byPat") <- TRUE
 
     return(dvhL)
@@ -590,7 +571,7 @@ readDVH <- function(x, type=c("Eclipse", "Cadplan"), planInfo=FALSE) {
 
     ## organized by patient (top level)
     attr(dvhLL, which="byPat") <- TRUE
-    class(dvhLL) <- c("DVHLstLst", "list")
+    class(dvhLL) <- "DVHLstLst"
 
     return(dvhLL)
 }

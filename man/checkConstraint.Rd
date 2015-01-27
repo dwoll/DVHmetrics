@@ -34,7 +34,7 @@ checkConstraint(x, constr, byPat=TRUE, semSign=FALSE,
 \details{
 A DVH constraint is a character string that consists of three parts: The DVH metric, the comparison operator (\code{<}, \code{>}, \code{<=}, \code{>=}), and the reference value together with the measurement unit. See \code{\link[DVHmetrics]{getMetric}} for defining a DVH metric, as well as for possible measurement units for dose and volume. For constraints involving the relative dose, the DVH must contain the prescription dose.
 
-Some example constraints are \code{"V10Gy > 80\%"} (at least 80\% of the structure should have received 10Gy), \code{"V20\% < 10CC"} (at most 10cm\^3 of the structure should have received 20\% of the prescription dose), or \code{"D10CC > 500cGy"} (The "hottest" 10cm\^3 of the structure should have received at least 500cGy).
+Some example constraints are \code{"V10Gy > 80\%"} (more than 80\% of the structure should have received 10Gy), \code{"V20\% < 10CC"} (less than 10cm^3 of the structure should have received 20\% of the prescription dose), or \code{"D10CC > 500cGy"} (The "hottest" 10cm^3 of the structure should have received more than 500cGy).
 
 A DVH constraint can apply to a specific patient or to all patients, and to a specific structure or to all structures.
 \itemize{

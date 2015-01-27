@@ -123,6 +123,7 @@ parseEclipse <- function(x, planInfo=FALSE) {
         NA_character_
     }
 
+    DVHdate    <- getElem("^Date[[:blank:]]+:", header)
     DVHtype    <- getDVHtype(header)
     isoDoseRx0 <- getElem("^% for dose \\(%\\):", header)
     isoDoseRx  <- if(isoDoseRx0 != "not defined") { # check if sum plan
@@ -268,6 +269,7 @@ parseEclipse <- function(x, planInfo=FALSE) {
         DVH <- list(dvh=dvh,
                     patName=info$patName,
                     patID=info$patID,
+                    date=info$date,
                     DVHtype=info$DVHtype,
                     plan=plan,
                     quadrant=quadrant,
@@ -297,7 +299,7 @@ parseEclipse <- function(x, planInfo=FALSE) {
     }
 
     ## list of DVH data frames with component name = structure
-    info <- list(patID=patID, patName=patName,
+    info <- list(patID=patID, patName=patName, date=DVHdate,
                  DVHtype=DVHtype, plan=plan, quadrant=quadrant,
                  doseRx=doseRx, isoDoseRx=isoDoseRx, doseUnit=doseUnit)
     dvhL <- lapply(structList, getDVH, info=info)
@@ -311,12 +313,18 @@ parseEclipse <- function(x, planInfo=FALSE) {
 ## parse character vector from Cadplan DVH file
 parseCadplan <- function(x, planInfo=FALSE) {
     ## function to extract one information element from a number of lines
-    getElem <- function(pattern, ll, trim=TRUE, iCase=FALSE) {
+    getElem <- function(pattern, ll, trim=TRUE, iCase=FALSE, collWS=TRUE) {
         line <- ll[grep(pattern, ll)]
         elem <- sub("^.+?:[[:blank:]]*([[:alnum:][:punct:][:blank:]]+$)", "\\1",
                     line, ignore.case=iCase, perl=TRUE)
-        if(trim) {
+        elem <- if(trim) {
             trimWS(elem, side="both")
+        } else {
+            elem
+        }
+
+        if(collWS) {
+            collWS(elem)
         } else {
             elem
         }
@@ -382,6 +390,7 @@ parseCadplan <- function(x, planInfo=FALSE) {
     patName <- getElem("Patient Name[[:blank:]]*:", header)  # patient name
     patID   <- getElem("^Patient ID[[:blank:]]*:",  header)  # patient id
     plan    <- getPlan("^PLAN", header, iCase=TRUE, collWS=TRUE)  # treatment plan
+    DVHdate <- getElem("^Date[[:blank:]]+:", header)         # export date
     DVHtype <- getDVHtype(header)
 
     ## extract DVH from one structure section and store in a list
@@ -517,6 +526,7 @@ parseCadplan <- function(x, planInfo=FALSE) {
         DVH <- list(dvh=dvh,
                     patID=info$patID,
                     patName=info$patName,
+                    date=info$date,
                     DVHtype=info$DVHtype,
                     plan=plan,
                     structure=structure,
@@ -544,7 +554,7 @@ parseCadplan <- function(x, planInfo=FALSE) {
     }
 
     ## list of DVH data frames with component name = structure
-    info <- list(patID=patID, patName=patName, plan=plan, DVHtype=DVHtype)
+    info <- list(patID=patID, patName=patName, plan=plan, date=DVHdate, DVHtype=DVHtype)
     dvhL <- lapply(structList, getDVH, info)
     names(dvhL) <- sapply(dvhL, function(y) y$structure)
     class(dvhL) <- "DVHLst"

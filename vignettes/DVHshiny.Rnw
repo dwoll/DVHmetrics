@@ -71,7 +71,7 @@ pdfauthor={Daniel Wollschlaeger, Heiko Karle}]{hyperref}
         \and
         Heiko Karle\\
         \url{karle@uni-mainz.de}}
-\date{University Medical Center Mainz, Germany}
+\date{University Medical Center Mainz, Germany\\\today}
 
 %%%%---------------------------------------------------------------------------
 %%%%---------------------------------------------------------------------------
@@ -125,13 +125,13 @@ The web application has a two-column layout: The top of the right column shows a
 
 To import DVH data into the \texttt{DVHmetrics} web application, select the \textsf{DVH data} tab (fig.\ \ref{fig:appFileOpen}). All further analyses will be based on the data defined here.
 
-In the left panel, either choose the built-in DVH data from three patients with radiotherapy after breast cancer surgery,\footnote{Data courtesy of Department of Radiation Oncology (Prof. Dr. Schmidberger), University Medical Center Mainz, Germany.} or upload DVH data from text files. The file picker dialogue allows for selecting multiple files. In the following description, we use the built-in DVH data. After choosing the appropriate input format, click the \textsf{Apply} button to finish importing.
+In the left panel, either choose the built-in DVH data from three patients with radiotherapy after breast cancer surgery,\footnote{Data courtesy of Department of Radiation Oncology (Prof. Dr. Schmidberger), University Medical Center Mainz, Germany.} or upload DVH data from plain text files. These should be exported from Varian Eclipse (Aria Version 10 or 11), or from Cadplan. Cumulative and differential DVHs are supported, as are sum plans. The measurement unit for absolute dose can be Gy or cGy, the measurement unit for volume has to be cm$^{3}$. DVH text files can be read with \texttt{readDVH()}. The file picker dialogue allows for selecting multiple files. In the following description, we use the built-in DVH data. After choosing the appropriate input format, click the \textsf{Apply} button to finish importing.
 
 Depending on the last option in the left column, the right panel will either display short or more detailed information on the currently active DVH data.
 
 \begin{figure}[ht]
 \centering
-\includegraphics[width=10cm]{appFileOpen}
+\includegraphics[width=12cm]{appFileOpen}
 \caption{Simultaneously importing multiple DVH text files into the \texttt{DVHmetrics} web application}
 \label{fig:appFileOpen}
 \end{figure}
@@ -143,16 +143,16 @@ Depending on the last option in the left column, the right panel will either dis
 %%%%---------------------------------------------------------------------------
 %%%%---------------------------------------------------------------------------
 
-To calculate DVH metrics, select the \textsf{Metrics} tab (fig.\ \ref{fig:appMetrics}). The metrics can be defined in the text input field in the top left column as a comma-separated list, e.\,g., \textsf{DMEAN, D1cc, V10Gy}.\footnote{See the help file \texttt{?getMetric} for the definition of a DVH metric.} Below the input field, the left column shows checkboxes for the available patient IDs and for the available structures as extracted from the currently active data. The metrics are applied to the selected patients and structures.
+To calculate DVH metrics, select the \textsf{Metrics} tab (fig.\ \ref{fig:appMetrics}). The metrics can be defined in the text input field in the top left column as a comma-separated list, e.\,g., \textsf{DMEAN, D1cc, V10Gy}.\footnote{See the help file \texttt{?getMetric} for the definition of a DVH metric.} Below the input field, the left column shows checkboxes for the available patient IDs and for the available structures as extracted from the currently active data. The metrics are calculated for the selected patients and structures.
 
 \begin{figure}[ht]
 \centering
-\includegraphics[width=10cm]{appMetrics}
+\includegraphics[width=12cm]{appMetrics}
 \caption{Simultaneously calculate several DVH metrics for multiple patients and structures in the \texttt{DVHmetrics} web application}
 \label{fig:appMetrics}
 \end{figure}
 
-The output table is shown in the right column. It can be sorted according to multiple criteria that can be selected at the bottom of the left column. The output table has a variable maximum number of entries and automatically flows over into multiple pages if more metrics need to be displayed. The input fields below each column allow for restricting the visible output to just those rows that contain the entered text.
+The output table is shown in the right column. It can be sorted according to multiple criteria that can be selected at the bottom of the left column. The output table has a variable maximum number of entries and automatically flows over into multiple pages if more metrics need to be displayed. The input fields below each column allow for filtering the visible output to just those rows that contain the entered text in the corresponding column.
 
 The output can be saved to a text file with the \textsf{Save as text file} download button below the table. The decimal separator and column separator can be selected. The created file is easy to import into a spreadsheet program like Excel, or into other statistics programs.
 
@@ -167,7 +167,7 @@ To plot DVH diagrams for the currently active data, select the \textsf{Show DVH}
 
 \begin{figure}[ht]
 \centering
-\includegraphics[width=10cm]{appShowDVH}
+\includegraphics[width=12cm]{appShowDVH}
 \caption{Simultaneously visualize multiple DVHs for several patients in the \texttt{DVHmetrics} web application}
 \label{fig:appShowDVH}
 \end{figure}
@@ -194,7 +194,7 @@ To check constraints, select the \textsf{Check constraints} tab (fig.\ \ref{fig:
 In the left panel, either choose the built-in constraints that apply to the built-in DVH data, or upload a single text file with self-defined constraints. Another option is to paste constraints into a text input field as a simple table that has the same format as a text file. Each element of the table has to be put in quotes. See the help file \texttt{?checkConstraint} for the definition of a DVH constraint, and for possible formats of tables in text files. Some examples are shown in table \ref{tab:constrPaste}.
 
 \begin{table}
-\caption{Example for pasted constraints.}
+\caption{Examples for pasted constraints.}
 \label{tab:constrPaste}
 \begin{tabular}{lll}
 \multicolumn{3}{l}{Constraints that apply to all patients and to all structures}\\\hline
@@ -220,7 +220,7 @@ After choosing the appropriate input format, click the \textsf{Apply} button to 
 
 \begin{figure}[ht]
 \centering
-\includegraphics[width=10cm]{appCheckConstr}
+\includegraphics[width=12cm]{appCheckConstr}
 \caption{Check whether DVHs satisfy or violate several constraints in the \texttt{DVHmetrics} web application}
 \label{fig:appCheckConstr}
 \end{figure}
@@ -242,7 +242,7 @@ To visualize constraints that define a point in dose-volume space, select the \t
 
 \begin{figure}[ht]
 \centering
-\includegraphics[width=10cm]{appShowConstr}
+\includegraphics[width=12cm]{appShowConstr}
 \caption{Visualize DVH constraints in the \texttt{DVHmetrics} web application}
 \label{fig:appShowConstr}
 \end{figure}

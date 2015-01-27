@@ -52,9 +52,9 @@ A \emph{free} DVH metric is a character string which has three mandatory element
 Examples:
 \itemize{
 \item \code{"D1\%"}: Minimal absolute dose for the "hottest" 1\% of the structure, i.e., the maximally irradiated 1\% of the structure was exposed to at least this absolute dose.
-\item \code{"D1CC_\%"}: Minimal relative dose (\% of prescription dose) for the maximally irradiated cm\^3 of the structure.
+\item \code{"D1CC_\%"}: Minimal relative dose (\% of prescription dose) for the maximally irradiated cm^3 of the structure.
 \item \code{"V500cGy"}: Relative structure volume in \% that was exposed to at least 500cGy.
-\item \code{"V10\%_CC"}: Absolute structure volume in cm\^3 that was exposed to at least 10\% of prescription dose.
+\item \code{"V10\%_CC"}: Absolute structure volume in cm^3 that was exposed to at least 10\% of prescription dose.
 }
 
 If volume or dose values outside the range of possible values for a structure are requested, metrics cannot be calculated, and the result will be \code{NA} with a warning.

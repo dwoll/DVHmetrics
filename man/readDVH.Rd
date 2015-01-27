@@ -13,7 +13,7 @@ readDVH(x, type=c("Eclipse", "Cadplan"), planInfo=FALSE)
   \item{planInfo}{Experimental: Either \code{FALSE} or \code{character} string. In the latter case, \code{readDVH} tries to extract additional information from the \code{Plan} field in the DVH file, e.g., the prescription dose for a sum plan or the boost quadrant. Undocumented, see source.}
 }
 \details{
-Absolute dose values need to be given in Gy or cGy, absolute volume values in cm\^3.
+Absolute dose values need to be given in Gy or cGy, absolute volume values in cm^3.
 
 Differential DVHs are automatically converted to cumulative DVHs, but the differential DVH information is kept.
 

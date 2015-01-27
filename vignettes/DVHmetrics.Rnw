@@ -71,7 +71,7 @@ pdfauthor={Daniel Wollschlaeger, Heiko Karle}]{hyperref}
         \and
         Heiko Karle\\
         \url{karle@uni-mainz.de}}
-\date{University Medical Center Mainz, Germany}
+\date{University Medical Center Mainz, Germany\\\today}
 
 %%%%---------------------------------------------------------------------------
 %%%%---------------------------------------------------------------------------
@@ -148,7 +148,7 @@ vignette("DVHshiny")
 %%%%---------------------------------------------------------------------------
 %%%%---------------------------------------------------------------------------
 
-To import DVH data into \textsf{R}, it should be exported as a text file from Varian Eclipse (Aria Version 10 or 11), or from Cadplan. Cumulative and differential DVHs are supported, as are sum plans. The measurement unit for absolute dose can be Gy or cGy, the measurement unit for volume has to be cm$^{3}$. DVH text files can be read with \texttt{readDVH()}.
+To import DVH data into \textsf{R}, it should be exported as a plain text file from Varian Eclipse (Aria Version 10 or 11), or from Cadplan. Cumulative and differential DVHs are supported, as are sum plans. The measurement unit for absolute dose can be Gy or cGy, the measurement unit for volume has to be cm$^{3}$. DVH text files can be read with \texttt{readDVH()}.
 
 Example: Read one Eclipse file \texttt{dvhFile.txt} from folder \texttt{"c:/folder"} and save the result in object \texttt{res}.\footnote{Note that the way to indicate the path to these files is different from the usual Windows style path: Instead of writing the backslash \texttt{"\textbackslash"} as folder separator, the forward slash \texttt{"/"} must be used.}
 

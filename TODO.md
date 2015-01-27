@@ -1,4 +1,5 @@
 # TODO
+* add Eclipse fields: Comment, Exported by, Description, Course, Plan Status, Approval Status, Dose Coverage, Sampling Coverage, Equivalent Sphere Diameter, Conformity Index, Gradient Measure
 * `readDVH()` -> if `x` is a directory, read all files in it
 * differential -> cumulative: doses are interval mid-points?
 * make `getMetrics()`, `showDVH()`, `checkConstraints()`, `showConstraints()` work with `RadOnc` objects

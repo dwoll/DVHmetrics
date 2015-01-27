@@ -29,6 +29,7 @@ Returns an object of class \code{DVHLstLst}. This is a list (one component with 
 \describe{
 \item{\code{dvh}}{\code{matrix} - DVH values}
 \item{\code{patID}}{\code{character} string - patient ID}
+\item{\code{date}}{\code{character} string - date of DVH export}
 \item{\code{type}}{\code{character} string - cumulative or differential DVH}
 \item{\code{plan}}{\code{character} string - plan name}
 \item{\code{structure}}{\code{character} string - structure name}

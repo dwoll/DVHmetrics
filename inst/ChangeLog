@@ -1,0 +1,13 @@
+$Date: 2015-01-29 22:44:29 +0000 (Thu, 29 Jan 2015) $
+
+DVHMETRICS RELEASE VERSIONS at http://cran.r-project.org/
+
+Version 0.1.0.900 (January 29, 2015)
+    * shiny web application
+      - exact matching for selected patients and structures
+        instead of regex-matching
+      - fix selection of patients and structures in 'Show DVH'
+
+Version 0.1 (January 29, 2015)
+
+    * Initial release

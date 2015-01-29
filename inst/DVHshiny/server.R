@@ -185,8 +185,8 @@ shinyServer(function(input, output) {
             }
             argL <- list(x=dvh,
                          metric=selMetrics,
-                         patID=selPat,
-                         structure=selStruct,
+                         patID=paste0("^", selPat, "$"),
+                         structure=paste0("^", selStruct, "$"),
                          sortBy=sortBy)
             argL <- Filter(function(x) !is.null(x), argL)
             metr <- do.call(getMetric, argL)
@@ -266,16 +266,18 @@ shinyServer(function(input, output) {
                 } else {
                     ## 1 diagram per patient/structure
                     x <- if(byPat) {
-                        dvh$DVH[[localI]]
+                        sharedNames <- intersect(selPat, names(dvh$DVH))
+                        dvh$DVH[sharedNames][[localI]]
                     } else {
-                        dvh$DVHbyStruct[[localI]]
+                        sharedNames <- intersect(selStruct, names(dvh$DVHbyStruct))
+                        dvh$DVHbyStruct[sharedNames][[localI]]
                     }
 
                     showDVH(x=x,
                             cumul=cumul,
                             byPat=byPat,
-                            patID=selPat,
-                            structure=selStruct,
+                            patID=paste0("^", selPat, "$"),
+                            structure=paste0("^", selStruct, "$"),
                             thresh=input$plotThreshVol,
                             rel=rel)
                 }
@@ -326,8 +328,8 @@ shinyServer(function(input, output) {
             argL <- list(x=x,
                          cumul=cumul,
                          byPat=byPat,
-                         patID=selPat,
-                         structure=selStruct,
+                         patID=paste0("^", selPat, "$"),
+                         structure=paste0("^", selStruct, "$"),
                          thresh=input$plotThreshVol,
                          rel=rel)
             pdf(file, width=7, height=5)
@@ -341,8 +343,8 @@ shinyServer(function(input, output) {
         argL <- list(x=dvh,
                      cumul=cumul,
                      byPat=byPat,
-                     patID=selPat,
-                     structure=selStruct,
+                     patID=paste0("^", selPat, "$"),
+                     structure=paste0("^", selStruct, "$"),
                      thresh=thresh,
                      rel=rel)
         jpeg(fName, quality=100, width=700, height=500)

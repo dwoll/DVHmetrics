@@ -21,11 +21,9 @@ function(x, constr, byPat=TRUE, rel=TRUE, guessX=TRUE, thresh=1) {
 }
 
 ## for byPat=TRUE
-## x is a DVH list (1 per structure) of data frames
-## constr is a list (1 per structure) of vectors
+## x is a list of DVHs (1 per structure)
 ## for byPat=FALSE
-## x is a DVH list (1 per patient) of data frames
-## constr is a list (1 per patient) of vectors
+## x is a list of DVHs (1 per patient)
 showConstraint.DVHLst <-
 function(x, constr, byPat=TRUE, rel=TRUE, guessX=TRUE, thresh=1) {
     ## make sure DVH list is organized as required for byPat
@@ -254,8 +252,7 @@ function(x, constr, byPat=TRUE, rel=TRUE, guessX=TRUE, thresh=1) {
     return(invisible(diagC))
 }
 
-## x is a DVH list (1 per id) of lists
-## constr is a list (1 per id) of lists (1 for each structure)
+## x is a DVH list (1 component per id) of lists
 showConstraint.DVHLstLst <-
 function(x, constr, byPat=TRUE, rel=TRUE, guessX=TRUE, thresh=1) {
     ## re-organize x into by-patient or by-structure form if necessary

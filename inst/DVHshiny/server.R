@@ -15,7 +15,7 @@ shinyServer(function(input, output) {
                 dataMZ
             } else if(input$DVHin == '2') {
                 if(!is.null(input$DVHupload)) {
-                    types <- c('1'="Eclipse", '2'="Cadplan")
+                    types <- c('1'="Eclipse", '2'="Cadplan", '3'="Masterplan")
                     plans <- c('1'="none",    '2'="doseRx")
                     argL  <- list(x=input$DVHupload$datapath,
                                   type=types[input$DVHtype],
@@ -135,8 +135,8 @@ shinyServer(function(input, output) {
         if(!is.null(dvh)) {
             argL <- list(x=dvh,
                          metric=selMetrics,
-                         patID=selPat,
-                         structure=selStruct,
+                         patID=paste0("^", selPat, "$"),
+                         structure=paste0("^", selStruct, "$"),
                          sortBy=sortBy)
             argL <- Filter(function(x) !is.null(x), argL)
             metr <- do.call(getMetric, argL)

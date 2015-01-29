@@ -3,7 +3,7 @@
 \docType{data}
 \title{DVH data from 3 patients}
 \description{
-Data from 3 patients with radiotherapy after breast cancer surgery. DVHs for 7 heart structures.}
+Data from 3 patients with radiotherapy. DVHs for 7 heart structures.}
 \usage{data(dataMZ)}
 \format{
   Object of class \code{DVHLstLst} with 3 components corresponding to 3 patients.
@@ -14,7 +14,7 @@ Data from 3 patients with radiotherapy after breast cancer surgery. DVHs for 7 h
   }
 }
 \details{
-Data courtesy of Heiko Karle, Department of Radiation Oncology (Prof. Dr. Schmidberger), University Medical Center Mainz, Germany.
+Data courtesy of Department of Radiation Oncology (Prof. Dr. Schmidberger), University Medical Center Mainz, Germany.
 
 See \code{\link[DVHmetrics]{readDVH}} for classes \code{DVHLstLst}, \code{DVHLst}, and \code{DVHs}.
 }

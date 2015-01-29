@@ -143,12 +143,12 @@ vignette("DVHshiny")
 
 %%%%---------------------------------------------------------------------------
 %%%%---------------------------------------------------------------------------
-\section{Read DVH data from Eclipse or Cadplan}
+\section{Read DVH text data}
 \label{sec:readData}
 %%%%---------------------------------------------------------------------------
 %%%%---------------------------------------------------------------------------
 
-To import DVH data into \textsf{R}, it should be exported as a plain text file from Varian Eclipse (Aria Version 10 or 11), or from Cadplan. Cumulative and differential DVHs are supported, as are sum plans. The measurement unit for absolute dose can be Gy or cGy, the measurement unit for volume has to be cm$^{3}$. DVH text files can be read with \texttt{readDVH()}.
+To import DVH data into \textsf{R}, it should be exported as a plain text file from Varian Eclipse$^{\mathrm{TM}}$ (Aria Version 10 or 11), from CadPlan$^{\mathrm{TM}}$, or from MasterPlan$^{\mathrm{TM}}$. Cumulative and differential DVHs are supported, as are sum plans. The measurement unit for absolute dose can be Gy or cGy, the measurement unit for volume has to be cm$^{3}$. DVH text files can be read with \texttt{readDVH()}.
 
 Example: Read one Eclipse file \texttt{dvhFile.txt} from folder \texttt{"c:/folder"} and save the result in object \texttt{res}.\footnote{Note that the way to indicate the path to these files is different from the usual Windows style path: Instead of writing the backslash \texttt{"\textbackslash"} as folder separator, the forward slash \texttt{"/"} must be used.}
 
@@ -156,7 +156,7 @@ Example: Read one Eclipse file \texttt{dvhFile.txt} from folder \texttt{"c:/fold
 res <- readDVH("c:/folder/dvhFile.txt", type="Eclipse")
 @
 
-Basic information about the files can be displayed with \texttt{print()}, or just by entering the name of a DVH object at the prompt -- here used with built-in DVHs from three patients with radiotherapy after breast cancer surgery, each with seven heart structures.\footnote{Data courtesy of Department of Radiation Oncology (Prof. Dr. Schmidberger), University Medical Center Mainz, Germany.}
+Basic information about the files can be displayed with \texttt{print()}, or just by entering the name of a DVH object at the prompt -- here used with built-in DVHs from three patients with radiotherapy, each with seven heart structures.\footnote{Data courtesy of Department of Radiation Oncology (Prof. Dr. Schmidberger), University Medical Center Mainz, Germany.}
 
 <<cReadData1b, echo=TRUE>>=
 print(dataMZ)
@@ -167,7 +167,7 @@ Display more information on structures with \texttt{verbose=TRUE}.
 print(dataMZ, verbose=TRUE)
 @
 
-Multiple files with the same name pattern can be specified using wildcards like \texttt{*}. Example: Read all Cadplan files with the file name pattern \texttt{dvhFile*.txt} from folder \texttt{"c:/folder"} and save the result in object \texttt{res}.
+Multiple files with the same name pattern can be specified using wildcards like \texttt{*}. Example: Read all CadPlan files with the file name pattern \texttt{dvhFile*.txt} from folder \texttt{"c:/folder"} and save the result in object \texttt{res}.
 
 <<cReadData2, eval=FALSE>>=
 res <- readDVH("c:/folder/dvhFile*.txt", type="Cadplan")
@@ -519,7 +519,7 @@ saveDVH(sc, file="c:/folder/dvhConstraint.pdf")
 %%%%---------------------------------------------------------------------------
 %%%%---------------------------------------------------------------------------
 
-The authors thank Marcus Stockinger for ideas on checking quality assurance constraints, and Sandra B\"{u}hrdel for example DVH files exported from Cadplan.
+The authors thank Marcus Stockinger for ideas on checking quality assurance constraints, Sandra B\"{u}hrdel for example DVH files exported from CadPlan, and Hannes Rennau for example DVH files exported from MasterPlan.
 
 %%%%---------------------------------------------------------------------------
 %%%%---------------------------------------------------------------------------

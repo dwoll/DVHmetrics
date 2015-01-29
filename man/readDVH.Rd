@@ -2,14 +2,14 @@
 \alias{readDVH}
 \title{Read DVH text files}
 \description{
-Reads single or multiple DVH text files as exported from Cadplan or Varian Eclipse. Supports cumulative and differential DVHs.
+Reads single or multiple DVH text files as exported from Varian Eclipse(TM), CadPlan(TM), or MasterPlan(TM). Supports cumulative and differential DVHs.
 }
 \usage{
-readDVH(x, type=c("Eclipse", "Cadplan"), planInfo=FALSE)
+readDVH(x, type=c("Eclipse", "Cadplan", "Masterplan"), planInfo=FALSE)
 }
 \arguments{
   \item{x}{\code{character} vector giving paths to DVH text files. May contain globbing symbols understood by \code{\link[base]{Sys.glob}}. If missing and in interactive mode, \code{readDVH} opens a file selector widget. Under Windows, this widget allows selecting multiple files simultaneously.}
-  \item{type}{\code{character} string. Indicates which program the DVH text files were exported from. Supported: \code{"Cadplan"} or \code{"Eclipse"}.}
+  \item{type}{\code{character} string. Indicates which program the DVH text files were exported from. Supported: \code{"Cadplan"}, \code{"Eclipse"} (Version 10+), or \code{"Masterplan"}.}
   \item{planInfo}{Experimental: Either \code{FALSE} or \code{character} string. In the latter case, \code{readDVH} tries to extract additional information from the \code{Plan} field in the DVH file, e.g., the prescription dose for a sum plan or the boost quadrant. Undocumented, see source.}
 }
 \details{
@@ -18,11 +18,6 @@ Absolute dose values need to be given in Gy or cGy, absolute volume values in cm
 Differential DVHs are automatically converted to cumulative DVHs, but the differential DVH information is kept.
 
 Sum plans are supported.
-
-For Eclipse, dose and volume can be both absolute and relative.
-For Cadplan, dose can be absolute and relative, volume must be absolute.
-
-Tested with text files exported from Cadplan version 8 and Varian Eclipse version 10 and 11.
 }
 \value{
 Returns an object of class \code{DVHLstLst}. This is a list (one component with class \code{DVHLst} for each original file from one patient) of lists (each component is an object of class \code{DVHs}). A \code{DVHs} object is a list with the following components:

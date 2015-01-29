@@ -61,6 +61,10 @@ print.DVHLst <- function(x, ...) {
 
 ## dvhInfo method for DVH patient list of lists
 print.DVHLstLst <- function(x, ...) {
+    if(!is.null(attributes(x)$comment)) {
+        cat(attributes(x)$comment, "\n\n")
+    }
+
     if(!is.null(attributes(x)$byPat) && (attributes(x)$byPat == TRUE)) {
         cat("DVH list of", length(x), "lists - 1 for each patient:\n\n")
     } else if(!is.null(attributes(x)$byPat) && (attributes(x)$byPat == FALSE)) {

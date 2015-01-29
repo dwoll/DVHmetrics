@@ -108,24 +108,24 @@ vignette("DVHmetrics")
 %%%%---------------------------------------------------------------------------
 %%%%---------------------------------------------------------------------------
 
-For users who are unfamiliar with \textsf{R}, \texttt{DVHmetrics} includes a \texttt{shiny}-based web application \cite{RStudioShiny2014} running locally that eliminates the need to use \textsf{R} syntax.\footnote{This app is also available online in a public install: \url{http://dwoll.shinyapps.io/DVHshiny/}} This web application can also be deployed in an intranet from local IT services.\footnote{To install separately, use function \texttt{install\_github("dwoll/DVHshiny")} from package \texttt{devtools} \cite{Wickham2014b}.} After installing \texttt{DVHmetrics}, you can start the web application in an external web browser (fig.\ \ref{fig:appFileOpen}, \ref{fig:appMetrics}, \ref{fig:appShowDVH}, \ref{fig:appCheckConstr}, \ref{fig:appShowConstr}) from the command line:
+For users who are unfamiliar with \textsf{R}, \texttt{DVHmetrics} includes a \texttt{shiny}-based web application \cite{RStudioShiny2014} running locally that eliminates the need to use \textsf{R} syntax.\footnote{This app is also available online in a public install: \url{http://dwoll.shinyapps.io/DVHshiny/}} This web application can also be centrally deployed in an intranet by local IT services.\footnote{To install separately, use function \texttt{install\_github("dwoll/DVHshiny")} from package \texttt{devtools} \cite{Wickham2014b}.} After installing \texttt{DVHmetrics}, you can start the web application in an external web browser from the command line:
 
 <<cWebApp, eval=FALSE>>=
 shine()    # opens web browser with DVHmetrics web application
 @
 
-The web application has a two-column layout: The top of the right column shows a tab list for selecting different analysis tasks. The bottom of the right column shows the current output for the selected task. The left column presents options for the task.
+The web application has a two-column layout (fig.\ \ref{fig:appFileOpen}, \ref{fig:appMetrics}, \ref{fig:appShowDVH}, \ref{fig:appCheckConstr}, \ref{fig:appShowConstr}): The top of the right column shows a tab list for selecting different analysis tasks. The bottom of the right column shows the current output for the selected task. The left column presents options for the task.
 
 %%%%---------------------------------------------------------------------------
 %%%%---------------------------------------------------------------------------
-\section{Read DVH data from Eclipse or Cadplan}
+\section{Read DVH text data}
 \label{sec:readData}
 %%%%---------------------------------------------------------------------------
 %%%%---------------------------------------------------------------------------
 
 To import DVH data into the \texttt{DVHmetrics} web application, select the \textsf{DVH data} tab (fig.\ \ref{fig:appFileOpen}). All further analyses will be based on the data defined here.
 
-In the left panel, either choose the built-in DVH data from three patients with radiotherapy after breast cancer surgery,\footnote{Data courtesy of Department of Radiation Oncology (Prof. Dr. Schmidberger), University Medical Center Mainz, Germany.} or upload DVH data from plain text files. These should be exported from Varian Eclipse (Aria Version 10 or 11), or from Cadplan. Cumulative and differential DVHs are supported, as are sum plans. The measurement unit for absolute dose can be Gy or cGy, the measurement unit for volume has to be cm$^{3}$. DVH text files can be read with \texttt{readDVH()}. The file picker dialogue allows for selecting multiple files. In the following description, we use the built-in DVH data. After choosing the appropriate input format, click the \textsf{Apply} button to finish importing.
+In the left panel, either choose the built-in DVH data for several heart structures from three patients with radiotherapy,\footnote{Data courtesy of Department of Radiation Oncology (Prof. Dr. Schmidberger), University Medical Center Mainz, Germany.} or upload DVH data from plain text files. These should be exported from Varian Eclipse$^{\mathrm{TM}}$ (Aria Version 10 or 11), from CadPlan$^{\mathrm{TM}}$, or from Masterplan$^{\mathrm{TM}}$. Cumulative and differential DVHs are supported, as are sum plans. The measurement unit for absolute dose can be Gy or cGy, the measurement unit for volume has to be cm$^{3}$. DVH text files can be read with \texttt{readDVH()}. The file picker dialogue allows for selecting multiple files. After choosing the appropriate input format, click the \textsf{Apply} button to finish importing. In the following description, we use the built-in DVH data.
 
 Depending on the last option in the left column, the right panel will either display short or more detailed information on the currently active DVH data.
 
@@ -216,7 +216,7 @@ In the left panel, either choose the built-in constraints that apply to the buil
 \end{tabular}
 \end{table}
 
-After choosing the appropriate input format, click the \textsf{Apply} button to finish importing. In the following description, we use the constraint data frame \texttt{dataConstr} that is built into the \texttt{DVHmetrics} package.
+After choosing the appropriate input format, click the \textsf{Apply} button to finish importing. In the following description, we use the constraint data frame that is built into the \texttt{DVHmetrics} package.
 
 \begin{figure}[ht]
 \centering
@@ -225,9 +225,9 @@ After choosing the appropriate input format, click the \textsf{Apply} button to 
 \label{fig:appCheckConstr}
 \end{figure}
 
-The output table is shown in the right column and contains information on variables that may be (de-) selected at the bottom of the left column. The table can be sorted according to multiple criteria that can be selected at the bottom of the left column. The output table has a selectable maximum number of entries and automatically flows over into multiple pages if more metrics need to be displayed. The input fields below each column allow for filtering the visible output to just those rows that contain the entered text in the corresponding column.
+The output table is shown in the right column. By default, it only shows some of the available information. More variables can may be (de-) selected at the bottom of the left column. The table can be sorted according to multiple criteria that can be selected at the bottom of the left column. The output table has a selectable maximum number of entries and automatically flows over into multiple pages if more results need to be displayed. The input fields below each column allow for filtering the visible output to just those rows that contain the entered text in the corresponding column.
 
-The output table lists information on the observed value of the tested metric, on the compliance with respect to this metric, and on the deviation in volume as well as in dose to the specified constraint value. When the constraint defines a point in dose-volume space, the table reports the Euclidean distance to the constraint point as another quantitative measure for the degree of violation. Checkbox \textsf{Semantic negative sign} controls the meaning of the sign of the observed dose/volume differences between DVHs and constraints. If checked, negative differences indicate constraint compliance, and positive differences indicate constraint violations. Unchecked, the algebraic differences are shown as-is.
+The output table lists information on the observed value of the tested metric, on the compliance with respect to this metric, and on the deviation in volume as well as in dose to the specified constraint value.\footnote{See help file \texttt{?checkConstraint} for a descriptions of all available information.} When the constraint defines a point in dose-volume space, the table reports the Euclidean distance to the constraint point as another quantitative measure for the degree of violation. Checkbox \textsf{Semantic negative sign} controls the meaning of the sign of the observed dose/volume differences between DVHs and constraints. If checked, negative differences indicate constraint compliance, and positive differences indicate constraint violations. Unchecked, the algebraic differences are shown as-is.
 
 The output can be saved to a text file with the \textsf{Save as text file} download button below the table. The decimal separator and column separator can be selected. The created file is easy to import into a spreadsheet program like Excel, or into other statistics programs.
 
@@ -258,7 +258,15 @@ With the \textsf{Save as PDF} download button, the diagrams can be saved to a si
 %%%%---------------------------------------------------------------------------
 %%%%---------------------------------------------------------------------------
 
-The \textsf{About} tab provides background information on technical details: It lists authors, \textsf{R} packages used by \texttt{DVHmetrics}, and how to obtain the source code for the web application.
+The \textsf{About} tab provides background information on technical details: It lists package authors, \textsf{R} packages used by \texttt{DVHmetrics}, and how to obtain the source code for the web application.
+
+%%%%---------------------------------------------------------------------------
+%%%%---------------------------------------------------------------------------
+\section*{Acknowledgements}
+%%%%---------------------------------------------------------------------------
+%%%%---------------------------------------------------------------------------
+
+The authors thank Marcus Stockinger for ideas on checking quality assurance constraints, Sandra B\"{u}hrdel for example DVH files exported from CadPlan, and Hannes Rennau for example DVH files exported from MasterPlan.
 
 %%%%---------------------------------------------------------------------------
 %%%%---------------------------------------------------------------------------

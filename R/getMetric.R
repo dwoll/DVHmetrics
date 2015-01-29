@@ -197,17 +197,8 @@ function(x, metric, patID, structure,
             return(NA_real_)
         } else if(pm$DV == "D") {              # report a dose
             if(pm$valRef %in% c("MAX", "MIN", "MEAN", "RX", "SD")) {
-                ## mean from differential DVH with
-                ## differential DVH from interval midpoints
-                # dose    <- x$dvh[ , "dose"]
-                # doseMid <- dose[-length(dose)] + diff(dose)/2
-                # differential DVH -> rel volume
-                # volRel  <- diff( 1 - x$dvh[ , "volumeRel"]/100)
-                # relative-volume weighted dose
-                # doseW   <- doseMid * x$dvh[ , "volumeRel"]
-                # meanMid <- sum(doseW)
-
-                ## differential DVH from integration of dose * (spline fit derivative)
+                ## mean from differential DVH from
+                ## integration of dose * (spline fit derivative)
                 ## this breaks for very fine-grained DVHs
                 # xx  <- seq(0, max(dose), length.out=1000)
                 # spl <- smooth.spline(dose, 1 - x$dvh[ , "volumeRel"])
@@ -226,7 +217,7 @@ function(x, metric, patID, structure,
         			MAX = x$doseMax,
     				MEAN= x$doseAvg,       # meanMid, meanSpl
     				RX  = x$doseRx,
-                    SD  = x$doseSD)        # sqrt(sum(volRel*(doseMid-meanMid)^2))
+                    SD  = x$doseSD)
             } else if(pm$unitRef == "%") {
                 getDose(pm$valRefNum,   type="relative",
                         unitRef=pm$unitRef, unitDV=pm$unitDV)

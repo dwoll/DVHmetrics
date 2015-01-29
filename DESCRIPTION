@@ -2,7 +2,7 @@ Package: DVHmetrics
 Type: Package
 Title: Analyze Dose-Volume Histograms and Check Constraints
 Version: 0.1
-Date: 2015-01-26
+Date: 2015-01-29
 Authors@R: c(person("Daniel", "Wollschlaeger", role = c("aut", "cre"), email = "wollschlaeger@uni-mainz.de"),
     person("Heiko", "Karle", role="aut"), person("Heinz", "Schmidberger", role="ctb"))
 Depends: R (>= 3.0.0)
@@ -14,6 +14,6 @@ Description: Functionality for analyzing dose-volume histograms (DVH)
         in radiation oncology: Read DVH text files,
         calculate DVH metrics, show DVH diagrams,
         check and visualize quality assurance constraints
-        for the DVH. Includes shiny-based web application.
+        for the DVH. Includes web-based graphical user interface.
 License: GPL (>= 2)
 URL: https://github.com/dwoll/DVHmetrics/

@@ -1,8 +1,10 @@
 # TODO
+* `getMetric()` -> check if doseAvg, doseSD, ... are `NA` -> calculate manually
 * add Eclipse fields: Comment, Exported by, Description, Course, Plan Status, Approval Status, Dose Coverage, Sampling Coverage, Equivalent Sphere Diameter, Conformity Index, Gradient Measure
 * `readDVH()` -> if `x` is a directory, read all files in it
 * differential -> cumulative: doses are interval mid-points?
 * make `getMetrics()`, `showDVH()`, `checkConstraints()`, `showConstraints()` work with `RadOnc` objects
+* gEUD, BED, NTCP, TCP
 * read files exported from Philips Pinnacle3, Helax, TomoTherapy Hi-Art
 * draw constraint arrows as custom geoms
 * harmonize structures by reading equivalence file, possibly with regex

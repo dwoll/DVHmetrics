@@ -18,7 +18,7 @@ parseDVH <- function(x) {
     
         ## name them using patient IDs
         getPatID <- function(txt) {
-            IDline <- txt[grep("^Patient ID[[:blank:]]*:", txt)]
+            IDline <- txt[grep("^(Patient ID|Case)[[:blank:]]*:", txt)]
             IDres  <- sub("^.+?:[[:blank:]]+([[:alnum:][:punct:][:blank:]]+$)", "\\1", IDline, perl=TRUE)
             collWS(trimWS(IDres, side="both"))
         }

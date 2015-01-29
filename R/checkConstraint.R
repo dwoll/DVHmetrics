@@ -24,10 +24,8 @@ function(x, constr, byPat=TRUE, semSign=FALSE,
                            sortBy=sortBy)
 }
 
-## with byPat=TRUE
-## x is DVH list for 1 id,        constr is list of constraints, 1 per structure
-## with byPat=FALSE
-## x is DVH list for 1 structure, constr is list of constraints, 1 per id
+## with byPat=TRUE:  x is a list of DVHs (1 per structure)
+## with byPat=FALSE: x is a list of DVHs (1 per ID)
 checkConstraint.DVHLst <-
 function(x, constr, byPat=TRUE, semSign=FALSE,
          sortBy=c("none", "observed", "compliance", "structure",
@@ -167,8 +165,7 @@ function(x, constr, byPat=TRUE, semSign=FALSE,
     return(finDF)
 }
 
-## x is a DVH list (1 per id/structure) of lists
-## constr is a list (1 per id/structure) of lists (1 for each id/structure)
+## x is a DVH list (1 component per id/structure) of lists (1 DVH for each id/structure)
 checkConstraint.DVHLstLst <-
 function(x, constr, byPat=TRUE, semSign=FALSE,
          sortBy=c("none", "observed", "compliance", "structure",

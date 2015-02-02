@@ -447,8 +447,8 @@ shinyServer(function(input, output) {
         constr   <- DVHconstr()
         dvh      <- DVH()$DVH
         outSel   <- constrOutInv[input$constrOut]
-        sortOpts <- c('1'="compliance", '2'="structure", '3'="constraint",
-                      '4'="patID", '5'="deltaV", '6'="deltaD", '7'="observed")
+        sortOpts <- c('1'="compliance", '2'="dstMin", '3'="deltaV", '4'="deltaD",
+                      '5'="observed", '6'="patID", '7'="structure", '8'="constraint")
         sortSel  <- input$constrSortBy
         sortBy   <- if(length(sortSel) > 0) {
             sortOpts[sortSel]

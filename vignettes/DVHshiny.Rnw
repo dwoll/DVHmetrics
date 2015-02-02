@@ -266,7 +266,7 @@ The \textsf{About} tab provides background information on technical details: It 
 %%%%---------------------------------------------------------------------------
 %%%%---------------------------------------------------------------------------
 
-The authors thank Marcus Stockinger for ideas on checking quality assurance constraints, Sandra B\"{u}hrdel for example DVH files exported from CadPlan, and Hannes Rennau for example DVH files exported from MasterPlan.
+The authors thank Marcus Stockinger for ideas on checking quality assurance constraints, Sandra B\"{u}hrdel and Hannes Rennau for example DVH files exported from different treatment planning systems.
 
 %%%%---------------------------------------------------------------------------
 %%%%---------------------------------------------------------------------------

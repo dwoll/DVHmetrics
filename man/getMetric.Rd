@@ -37,8 +37,8 @@ getMetric(x, metric, patID, structure,
 A \emph{pre-specified} DVH metric is one of the following character strings:
 \itemize{
 \item \code{"DMEAN"}: The volume-weighted mean dose of the structure.
-\item \code{"DMIN"}: The minimum dose of the structure.
-\item \code{"DMAX"}: The maximum dose of the structure.
+\item \code{"DMIN"}: The minimum dose of the non-zero-dose voxels in the structure.
+\item \code{"DMAX"}: The maximum dose of the non-zero-dose voxels in the structure.
 \item \code{"DSD"}: The standard deviation of the dose in the structure.
 \item \code{"DRX"}: The prescription dose.
 }

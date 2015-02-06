@@ -28,7 +28,11 @@ parseMasterplan <- function(x, planInfo=FALSE) {
         num  <- trimWS(elem)
         if(grepl("\\[%\\]", line)) {
             ## relative dose
-            doseRx * as.numeric(num)/100
+            if(!missing(doseRx)) {
+                doseRx * as.numeric(num)/100
+            } else {
+                NA_real_
+            }
         } else {
             as.numeric(num)
         }

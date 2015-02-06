@@ -40,7 +40,11 @@ parseCadplan <- function(x, planInfo=FALSE) {
         elem <- sub("^.+?:[[:blank:]]+([[:alnum:][:punct:]]+[[:blank:]]*$)", "\\1", line, perl=TRUE)
         num  <- trimWS(elem)
         if(percent && any(grepl("%", line))) {
-            doseRx * as.numeric(num)/100
+            if(!missing(doseRx)) {
+                doseRx * as.numeric(num)/100
+            } else {
+                NA_real_
+            }
         } else {
             as.numeric(num)
         }
@@ -91,7 +95,8 @@ parseCadplan <- function(x, planInfo=FALSE) {
         structure <- getElem("^Histogram.*:", strct)
 
         isoDoseRx0 <- getElem("^% for dose[[:blank:]]*:", strct)
-        isoDoseRx  <- if(isoDoseRx0 != "not defined") { # check if sum plan
+        ## check if sum plan
+        isoDoseRx  <- if((length(isoDoseRx0) > 0) && (isoDoseRx0 != "not defined")) {
             as.numeric(isoDoseRx0)
         } else {                                        # sum plan -> use plan info?
             if(tolower(planInfo) == "doserx") {
@@ -104,7 +109,8 @@ parseCadplan <- function(x, planInfo=FALSE) {
         }
 
         doseRx0 <- getElem("^Prescr\\. dose.*:", strct)
-        doseRx  <- if(doseRx0 != "not defined") {          # check if sum plan
+        ## check if sum plan
+        doseRx  <- if((length(doseRx0) > 0) && (doseRx0 != "not defined")) {
             getDose("^Prescr\\. dose.*:", strct)
         } else {                                        # sum plan
             ## doseRx is encoded in plan name

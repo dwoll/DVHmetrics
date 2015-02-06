@@ -6,7 +6,10 @@ Version 0.1.0.900 (January 29, 2015)
     * shiny web application
       - exact matching for selected patients and structures
         instead of regex-matching
-      - fix selection of patients and structures in 'Show DVH'
+      - fix bug with selection of patients and structures in 'Show DVH'
+      - fix bug with DVHs for different structure sets
+    * parseEclipse()
+      - more lenient regex for prescribed dose field
 
 Version 0.1 (January 29, 2015)
 

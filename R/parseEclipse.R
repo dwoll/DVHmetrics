@@ -24,13 +24,28 @@ parseEclipse <- function(x, planInfo=FALSE) {
 
     getDose <- function(pattern, ll, doseRx) {
         line <- ll[grep(pattern, ll)]
-        elem <- sub("^.+?:[[:blank:]]+([[:alnum:][:punct:]]+[[:blank:]]*$)", "\\1", line, perl=TRUE)
-        num  <- trimWS(elem)
+        pat  <- "^.+?:[^[:digit:]]*([[:digit:][:punct:]]+)(Gy|cGy|%)*([[:alnum:][:punct:][:blank:]]*)$"
+        elem <- gsub(pat, "\\1", line, perl=TRUE, ignore.case=TRUE)
+        grp2 <- gsub(pat, "\\2", line, perl=TRUE, ignore.case=TRUE)
+        grp3 <- gsub(pat, "\\3", line, perl=TRUE, ignore.case=TRUE)
+        if((nchar(grp2) > 0) || (nchar(grp3) > 0)) {
+            warning("Non-standard dose line found")
+        }
+
+        num <- as.numeric(trimWS(elem))
+        if(is.na(num)) {
+            warning("No dose found")
+        }
+
         if(grepl("\\[%\\]", line)) {
             ## relative dose
-            doseRx * as.numeric(num)/100
+            if(!missing(doseRx)) {
+                doseRx * num/100
+            } else {
+                NA_real_
+            }
         } else {
-            as.numeric(num)
+            num
         }
     }
 
@@ -106,7 +121,8 @@ parseEclipse <- function(x, planInfo=FALSE) {
     DVHdate    <- getElem("^Date[[:blank:]]+:", header)
     DVHtype    <- getDVHtype(header)
     isoDoseRx0 <- getElem("^% for dose \\(%\\):", header)
-    isoDoseRx  <- if(isoDoseRx0 != "not defined") { # check if sum plan
+    ## check if sum plan
+    isoDoseRx  <- if((length(isoDoseRx0) > 0) && (isoDoseRx0 != "not defined")) {
         as.numeric(isoDoseRx0)
     } else {                                        # sum plan -> use plan info?
         if(tolower(planInfo) == "doserx") {
@@ -119,7 +135,8 @@ parseEclipse <- function(x, planInfo=FALSE) {
     }
 
     doseRx0 <- getElem("^Prescribed dose.*:", header)
-    doseRx  <- if(doseRx0 != "not defined") {       # check if sum plan
+    ## check if sum plan
+    doseRx  <- if((length(doseRx0) > 0) && (doseRx0 != "not defined")) {
         getDose("^Prescribed dose.*:", header)
     } else {                                        # sum plan
         ## doseRx is encoded in plan name

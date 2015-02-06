@@ -15,7 +15,7 @@ getStrIDs.DVHLst <- function(x, what=c("structure", "patient"), choices=FALSE) {
     strids <- if(what == "structure") {
         unique(vapply(x, function(y) y$structure, character(1)))
     } else {
-        unique(vapply(x, function(y) y$patID, character(1)))
+        unique(vapply(x, function(y) y$patID,     character(1)))
     }
 
     revList <- as.list(seq_along(sort(strids)))
@@ -30,11 +30,11 @@ getStrIDs.DVHLstLst <- function(x, what=c("structure", "patient"), choices=FALSE
     what <- match.arg(what)
 
     strids <- if(what == "structure") {
-        unique(c(sapply(x, function(y) {
+        unique(unlist(sapply(x, function(y) {
             vapply(y, function(z) z$structure, character(1)) })))
     } else {
-        unique(c(sapply(x, function(y) {
-            vapply(y, function(z) z$patID, character(1)) })))
+        unique(unlist(sapply(x, function(y) {
+            vapply(y, function(z) z$patID,     character(1)) })))
     }
 
     revList  <- as.list(seq_along(sort(strids)))

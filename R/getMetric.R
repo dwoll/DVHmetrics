@@ -97,7 +97,8 @@ parseMetric <- function(x, doseUnit=NULL, volUnit=NULL) {
 getMetric <-
 function(x, metric, patID, structure,
      sortBy=c("none", "observed", "patID", "structure", "metric"),
-    splitBy=c("none", "patID", "structure", "metric"), ...) {
+    splitBy=c("none", "patID", "structure", "metric"),
+     interp=c("linear", "spline"), ...) {
     UseMethod("getMetric")
 }
 
@@ -106,11 +107,14 @@ function(x, metric, patID, structure,
 getMetric.DVHs <-
 function(x, metric, patID, structure,
      sortBy=c("none", "observed", "patID", "structure", "metric"),
-    splitBy=c("none", "patID", "structure", "metric"), ...) {
+    splitBy=c("none", "patID", "structure", "metric"),
+     interp=c("linear", "spline"), ...) {
+
+    interp <- match.arg(interp)
 
     ## D*%  = min radiation of most extremely radiated *% volume
     ## D*cc = min radiation of most extremely radiated *cc volume
-    getDose <- function(val, type="relative", interp="linear", unitRef, unitDV) {
+    getDose <- function(val, type="relative", unitRef, unitDV) {
         vol <- if(type == "relative") {
             x$dvh[ , "volumeRel"]
         } else if(type == "absolute") {
@@ -138,7 +142,7 @@ function(x, metric, patID, structure,
             cf * x$dvh[ , "dose"]
         }
 
-        if(interp == "linear") {         # rule=1 -> no interpolation beyond bounds
+        if(interp == "linear") {  # rule=1 -> no interpolation beyond bounds
             res <- try(approx(vol, dose, val, method="linear", rule=1)$y)
             if(!inherits(res, "try-error")) {
                 res
@@ -152,7 +156,7 @@ function(x, metric, patID, structure,
 
     ## V*%  = max volume with radiation >= *% of prescribed dose
     ## V*Gy = max volume with radiation >= * Gy / cGy
-    getVolume <- function(val, type="relative", interp="linear", unitRef, unitDV) {
+    getVolume <- function(val, type="relative", unitRef, unitDV) {
         if(type == "relative") {         # given dose is relative
             dose <- x$dvh[ , "doseRel"]
             val  <- val/100
@@ -179,7 +183,7 @@ function(x, metric, patID, structure,
             x$dvh[ , "volumeRel"]
         }
 
-        if(interp == "linear") {         # rule=1 -> no interpolation beyond bounds
+        if(interp == "linear") {  # rule=1 -> no interpolation beyond bounds
             res <- try(approx(dose, vol, val, method="linear", rule=1)$y)
             if(!inherits(res, "try-error")) {
                 res
@@ -251,7 +255,8 @@ function(x, metric, patID, structure,
 getMetric.DVHLst <-
 function(x, metric, patID, structure,
      sortBy=c("none", "observed", "patID", "structure", "metric"),
-    splitBy=c("none", "patID", "structure", "metric"), ...) {
+    splitBy=c("none", "patID", "structure", "metric"),
+     interp=c("linear", "spline"), ...) {
 
     if(!missing(patID)) {
         ## filter by patID
@@ -267,7 +272,7 @@ function(x, metric, patID, structure,
         if(length(x) < 1L) { stop("selected structure not found") }
     }
 
-    res    <- Map(getMetric, x, metric=list(metric))
+    res    <- Map(getMetric, x, metric=list(metric), interp=list(interp))
     resDFL <- melt(res, value.name="observed")
     names(resDFL)[names(resDFL) == "L1"] <- "structure"
     names(resDFL)[names(resDFL) == "L2"] <- "metric"
@@ -299,7 +304,8 @@ function(x, metric, patID, structure,
 getMetric.DVHLstLst <-
 function(x, metric, patID, structure,
      sortBy=c("none", "observed", "patID", "structure", "metric"),
-    splitBy=c("none", "patID", "structure", "metric"), ...) {
+    splitBy=c("none", "patID", "structure", "metric"),
+     interp=c("linear", "spline"), ...) {
 
     ## re-organize x into by-patient form if necessary
     isByPat <- attributes(x)$byPat
@@ -329,7 +335,7 @@ function(x, metric, patID, structure,
             if(length(y) < 1L) { stop("No selected structure found") }
         }
 
-        Map(getMetric, y, metric=list(metric))
+        Map(getMetric, y, metric=list(metric), interp=list(interp))
     }
 
     res    <- Map(collectMetrics, x, metric=list(metric), structure=list(struct))
@@ -358,5 +364,3 @@ function(x, metric, patID, structure,
 
     return(resDFL)
 }
-
-# metric=c("D50%", "DMEAN", "DSD", "D1cc") #, "V10%", "V10GY", "V20%CC")

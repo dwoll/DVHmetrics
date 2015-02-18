@@ -1,5 +1,5 @@
 # TODO
- * use `pracma::spinterp()` instead of `approx()`?
+ * use `pracma::akimaInterp()` instead of `approx()`?
  * merge DVH files from the same patient ID
  * add Eclipse fields: Comment, Exported by, Description, Course, Plan Status, Approval Status, Dose Coverage, Sampling Coverage, Equivalent Sphere Diameter, Conformity Index, Gradient Measure
  * `readDVH()` -> if `x` is a directory, read all files in it

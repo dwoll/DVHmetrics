@@ -98,7 +98,7 @@ getMetric <-
 function(x, metric, patID, structure,
      sortBy=c("none", "observed", "patID", "structure", "metric"),
     splitBy=c("none", "patID", "structure", "metric"),
-     interp=c("linear", "spline"), ...) {
+     interp=c("linear", "smooth"), ...) {
     UseMethod("getMetric")
 }
 
@@ -108,7 +108,7 @@ getMetric.DVHs <-
 function(x, metric, patID, structure,
      sortBy=c("none", "observed", "patID", "structure", "metric"),
     splitBy=c("none", "patID", "structure", "metric"),
-     interp=c("linear", "spline"), ...) {
+     interp=c("linear", "smooth"), ...) {
 
     interp <- match.arg(interp)
 
@@ -149,8 +149,29 @@ function(x, metric, patID, structure,
             } else {
                 NA_real_
             }
+        } else if(interp == "smooth") {  # smoothing spline
+            ## choose smoothing parameter by generalized crossvalidation
+            ## default, argument tol=1e-6*IQR(x) fails for IQR(x) == 0
+            iqr <- IQR(vol)
+            tol <- if(is.finite(iqr) && (iqr > 0)) {
+                1e-6*iqr
+            } else {
+                1e-5
+            }
+            
+            ## smooth.spline() needs strictly in/decreasing x=vol
+            volRev  <- rev(vol)  # increasing volume
+            doseRev <- rev(dose)
+            idx <- which(abs(diff(volRev)) > 0)
+            use <- c(idx, idx[length(idx)] + 1)
+            sspl <- try(smooth.spline(volRev[use], doseRev[use], tol=tol))
+            if(!inherits(sspl, "try-error")) {
+                predict(sspl, val)$y
+            } else {
+                NA_real_
+            }
         } else if(interp == "spline") {  # does interpolation beyond bounds
-            spline(vol, dose, val, method="hyman")$y
+            NA_real_ # spline(vol, dose, val, method="hyman")$y
         }
     }
 
@@ -190,8 +211,25 @@ function(x, metric, patID, structure,
             } else {
                 NA_real_
             }
+        } else if(interp == "smooth") {   # smoothing spline
+            ## choose smoothing parameter by generalized crossvalidation
+            ## by default, argument tol is 1e-6*IQR(x) which fails for
+            ## IQR(x) == 0
+            iqr <- IQR(dose)
+            tol <- if(is.finite(iqr) && (iqr > 0)) {
+                1e-6*iqr
+            } else {
+                1e-5
+            }
+
+            sspl <- try(smooth.spline(dose, vol, tol=tol))
+            if(!inherits(sspl, "try-error")) {
+                predict(sspl, val)$y
+            } else {
+                NA_real_
+            }
         } else if(interp == "spline") {  # does interpolation beyond bounds
-            spline(dose, vol, val, method="hyman")$y
+            NA_real_ # spline(dose, vol, val, method="hyman")$y
         }
     }
 
@@ -256,7 +294,7 @@ getMetric.DVHLst <-
 function(x, metric, patID, structure,
      sortBy=c("none", "observed", "patID", "structure", "metric"),
     splitBy=c("none", "patID", "structure", "metric"),
-     interp=c("linear", "spline"), ...) {
+     interp=c("linear", "smooth"), ...) {
 
     if(!missing(patID)) {
         ## filter by patID
@@ -305,7 +343,7 @@ getMetric.DVHLstLst <-
 function(x, metric, patID, structure,
      sortBy=c("none", "observed", "patID", "structure", "metric"),
     splitBy=c("none", "patID", "structure", "metric"),
-     interp=c("linear", "spline"), ...) {
+     interp=c("linear", "smooth"), ...) {
 
     ## re-organize x into by-patient form if necessary
     isByPat <- attributes(x)$byPat

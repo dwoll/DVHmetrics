@@ -8,6 +8,9 @@ Version 0.1.0.900 (January 29, 2015)
         instead of regex-matching
       - fix bug with selection of patients and structures in 'Show DVH'
       - fix bug with DVHs for different structure sets
+    * getMetric()
+      - add option 'interp' to choose DVH interpolation method between
+        linear and a cubic smoothing spline
     * parseEclipse()
       - more lenient regex for prescribed dose field
 

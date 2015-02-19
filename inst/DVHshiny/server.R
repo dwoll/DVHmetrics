@@ -126,6 +126,7 @@ shinyServer(function(input, output) {
         } else {
             NULL
         }
+        interp  <- c("linear", "smooth")[as.numeric(input$metrInterp)]
         sortSel <- input$metrSortBy
         sortBy <- if(length(sortSel) > 0) {
             sortOpts[sortSel]
@@ -137,7 +138,8 @@ shinyServer(function(input, output) {
                          metric=selMetrics,
                          patID=paste0("^", selPat, "$"),
                          structure=paste0("^", selStruct, "$"),
-                         sortBy=sortBy)
+                         sortBy=sortBy,
+                         interp=interp)
             argL <- Filter(function(x) !is.null(x), argL)
             metr <- do.call(getMetric, argL)
             metr$observed <- round(metr$observed, 2)
@@ -177,6 +179,7 @@ shinyServer(function(input, output) {
             } else {
                 NULL
             }
+            interp  <- c("linear", "smooth")[as.numeric(input$metrInterp)]
             sortSel <- input$metrSortBy
             sortBy <- if(length(sortSel) > 0) {
                 sortOpts[sortSel]
@@ -187,7 +190,8 @@ shinyServer(function(input, output) {
                          metric=selMetrics,
                          patID=paste0("^", selPat, "$"),
                          structure=paste0("^", selStruct, "$"),
-                         sortBy=sortBy)
+                         sortBy=sortBy,
+                         interp=interp)
             argL <- Filter(function(x) !is.null(x), argL)
             metr <- do.call(getMetric, argL)
             dec <- c('1'=".",  '2'=",")[input$saveMetrDec]

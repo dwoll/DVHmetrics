@@ -2,14 +2,16 @@
 checkConstraint <-
 function(x, constr, byPat=TRUE, semSign=FALSE,
          sortBy=c("none", "observed", "compliance", "structure",
-                  "constraint", "patID", "deltaV", "deltaD", "dstMin")) {
+                  "constraint", "patID", "deltaV", "deltaD", "dstMin"),
+         interp=c("linear", "spline", "smooth")) {
     UseMethod("checkConstraint")
 }
 
 checkConstraint.DVHs <-
 function(x, constr, byPat=TRUE, semSign=FALSE,
          sortBy=c("none", "observed", "compliance", "structure",
-                  "constraint", "patID", "deltaV", "deltaD", "dstMin")) {
+                  "constraint", "patID", "deltaV", "deltaD", "dstMin"),
+         interp=c("linear", "spline", "smooth")) {
     x <- if(byPat) {
         setNames(list(x), x$structure)
     } else {
@@ -21,7 +23,7 @@ function(x, constr, byPat=TRUE, semSign=FALSE,
 
     #NextMethod("checkConstraint")
     checkConstraint.DVHLst(x, constr=constr, byPat=byPat, semSign=semSign,
-                           sortBy=sortBy)
+                           sortBy=sortBy, interp=interp)
 }
 
 ## with byPat=TRUE:  x is a list of DVHs (1 per structure)
@@ -29,7 +31,10 @@ function(x, constr, byPat=TRUE, semSign=FALSE,
 checkConstraint.DVHLst <-
 function(x, constr, byPat=TRUE, semSign=FALSE,
          sortBy=c("none", "observed", "compliance", "structure",
-                  "constraint", "patID", "deltaV", "deltaD", "dstMin")) {
+                  "constraint", "patID", "deltaV", "deltaD", "dstMin"),
+         interp=c("linear", "spline", "smooth")) {
+    interp <- match.arg(interp)
+
     ## make sure DVH list is organized as required for byPat
     if(is.null(attributes(x)$byPat) || attributes(x)$byPat != byPat) {
         stop(c("DVH list organization by-patient / by-structure",
@@ -59,15 +64,15 @@ function(x, constr, byPat=TRUE, semSign=FALSE,
 
     ## calculate metric and corresponding inverse metrics from given
     ## constraint set - vectorized in metrics
-    stridMetrics <- function(dvh, cnstr) {
+    stridMetrics <- function(dvh, cnstr, interp) {
         observed <- ifelse(cnstr$valid,
-                           unlist(getMetric(dvh, metric=cnstr$metric)),
+                           unlist(getMetric(dvh, metric=cnstr$metric, interp=interp)),
                            NA_real_)
 
         
         ## inverse metrics
         smInv <- ifelse(cnstr$valid,
-                        unlist(getMetric(dvh, metric=cnstr$metricInv)),
+                        unlist(getMetric(dvh, metric=cnstr$metricInv, interp=interp)),
                         NA_real_)
 
         names(observed) <- cnstr$constraint
@@ -94,7 +99,7 @@ function(x, constr, byPat=TRUE, semSign=FALSE,
     }
 
     ## get requested metrics for each structure/id
-    metrics <- Map(stridMetrics, xConstrSub$x, constrParse)
+    metrics <- Map(stridMetrics, xConstrSub$x, constrParse, interp=interp)
 
     ## check constraints
     leqGeq <- function(y) {
@@ -169,7 +174,10 @@ function(x, constr, byPat=TRUE, semSign=FALSE,
 checkConstraint.DVHLstLst <-
 function(x, constr, byPat=TRUE, semSign=FALSE,
          sortBy=c("none", "observed", "compliance", "structure",
-                  "constraint", "patID", "deltaV", "deltaD", "dstMin")) {
+                  "constraint", "patID", "deltaV", "deltaD", "dstMin"),
+         interp=c("linear", "spline", "smooth")) {
+
+    interp <- match.arg(interp)
 
     ## re-organize x into by-patient or by-structure form if necessary
     isByPat <- attributes(x)$byPat
@@ -185,7 +193,7 @@ function(x, constr, byPat=TRUE, semSign=FALSE,
     ## check the constraints
     res <- Map(checkConstraint,
                x=xConstrSub$x, constr=xConstrSub$constr,
-               byPat=byPat, semSign=semSign)
+               byPat=byPat, semSign=semSign, interp=interp)
 
     ## transform into data frame
     resL    <- melt(res, id.vars=c("patID", "structure", "constraint", "compliance"))

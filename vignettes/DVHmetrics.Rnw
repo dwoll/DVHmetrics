@@ -220,7 +220,7 @@ Function \texttt{getMetric()} calculates freely-defined DVH metrics based on dat
 \item 3$^{\mathrm{rd}}$ element \texttt{$\langle$measurement unit$\rangle$}: The measurement unit for the 2$^{\mathrm{nd}}$ element of the metric. Absolute volumes are indicated by \texttt{"CC"} for cm$^{3}$, relative volumes by \texttt{"\%"}. Absolute doses are indicated by \texttt{"Gy"} for Gray or \texttt{"cGy"} for Centigray, relative doses by \texttt{"\%"}.
 \item Optional 4$^{\mathrm{th}}$ element \texttt{\_$\langle$measurement unit$\rangle$}: The measurement unit of the output value. Possible units are the same as for the 3$^{\mathrm{rd}}$ element. If missing, dose is reported as absolute dose in the measurement unit used in the DVH. If the measurement unit is missing, volume is reported as relative volume in \%.
 \end{itemize}
-\item Example metrics are listed in table \ref{tab:metrics}. Metrics are calculated using linear interpolation between actual DVH points -- without extrapolating beyond the observed volume or dose.
+\item Example metrics are listed in table \ref{tab:metrics}. By default, metrics are calculated using linear interpolation between adjacent supporting points of the cumulative DVH -- without extrapolating beyond the observed volume or dose. The interpolation method can be changed to use monotone Hermite splines \cite{Fritsch1980}, or to local polynomial regression with a Gaussian kernel \cite{Wand1995}. The kernel bandwidth is then determined by the direct plug-in method \cite{Ruppert1995}.
 \end{itemize}
 
 \item Option \texttt{patID}: Which patient IDs should be analyzed. IDs are interpreted as regular expressions matched against those found in the DVH files. Also supply \texttt{fixed=TRUE} for exact matching. If missing, the metrics are calculated for all patients.
@@ -460,7 +460,7 @@ The constraint data frame \texttt{dataConstr} is built into \texttt{DVHmetrics} 
 dataConstr     # show defined constraints and their scope
 @
 
-For checking constraints, and for calculating the difference between the observed DVH and the constraint, the DVH is linearly interpolated.
+For checking constraints, and for calculating the difference between the observed DVH and the constraint, the DVH is linearly interpolated, by using monotone Hermite splines, or by local polynomial kernel regression.
 
 %%%%---------------------------------------------------------------------------
 %%%%---------------------------------------------------------------------------

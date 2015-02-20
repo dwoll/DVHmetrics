@@ -126,7 +126,7 @@ shinyServer(function(input, output) {
         } else {
             NULL
         }
-        interp  <- c("linear", "smooth")[as.numeric(input$metrInterp)]
+        interp  <- c("linear", "spline", "smooth")[as.numeric(input$metrInterp)]
         sortSel <- input$metrSortBy
         sortBy <- if(length(sortSel) > 0) {
             sortOpts[sortSel]
@@ -179,7 +179,7 @@ shinyServer(function(input, output) {
             } else {
                 NULL
             }
-            interp  <- c("linear", "smooth")[as.numeric(input$metrInterp)]
+            interp  <- c("linear", "spline", "smooth")[as.numeric(input$metrInterp)]
             sortSel <- input$metrSortBy
             sortBy <- if(length(sortSel) > 0) {
                 sortOpts[sortSel]
@@ -451,6 +451,7 @@ shinyServer(function(input, output) {
         constr   <- DVHconstr()
         dvh      <- DVH()$DVH
         outSel   <- constrOutInv[input$constrOut]
+        interp   <- c("linear", "spline", "smooth")[as.numeric(input$constrInterp)]
         sortOpts <- c('1'="compliance", '2'="dstMin", '3'="deltaV", '4'="deltaD",
                       '5'="observed", '6'="patID", '7'="structure", '8'="constraint")
         sortSel  <- input$constrSortBy
@@ -461,7 +462,7 @@ shinyServer(function(input, output) {
         }
 
         if(!is.null(constr) && !is.null(dvh)) {
-            x <- checkConstraint(dvh, constr=constr, byPat=TRUE,
+            x <- checkConstraint(dvh, constr=constr, byPat=TRUE, interp=interp,
                                  semSign=input$constrSemSign, sortBy=sortBy)
             x$observed <- round(x$observed, 2)
             x$deltaVpc <- round(x$deltaVpc, 2)
@@ -508,9 +509,11 @@ shinyServer(function(input, output) {
     output$saveConstrTxt <- downloadHandler(
         filename=function() { "constraints.txt" },
         content=function(file) {
-            constr <- checkConstraint(DVH()$DVH, constr=DVHconstr())
-            dec <- c('1'=".",  '2'=",")[input$saveConstrDec]
-            sep <- c('1'="\t", '2'=" ", '3'=",", '4'=";")[input$saveConstrSep]
+            interp <- c("linear", "spline", "smooth")[as.numeric(input$constrInterp)]
+            constr <- checkConstraint(DVH()$DVH, constr=DVHconstr(),
+                                      interp=interp)
+            dec    <- c('1'=".",  '2'=",")[input$saveConstrDec]
+            sep    <- c('1'="\t", '2'=" ", '3'=",", '4'=";")[input$saveConstrSep]
             write.table(constr, file=file, dec=dec, sep=sep, row.names=FALSE)
         },
         contentType='text/plain' # MIME type

@@ -4,6 +4,7 @@ importFrom(ggplot2, coord_cartesian, annotation_custom, theme_bw, xlab, ylab)
 importFrom(ggplot2, scale_shape_manual, scale_y_continuous)
 importFrom(grid, gpar, segmentsGrob, arrow, unit, grobTree)
 importFrom(reshape2, melt, dcast)
+importFrom(KernSmooth, dpill, locpoly)
 import(shiny)
 
 export(readConstraint,

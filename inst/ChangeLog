@@ -1,16 +1,17 @@
-$Date: 2015-01-29 22:44:29 +0000 (Thu, 29 Jan 2015) $
+$Date: 2015-02-20 21:12:29 +0000 (Fri, 20 Feb 2015) $
 
 DVHMETRICS RELEASE VERSIONS at http://cran.r-project.org/
 
-Version 0.1.0.900 (January 29, 2015)
+Version 0.1.0.900 (February 20, 2015)
     * shiny web application
       - exact matching for selected patients and structures
         instead of regex-matching
       - fix bug with selection of patients and structures in 'Show DVH'
       - fix bug with DVHs for different structure sets
-    * getMetric()
+    * checkConstraint(), getMetric()
       - add option 'interp' to choose DVH interpolation method between
-        linear and a cubic smoothing spline
+        linear interpolation, a monotone Hermite spline, and local
+        polynomial kernel regression
     * parseEclipse()
       - more lenient regex for prescribed dose field
 

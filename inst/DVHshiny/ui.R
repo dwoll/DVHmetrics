@@ -2,6 +2,7 @@
 ## multiple DVH/constraint plots with -> custom renderPlotList(), plotListOutput()
 ## footer
 library(shiny)
+library(markdown)
 source("helper.R")
 
 shinyUI(fluidPage(

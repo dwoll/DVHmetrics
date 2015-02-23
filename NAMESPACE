@@ -17,7 +17,7 @@ export(readConstraint,
        showDVH,
        saveDVH,
        harmoConstrDVH,
-       shine)
+       runGUI)
 
 S3method(saveMetric,      data.frame)
 S3method(saveMetric,      list)

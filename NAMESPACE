@@ -17,7 +17,12 @@ export(readConstraint,
        showDVH,
        saveDVH,
        harmoConstrDVH,
-       runGUI)
+       convertDVH,
+       runGUI,
+       mergeDVH,
+       getBED,
+       getEQD2,
+       getIsoEffD)
 
 S3method(saveMetric,      data.frame)
 S3method(saveMetric,      list)
@@ -38,3 +43,7 @@ S3method(showDVH,         DVHLst)
 S3method(showDVH,         DVHLstLst)
 S3method(harmoConstrDVH,  DVHLst)
 S3method(harmoConstrDVH,  DVHLstLst)
+S3method(convertDVH,      matrix)
+S3method(convertDVH,      DVHs)
+S3method(convertDVH,      DVHLst)
+S3method(convertDVH,      DVHLstLst)

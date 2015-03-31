@@ -11,22 +11,22 @@ Simultaneously checks one or more quality assurance constraints on one or more D
 checkConstraint(x, constr, byPat=TRUE, semSign=FALSE,
                 sortBy=c("none", "observed", "compliance", "structure",
                          "constraint", "patID", "deltaV", "deltaD", "dstMin"),
-                interp=c("linear", "spline", "smooth"))
+                interp=c("linear", "spline", "smooth"), ...)
 
 \method{checkConstraint}{DVHs}(x, constr, byPat=TRUE, semSign=FALSE,
                 sortBy=c("none", "observed", "compliance", "structure",
                          "constraint", "patID", "deltaV", "deltaD", "dstMin"),
-                interp=c("linear", "spline", "smooth"))
+                interp=c("linear", "spline", "smooth"), ...)
 
 \method{checkConstraint}{DVHLst}(x, constr, byPat=TRUE, semSign=FALSE,
                 sortBy=c("none", "observed", "compliance", "structure",
                          "constraint", "patID", "deltaV", "deltaD", "dstMin"),
-                interp=c("linear", "spline", "smooth"))
+                interp=c("linear", "spline", "smooth"), ...)
 
 \method{checkConstraint}{DVHLstLst}(x, constr, byPat=TRUE, semSign=FALSE,
                 sortBy=c("none", "observed", "compliance", "structure",
                          "constraint", "patID", "deltaV", "deltaD", "dstMin"),
-                interp=c("linear", "spline", "smooth"))
+                interp=c("linear", "spline", "smooth"), ...)
 }
 \arguments{
   \item{x}{A single DVH (object of class \code{DVHs}), multiple DVHs from one patient/structure (object of class \code{DVHLst}), or multiple DVHs from many patients/structures (object of class \code{DVHLstLst}). See \code{\link[DVHmetrics]{readDVH}}.}
@@ -35,6 +35,7 @@ checkConstraint(x, constr, byPat=TRUE, semSign=FALSE,
   \item{semSign}{Meaning of the sign of the observed dose/volume differences between DVHs and constraints. \code{semSign=TRUE} means that negative differences indicate constraint compliance, positive differences indicate constraint violations. With \code{semSign=FALSE}, the algebraic differences are returned as is.}
   \item{sortBy}{\code{character} vector. Sorting criteria for the output data frame.}
   \item{interp}{\code{character}. Method of interpolation between DVH points: Linear interpolation using \code{\link[stats]{approx}}, monotone Hermite spline interpolation using \code{\link[stats]{spline}}, or local polynomial regression using \code{\link[KernSmooth]{locpoly}} with kernel bandwidth chosen by the direct plug-in method using \code{\link[KernSmooth]{dpill}}.}
+  \item{...}{Passed to \code{\link[DVHmetrics]{getMetric}}. Use \code{EUDa=<number>} for setting the EUD parameter \code{a} for constraints on EUD.}
 }
 \details{
 A DVH constraint is a character string that consists of three parts: The DVH metric, the comparison operator (\code{<}, \code{>}, \code{<=}, \code{>=}), and the reference value together with the measurement unit. See \code{\link[DVHmetrics]{getMetric}} for defining a DVH metric, as well as for possible measurement units for dose and volume. For constraints involving the relative dose, the DVH must contain the prescription dose.

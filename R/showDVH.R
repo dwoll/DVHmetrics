@@ -77,7 +77,7 @@ function(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL,
         lapply(x, function(y) {
             ## differential DVH - create if not yet present
             if(is.null(y$dvhDiff)) {
-                y$dvhDiff <- dvhConvert(y$dvh, toType="differential",
+                y$dvhDiff <- convertDVH(y$dvh, toType="differential",
                                         toDoseUnit="asis")
             }
 

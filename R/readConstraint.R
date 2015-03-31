@@ -38,7 +38,7 @@ function(x, doseUnit=NULL, volUnit=NULL) {
     pm <- parseMetric(metric, doseUnit=doseUnit, volUnit=volUnit)
     
     ## identify cases of special dose metric DMEAN etc.
-    specDose <- pm$valRef %in% c("MAX", "MIN", "MEAN", "RX", "SD")
+    specDose <- pm$valRef %in% c("MIN", "MAX", "MEAN", "MEDIAN", "RX", "SD", "EUD", "EUD2", "NTCP", "TCP")
 
     ## comparison details
     pattern    <- "^([.[:digit:]]+)([%]|GY|CGY|CC)$"
@@ -99,8 +99,9 @@ function(x, doseUnit=NULL, volUnit=NULL) {
     valRefInv  <- valCmp
     unitRefInv <- unitCmp
 
-    ## special cases: DMEAN, DSD, DMIN, DMAX, DRX
-    metricInv <- ifelse((pm$DV == "D") & (pm$valRef %in% c("MAX", "MIN", "MEAN", "RX", "SD")),
+    ## special cases
+    metricInv <- ifelse((pm$DV == "D") &
+                        (pm$valRef %in% c("MIN", "MAX", "MEAN", "MEDIAN", "RX", "SD", "EUD", "EUD2", "NTCP", "TCP")),
                         NA_character_,
                         paste0(DVinv, valRefInv, unitRefInv, "_", pm$unitRef))
 

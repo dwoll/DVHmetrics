@@ -291,7 +291,7 @@ parseEclipse <- function(x, planInfo=FALSE) {
         ## convert differential DVH to cumulative
         ## and add differential DVH separately
         if(info$DVHtype == "differential") {
-            DVH$dvh     <- dvhConvert(dvh, toType="cumulative", toDoseUnit="asis")
+            DVH$dvh     <- convertDVH(dvh, toType="cumulative", toDoseUnit="asis")
             DVH$dvhDiff <- dvh
         }
 
@@ -305,7 +305,7 @@ parseEclipse <- function(x, planInfo=FALSE) {
                  DVHtype=DVHtype, plan=plan, quadrant=quadrant,
                  doseRx=doseRx, isoDoseRx=isoDoseRx, doseUnit=doseUnit)
     dvhL <- lapply(structList, getDVH, info=info)
-    dvhL <- Filter(function(y) !is.null(y), dvhL)
+    dvhL <- Filter(Negate(is.null), dvhL)
     names(dvhL) <- sapply(dvhL, function(y) y$structure)
     if(length(unique(names(dvhL))) < length(dvhL)) {
         warning("Some structures have the same name - this can lead to problems")

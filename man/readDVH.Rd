@@ -5,12 +5,13 @@
 Reads single or multiple DVH text files as exported from Varian Eclipse(TM), CadPlan(TM), or MasterPlan(TM). Supports cumulative and differential DVHs.
 }
 \usage{
-readDVH(x, type=c("Eclipse", "Cadplan", "Masterplan"), planInfo=FALSE)
+readDVH(x, type=c("Eclipse", "Cadplan", "Masterplan"), planInfo=FALSE, add)
 }
 \arguments{
   \item{x}{\code{character} vector giving paths to DVH text files. May contain globbing symbols understood by \code{\link[base]{Sys.glob}}. If missing and in interactive mode, \code{readDVH} opens a file selector widget. Under Windows, this widget allows selecting multiple files simultaneously.}
-  \item{type}{\code{character} string. Indicates which program the DVH text files were exported from. Supported: \code{"Cadplan"}, \code{"Eclipse"} (Version 10+), or \code{"Masterplan"}.}
+  \item{type}{\code{character} string. Indicates which program the DVH text files were exported from. Supported: \code{"Cadplan"} (tested with version 6.4.7), \code{"Eclipse"} (tested with versions 10-13), or \code{"Masterplan"} (tested with version 4.3).}
   \item{planInfo}{Experimental: Either \code{FALSE} or \code{character} string. In the latter case, \code{readDVH} tries to extract additional information from the \code{Plan} field in the DVH file, e.g., the prescription dose for a sum plan or the boost quadrant. Undocumented, see source.}
+  \item{add}{\code{DVHLstLst} object. Existing object that should be merged with the new data from the files.}
 }
 \details{
 Absolute dose values need to be given in Gy or cGy, absolute volume values in cm^3.

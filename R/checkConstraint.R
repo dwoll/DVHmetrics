@@ -3,7 +3,7 @@ checkConstraint <-
 function(x, constr, byPat=TRUE, semSign=FALSE,
          sortBy=c("none", "observed", "compliance", "structure",
                   "constraint", "patID", "deltaV", "deltaD", "dstMin"),
-         interp=c("linear", "spline", "smooth")) {
+         interp=c("linear", "spline", "smooth"), ...) {
     UseMethod("checkConstraint")
 }
 
@@ -11,7 +11,7 @@ checkConstraint.DVHs <-
 function(x, constr, byPat=TRUE, semSign=FALSE,
          sortBy=c("none", "observed", "compliance", "structure",
                   "constraint", "patID", "deltaV", "deltaD", "dstMin"),
-         interp=c("linear", "spline", "smooth")) {
+         interp=c("linear", "spline", "smooth"), ...) {
     x <- if(byPat) {
         setNames(list(x), x$structure)
     } else {
@@ -23,7 +23,7 @@ function(x, constr, byPat=TRUE, semSign=FALSE,
 
     #NextMethod("checkConstraint")
     checkConstraint.DVHLst(x, constr=constr, byPat=byPat, semSign=semSign,
-                           sortBy=sortBy, interp=interp)
+                           sortBy=sortBy, interp=interp, ...)
 }
 
 ## with byPat=TRUE:  x is a list of DVHs (1 per structure)
@@ -32,7 +32,7 @@ checkConstraint.DVHLst <-
 function(x, constr, byPat=TRUE, semSign=FALSE,
          sortBy=c("none", "observed", "compliance", "structure",
                   "constraint", "patID", "deltaV", "deltaD", "dstMin"),
-         interp=c("linear", "spline", "smooth")) {
+         interp=c("linear", "spline", "smooth"), ...) {
     interp <- match.arg(interp)
 
     ## make sure DVH list is organized as required for byPat
@@ -66,13 +66,13 @@ function(x, constr, byPat=TRUE, semSign=FALSE,
     ## constraint set - vectorized in metrics
     stridMetrics <- function(dvh, cnstr, interp) {
         observed <- ifelse(cnstr$valid,
-                           unlist(getMetric(dvh, metric=cnstr$metric, interp=interp)),
+                           unlist(getMetric(dvh, metric=cnstr$metric, interp=interp, ...)),
                            NA_real_)
 
         
         ## inverse metrics
         smInv <- ifelse(cnstr$valid,
-                        unlist(getMetric(dvh, metric=cnstr$metricInv, interp=interp)),
+                        unlist(getMetric(dvh, metric=cnstr$metricInv, interp=interp, ...)),
                         NA_real_)
 
         names(observed) <- cnstr$constraint
@@ -175,7 +175,7 @@ checkConstraint.DVHLstLst <-
 function(x, constr, byPat=TRUE, semSign=FALSE,
          sortBy=c("none", "observed", "compliance", "structure",
                   "constraint", "patID", "deltaV", "deltaD", "dstMin"),
-         interp=c("linear", "spline", "smooth")) {
+         interp=c("linear", "spline", "smooth"), ...) {
 
     interp <- match.arg(interp)
 
@@ -191,9 +191,14 @@ function(x, constr, byPat=TRUE, semSign=FALSE,
     xConstrSub <- harmoConstrDVH(xRO, constr=constr, byPat=byPat)
 
     ## check the constraints
-    res <- Map(checkConstraint,
-               x=xConstrSub$x, constr=xConstrSub$constr,
-               byPat=byPat, semSign=semSign, interp=interp)
+    dots <- list(...)
+    args <- list(f=checkConstraint,
+                 x=xConstrSub$x,
+                 constr=xConstrSub$constr,
+                 byPat=byPat,
+                 semSign=semSign,
+                 interp=interp)
+    res <- do.call("Map", c(args, dots))
 
     ## transform into data frame
     resL    <- melt(res, id.vars=c("patID", "structure", "constraint", "compliance"))

@@ -1,11 +1,21 @@
 # TODO
+## Short term
+
+ * Constraint "DNTCP < 0.5Gy" -> "DNTCP < 0.5P"
+ * Vignette -> BED, EQD2, isoeffective dose, NTCP, TCP
+ * getMetric(), checkConstraint(), readDVH() -> multicore support
+ * getDVHmean() smooth.spline() -> tol must be strictly positive
+ * getDVHmean() bandwidth choice for locpoly() when dpil() fails
+ * getDVHmean() adaptive binning grid size for locpoly() with small bandwidth
+
+## Long term
+
+ * shiny app: better way to save old data instead of temp-file
  * merge DVH files from the same patient ID
  * add Eclipse fields: Comment, Exported by, Description, Course, Plan Status, Approval Status, Dose Coverage, Sampling Coverage, Equivalent Sphere Diameter, Conformity Index, Gradient Measure
  * `readDVH()` -> if `x` is a directory, read all files in it
- * differential -> cumulative: doses are interval mid-points?
  * make `getMetrics()`, `showDVH()`, `checkConstraints()`, `showConstraints()` work with `RadOnc` objects
- * gEUD, BED, NTCP, TCP
- * read files exported from Philips Pinnacle3, Helax, TomoTherapy Hi-Art, iPlan
+ * read files exported from Philips Pinnacle3, TomoTherapy Hi-Art, iPlan, BrainLab
  * draw constraint arrows as custom geoms
  * harmonize structures by reading equivalence file, possibly with regex
 

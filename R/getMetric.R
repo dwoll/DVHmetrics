@@ -4,7 +4,7 @@ getMetric <-
 function(x, metric, patID, structure,
      sortBy=c("none", "observed", "patID", "structure", "metric"),
     splitBy=c("none", "patID", "structure", "metric"),
-     interp=c("linear", "spline", "smooth"), ...) {
+     interp=c("linear", "spline", "ksmooth"), ...) {
     UseMethod("getMetric")
 }
 
@@ -14,7 +14,7 @@ getMetric.DVHs <-
 function(x, metric, patID, structure,
      sortBy=c("none", "observed", "patID", "structure", "metric"),
     splitBy=c("none", "patID", "structure", "metric"),
-     interp=c("linear", "spline", "smooth"), ...) {
+     interp=c("linear", "spline", "ksmooth"), ...) {
 
     interp <- match.arg(interp)
 
@@ -56,12 +56,13 @@ function(x, metric, patID, structure,
             } else {
                 NA_real_
             }
-        } else if(interp == "smooth") {   # kernel smoothing
+        } else if(interp == "ksmooth") {   # kernel smoothing
             bw <- KernSmooth::dpill(vol, dose)
             sm <- KernSmooth::locpoly(vol, dose, bandwidth=bw,
-                                      range.x=c(val, val+1), degree=2)
+                                      gridsize=1001L, degree=3)
             if(!inherits(sm, "try-error")) {
-                sm$y[1]
+                idx <- which.min(abs(sm$x-val))
+                sm$y[idx]
             } else {
                 NA_real_
             }
@@ -107,12 +108,13 @@ function(x, metric, patID, structure,
             } else {
                 NA_real_
             }
-        } else if(interp == "smooth") {   # kernel smoothing
+        } else if(interp == "ksmooth") {   # kernel smoothing
             bw <- KernSmooth::dpill(dose, vol)
             sm <- KernSmooth::locpoly(dose, vol, bandwidth=bw,
-                                      range.x=c(val, val+1), degree=2)
+                                      gridsize=1001L, degree=3)
             if(!inherits(sm, "try-error")) {
-                sm$y[1]
+                idx <- which.min(sm$x-val)
+                sm$y[idx]
             } else {
                 NA_real_
             }
@@ -136,34 +138,55 @@ function(x, metric, patID, structure,
         if(!pm$valid) {
             return(NA_real_)
         } else if(pm$DV == "D") {              # report a dose
-            if(pm$valRef %in% c("MAX", "MIN", "MEAN", "RX", "SD")) {
-                ## mean from differential DVH from
-                ## integration of dose * (spline fit derivative)
-                ## this breaks for very fine-grained DVHs
-                # xx  <- seq(0, max(dose), length.out=1000)
-                # spl <- smooth.spline(dose, 1 - x$dvh[ , "volumeRel"])
-                # dy  <- predict(spl, xx, deriv=1)$y
-                # meanSpl <- tryCatch(integrate(function(y) {
-                #    y*predict(spl, y, deriv=1)$y/100 }, 0, max(dose))$value,
-                #    error=function(e) return(NA))
+            if(pm$valRef %in% c("MIN", "MAX", "MEAN", "MEDIAN", "RX", "SD", "EUD", "EUD2", "NTCP", "TCP")) {
                 cf <- if(!is.na(pm$unitDV)) {
                     getConvFac(paste0(x$doseUnit, "2", pm$unitDV))
                 } else {
                     1
                 }
+                
+                mmmrs <- if(any(c(is.na(c(x$doseMin, x$doseMax, x$doseAvg, x$doseMed, x$doseSD)),
+                                  is.null(x$doseMin),
+                                  is.null(x$doseMax),
+                                  is.null(x$doseAvg),
+                                  is.null(x$doseMed),
+                                  is.null(x$doseSD)))) {
+                    getDVHmean(x, interp=interp)
+                } else {
+                    x
+                }
 
-                cf * switch(pm$valRef,
-            		MIN = x$doseMin,
-        			MAX = x$doseMax,
-    				MEAN= x$doseAvg,       # meanMid, meanSpl
-    				RX  = x$doseRx,
-                    SD  = x$doseSD)
+                cf *   if(pm$valRef == "MIN") {
+                    mmmrs$doseMin
+                } else if(pm$valRef == "MAX") {
+                    mmmrs$doseMax
+                } else if(pm$valRef == "MEAN") {
+                    mmmrs$doseAvg
+                } else if(pm$valRef == "MEDIAN") {
+                    mmmrs$doseMed
+                } else if(pm$valRef == "RX") {
+                    mmmrs$doseRx
+                } else if(pm$valRef == "SD") {
+                    mmmrs$doseSD
+                } else if(pm$valRef %in% c("EUD", "EUD2")) {
+                    getEUD(x, ...)
+				} else if(pm$valRef == "NTCP") {
+					getNTCP(x, ...)
+				} else if(pm$valRef == "TCP") {
+					getTCP(x, ...)
+                } else {
+                    warning("Unknown metric reference value")
+                    NA_real_
+                }
             } else if(pm$unitRef == "%") {
                 getDose(pm$valRefNum,   type="relative",
                         unitRef=pm$unitRef, unitDV=pm$unitDV)
             } else if(pm$unitRef == "CC") {
                 getDose(pm$valRefNum,   type="absolute",
                         unitRef=pm$unitRef, unitDV=pm$unitDV)
+            } else {
+                warning("Unknown metric reference value")
+                NA_real_
             }
         } else if(pm$DV == "V") {          # report a volume
             if(pm$unitRef == "%") {
@@ -173,6 +196,9 @@ function(x, metric, patID, structure,
                 getVolume(pm$valRefNum, type="absolute",
                           unitRef=pm$unitRef, unitDV=pm$unitDV)
             }
+        } else {
+            warning("Unknown metric")
+            NA_real_
         }
     }
     
@@ -192,23 +218,34 @@ getMetric.DVHLst <-
 function(x, metric, patID, structure,
      sortBy=c("none", "observed", "patID", "structure", "metric"),
     splitBy=c("none", "patID", "structure", "metric"),
-     interp=c("linear", "spline", "smooth"), ...) {
+     interp=c("linear", "spline", "ksmooth"), ...) {
+
+    dots  <- list(...)
+    fixed <- if("fixed" %in% names(dots)) {
+        dots$fixed
+    } else {
+        FALSE
+    }
 
     if(!missing(patID)) {
         ## filter by patID
         p <- trimWS(patID, side="both")
-        x <- Filter(function(y) any(grepl(paste(p, collapse="|"), y$patID, ...)), x)
+        x <- Filter(function(y) any(grepl(paste(p, collapse="|"), y$patID, fixed=fixed)), x)
         if(length(x) < 1L) { stop("selected patient not found") }
     }
 
     if(!missing(structure)) {
         ## filter by structure
         s <- trimWS(structure, side="both")
-        x <- Filter(function(y) any(grepl(paste(s, collapse="|"), y$structure, ...)), x)
+        x <- Filter(function(y) any(grepl(paste(s, collapse="|"), y$structure, fixed=fixed)), x)
         if(length(x) < 1L) { stop("selected structure not found") }
     }
 
-    res    <- Map(getMetric, x, metric=list(metric), interp=list(interp))
+    args   <- list(f=getMetric,
+                   x=x,
+                   metric=list(metric),
+                   interp=list(interp))
+    res    <- do.call("Map", c(args, dots))
     resDFL <- melt(res, value.name="observed")
     names(resDFL)[names(resDFL) == "L1"] <- "structure"
     names(resDFL)[names(resDFL) == "L2"] <- "metric"
@@ -241,7 +278,14 @@ getMetric.DVHLstLst <-
 function(x, metric, patID, structure,
      sortBy=c("none", "observed", "patID", "structure", "metric"),
     splitBy=c("none", "patID", "structure", "metric"),
-     interp=c("linear", "spline", "smooth"), ...) {
+     interp=c("linear", "spline", "ksmooth"), ...) {
+
+    dots  <- list(...)
+    fixed <- if("fixed" %in% names(dots)) {
+        dots$fixed
+    } else {
+        FALSE
+    }
 
     ## re-organize x into by-patient form if necessary
     isByPat <- attributes(x)$byPat
@@ -252,7 +296,7 @@ function(x, metric, patID, structure,
     ## if patIDs are selected, filter those
     if(!missing(patID)) {
         p <- trimWS(patID, side="both")
-        x <- Filter(function(y) any(grepl(paste(p, collapse="|"), y[[1]]$patID, ...)), x)
+        x <- Filter(function(y) any(grepl(paste(p, collapse="|"), y[[1]]$patID, fixed=fixed)), x)
         if(length(x) < 1L) { stop("No selected patient found") }
     }
 
@@ -263,18 +307,29 @@ function(x, metric, patID, structure,
     }
 
     ## DVH list y is from 1 DVH-file: list of DVHs - many structures for one ID
-    collectMetrics <- function(y, metric, structure=NULL) {
+    collectMetrics <- function(y, metric, structure=NULL, more) {
         ## if structures are selected, filter those
         if(!is.null(structure)) {
             s <- trimWS(structure, side="both")
-            y <- Filter(function(z) any(grepl(paste(s, collapse="|"), z$structure, ...)), y)
+            y <- Filter(function(z) any(grepl(paste(s, collapse="|"), z$structure, fixed=fixed)), y)
             if(length(y) < 1L) { stop("No selected structure found") }
         }
 
-        Map(getMetric, y, metric=list(metric), interp=list(interp))
+        args <- list(f=getMetric.DVHs,
+                     x=y,
+                     metric=list(metric),
+                     interp=list(interp))
+        do.call("Map", c(args, more))
+        #Map(getMetric, y, metric=list(metric), interp=list(interp), dots)
     }
 
-    res    <- Map(collectMetrics, x, metric=list(metric), structure=list(struct))
+    args <- list(f=collectMetrics,
+                 y=x,
+                 metric=list(metric),
+                 structure=list(struct),
+                 more=list(dots))
+    res <- do.call("Map", args)
+    #res    <- Map(collectMetrics, x, metric=list(metric), structure=list(struct))
     resDFL <- melt(res, value.name="observed")
     names(resDFL)[names(resDFL) == "L1"] <- "patID"
     names(resDFL)[names(resDFL) == "L2"] <- "structure"

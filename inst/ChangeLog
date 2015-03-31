@@ -3,17 +3,44 @@ $Date: 2015-02-20 21:12:29 +0000 (Fri, 20 Feb 2015) $
 DVHMETRICS RELEASE VERSIONS at http://cran.r-project.org/
 
 Version 0.1.0.900 (February 20, 2015)
-    * shiny web application
+    * Shiny web application
+      - add settings for EUD and (N)TCP parameters in metrics
+        and constraint
       - exact matching for selected patients and structures
         instead of regex-matching
       - fix bug with selection of patients and structures in 'Show DVH'
       - fix bug with DVHs for different structure sets
+    * readDVH()
+      - new option 'add' which allows to merge previously loaded data
+        with new data read from file (regardless of TPS origin)
+    * convertDVH()
+      - new function to convert between differential and cumulative DVH
+        with optional spline interpolation / kernel smoothing for the
+        differential DVH
+    * mergeDV()
+      - new function to merge different DVH objects, possibly
+        from different treatment planning systems
     * checkConstraint(), getMetric()
+      - add DEUD to calculate generalized equivalent uniform dose
+        (gEUD), DNTCP to calculate normal tissue complication
+        probability (NTCP according to Lyman probit, Niemierko
+        logit, Kaellman Poisson model), and DTCP for tumor control
+        probability (TCP).
       - add option 'interp' to choose DVH interpolation method between
-        linear interpolation, a monotone Hermite spline, and local
-        polynomial kernel regression
-    * parseEclipse()
-      - more lenient regex for prescribed dose field
+        linear interpolation, a cubic monotone Hermite spline, and
+        cubic local polynomial kernel regression
+    * getMetric()
+      - add generalized equivalent uniform dose (gEUD)
+      - if the TPS does not export dose minimum, maximum, mean, median,
+        standard deviation -> calculate based on the differential DVH
+    * getBED()
+      - new function for the biologically effective dose (BED)
+    * getEQD2()
+      - new function for the 2Gy fractions biologically equivalent
+        dose (EQD2)
+    * getIsoEffD()
+      - new function for the isoeffective dose according to the
+        linear-quadratic model
 
 Version 0.1 (January 29, 2015)
 

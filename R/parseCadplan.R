@@ -247,7 +247,7 @@ parseCadplan <- function(x, planInfo=FALSE) {
         ## convert differential DVH to cumulative
         ## and add differential DVH separately
         if(info$DVHtype == "differential") {
-            DVH$dvh     <- dvhConvert(dvh, toType="cumulative", toDoseUnit="asis")
+            DVH$dvh     <- convertDVH(dvh, toType="cumulative", toDoseUnit="asis")
             DVH$dvhDiff <- dvh
         }
 
@@ -259,7 +259,7 @@ parseCadplan <- function(x, planInfo=FALSE) {
     ## list of DVH data frames with component name = structure
     info <- list(patID=patID, patName=patName, plan=plan, date=DVHdate, DVHtype=DVHtype)
     dvhL <- lapply(structList, getDVH, info)
-    dvhL <- Filter(function(y) !is.null(y), dvhL)
+    dvhL <- Filter(Negate(is.null), dvhL)
     names(dvhL) <- sapply(dvhL, function(y) y$structure)
     if(length(unique(names(dvhL))) < length(dvhL)) {
         warning("Some structures have the same name - this can lead to problems")

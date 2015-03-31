@@ -202,36 +202,21 @@ parseMasterplan <- function(x, planInfo=FALSE) {
         ## convert differential DVH to cumulative
         ## and add differential DVH separately
         if(info$DVHtype == "differential") {
-            DVH$dvh     <- dvhConvert(dvh, toType="cumulative", toDoseUnit="asis")
+            DVH$dvh     <- convertDVH(dvh, toType="cumulative", toDoseUnit="asis")
             DVH$dvhDiff <- dvh
             dvhDiff     <- dvh
         } else {
             ## need differential DVH for mean dose etc.
-            dvhDiff <- dvhConvert(dvh, toType="differential", toDoseUnit="asis")
+            dvhDiff <- convertDVH(dvh, toType="differential", toDoseUnit="asis")
         }
 
         ## Masterplan does not export mean/min/max ...
-        ## dose category mid-points
-        N       <- nrow(dvh)
-        doseMid <- dvh[-N, "dose"] + diff(dvh[ , "dose"])/2
-        volume  <- if(!all(is.na(dvh[ , "volume"]))) {
-            dvh[ , "volume"]
-        } else {
-            dvh[ , "volumeRel"]
-        }
-
-        DVH$doseMin <- min(dvh[-N, "dose"][-diff(volume) > 0])
-        DVH$doseMax <- max(doseMid[             -diff(volume) > 0])
-        DVH$doseMed <- approx(dvh[ , "volumeRel"], dvh[ , "dose"], 50, method="linear", rule=1)$y
-        DVH$doseAvg <- sum(doseMid*(-1)*diff(dvh[, "volumeRel"]/100))
-        DVH$doseSD  <- sqrt(sum(doseMid^2*(-1)*diff(dvh[, "volumeRel"]/100)) - DVH$doseAvg^2)
-        
-        ## for mode, abs or rel volume does not matter
-        DVH$doseMode <- if(!all(is.na(dvhDiff[ , "volume"]))) {
-            dvhDiff[which.max(dvhDiff[ , "volume"]),    "dose"]
-        } else {
-            dvhDiff[which.max(dvhDiff[ , "volumeRel"]), "dose"]
-        }
+        DVH$doseMin  <- NA_real_
+        DVH$doseMax  <- NA_real_
+        DVH$doseMed  <- NA_real_
+        DVH$doseAvg  <- NA_real_
+        DVH$doseSD   <- NA_real_
+        DVH$doseMode <- NA_real_
 
         ## set class
         class(DVH) <- "DVHs"
@@ -244,7 +229,7 @@ parseMasterplan <- function(x, planInfo=FALSE) {
                  doseRx=doseRx, isoDoseRx=isoDoseRx, doseUnit=doseUnit,
                  volumeUnit=volumeUnit)
     dvhL <- lapply(structList, getDVH, info=info)
-    dvhL <- Filter(function(y) !is.null(y), dvhL)
+    dvhL <- Filter(Negate(is.null), dvhL)
     names(dvhL) <- sapply(dvhL, function(y) y$structure)
     if(length(unique(names(dvhL))) < length(dvhL)) {
         warning("Some structures have the same name - this can lead to problems")

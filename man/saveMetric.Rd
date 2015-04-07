@@ -23,7 +23,6 @@ saveMetric(x, file = "", ...)
 \code{\link[DVHmetrics]{getMetric}}
 }
 \examples{
-data(dataMZ)
 res <- getMetric(dataMZ, c("D1CC", "V10\%_CC"),
                  sortBy=c("metric", "structure"),
                  splitBy="patID")

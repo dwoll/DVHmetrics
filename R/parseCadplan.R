@@ -153,7 +153,7 @@ parseCadplan <- function(x, planInfo=FALSE) {
         colHead  <- grep("DOSE[[:blank:]]*\\((%|GY|CGY)\\).+VOLUME", strct,
                          ignore.case=TRUE, perl=TRUE)
         dvhStart <- colHead+1            # first numeric line of DVH
-        dvhLen   <- length(strct) - dvhStart
+        dvhLen   <- length(strct) - dvhStart + 1
         if((length(dvhLen) < 1L) || dvhLen < 1L) {
             stop("No DVH data found")
         }

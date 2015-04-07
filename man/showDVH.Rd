@@ -44,7 +44,6 @@ Silently returns a \code{\link[ggplot2]{ggplot}} diagram object, or - when multi
 \code{\link[DVHmetrics]{saveDVH}}
 }
 \examples{
-data(dataMZ)
 showDVH(dataMZ, byPat=TRUE, structure=c("HEART", "AMYOCL"))
 showDVH(dataMZ, byPat=FALSE, patID="23")  # matches P123 and P234
 }

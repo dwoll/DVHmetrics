@@ -22,8 +22,6 @@ See \code{\link[DVHmetrics]{checkConstraint}} for the definition of a constraint
 \code{\link[DVHmetrics]{showConstraint}}
 }
 \examples{
-data(dataMZ)
-data(dataConstr)
 checkConstraint(dataMZ, constr=dataConstr)
 }
 \keyword{datasets}

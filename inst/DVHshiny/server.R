@@ -18,7 +18,7 @@ shinyServer(function(input, output) {
                 dataMZ
             } else if(input$DVHin == '2') {
                 if(!is.null(input$DVHupload)) {
-                    types <- c('1'="Eclipse", '2'="Cadplan", '3'="Masterplan")
+                    types <- c('1'="Eclipse", '2'="Cadplan", '3'="Masterplan", '4'="Pinnacle")
                     plans <- c('1'="none",    '2'="doseRx")
                     argL  <- if(input$DVHadd && file.exists("DVHprev.rds")) {
                         setwd(DVHdir)
@@ -231,8 +231,8 @@ shinyServer(function(input, output) {
                          sortBy=sortBy,
                          interp=interp,
                          EUDa=EUDa, EUDfn=EUDfn, EUDab=EUDab,
-                         NTCPtype=NTCPtype, NTCPtd50=NTCPtd50, NTCPn=NTCPn, NTCPgamma50=NTCPamma50,
-                          TCPtype=NTCPtype, TCPtcd50=NTCPtd50,  TCPn=NTCPn,  TCPgamma50=NTCPamma50)
+                         NTCPtype=NTCPtype, NTCPtd50=NTCPtd50, NTCPn=NTCPn, NTCPgamma50=NTCPgamma50,
+                          TCPtype=NTCPtype, TCPtcd50=NTCPtd50,  TCPn=NTCPn,  TCPgamma50=NTCPgamma50)
             argL <- Filter(Negate(is.null), argL)
             metr <- do.call(getMetric, argL)
             dec <- c('1'=".",  '2'=",")[input$saveMetrDec]
@@ -337,9 +337,9 @@ shinyServer(function(input, output) {
                 ## 1 diagram per patient/structure
                 ## restrict DVH and constr to the same IDs/structures
                 xConstrSub <- if(byPat) {
-                    harmoConstrDVH(dvh$DVH,         constr=constr, byPat=byPat)
+                    DVHmetrics:::harmoConstrDVH.DVHLstLst(dvh$DVH,         constr=constr, byPat=byPat)
                 } else {
-                    harmoConstrDVH(dvh$DVHbyStruct, constr=constr, byPat=byPat)
+                    DVHmetrics:::harmoConstrDVH.DVHLstLst(dvh$DVHbyStruct, constr=constr, byPat=byPat)
                 }
 
                 if(is.null(constr) || (length(xConstrSub$x) < localI)) {
@@ -521,10 +521,11 @@ shinyServer(function(input, output) {
                           TCPtype=NTCPtype, TCPtcd50=NTCPtd50,  TCPn=NTCPn,  TCPm=NTCPm,  TCPgamma50=NTCPgamma50)
             argL <- Filter(Negate(is.null), argL)
             x <- do.call(checkConstraint, argL)
-            x$observed <- round(x$observed, 2)
-            x$deltaVpc <- round(x$deltaVpc, 2)
-            x$deltaDpc <- round(x$deltaDpc, 2)
-            x$dstMin   <- round(x$dstMin,   2)
+            x$observed  <- round(x$observed,  2)
+            x$deltaVpc  <- round(x$deltaVpc,  2)
+            x$deltaDpc  <- round(x$deltaDpc,  2)
+            x$dstMin    <- round(x$dstMin,    2)
+            x$dstMinRel <- round(x$dstMinRel, 2)
             x[ , outSel]
         } else {
             NULL
@@ -551,9 +552,9 @@ shinyServer(function(input, output) {
         constr <- DVHconstr()
         byPat  <- input$constrByPat == "1"
         xConstrSub <- if(byPat) {
-            harmoConstrDVH(dvh$DVH,         constr=constr, byPat=byPat)
+            DVHmetrics:::harmoConstrDVH.DVHLstLst(dvh$DVH,         constr=constr, byPat=byPat)
         } else {
-            harmoConstrDVH(dvh$DVHbyStruct, constr=constr, byPat=byPat)
+            DVHmetrics:::harmoConstrDVH.DVHLstLst(dvh$DVHbyStruct, constr=constr, byPat=byPat)
         }
 
         plotOutputL <- lapply(seq_along(xConstrSub$x), function(i) {
@@ -632,7 +633,7 @@ shinyServer(function(input, output) {
                 dvh$DVHbyStruct
             }
 
-            xConstrSub <- harmoConstrDVH(x, constr=constr, byPat=byPat)
+            xConstrSub <- DVHmetrics:::harmoConstrDVH.DVHLstLst(x, constr=constr, byPat=byPat)
             nFiles     <- length(xConstrSub$x)
 
             ## write all JPEGs into temporary directory and zip them

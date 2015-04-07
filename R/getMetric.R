@@ -144,14 +144,14 @@ function(x, metric, patID, structure,
                 } else {
                     1
                 }
-                
+
                 mmmrs <- if(any(c(is.na(c(x$doseMin, x$doseMax, x$doseAvg, x$doseMed, x$doseSD)),
                                   is.null(x$doseMin),
                                   is.null(x$doseMax),
                                   is.null(x$doseAvg),
                                   is.null(x$doseMed),
                                   is.null(x$doseSD)))) {
-                    getDVHmean(x, interp=interp)
+                    getDMEAN(x, interp=interp)
                 } else {
                     x
                 }
@@ -201,7 +201,7 @@ function(x, metric, patID, structure,
             NA_real_
         }
     }
-    
+
     ## parse metric strings into lists of components
     pm  <- parseMetric(metric)
     pmL <- split(pm, f=seq_len(nrow(pm)))

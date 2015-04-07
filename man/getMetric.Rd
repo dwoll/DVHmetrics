@@ -36,7 +36,7 @@ getMetric(x, metric, patID, structure,
   \item{sortBy}{\code{character} vector giving the sorting criteria for the output data frame.}
   \item{splitBy}{\code{character} vector. Split results into a list of data frames where list components are defined by groups from combining these variables.}
   \item{interp}{\code{character}. Method of interpolation between DVH points: Linear interpolation using \code{\link[stats]{approx}}, monotone Hermite spline interpolation using \code{\link[stats]{splinefun}}, or local polynomial regression using \code{\link[KernSmooth]{locpoly}} with kernel bandwidth chosen by the direct plug-in method using \code{\link[KernSmooth]{dpill}}.}
-  \item{...}{Further arguments. \code{fixed=TRUE} is passed to code{\link[base]{grep}} for exact matching of \code{patID} and \code{structure}.}
+  \item{...}{Further arguments. \code{fixed=TRUE} is passed to \code{\link[base]{grep}} for exact matching of \code{patID} and \code{structure}. Arguments passed to \code{\link[DVHmetrics]{getEUD}} (for \code{metric="DEUD"}), \code{\link[DVHmetrics]{getTCP}} (for \code{metric="DTCP"}), or \code{\link[DVHmetrics]{getNTCP}} (for \code{metric="DNTCP"}).}
 }
 \details{
 A \emph{pre-specified} DVH metric is one of the following character strings:
@@ -47,10 +47,9 @@ A \emph{pre-specified} DVH metric is one of the following character strings:
 \item \code{"DMAX"}: The maximum dose of the non-zero-dose voxels in the structure.
 \item \code{"DSD"}: The standard deviation of the dose in the structure.
 \item \code{"DRX"}: The prescription dose.
-\item \code{"DEUD"}: The generalized equivalent uniform dose (gEUD, Wu, 2002). Must also pass \code{EUDa} parameter \code{a}.
-\item \code{"DEUD2"}: The gEUD in 2Gy fractions biologically equivalent dose. Must also pass \code{EUDa}, \code{EUDfn} (number of fractions), \code{EUDab} (alpha/beta ratio). See \code{\link[DVHmetrics]{getEQD2}}.
-\item \code{"DNTCP"}: The normal tissue complication probability (NTCP). Must also pass \code{NTCPtd50} (tolerance dose with 50\% complication probability), \code{NTCPm} (Lyman model parameter m, alternatively: \code{TCPgamma50} for logit/Poisson parameter gamma50), \code{NTCPn} (Lyman model parameter n), \code{NTCPtype} (\code{"probit"} - Lyman, \code{"logit"} - Niemierko, \code{"poisson"} - Kaellman). For gEUD2-based DVH reduction, also pass \code{EUDfn} (number of fractions), \code{EUDab} (alpha/beta ratio).
-\item \code{"DTCP"}: The tumor control probability (TCP). Must also pass \code{TCPtcd50} (dose to control 50\% of the tumors), \code{NTCPm} (Lyman model parameter m, alternatively: \code{TCPgamma50} for logit/Poisson parameter gamma50), \code{NTCPn} (Lyman model parameter n), \code{NTCPtype} (\code{"probit"} - Lyman, \code{"logit"} - Niemierko, \code{"poisson"} - Kaellman). For gEUD2-based DVH reduction, also pass \code{EUDfn} (number of fractions), \code{EUDab} (alpha/beta ratio).
+\item \code{"DEUD"}: The generalized equivalent uniform dose (gEUD). See \code{\link[DVHmetrics]{getEUD}} for mandatory and optional parameters.
+\item \code{"DNTCP"}: The normal tissue complication probability (NTCP). See \code{\link[DVHmetrics]{getNTCP}} for mandatory and optional parameters.
+\item \code{"DTCP"}: The tumor control probability (TCP). See \code{\link[DVHmetrics]{getNTCP}} for mandatory and optional parameters.
 }
 A \emph{free} DVH metric is a character string which has three mandatory elements and one optional element in the following order:
 \itemize{
@@ -79,19 +78,22 @@ A data frame or a list with details on the calculated metrics.
 \item{observed}{The observed value for the DVH metric}
 }
 \references{
-Rancati et al. (2004). Fitting late rectal bleeding data using different NTCP models: results from an Italian multi-centric study (AIROPROS0101). Radiotherapy Oncology, 73, 21–32.
+Rancati et al. (2004). Fitting late rectal bleeding data using different NTCP models: results from an Italian multi-centric study (AIROPROS0101). Radiotherapy Oncology, 73, 21-32.
 
-Wu et al. (2002). Optimization of intensitymodulated radiotherapy plans based on the equivalent uniform dose. International Journal of Radiation Oncology Biology Physics, 52, 224-235.
+Wu et al. (2002). Optimization of intensity modulated radiotherapy plans based on the equivalent uniform dose. International Journal of Radiation Oncology Biology Physics, 52, 224-235.
 }
 \seealso{
 \code{\link[DVHmetrics]{saveMetric}},
+\code{\link[DVHmetrics]{getEUD}},
+\code{\link[DVHmetrics]{getNTCP}},
+\code{\link[DVHmetrics]{getTCP}},
 \code{\link[DVHmetrics]{getEQD2}},
+\code{\link[stats]{approxfun}},
 \code{\link[stats]{splinefun}},
 \code{\link[KernSmooth]{dpill}},
 \code{\link[KernSmooth]{locpoly}}
 }
 \examples{
-data(dataMZ)
 getMetric(dataMZ, c("D1CC", "V10\%_CC"),
           sortBy=c("metric", "structure", "observed"))
 
@@ -108,7 +110,7 @@ getMetric(dataMZ[[c(1, 1)]], "DEUD", EUDa=2)
 # gEUD based on EQD2 with a=2, 20 fractions
 getMetric(dataMZ[[c(1, 1)]], "DEUD2", EUDa=2, EUDfn=20)
 
-# NTCP with TD50=20, m=4, n=0.5
+# NTCP Lyman probit model with TD50=20, m=4, n=0.5
 getMetric(dataMZ[[c(1, 1)]], "DNTCP",
-          NTCPtd50=20, NTCPm=4, NTCPn=0.5)
+          NTCPtd50=20, NTCPm=4, NTCPn=0.5, NTCPtype="probit")
 }

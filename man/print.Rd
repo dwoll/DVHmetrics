@@ -22,7 +22,6 @@ Prints summary information about the DVHs.
 \code{\link[DVHmetrics]{readDVH}}
 }
 \examples{
-data(dataMZ)
 print(dataMZ)
 print(dataMZ, verbose=TRUE)
 }

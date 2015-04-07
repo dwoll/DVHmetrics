@@ -58,14 +58,14 @@ function(x, constr, byPat=TRUE, rel=TRUE, guessX=TRUE, thresh=1) {
 
     ## distance constraint to closest point on DVH curve
     getMinDstPt <- function(dvh, cnstr) {
-        Dcoord  <- with(cnstr, ifelse(DV == "D", valCmp, valRef))
-        Vcoord  <- with(cnstr, ifelse(DV == "V", valCmp, valRef))
+        Dcoord  <- ifelse(cnstr$DV == "D", cnstr$valCmp, cnstr$valRef)
+        Vcoord  <- ifelse(cnstr$DV == "V", cnstr$valCmp, cnstr$valRef)
         Dcoord  <- ifelse(cnstr$valid, Dcoord, NA_real_)
         Vcoord  <- ifelse(cnstr$valid, Vcoord, NA_real_)
-        volRel  <- with(cnstr, ((DV == "D") & (unitRef == "%")) |
-                               ((DV == "V") & (unitCmp == "%")))
-        doseRel <- with(cnstr, ((DV == "D") & (unitCmp == "%")) |
-                               ((DV == "V") & (unitRef == "%")))
+        volRel  <- ((cnstr$DV == "D") & (cnstr$unitRef == "%")) |
+                   ((cnstr$DV == "V") & (cnstr$unitCmp == "%"))
+        doseRel <- ((cnstr$DV == "D") & (cnstr$unitCmp == "%")) |
+                   ((cnstr$DV == "V") & (cnstr$unitRef == "%"))
         
         dstL <- dvhDistance(dvh, 
                             DV=data.frame(D=Dcoord, V=Vcoord,
@@ -169,12 +169,12 @@ function(x, constr, byPat=TRUE, rel=TRUE, guessX=TRUE, thresh=1) {
     }
 
     ## get dose and (abs/rel) volume coords
-    doseVolL <- with(allDF,
-                     Map(getDoseVol, DV=DV, valRef=valRef, unitRef=unitRef,
-                         cmp=cmp, unitCmp=unitCmp, valCmp=valCmp,
-                         DVH=if(byPat) { structure } else { patID },
-                         ptMinD=ptMinD, ptMinV=ptMinV,
-                         y=list(xConstrSub$x)))
+    doseVolL <- Map(getDoseVol,
+                    DV=allDF$DV, valRef=allDF$valRef, unitRef=allDF$unitRef,
+                    cmp=allDF$cmp, unitCmp=allDF$unitCmp, valCmp=allDF$valCmp,
+                    DVH=if(byPat) { allDF$structure } else { allDF$patID },
+                    ptMinD=allDF$ptMinD, ptMinV=allDF$ptMinV,
+                    y=list(xConstrSub$x))
 
     doseVolDF <- do.call("rbind", doseVolL)
 
@@ -214,6 +214,11 @@ function(x, constr, byPat=TRUE, rel=TRUE, guessX=TRUE, thresh=1) {
 
     ## do the actual plotting
     ## get DVH plot for relevant structures / IDs
+    ## constraint may be more extreme than actual doses
+    doseMax <- max(vapply(x, function(y) { max(y$dvh[ , "dose"]) }, numeric(1)))
+    if(any(diagDF$doseAbs > doseMax)) {
+        guessX <- max(diagDF$doseAbs)
+    }
     diag <- showDVH(xConstrSub$x,
                     cumul=TRUE, byPat=byPat, rel=rel, guessX=guessX,
                     thresh=thresh, show=FALSE)

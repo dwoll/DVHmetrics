@@ -1,28 +1,34 @@
 importFrom(utils, read.table, write.table)
 importFrom(ggplot2, ggplot, aes_string, geom_point, geom_line, ggtitle, ggsave)
 importFrom(ggplot2, coord_cartesian, annotation_custom, theme_bw, xlab, ylab)
-importFrom(ggplot2, scale_shape_manual, scale_y_continuous)
+importFrom(ggplot2, scale_shape_manual, scale_y_continuous, expand_limits)
 importFrom(grid, gpar, segmentsGrob, arrow, unit, grobTree)
 importFrom(reshape2, melt, dcast)
 importFrom(KernSmooth, dpill, locpoly)
+importFrom(markdown, markdownToHTML)
 import(shiny)
 
-export(readConstraint,
-       checkConstraint,
-       showConstraint,
-       saveConstraint,
-       getMetric,
-       saveMetric,
-       readDVH,
+export(readDVH,
        showDVH,
        saveDVH,
-       harmoConstrDVH,
-       convertDVH,
-       runGUI,
+       getMetric,
+       saveMetric,
+       readConstraint,
+       checkConstraint,
+       showConstraint,
+       saveConstraint)
+
+export(convertDVH,
        mergeDVH,
-       getBED,
+       runGUI)
+
+export(getBED,
        getEQD2,
-       getIsoEffD)
+       getIsoEffD,
+       getEUD,
+       getNTCP,
+       getTCP,
+       getDMEAN)
 
 S3method(saveMetric,      data.frame)
 S3method(saveMetric,      list)
@@ -41,9 +47,16 @@ S3method(showConstraint,  DVHLstLst)
 S3method(showDVH,         DVHs)
 S3method(showDVH,         DVHLst)
 S3method(showDVH,         DVHLstLst)
-S3method(harmoConstrDVH,  DVHLst)
-S3method(harmoConstrDVH,  DVHLstLst)
 S3method(convertDVH,      matrix)
 S3method(convertDVH,      DVHs)
 S3method(convertDVH,      DVHLst)
 S3method(convertDVH,      DVHLstLst)
+S3method(getNTCP,         DVHs)
+S3method(getNTCP,         DVHLst)
+S3method(getNTCP,         DVHLstLst)
+S3method(getEUD,          DVHs)
+S3method(getEUD,          DVHLst)
+S3method(getEUD,          DVHLstLst)
+S3method(getDMEAN,        DVHs)
+S3method(getDMEAN,        DVHLst)
+S3method(getDMEAN,        DVHLstLst)

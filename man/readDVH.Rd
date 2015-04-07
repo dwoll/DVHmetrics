@@ -2,14 +2,15 @@
 \alias{readDVH}
 \title{Read DVH text files}
 \description{
-Reads single or multiple DVH text files as exported from Varian Eclipse(TM), CadPlan(TM), or MasterPlan(TM). Supports cumulative and differential DVHs.
+Reads single or multiple DVH text files as exported from Varian Eclipse(TM), CadPlan(TM), MasterPlan(TM), or Pinnacle3 (TM). Supports cumulative and differential DVHs.
 }
 \usage{
-readDVH(x, type=c("Eclipse", "Cadplan", "Masterplan"), planInfo=FALSE, add)
+readDVH(x, type=c("Eclipse", "Cadplan", "Masterplan", "Pinnacle"),
+        planInfo=FALSE, add)
 }
 \arguments{
-  \item{x}{\code{character} vector giving paths to DVH text files. May contain globbing symbols understood by \code{\link[base]{Sys.glob}}. If missing and in interactive mode, \code{readDVH} opens a file selector widget. Under Windows, this widget allows selecting multiple files simultaneously.}
-  \item{type}{\code{character} string. Indicates which program the DVH text files were exported from. Supported: \code{"Cadplan"} (tested with version 6.4.7), \code{"Eclipse"} (tested with versions 10-13), or \code{"Masterplan"} (tested with version 4.3).}
+  \item{x}{\code{character} vector giving paths to DVH text files. May contain globbing symbols understood by \code{\link[base]{Sys.glob}}. If missing and in interactive mode, \code{readDVH} opens a file selector widget. Under Windows, this widget allows selecting multiple files simultaneously. For \code{type="Pinnacle"}, \code{x} should be one of the following: A directory with information for one patient, a directory with several sub-directories (one for each patient), or a zip file of such directories. Under Windows, if \code{x} is missing and \code{type="Pinnacle"}, \code{readDVH} opens a folder selector widget.}
+  \item{type}{\code{character} string. Indicates which program the DVH text files were exported from. Supported: \code{"Cadplan"} (tested with version 6.4.7), \code{"Eclipse"} (tested with versions 10-13), \code{"Masterplan"} (tested with version 4.3), or \code{"Pinnacle"} (tested with Pinnacle3 version 9, see Details).}
   \item{planInfo}{Experimental: Either \code{FALSE} or \code{character} string. In the latter case, \code{readDVH} tries to extract additional information from the \code{Plan} field in the DVH file, e.g., the prescription dose for a sum plan or the boost quadrant. Undocumented, see source.}
   \item{add}{\code{DVHLstLst} object. Existing object that should be merged with the new data from the files.}
 }
@@ -19,6 +20,28 @@ Absolute dose values need to be given in Gy or cGy, absolute volume values in cm
 Differential DVHs are automatically converted to cumulative DVHs, but the differential DVH information is kept.
 
 Sum plans are supported.
+
+Pinnacle3 files have to be exported using its own scripting facility such that information from one patient is contained in one directory. The directory layout for one patient has to be as follows (experimental, likely to change in future versions):
+\itemize{
+\item{Files (CSV format with column headers):
+\itemize{
+\item{\code{DoseInfo.csv} (variables \code{"PrescriptionDose cGy"}, \code{"NumberOfFractions"}, \code{"Dosis cGy"})}
+\item{\code{PatInfo.csv} (variables \code{"LastName"}, \code{"FirstName"}, \code{"MedicalRecordNumber"})}
+\item{\code{PlanInfo.csv} (variable \code{"PlanName"})}}}
+\item{Directory: \code{Data}:
+\itemize{
+\item{\code{Info.csv} (variables \code{"Filename"}, \code{"RegionOfInterestName"},  \code{"DoseMin cGy"}, \code{"DoseMax cGy"}, \code{"DoseMean cGy"}, \code{"Volume ccm"})}
+\item{DVH1.csv, DVH2.csv, ...  - the actual DVH data files with names defined in \code{Info.csv} variable \code{"Filename"}. They should look like
+\verb{NumberOfDimensions = 2;
+NumberOfPoints = 431;
+Points[] =\{
+  0,0
+  10,0
+  ...
+  4000,100
+\};
+  }
+}}}}
 }
 \value{
 Returns an object of class \code{DVHLstLst}. This is a list (one component with class \code{DVHLst} for each original file from one patient) of lists (each component is an object of class \code{DVHs}). A \code{DVHs} object is a list with the following components:

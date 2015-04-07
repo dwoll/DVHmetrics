@@ -2,7 +2,7 @@
 checkConstraint <-
 function(x, constr, byPat=TRUE, semSign=FALSE,
          sortBy=c("none", "observed", "compliance", "structure",
-                  "constraint", "patID", "deltaV", "deltaD", "dstMin"),
+                  "constraint", "patID", "deltaV", "deltaD", "dstMin", "dstMinRel"),
          interp=c("linear", "spline", "smooth"), ...) {
     UseMethod("checkConstraint")
 }
@@ -10,7 +10,7 @@ function(x, constr, byPat=TRUE, semSign=FALSE,
 checkConstraint.DVHs <-
 function(x, constr, byPat=TRUE, semSign=FALSE,
          sortBy=c("none", "observed", "compliance", "structure",
-                  "constraint", "patID", "deltaV", "deltaD", "dstMin"),
+                  "constraint", "patID", "deltaV", "deltaD", "dstMin", "dstMinRel"),
          interp=c("linear", "spline", "smooth"), ...) {
     x <- if(byPat) {
         setNames(list(x), x$structure)
@@ -31,7 +31,7 @@ function(x, constr, byPat=TRUE, semSign=FALSE,
 checkConstraint.DVHLst <-
 function(x, constr, byPat=TRUE, semSign=FALSE,
          sortBy=c("none", "observed", "compliance", "structure",
-                  "constraint", "patID", "deltaV", "deltaD", "dstMin"),
+                  "constraint", "patID", "deltaV", "deltaD", "dstMin", "dstMinRel"),
          interp=c("linear", "spline", "smooth"), ...) {
     interp <- match.arg(interp)
 
@@ -50,6 +50,7 @@ function(x, constr, byPat=TRUE, semSign=FALSE,
         valRelPC    <- 100 * (valDiff/valCmp)
         valDiffInv  <- smInv - valRef
         valRelPCInv <- 100 * (valDiffInv/valRef)
+        dstMinRel   <- 100 * dstInfo$dstMinRel
 
         deltaV   <- if(DV == "V") { valDiff  } else if(DV == "D") { valDiffInv  }
         deltaVpc <- if(DV == "V") { valRelPC } else if(DV == "D") { valRelPCInv }
@@ -58,8 +59,8 @@ function(x, constr, byPat=TRUE, semSign=FALSE,
 
         list(observed=observed, deltaV=deltaV, deltaVpc=deltaVpc,
              deltaD=deltaD, deltaDpc=deltaDpc, valCmp=valCmp,
-             cmp=cmp, dstMin=dstInfo$dstMin, ptMinD=dstInfo$ptMinD,
-             ptMinV=dstInfo$ptMinV)
+             cmp=cmp, dstMin=dstInfo$dstMin, dstMinRel=dstMinRel,
+             ptMinD=dstInfo$ptMinD, ptMinV=dstInfo$ptMinV)
     }
 
     ## calculate metric and corresponding inverse metrics from given
@@ -79,23 +80,23 @@ function(x, constr, byPat=TRUE, semSign=FALSE,
         names(smInv)    <- cnstr$constraint
 
         ## distance constraint to closest point on DVH curve
-        Dcoord  <- with(cnstr, ifelse(DV == "D", valCmp, valRef))
-        Vcoord  <- with(cnstr, ifelse(DV == "V", valCmp, valRef))
+        Dcoord  <- ifelse(cnstr$DV == "D", cnstr$valCmp, cnstr$valRef)
+        Vcoord  <- ifelse(cnstr$DV == "V", cnstr$valCmp, cnstr$valRef)
         Dcoord  <- ifelse(cnstr$valid, Dcoord, NA_real_)
         Vcoord  <- ifelse(cnstr$valid, Vcoord, NA_real_)
-        volRel  <- with(cnstr, ((DV == "D") & (unitRef == "%")) |
-                               ((DV == "V") & (unitCmp == "%")))
-        doseRel <- with(cnstr, ((DV == "D") & (unitCmp == "%")) |
-                               ((DV == "V") & (unitRef == "%")))
+        volRel  <- ((cnstr$DV == "D") & (cnstr$unitRef == "%")) |
+                   ((cnstr$DV == "V") & (cnstr$unitCmp == "%"))
+        doseRel <- ((cnstr$DV == "D") & (cnstr$unitCmp == "%")) |
+                   ((cnstr$DV == "V") & (cnstr$unitRef == "%"))
 
         dstDVH <- dvhDistance(dvh,
                               DV=data.frame(D=Dcoord, V=Vcoord,
                                             volRel=volRel, doseRel=doseRel,
                                             unitRef=cnstr$unitRef, unitCmp=cnstr$unitCmp))
 
-        with(cnstr, Map(cmpMetrics, observed=observed, smInv=smInv,
-                        DV=DV, valCmp=valCmp, cmp=cmp, valRef=valRef,
-                        dstInfo=dstDVH))
+        Map(cmpMetrics, observed=observed, smInv=smInv,
+            DV=cnstr$DV, valCmp=cnstr$valCmp, cmp=cnstr$cmp, valRef=cnstr$valRef,
+            dstInfo=dstDVH)
     }
 
     ## get requested metrics for each structure/id
@@ -130,35 +131,52 @@ function(x, constr, byPat=TRUE, semSign=FALSE,
 
     ## make sign of deltaD/deltaV semantically indicate compliance
     ## negative -> compliance, positive -> no compliance
+    ## compliance may be NA -> catch first to leave sign unchanged
+    resDF$compliance[is.na(resDF$compliance)] <- TRUE
+
     if(semSign) {
-        resDF$deltaD   <- ifelse(resDF$compliance,
-                                 -1*resDF$deltaD  *sign(resDF$deltaD),
-                                    resDF$deltaD  *sign(resDF$deltaD))
-        resDF$deltaDpc <- ifelse(resDF$compliance,
-                                 -1*resDF$deltaDpc*sign(resDF$deltaDpc),
-                                    resDF$deltaDpc*sign(resDF$deltaDpc))
-        resDF$deltaV   <- ifelse(resDF$compliance,
-                                 -1*resDF$deltaV  *sign(resDF$deltaV),
-                                    resDF$deltaV  *sign(resDF$deltaV))
-        resDF$deltaVpc <- ifelse(resDF$compliance,
-                                 -1*resDF$deltaVpc*sign(resDF$deltaVpc),
-                                    resDF$deltaVpc*sign(resDF$deltaVpc))
-        resDF$dstMin   <- ifelse(resDF$compliance,
-                                 -1*resDF$dstMin  *sign(resDF$dstMin),
-                                    resDF$dstMin  *sign(resDF$dstMin))
+        resDF$deltaD    <- ifelse(resDF$compliance,
+                                  -1*resDF$deltaD   *sign(resDF$deltaD),
+                                     resDF$deltaD   *sign(resDF$deltaD))
+        resDF$deltaDpc  <- ifelse(resDF$compliance,
+                                  -1*resDF$deltaDpc *sign(resDF$deltaDpc),
+                                     resDF$deltaDpc *sign(resDF$deltaDpc))
+        resDF$deltaV    <- ifelse(resDF$compliance,
+                                  -1*resDF$deltaV   *sign(resDF$deltaV),
+                                     resDF$deltaV   *sign(resDF$deltaV))
+        resDF$deltaVpc  <- ifelse(resDF$compliance,
+                                  -1*resDF$deltaVpc *sign(resDF$deltaVpc),
+                                     resDF$deltaVpc *sign(resDF$deltaVpc))
+        resDF$dstMin    <- ifelse(resDF$compliance,
+                                  -1*resDF$dstMin   *sign(resDF$dstMin),
+                                     resDF$dstMin   *sign(resDF$dstMin))
+        resDF$dstMinRel <- ifelse(resDF$compliance,
+                                  -1*resDF$dstMinRel*sign(resDF$dstMinRel),
+                                     resDF$dstMinRel*sign(resDF$dstMinRel))
     }
 
     ## reorder variables to return
     if(byPat) {
         patID     <- xConstrSub$x[[1]]$patID
+        structure <- resDF$structure
     } else {
+        patID     <- resDF$patID
         structure <- xConstrSub$x[[1]]$structure
     }
-        
-    finDF <- with(resDF,
-                  data.frame(patID, structure, constraint, observed, compliance,
-                             deltaV, deltaVpc, deltaD, deltaDpc, dstMin, ptMinD, ptMinV,
-                             stringsAsFactors=FALSE))
+
+    finDF <- data.frame(patID, structure,
+                        constraint=resDF$constraint,
+                        observed=resDF$observed,
+                        compliance=resDF$compliance,
+                        deltaV=resDF$deltaV,
+                        deltaVpc=resDF$deltaVpc,
+                        deltaD=resDF$deltaD,
+                        deltaDpc=resDF$deltaDpc,
+                        dstMin=resDF$dstMin,
+                        dstMinRel=resDF$dstMinRel,
+                        ptMinD=resDF$ptMinD,
+                        ptMinV=resDF$ptMinV,
+                        stringsAsFactors=FALSE)
 
     ## sort
     if(!("none" %in% sortBy)) {
@@ -174,7 +192,7 @@ function(x, constr, byPat=TRUE, semSign=FALSE,
 checkConstraint.DVHLstLst <-
 function(x, constr, byPat=TRUE, semSign=FALSE,
          sortBy=c("none", "observed", "compliance", "structure",
-                  "constraint", "patID", "deltaV", "deltaD", "dstMin"),
+                  "constraint", "patID", "deltaV", "deltaD", "dstMin", "dstMinRel"),
          interp=c("linear", "spline", "smooth"), ...) {
 
     interp <- match.arg(interp)
@@ -207,9 +225,20 @@ function(x, constr, byPat=TRUE, semSign=FALSE,
                      value.var="value")
 
     ## reorder variables to return
-    finDF <- with(resDF, data.frame(patID, structure, constraint, observed, compliance,
-                                    deltaV, deltaVpc, deltaD, deltaDpc,
-                                    dstMin, ptMinD, ptMinV, stringsAsFactors=FALSE))
+    finDF <- data.frame(patID=resDF$patID,
+                        structure=resDF$structure,
+                        constraint=resDF$constraint,
+                        observed=resDF$observed,
+                        compliance=resDF$compliance,
+                        deltaV=resDF$deltaV,
+                        deltaVpc=resDF$deltaVpc,
+                        deltaD=resDF$deltaD,
+                        deltaDpc=resDF$deltaDpc,
+                        dstMin=resDF$dstMin,
+                        dstMinRel=resDF$dstMinRel,
+                        ptMinD=resDF$ptMinD,
+                        ptMinV=resDF$ptMinV,
+                        stringsAsFactors=FALSE)
 
     ## sort
     if(!("none" %in% sortBy)) {

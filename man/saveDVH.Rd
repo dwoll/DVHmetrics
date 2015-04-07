@@ -18,7 +18,6 @@ saveDVH(x, file="", ...)
 \code{\link[DVHmetrics]{showConstraint}}
 }
 \examples{
-data(dataMZ)
 res <- showDVH(dataMZ, byPat=TRUE, select=c("HEART", "AMYOCL"))
 \dontrun{
 saveDVH(res, "out.pdf")

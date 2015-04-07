@@ -35,6 +35,8 @@ function(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL,
                "either could not be determined or is different from byPat"))
     }
 
+    guessX <- as.numeric(guessX)
+
     ## if patIDs are selected, filter them here
     if(!is.null(patID)) {
         p <- trimWS(patID, side="both")
@@ -49,15 +51,16 @@ function(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL,
         if(length(x) < 1L) { stop("No selected structure found") }
     }
 
-    ## choose upper x-axis limit (volume) - add 10%
+    ## choose upper x-axis limit (dose) - add 10%
     ## TODO: up to first dose for which all structures reach threshold
-    xMax <- if(guessX) {
+    xMax <- if(guessX == 1L) {
         volGEQ <- lapply(x, function(y) {
             y$dvh[ , "dose"][y$dvh[ , "volumeRel"] >= thresh] })
         1.1*max(unlist(volGEQ))
     } else {
-        1.1*max(vapply(x, function(y) {
-            max(y$dvh[ , "dose"]) }, numeric(1)))
+        1.1*c(guessX,
+              max(vapply(x, function(y) {
+              max(y$dvh[ , "dose"]) }, numeric(1))))
     }
     
     ## title string
@@ -71,8 +74,9 @@ function(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL,
     dvhDFL <- if(cumul) {
         ## cumulative DVH
         lapply(x, function(y) {
-            with(y, data.frame(dvh, patID=patID, structure=structure,
-                               stringsAsFactors=FALSE)) })
+            data.frame(y$dvh, patID=y$patID, structure=y$structure,
+                       stringsAsFactors=FALSE)
+        })
     } else {
         lapply(x, function(y) {
             ## differential DVH - create if not yet present
@@ -81,9 +85,9 @@ function(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL,
                                         toDoseUnit="asis")
             }
 
-            with(y, data.frame(dvhDiff, patID=patID, structure=structure,
-                               stringsAsFactors=FALSE))
-            })
+            data.frame(y$dvhDiff, patID=y$patID, structure=y$structure,
+                       stringsAsFactors=FALSE)
+        })
     }
     
     dvhDF <- do.call("rbind", dvhDFL)
@@ -113,8 +117,11 @@ function(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL,
     }
 
     # ggplot2::theme(legend.justification=c(1, 1), legend.position=c(1, 1))
-    diag <- diag + geom_line(size=1.5) + coord_cartesian(xlim=c(0, xMax)) +
-        ggtitle(strTitle) + theme_bw() + scale_y_continuous(expand = c(0, 0)) +
+    diag <- diag + geom_line(size=1.5) +
+        coord_cartesian(xlim=c(0, xMax)) + expand_limits(y=0) +
+        ggtitle(strTitle) +
+        theme_bw() +
+        scale_y_continuous(expand=c(0, 0.6)) +
         xlab(paste0("Dose [",   x[[1]]$doseUnit,   "]")) +
         ylab(paste0("Volume [", volUnit, "]"))
 

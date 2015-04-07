@@ -13,7 +13,6 @@
 \code{\link[DVHmetrics]{checkConstraint}}
 }
 \examples{
-data(dataMZ)
 res <- checkConstraint(dataMZ, c("D10CC < 10Gy", "V20Gy < 20\%"))
 \dontrun{
 saveConstraint(res, file="constrResults.txt", sep="\t")

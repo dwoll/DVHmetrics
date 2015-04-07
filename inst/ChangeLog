@@ -1,18 +1,19 @@
-$Date: 2015-02-20 21:12:29 +0000 (Fri, 20 Feb 2015) $
+$Date: 2015-04-07 15:12:29 +0000 (Tue, 07 Apr 2015) $
 
 DVHMETRICS RELEASE VERSIONS at http://cran.r-project.org/
 
-Version 0.1.0.900 (February 20, 2015)
+Version 0.2 (April 7, 2015)
     * Shiny web application
-      - add settings for EUD and (N)TCP parameters in metrics
+      - add settings for gEUD and (N)TCP parameters in metrics
         and constraint
       - exact matching for selected patients and structures
         instead of regex-matching
-      - fix bug with selection of patients and structures in 'Show DVH'
-      - fix bug with DVHs for different structure sets
+      - fix bug: selection of patients and structures in 'Show DVH'
+      - fix bug: DVHs for different structure sets
     * readDVH()
       - new option 'add' which allows to merge previously loaded data
         with new data read from file (regardless of TPS origin)
+      - fix bug: read first DVH line as well
     * convertDVH()
       - new function to convert between differential and cumulative DVH
         with optional spline interpolation / kernel smoothing for the
@@ -23,16 +24,32 @@ Version 0.1.0.900 (February 20, 2015)
     * checkConstraint(), getMetric()
       - add DEUD to calculate generalized equivalent uniform dose
         (gEUD), DNTCP to calculate normal tissue complication
-        probability (NTCP according to Lyman probit, Niemierko
-        logit, Kaellman Poisson model), and DTCP for tumor control
-        probability (TCP).
+        probability (NTCP), and DTCP for tumor control probability (TCP)
       - add option 'interp' to choose DVH interpolation method between
         linear interpolation, a cubic monotone Hermite spline, and
         cubic local polynomial kernel regression
+      - now work with artificial DVHs with only two points, possibly
+        horizontal or vertical
+    * checkConstraint()
+      - fix bug: correct projection of constraint point onto line
+        segments as affine (not linear) subspaces
     * getMetric()
-      - add generalized equivalent uniform dose (gEUD)
       - if the TPS does not export dose minimum, maximum, mean, median,
         standard deviation -> calculate based on the differential DVH
+    * getEUD()
+      - new convenience function to calculate generalized equivalent
+        uniform dose from DVH, DVH list, or DVH list of lists
+    * getNTCP()
+      - new convenience function to calculate normal tissue complication
+        probability from DVH, DVH list, or DVH list of lists according
+        to Lyman probit, Niemierko logit, Kaellman Poisson model
+    * getTCP()
+      - new convenience function to calculate tumor control probability
+        from DVH, DVH list, or DVH list of lists
+    * getDMEAN()
+      - new convencience function to calculate DMEAN, DMEDIAN, DMIN, DMAX,
+        DMODE, DSD from the (interpolated) differential DVH instead of
+        relying on values exported by the TPS.
     * getBED()
       - new function for the biologically effective dose (BED)
     * getEQD2()

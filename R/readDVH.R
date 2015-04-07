@@ -1,21 +1,28 @@
 #####---------------------------------------------------------------------------
 ## returns a list (1 component per DVH file) of lists (1 component = 1 list per structure)
-readDVH <- function(x, type=c("Eclipse", "Cadplan", "Masterplan"),
+readDVH <- function(x, type=c("Eclipse", "Cadplan", "Masterplan", "Pinnacle"),
                     planInfo=FALSE, add) {
     type <- match.arg(type)
 
     dvhRawL <- if(missing(x)) {
-        parseDVH()
+        parseDVH(type=type)
     } else {
-        parseDVH(x)
+        parseDVH(x, type=type)
     }
-
+    
     parseFun <- switch(type,
                        Eclipse=parseEclipse,
                        Cadplan=parseCadplan,
-                       Masterplan=parseMasterplan)
-
-    dvhLL <- lapply(dvhRawL, parseFun, planInfo=planInfo)
+                       Masterplan=parseMasterplan,
+                       Pinnacle=mergePinnaclePat)
+    
+    dvhLL <- if(length(dvhRawL) >= 1L) {
+        res <- Map(parseFun, dvhRawL, planInfo=planInfo)
+        Filter(Negate(is.null), res)
+    } else {
+        warning("No files selected")
+        NULL
+    }
 
     ## check if result should be added to existing object
     dvhLL <- if(!missing(add)) {
@@ -41,8 +48,10 @@ readDVH <- function(x, type=c("Eclipse", "Cadplan", "Masterplan"),
     }
 
     ## organized by patient (top level)
-    attr(dvhLL, which="byPat") <- TRUE
-    class(dvhLL) <- "DVHLstLst"
+    if(!is.null(dvhLL)) {
+        attr(dvhLL, which="byPat") <- TRUE
+        class(dvhLL) <- "DVHLstLst"
+    }
 
     return(dvhLL)
 }

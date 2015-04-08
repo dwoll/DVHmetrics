@@ -6,7 +6,7 @@
 \description{
 Functionality for analyzing dose-volume histograms
 (DVH) in radiation oncology: Read DVH text files,
-calculate DVH metrics, show DVH diagrams,
+calculate DVH metrics, gEUD, NTCP, TCP, show DVH diagrams,
 check and visualize quality assurance constraints
 for the DVH. Includes web-based graphical user interface.
 }

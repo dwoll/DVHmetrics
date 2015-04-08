@@ -10,6 +10,7 @@
 
 ## Long term
 
+ * Jupyter notebook
  * shiny app: better way to save old data instead of temp-file
  * getDMEAN() smooth.spline() -> tol must be strictly positive
  * getDMEAN() bandwidth choice for locpoly() when dpill() fails

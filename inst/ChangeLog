@@ -13,6 +13,8 @@ Version 0.2 (April 7, 2015)
     * readDVH()
       - new option 'add' which allows to merge previously loaded data
         with new data read from file (regardless of TPS origin)
+      - add support for data exported by Pinnacle3 that conforms to a
+        specific directory layout / file structure explained in the docs
       - fix bug: read first DVH line as well
     * convertDVH()
       - new function to convert between differential and cumulative DVH

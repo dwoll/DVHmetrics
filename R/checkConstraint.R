@@ -132,25 +132,26 @@ function(x, constr, byPat=TRUE, semSign=FALSE,
     ## make sign of deltaD/deltaV semantically indicate compliance
     ## negative -> compliance, positive -> no compliance
     ## compliance may be NA -> catch first to leave sign unchanged
-    resDF$compliance[is.na(resDF$compliance)] <- TRUE
+    complianceTF <- resDF$compliance
+    complianceTF[is.na(complianceTF)] <- TRUE
 
     if(semSign) {
-        resDF$deltaD    <- ifelse(resDF$compliance,
+        resDF$deltaD    <- ifelse(complianceTF,
                                   -1*resDF$deltaD   *sign(resDF$deltaD),
                                      resDF$deltaD   *sign(resDF$deltaD))
-        resDF$deltaDpc  <- ifelse(resDF$compliance,
+        resDF$deltaDpc  <- ifelse(complianceTF,
                                   -1*resDF$deltaDpc *sign(resDF$deltaDpc),
                                      resDF$deltaDpc *sign(resDF$deltaDpc))
-        resDF$deltaV    <- ifelse(resDF$compliance,
+        resDF$deltaV    <- ifelse(complianceTF,
                                   -1*resDF$deltaV   *sign(resDF$deltaV),
                                      resDF$deltaV   *sign(resDF$deltaV))
-        resDF$deltaVpc  <- ifelse(resDF$compliance,
+        resDF$deltaVpc  <- ifelse(complianceTF,
                                   -1*resDF$deltaVpc *sign(resDF$deltaVpc),
                                      resDF$deltaVpc *sign(resDF$deltaVpc))
-        resDF$dstMin    <- ifelse(resDF$compliance,
+        resDF$dstMin    <- ifelse(complianceTF,
                                   -1*resDF$dstMin   *sign(resDF$dstMin),
                                      resDF$dstMin   *sign(resDF$dstMin))
-        resDF$dstMinRel <- ifelse(resDF$compliance,
+        resDF$dstMinRel <- ifelse(complianceTF,
                                   -1*resDF$dstMinRel*sign(resDF$dstMinRel),
                                      resDF$dstMinRel*sign(resDF$dstMinRel))
     }

@@ -1,6 +1,7 @@
 # TODO
 ## Medium term
 
+ * DVHshiny vignette -> document BED/EQD2 pane
  * allow `checkConstraint(x, "DNTCP < 50%")` instead of `0.5Gy`
  * getMetric(), checkConstraint(), readDVH() -> multicore support
  * read files exported from TomoTherapy Hi-Art, iPlan, BrainLab

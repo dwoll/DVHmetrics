@@ -1,8 +1,8 @@
 \name{getIsoEffD}
 \alias{getIsoEffD}
-\title{2Gy fractions biologically equivalent dose (EQD2)}
+\title{Isoeffective dose calculation}
 \description{
-Convert given (fractional) dose into an isoeffective (fractional) dose for a different total dose / fractionation schedule according to the linear-quadratic model.
+Convert given (fractional) dose into a corresponding (fractional) dose for a different total dose / fractionation schedule according to the linear-quadratic model.
 }
 \usage{
 getIsoEffD(D1=NULL,  D2=NULL,
@@ -24,15 +24,19 @@ Either calculate \code{D2} based on \code{D1}, \code{fd1}, \code{fd2}, and \code
 Instead of providing \code{D1} (or \code{D2}) directly, \code{fd1} AND \code{fn1} (or \code{fd2} AND \code{fn2}) can be given.
 }
 \value{
-The (vector of) isoeffective (fractional) dose value(s)
+The (vector of) corresponding (fractional) dose value(s)
 }
 \references{
-Barendsen, G. W. (1982) Dose fractionation, dose-rate and iso-effect relationships for normal-tissue response. International Journal of Radiation Oncology Biology Physics 8(11), 1981-1997.
+IAEA, & ICRU. (2008). Relative biological effectiveness in ion-beam therapy (Tech. Rep. No. IAEA-TR 461). Vienna, Austria: IAEA (International Atomic Energy Agency) and ICRU (International
+Commission on Radiation Units and Measurements).
 }
 \seealso{
 \code{\link[DVHmetrics]{getBED}},
 \code{\link[DVHmetrics]{getEQD2}}
 }
 \examples{
-getIsoEffD(D1=50, fd1=2.5, fd2=3, ab=c(2, 3, 4))
+# reference: 70Gy in 2Gy fractions
+# new fractionation: 3Gy fractions
+# calculate corresponding dose
+(D2 <- getIsoEffD(D1=70, fd1=2, fd2=3, ab=c(3.5, 10)))
 }

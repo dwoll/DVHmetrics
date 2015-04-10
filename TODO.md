@@ -1,9 +1,11 @@
 # TODO
 ## Medium term
 
+ * `getEQD2()`, `getIsoEffD()` methods for `DVHs`, `DVHLst`, `DVHLstLst`
  * DVHshiny vignette -> document BED/EQD2 pane
  * allow `checkConstraint(x, "DNTCP < 50%")` instead of `0.5Gy`
  * `getMetric()`, `checkConstraint()`, `readDVH()` -> multicore support
+ * `readConstraint()` needs to be platform dependent (`file.choose()`)
  * read files exported from TomoTherapy Hi-Art, iPlan, BrainLab
  * `readDVH()` -> if `x` is a directory, read all files in it
  * `readDVH()` -> if `x` is a zip file, read all files in it
@@ -11,8 +13,8 @@
 ## Long term
 
  * Jupyter notebook
- * shiny app: better way to save old data instead of temp-file
- * `getDMEAN()` `smooth.spline()` -> tol must be strictly positive
+ * Shiny app: better way to save old data instead of temp-file
+ * `getDMEAN()` `smooth.spline()` -> `tol` must be strictly positive
  * `getDMEAN()` bandwidth choice for `locpoly()` when `dpill()` fails
  * `getDMEAN()` adaptive binning grid size for `locpoly()` with small bandwidth
  * merge DVH files from the same patient ID

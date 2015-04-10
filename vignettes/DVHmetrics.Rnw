@@ -148,7 +148,7 @@ vignette("DVHshiny")
 %%%%---------------------------------------------------------------------------
 %%%%---------------------------------------------------------------------------
 
-To import DVH data into \textsf{R}, it should be exported as a plain text file from Varian Eclipse$^{\mathrm{TM}}$ (Versions 10--13), from CadPlan$^{\mathrm{TM}}$, Pinnacle$^{3\,\mathrm{TM}}$ (version 9), or from Oncentra MasterPlan$^{\mathrm{TM}}$ (version 4.3).\footnote{Pinnacle$^{3}$ files have to be exported such that information from one patient is contained in one directory. The directory layout and required files are explained in \texttt{help(readDVH)}.} Cumulative and differential DVHs are supported, as are sum plans. The measurement unit for absolute dose can be Gy or cGy, the measurement unit for volume has to be cm$^{3}$. DVH text files can be read with \texttt{readDVH()}.
+To import DVH data into \textsf{R}, it should be exported as a plain text file from Varian Eclipse$^{\mathrm{TM}}$ (Versions 10--13), from CadPlan$^{\mathrm{TM}}$, Pinnacle$^{3\,\mathrm{TM}}$ (version 9), or from Oncentra MasterPlan$^{\mathrm{TM}}$ (version 4.3).\footnote{Pinnacle$^{3}$ files have to be exported such that information from one patient is contained in one directory. The directory layout and required files are explained in \texttt{help(readDVH)}.} DVH files from different TPSs can be combined into one set of DVHs. Cumulative and differential DVHs are supported, as are sum plans. The measurement unit for absolute dose can be Gy or cGy, the measurement unit for volume has to be cm$^{3}$. Multiple DVH text files can be read with \texttt{readDVH()} in one step.
 
 Example: Read one Eclipse file \texttt{dvhFile.txt} from folder \texttt{"c:/folder"} and save the result in object \texttt{res}.\footnote{Note that the way to indicate the path to these files is different from the usual Windows style path: Instead of writing the backslash \texttt{"\textbackslash"} as folder separator, the forward slash \texttt{"/"} must be used.}
 
@@ -156,7 +156,7 @@ Example: Read one Eclipse file \texttt{dvhFile.txt} from folder \texttt{"c:/fold
 res <- readDVH("c:/folder/dvhFile.txt", type="Eclipse")
 @
 
-Basic information about the files can be displayed with \texttt{print()}, or just by entering the name of a DVH object at the prompt -- here used with built-in DVHs from three patients with radiotherapy, each with seven heart structures.\footnote{Data courtesy of Department of Radiation Oncology (Prof. Dr. Schmidberger), University Medical Center Mainz, Germany.}
+Basic information about the files can be displayed with \texttt{print()}, or just by entering the name of a DVH object at the prompt -- here used with built-in DVHs from three patients with radiotherapy, each with seven heart structures.\footnote{Sample data courtesy of Department of Radiation Oncology (Prof. Dr. Schmidberger), University Medical Center Mainz, Germany.}
 
 <<cReadData1b, echo=TRUE>>=
 print(dataMZ)
@@ -213,8 +213,8 @@ Function \texttt{getMetric()} calculates freely-defined DVH metrics based on dat
 \item \texttt{"DSD"}: The standard deviation of the dose in the structure.
 \item \texttt{"DRX"}: The prescription dose.
 \item \texttt{"DEUD"}: The generalized equivalent uniform dose (gEUD, \citeNP{Niemierko1999,Wu2002}). This can be based on EQD$_{2}$ values if information on the fractionation is provided as well \cite{IAEA2008}.
-\item \texttt{"DNTCP"}: The normal tissue complication probability (NTCP) according to the Lyman \citeyear{Lyman1985} probit model, the Niemierko \citeyear{Niemierko1999} logit model, or the K\"{a}llman \citeyear{Kallman1992} Poisson model. This can be based on EQD$_{2}$ values if information on the fractionation is provided as well.
-\item \texttt{"DTCP"}: The tumor control probability (TCP) according to the Lyman probit model, the Niemierko logit model, or the K\"{a}llman Poisson model. This can be based on EQD$_{2}$ values if information on the fractionation is provided as well.
+\item \texttt{"DNTCP"}: The normal tissue complication probability (NTCP) according to the Lyman \citeyear{Lyman1985} probit model, the Niemierko \citeyear{Niemierko1999} logit model, or the K\"{a}llman \citeyear{Kallman1992} Poisson (or relative seriality) model. This can be based on EQD$_{2}$ values if information on the fractionation is provided as well.
+\item \texttt{"DTCP"}: The tumor control probability (TCP) according to the same models as NTCP.
 \end{itemize}
 \item A \emph{free} DVH metric is a character string which has three mandatory elements and one optional element in the following order:
 \begin{itemize}
@@ -259,9 +259,12 @@ Metric                & Reference       & Unit reference & Result    & Unit resu
 \texttt{"D10CC"}      & absolute volume & cm$^{3}$ & absolute dose   & as in DVH \\
 \texttt{"D10\%\_cGy"} & relative volume & \%       & absolute dose   & cGy \\\hline
 \texttt{"DMEAN"}      & ---             & ---      & absolute dose   & as in DVH \\
+\texttt{"DEUD"}       & ---             & ---      & absolute dose   & as in DVH \\
 \texttt{"DSD"}        & ---             & ---      & absolute dose   & as in DVH \\
 \texttt{"DMIN"}       & ---             & ---      & absolute dose   & as in DVH \\
 \texttt{"DMAX"}       & ---             & ---      & absolute dose   & as in DVH \\\hline
+\texttt{"DNTCP"}      & ---             & ---      & probability     & --- \\
+\texttt{"DTCP"}       & ---             & ---      & probability     & --- \\\hline
 \end{tabular}
 \end{table}
 
@@ -354,11 +357,15 @@ dmean <- getDMEAN(dataMZ[[1]])
 subset(dmean, select=c(doseAvg, doseMed, doseMin, doseMax))
 @
 
+gEUD is calculated by \texttt{getEUD()}.
+
 <<cDmean2>>=
 # note that different tissues should have different parameter values,
 # this is just for demonstration purposes
 getEUD(dataMZ[[1]], EUDa=2)
 @
+
+NTCP and TCP are calculated by \texttt{getNTCP()} and \texttt{getTCP()}, respectively.
 
 <<cDmean3>>=
 # note that different tissues should have different parameter values,
@@ -500,7 +507,7 @@ For checking constraints, and for calculating the difference between the observe
 
 Constraints are checked with \texttt{checkConstraint()}. The output returns information on the observed value of the tested metric, on the compliance with respect to this metric, and on the absolute/relative deviation in volume as well as in dose to the specified constraint value. The units for the absolute deviation are those used in the constraint expression. When the constraint defines a point in dose-volume space, \texttt{checkConstraint()} reports another quantitative measure for the degree of violation: The closest point on the DVH to the constraint as well as its Euclidean distance to the constraint point.
 
-For calculating the minimal Euclidean distance between the constraint point and the DVH, the constraint point is orthogonally projected onto each DVH segment between (interpolated) DVH nodes. The relative Euclidean distance is this minimal distance divided by the distance of the constraint point to the closer one of both axes (dose and volume).
+For calculating the minimal Euclidean distance between the constraint point and the DVH, the constraint point is orthogonally projected onto each DVH segment between (interpolated) DVH nodes. The relative Euclidean distance is the minimum of these distances divided by the distance of the constraint point to the closest axis (dose and volume) along the same direction. In doing so, the devation from the expected volume per dose and the devation from the expected dose per volume are condensed in a single metric.
 
 As an example, we use the DVHs and corresponding constraints that are built into the \texttt{DVHmetrics} package.
 
@@ -551,13 +558,19 @@ saveDVH(sc, file="c:/folder/dvhConstraint.pdf")
 %%%%---------------------------------------------------------------------------
 %%%%---------------------------------------------------------------------------
 
-The linear-quadratic model gives the following formula for the biologically effective dose (BED) with total dose $D$, fraction dose $d$ and a tissue-dependent $\alpha / \beta$ ratio \cite{IAEA2008}.
+The linear-quadratic model for the fraction of surviving cells $S$ after dose $d$ is \cite{IAEA2008}:
+
+$$
+S = e^{-(\alpha d + \beta d^{2})}
+$$
+
+According to the model, the biologically effective dose (BED) with total dose $D$, fraction dose $d$ and a tissue-dependent $\alpha / \beta$ ratio is:
 
 $$
 \mathrm{BED} = D \left[1 + \frac{d}{\alpha / \beta}\right]
 $$
 
-The isoeffective dose for two different fractionation schemes can be calculated from solving this equation for the desired measure:
+Given two different fractionation schemes, the total dose $D_{2}$ for the new fraction dose $d_{2}$ that corresponds to the total dose $D_{1}$ from the reference fraction dose $d_{1}$ can be calculated from solving the following equation for the desired measure:
 
 $$
 \frac{D_{2}}{D_{1}} = \frac{d_{1} + (\alpha / \beta)}{d_{2} + (\alpha / \beta)}
@@ -566,7 +579,7 @@ $$
 As a special case, the dose in 2Gy fractions biologically equivalent dose (EQD$_{2}$) is given by:
 
 $$
-\mathrm{EQD}_{2} = D_{1} \frac{d_{1} + (\alpha / \beta)}{2 + (\alpha / \beta)} = \frac{\mathrm{BED}}{1 + \frac{2}{\alpha / \beta}}
+\mathrm{EQD}_{2} = D_{1} \cdot \frac{d_{1} + (\alpha / \beta)}{2 + (\alpha / \beta)} = \frac{\mathrm{BED}}{1 + \frac{2}{\alpha / \beta}}
 $$
 
 The following convenience functions allow for easy calculation of these measures:
@@ -574,7 +587,7 @@ The following convenience functions allow for easy calculation of these measures
 <<cBED1>>=
 getBED(D=50, fd=2.5, ab=c(2, 3, 4))
 getEQD2(D=50, fd=2.5, ab=c(2, 3, 4))
-getIsoEffD(D1=50, fd1=2.5, fd2=3, ab=c(2, 3, 4))
+getIsoEffD(D1=70, fd1=2, fd2=3, ab=c(3.5, 10))
 @
 
 %%%%---------------------------------------------------------------------------

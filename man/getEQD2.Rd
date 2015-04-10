@@ -14,13 +14,14 @@ getEQD2(D=NULL, fd=NULL, fn=NULL, ab=NULL)
   \item{ab}{alpha/beta ratio for the relevant tissue.}
 }
 \details{
-EQD2 is a special case of isoeffective dose with fractional dose \code{d2=2}, see \code{\link[DVHmetrics]{getIsoEffD}}.
+EQD2 is a special case of isoeffective dose calculation with fractional dose \code{d2=2}, see \code{\link[DVHmetrics]{getIsoEffD}}.
 }
 \value{
 The (vector of) EQD2 value(s)
 }
 \references{
-Dale, R. G. (1985). The application of the linear-quadratic dose-effect equation to fractionated and protracted radiotherapy. British Journal of Radiology, 58(690), 515-528.
+IAEA, & ICRU. (2008). Relative biological effectiveness in ion-beam therapy (Tech. Rep. No. IAEA-TR 461). Vienna, Austria: IAEA (International Atomic Energy Agency) and ICRU (International
+Commission on Radiation Units and Measurements).
 }
 \seealso{
 \code{\link[DVHmetrics]{getBED}},

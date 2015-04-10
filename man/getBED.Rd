@@ -20,7 +20,8 @@ The (vector of) BED value(s)
 Fowler, J. F. (2010). 21 years of Biologically Effective Dose. British Journal of Radiology, 83, 554-568.
 }
 \seealso{
-\code{\link[DVHmetrics]{getEQD2}}
+\code{\link[DVHmetrics]{getEQD2}},
+\code{\link[DVHmetrics]{getIsoEffD}}
 }
 \examples{
 getBED(D=50, fd=2.5, ab=c(2, 3, 4))

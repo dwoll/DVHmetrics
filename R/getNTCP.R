@@ -91,7 +91,7 @@ function(x,
         EUDa <- 1/NTCPn
     }
 
-    EUD  <- getEUD(x, EUDa=EUDa, EUDfn=EUDfn, EUDab=EUDab)
+    EUD  <- getEUD(x, EUDa=EUDa, EUDfn=EUDfn, EUDab=EUDab)$EUD
     NTCP <- if(NTCPtype == "probit") {
         ## Lyman probit model based on EUD
         ## quantile at which to evaluate standard normal cdf

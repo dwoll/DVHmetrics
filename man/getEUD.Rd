@@ -24,7 +24,7 @@ getEUD(x, EUDa, EUDfn=NULL, EUDab=NULL, ...)
   \item{...}{Ignored. Used to catch additional arguments passed from \code{\link[DVHmetrics]{getMetric}}.}
 }
 \value{
-The (vector of) gEUD value(s)
+A data frame with variables \code{EUD}, \code{patID}, and \code{structure}.
 }
 \references{
 Niemierko, A. (1999). A generalized concept of equivalent uniform dose. Medical Physics, 26(6), 1100.

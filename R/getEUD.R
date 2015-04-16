@@ -28,13 +28,13 @@ function(x, EUDa, EUDfn=NULL, EUDab=NULL, ...) {
 
     ## get differential DVH
     xD <- convertDVH(x, toType="differential", toDoseUnit="asis", perDose=FALSE)
-    
+
     ## convert dose to EQD2 if possible
     volume <- xD$dvh[ , "volume"]
     dose   <- if(!is.null(EUDfn) && !is.null(EUDab)) {
         Dmax <- getMetric(x, "DMAX")$DMAX
         fd   <- Dmax/EUDfn
-        getEQD2(xD$dvh[ , "dose"], D=Dmax, fd=fd, ab=EUDab)
+        getEQD2(D=xD$dvh[ , "dose"], fd=fd, ab=EUDab)$EQD2
     } else {
         xD$dvh[ , "dose"]
     }
@@ -47,17 +47,25 @@ function(x, EUDa, EUDfn=NULL, EUDab=NULL, ...) {
 		gEUD <- NA_real_
 	}
 
-    return(gEUD) 
+    data.frame(EUD=gEUD,
+               patID=x$patID,
+               structure=x$structure)
 }
 
 getEUD.DVHLst <-
 function(x, EUDa, EUDfn=NULL, EUDab=NULL, ...) {
-    unlist(Map(getEUD, x,
-               EUDa=list(EUDa), EUDfn=list(EUDfn), EUDab=list(EUDab)), recursive=FALSE)
+    EUDl  <- Map(getEUD, x,
+                 EUDa=list(EUDa), EUDfn=list(EUDfn), EUDab=list(EUDab))
+    EUDdf <- do.call("rbind", EUDl)
+    rownames(EUDdf) <- NULL
+    EUDdf
 }
 
 getEUD.DVHLstLst <-
 function(x, EUDa, EUDfn=NULL, EUDab=NULL, ...) {
-    unlist(Map(getEUD, x,
-               EUDa=list(EUDa), EUDfn=list(EUDfn), EUDab=list(EUDab)), recursive=FALSE)
+    EUDl  <- Map(getEUD, x,
+                 EUDa=list(EUDa), EUDfn=list(EUDfn), EUDab=list(EUDab))
+    EUDdf <- do.call("rbind", EUDl)
+    rownames(EUDdf) <- NULL
+    EUDdf
 }

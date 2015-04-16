@@ -1,5 +1,9 @@
 \name{getIsoEffD}
 \alias{getIsoEffD}
+\alias{getIsoEffD.default}
+\alias{getIsoEffD.DVHs}
+\alias{getIsoEffD.DVHLst}
+\alias{getIsoEffD.DVHLstLst}
 \title{Isoeffective dose calculation}
 \description{
 Convert given (fractional) dose into a corresponding (fractional) dose for a different total dose / fractionation schedule according to the linear-quadratic model.
@@ -8,9 +12,25 @@ Convert given (fractional) dose into a corresponding (fractional) dose for a dif
 getIsoEffD(D1=NULL,  D2=NULL,
            fd1=NULL, fd2=NULL,
            fn1=NULL, fn2=NULL, ab=NULL)
+
+\method{getIsoEffD}{default}(D1=NULL,  D2=NULL,
+           fd1=NULL, fd2=NULL,
+           fn1=NULL, fn2=NULL, ab=NULL)
+
+\method{getIsoEffD}{DVHs}(D1=NULL,  D2=NULL,
+           fd1=NULL, fd2=NULL,
+           fn1=NULL, fn2=NULL, ab=NULL)
+
+\method{getIsoEffD}{DVHLst}(D1=NULL,  D2=NULL,
+           fd1=NULL, fd2=NULL,
+           fn1=NULL, fn2=NULL, ab=NULL)
+
+\method{getIsoEffD}{DVHLstLst}(D1=NULL,  D2=NULL,
+           fd1=NULL, fd2=NULL,
+           fn1=NULL, fn2=NULL, ab=NULL)
 }
 \arguments{
-  \item{D1}{\code{numeric} vector. Total dose 1.}
+  \item{D1}{Default: \code{numeric} vector. Total dose 1. Alternative: One cumulative DVH (object of class \code{DVHs}, multiple cumulative DVHs from one patient with multiple structures (object of class \code{DVHLst}), or multiple cumulative DVHs from many patients, each with multiple structures (object of class \code{DVHLstLst}). See \code{\link[DVHmetrics]{readDVH}}. If some kind of \code{DVH} object, \code{fn1}, and \code{fd2} must be given.}
   \item{D2}{\code{numeric} vector. Total dose 2.}
   \item{fd1}{\code{numeric} vector. Fractional dose 1.}
   \item{fd2}{\code{numeric} vector. Fractional dose 2.}
@@ -24,7 +44,7 @@ Either calculate \code{D2} based on \code{D1}, \code{fd1}, \code{fd2}, and \code
 Instead of providing \code{D1} (or \code{D2}) directly, \code{fd1} AND \code{fn1} (or \code{fd2} AND \code{fn2}) can be given.
 }
 \value{
-The (vector of) corresponding (fractional) dose value(s)
+The (vector of) corresponding (fractional) dose value(s). If \code{D} is some kind of \code{DVH} object, the same kind of object is returned with the individual dose values converted to \code{D2}.
 }
 \references{
 IAEA, & ICRU. (2008). Relative biological effectiveness in ion-beam therapy (Tech. Rep. No. IAEA-TR 461). Vienna, Austria: IAEA (International Atomic Energy Agency) and ICRU (International

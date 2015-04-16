@@ -56,11 +56,11 @@ function(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL,
     xMax <- if(guessX == 1L) {
         volGEQ <- lapply(x, function(y) {
             y$dvh[ , "dose"][y$dvh[ , "volumeRel"] >= thresh] })
-        1.1*max(unlist(volGEQ))
+        1.1*max(unlist(volGEQ), na.rm=TRUE)
     } else {
         1.1*c(guessX,
               max(vapply(x, function(y) {
-              max(y$dvh[ , "dose"]) }, numeric(1))))
+              max(y$dvh[ , "dose"], na.rm=TRUE) }, numeric(1))))
     }
     
     ## title string

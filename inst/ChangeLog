@@ -2,6 +2,12 @@ $Date: 2015-04-07 15:12:29 +0000 (Tue, 07 Apr 2015) $
 
 DVHMETRICS RELEASE VERSIONS at http://cran.r-project.org/
 
+Version 0.3 (April 7, 2015)
+    * getBED(), getEQD2(), getIsoEffD()
+      - add methods to directly convert all doses in (list of) DVHs
+    * getEUD()
+      - fix bug: gEUD calculation based on EQD2
+
 Version 0.2 (April 7, 2015)
     * Shiny web application
       - add settings for gEUD and (N)TCP parameters in metrics

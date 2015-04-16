@@ -1,24 +1,13 @@
 #####---------------------------------------------------------------------------
-## implement recycling rule for function arguments
+## EQD2 linear quadratic model
 #####---------------------------------------------------------------------------
 
-recycle <-
-function(...) {
-    dots <- list(...)
-    maxL <- max(sapply(dots, length))
-    lapply(dots, rep, length=maxL)
-}
-
-#####---------------------------------------------------------------------------
-## BED linear quadratic model
-#####---------------------------------------------------------------------------
-
-getBED <-
+getEQD2 <-
 function(D=NULL, fd=NULL, fn=NULL, ab=NULL) {
-    UseMethod("getBED")
+    UseMethod("getEQD2")
 }
 
-getBED.default <-
+getEQD2.default <-
 function(D=NULL, fd=NULL, fn=NULL, ab=NULL) {
     stopifnot(!is.null(fd), !is.null(ab))
 
@@ -30,12 +19,12 @@ function(D=NULL, fd=NULL, fn=NULL, ab=NULL) {
 
     keepAB <- ab > 0
     if(any(!keepAB)) {
-		warning("'ab' must be > 0")
+    	warning("'ab' must be > 0")
     }
         
     keepFD <- fd > 0
     if(any(!keepFD)) {
-        warning("'fd' must be > 0")
+	    warning("'fd' must be > 0")
     }
 
     if(is.null(D)) {
@@ -60,41 +49,43 @@ function(D=NULL, fd=NULL, fn=NULL, ab=NULL) {
         keep <- keepD & keepAB & keepFD
     }
 
-    BED <- rep(NA_real_, times=length(D))
-    BED[keep] <- D[keep] * (1 + (fd[keep]/ab[keep]))
-    data.frame(BED=BED,
-               fractDose=fd)
+    BED <- D * (1 + (fd/ab))
+
+    ## EQD2 <- D * (fd + ab) / (2 + ab)
+    EQD2 <- rep(NA_real_, times=length(D))
+    EQD2[keep] <- BED[keep] / (1 + (2/ab[keep]))
+
+    data.frame(EQD2=EQD2,
+               fractDose=fd,
+               ab=ab)
 }
 
-getBED.DVHs <-
+getEQD2.DVHs <-
 function(D=NULL, fd=NULL, fn=NULL, ab=NULL) {
     stopifnot(!is.null(D), !is.null(fn))
 
     Dmax <- getMetric(D, "DMAX")$DMAX
     fd   <- Dmax/fn
-    BED  <- getBED(D=Dmax, fd=fd, ab=ab)
-    cbind(BED,
-          data.frame(patID=D$patID,
-                     structure=D$structure,
-                     stringsAsFactors=FALSE))
+    D$dvh[ , "dose"] <- getEQD2(D=D$dvh[ , "dose"], fd=fd, ab=ab)$EQD2
+    D
 }
 
-getBED.DVHLst <-
+getEQD2.DVHLst <-
 function(D=NULL, fd=NULL, fn=NULL, ab=NULL) {
     stopifnot(!is.null(D))
 
-    BEDl  <- Map(getBED, D, fd=list(fd), fn=list(fn), ab=list(ab))
-    BEDdf <- do.call("rbind", BEDl)
-    rownames(BEDdf) <- NULL
-    BEDdf
+    EQD2l <- Map(getEQD2, D, fd=list(fd), fn=list(fn), ab=list(ab))
+    class(EQD2l) <- "DVHLst"
+    attr(EQD2l, which="byPat") <- TRUE
+    EQD2l
 }
 
-getBED.DVHLstLst <-
+getEQD2.DVHLstLst <-
 function(D=NULL, fd=NULL, fn=NULL, ab=NULL) {
     stopifnot(!is.null(D))
 
-    BEDl  <- Map(getBED, D, fd=list(fd), fn=list(fn), ab=list(ab))
-    BEDdf <- do.call("rbind", BEDl)
-    rownames(BEDdf) <- NULL
-    BEDdf
+    EQD2ll <- Map(getEQD2, D, fd=list(fd), fn=list(fn), ab=list(ab))
+    class(EQD2ll) <- "DVHLstLst"
+    attr(EQD2ll, which="byPat") <- TRUE
+    EQD2ll
 }

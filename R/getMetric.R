@@ -49,8 +49,10 @@ function(x, metric, patID, structure,
             cf * x$dvh[ , "dose"]
         }
 
-        if(interp == "linear") {  # rule=1 -> no interpolation beyond bounds
-            res <- try(approx(vol, dose, val, method="linear", rule=1)$y)
+        if(interp == "linear") {
+            ## rule=1 -> no interpolation beyond bounds
+            ## ties=max because of DVHs with few unique nodes
+            res <- try(approx(vol, dose, val, method="linear", rule=1, ties=max)$y)
             if(!inherits(res, "try-error")) {
                 res
             } else {
@@ -67,7 +69,7 @@ function(x, metric, patID, structure,
                 NA_real_
             }
         } else if(interp == "spline") {  # does interpolation beyond bounds
-            sfun <- splinefun(vol, dose, method="monoH.FC")
+            sfun <- splinefun(vol, dose, method="monoH.FC", ties=max)
             sfun(val)
         }
     }
@@ -77,10 +79,9 @@ function(x, metric, patID, structure,
     getVolume <- function(val, type="relative", unitRef, unitDV) {
         if(type == "relative") {         # given dose is relative
             dose <- x$dvh[ , "doseRel"]
-            val  <- val/100
 
             ## check if max dose is smaller than requested % of prescribed dose
-            if(val > 1) {
+            if(val > 100) {
                 warning("max dose is less than requested dose")
                 return(0)
             }

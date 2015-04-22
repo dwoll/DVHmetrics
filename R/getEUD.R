@@ -49,7 +49,8 @@ function(x, EUDa, EUDfn=NULL, EUDab=NULL, ...) {
 
     data.frame(EUD=gEUD,
                patID=x$patID,
-               structure=x$structure)
+               structure=x$structure,
+               stringsAsFactors=FALSE)
 }
 
 getEUD.DVHLst <-

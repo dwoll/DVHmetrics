@@ -15,7 +15,7 @@ parseMetric <- function(x, doseUnit=NULL, volUnit=NULL) {
     unitDV_ <- sub(pattern, "\\4", x)   # measurement unit for output volume or dose
 
     ## remove _ from unitDV_
-    unitDV <- ifelse(unitDV_ != "", sub("_", "", unitDV_), NA_character_)
+    unitDV <- ifelse(nzchar(unitDV_), sub("_", "", unitDV_), NA_character_)
 
     ## special dose/probability cases
     specDose  <- valRef %in% c("MIN", "MAX", "MEAN", "MEDIAN", "RX", "SD", "EUD", "EUD2", "NTCP", "TCP")

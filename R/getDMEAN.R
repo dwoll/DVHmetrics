@@ -11,10 +11,10 @@ function(x, interp=c("linear", "spline", "ksmooth", "smoothSpl")) {
     xD <- convertDVH(x, toType="differential", interp=interp, nodes=5001L)
 
     doseMed <- if(interp == "linear") {
-        tryCatch(approx(x$dvh[ , "volumeRel"], x$dvh[ , "dose"], 50, method="linear", rule=1)$y,
+        tryCatch(approx(x$dvh[ , "volumeRel"], x$dvh[ , "dose"], 50, method="linear", rule=1, ties=max)$y,
                  error=function(e) return(NA_real_))
     } else if(interp == "spline") {
-        sfun <- try(splinefun(x$dvh[ , "volumeRel"], x$dvh[ , "dose"], method="monoH.FC"))
+        sfun <- try(splinefun(x$dvh[ , "volumeRel"], x$dvh[ , "dose"], method="monoH.FC", ties=max))
         if(!inherits(sfun, "try-error")) {
             sfun(50)
         } else {

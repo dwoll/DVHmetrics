@@ -1,8 +1,8 @@
-$Date: 2015-04-07 15:12:29 +0000 (Tue, 07 Apr 2015) $
+$Date: 2015-04-24 15:12:29 +0000 (Tue, 24 Apr 2015) $
 
 DVHMETRICS RELEASE VERSIONS at http://cran.r-project.org/
 
-Version 0.3 (April 7, 2015)
+Version 0.3 (April 24, 2015)
     * getMetric()
       - fix bug: V*% was incorrect
       - increase accuracy for linear and spline interpolation with

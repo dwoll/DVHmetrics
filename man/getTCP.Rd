@@ -25,7 +25,7 @@ getTCP(x, TCPtcd50=NULL, TCPm=NULL, TCPn=NULL, TCPgamma50=NULL,
 For DVH reduction, gEUD is used. This is equivalent to the Kutcher-Burman DVH reduction scheme.
 }
 \value{
-The (vector of) TCP value(s)
+A data frame with variables \code{TCP}, \code{patID}, and \code{structure}.
 }
 \references{
 Kaellman, P., Agren, A., & Brahme, A. (1992). Tumor and normal tissue responses to fractionated non-uniform dose delivery. International Journal of Radiation Biology, 62(2), 249-262.

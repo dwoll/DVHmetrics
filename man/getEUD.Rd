@@ -8,18 +8,18 @@
 Calculate generalized equivalent uniform dose (gEUD). May be based on EQD2.
 }
 \usage{
-getEUD(x, EUDa, EUDfn=NULL, EUDab=NULL, ...)
+getEUD(x, EUDa, EUDfd=NULL, EUDab=NULL, ...)
 
-\method{getEUD}{DVHs}(x, EUDa, EUDfn=NULL, EUDab=NULL, ...)
+\method{getEUD}{DVHs}(x, EUDa, EUDfd=NULL, EUDab=NULL, ...)
 
-\method{getEUD}{DVHLst}(x, EUDa, EUDfn=NULL, EUDab=NULL, ...)
+\method{getEUD}{DVHLst}(x, EUDa, EUDfd=NULL, EUDab=NULL, ...)
 
-\method{getEUD}{DVHLstLst}(x, EUDa, EUDfn=NULL, EUDab=NULL, ...)
+\method{getEUD}{DVHLstLst}(x, EUDa, EUDfd=NULL, EUDab=NULL, ...)
 }
 \arguments{
   \item{x}{One cumulative DVH (object of class \code{DVHs}, multiple cumulative DVHs from one patient with multiple structures (object of class \code{DVHLst}), or multiple cumulative DVHs from many patients, each with multiple structures (object of class \code{DVHLstLst}). See \code{\link[DVHmetrics]{readDVH}}.}
   \item{EUDa}{Exponential parameter a.}
-  \item{EUDfn}{If gEUD should be based on EQD2: Number of fractions.}
+  \item{EUDfd}{If gEUD should be based on EQD2: Fraction dose.}
   \item{EUDab}{If gEUD should be based on EQD2: alpha/beta ratio for the relevant tissue.}
   \item{...}{Ignored. Used to catch additional arguments passed from \code{\link[DVHmetrics]{getMetric}}.}
 }
@@ -39,5 +39,5 @@ Wu et al. (2002). Optimization of intensity modulated radiotherapy plans based o
 getEUD(dataMZ[[1]], EUDa=2)
 
 # based on EQD2
-getEUD(dataMZ[[1]], EUDa=2, EUDfn=20, EUDab=4)
+getEUD(dataMZ[[1]], EUDa=2, EUDfd=1.8, EUDab=4)
 }

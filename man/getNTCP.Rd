@@ -40,7 +40,7 @@ getNTCP(x, NTCPtd50=NULL, NTCPm=NULL, NTCPn=NULL, NTCPgamma50=NULL,
 For DVH reduction, gEUD is used. This is equivalent to the Kutcher-Burman DVH reduction scheme.
 }
 \value{
-The (vector of) NTCP value(s)
+A data frame with variables \code{NTCP}, \code{patID}, and \code{structure}.
 }
 \references{
 Kaellman, P., Agren, A., & Brahme, A. (1992). Tumor and normal tissue responses to fractionated non-uniform dose delivery. International Journal of Radiation Biology, 62(2), 249-262.

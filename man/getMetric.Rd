@@ -108,7 +108,7 @@ getMetric(dataMZ, c("D1CC", "V10\%_CC"),
 getMetric(dataMZ[[c(1, 1)]], "DEUD", EUDa=2)
 
 # gEUD based on EQD2 with a=2, 20 fractions
-getMetric(dataMZ[[c(1, 1)]], "DEUD2", EUDa=2, EUDfn=20)
+getMetric(dataMZ[[c(1, 1)]], "DEUD", EUDa=2, EUDfd=1.8)
 
 # NTCP Lyman probit model with TD50=20, m=4, n=0.5
 getMetric(dataMZ[[c(1, 1)]], "DNTCP",

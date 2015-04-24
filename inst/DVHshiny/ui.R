@@ -39,7 +39,7 @@ shinyUI(fluidPage(
                 checkboxInput("metrEUDparam", "Show EUD params ...", FALSE),
                 conditionalPanel(condition="input.metrEUDparam == true",
                     textInput("metrEUDa", h5("exponent a"), value=""),
-                    textInput("metrEUDfn", h5("# of fractions"), value=""),
+                    textInput("metrEUDfd", h5("fraction dose"), value=""),
                     textInput("metrEUDab", h5("alpha/beta ratio"), value="")
                 ),
                 checkboxInput("metrNTCPparam", "Show (N)TCP params ...", FALSE),
@@ -112,7 +112,7 @@ shinyUI(fluidPage(
                 checkboxInput("constrEUDparam", "Show EUD params ...", FALSE),
                 conditionalPanel(condition="input.constrEUDparam == true",
                     textInput("constrEUDa", h5("exponent a"), value=""),
-                    textInput("constrEUDfn", h5("# of fractions"), value=""),
+                    textInput("constrEUDfd", h5("fraction dose"), value=""),
                     textInput("constrEUDab", h5("alpha/beta ratio"), value="")
                 ),
                 checkboxInput("constrNTCPparam", "Show (N)TCP params ...", FALSE),

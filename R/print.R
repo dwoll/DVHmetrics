@@ -5,14 +5,14 @@ print.DVHs <- function(x, ...) {
     if(("noID" %in% names(dots)) && (dots$noID == TRUE)) {
         cat("DVH: Structure ", x$structure,
             " (", signif(x$structVol, 2), "CC),",
-            " Dose: ", paste(signif(range(x$dvh[ , "dose"]), 2), collapse="-"),
+            " Dose: ", paste(signif(range(x$dvh[ , "dose"], na.rm=TRUE), 2), collapse="-"),
             x$doseUnit, "\n", sep="")
     } else {
         cat("DVH: Patient '", x$patName,
             "' (ID ", x$patID,
             "), structure '", x$structure,
             "' (", signif(x$structVol, 2), "CC),",
-            " Dose: ", paste(signif(range(x$dvh[ , "dose"]), 2), collapse="-"),
+            " Dose: ", paste(signif(range(x$dvh[ , "dose"], na.rm=TRUE), 2), collapse="-"),
             x$doseUnit, "\n", sep="")
     }
 

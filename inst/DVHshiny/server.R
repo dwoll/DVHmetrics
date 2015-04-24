@@ -143,7 +143,7 @@ shinyServer(function(input, output) {
         }
         interp  <- c("linear", "spline", "ksmooth")[as.numeric(input$metrInterp)]
         EUDa    <- if(input$metrEUDa  != "") { as.numeric(input$metrEUDa)  } else { NULL }
-        EUDfn   <- if(input$metrEUDfn != "") { as.numeric(input$metrEUDfn) } else { NULL }
+        EUDfd   <- if(input$metrEUDfd != "") { as.numeric(input$metrEUDfd) } else { NULL }
         EUDab   <- if(input$metrEUDab != "") { as.numeric(input$metrEUDab) } else { NULL }
 
         NTCPtype    <- c("probit", "logit", "poisson")[as.numeric(input$metrNTCPtype)]
@@ -165,7 +165,7 @@ shinyServer(function(input, output) {
                          structure=paste0("^", selStruct, "$"),
                          sortBy=sortBy,
                          interp=interp,
-                         EUDa=EUDa, EUDfn=EUDfn, EUDab=EUDab,
+                         EUDa=EUDa, EUDfd=EUDfd, EUDab=EUDab,
                          NTCPtype=NTCPtype, NTCPtd50=NTCPtd50, NTCPn=NTCPn, NTCPm=NTCPm, NTCPgamma50=NTCPgamma50,
                           TCPtype=NTCPtype, TCPtcd50=NTCPtd50,  TCPn=NTCPn,  TCPm=NTCPm,  TCPgamma50=NTCPgamma50)
             argL <- Filter(Negate(is.null), argL)
@@ -209,7 +209,7 @@ shinyServer(function(input, output) {
             }
             interp  <- c("linear", "spline", "ksmooth")[as.numeric(input$metrInterp)]
             EUDa    <- if(input$metrEUDa  != "") { as.numeric(input$metrEUDa)  } else { NULL }
-            EUDfn   <- if(input$metrEUDfn != "") { as.numeric(input$metrEUDfn) } else { NULL }
+            EUDfd   <- if(input$metrEUDfd != "") { as.numeric(input$metrEUDfd) } else { NULL }
             EUDab   <- if(input$metrEUDab != "") { as.numeric(input$metrEUDab) } else { NULL }
 
             NTCPtype    <- c("probit", "logit", "poisson")[as.numeric(input$metrNTCPtype)]
@@ -230,7 +230,7 @@ shinyServer(function(input, output) {
                          structure=paste0("^", selStruct, "$"),
                          sortBy=sortBy,
                          interp=interp,
-                         EUDa=EUDa, EUDfn=EUDfn, EUDab=EUDab,
+                         EUDa=EUDa, EUDfd=EUDfd, EUDab=EUDab,
                          NTCPtype=NTCPtype, NTCPtd50=NTCPtd50, NTCPn=NTCPn, NTCPgamma50=NTCPgamma50,
                           TCPtype=NTCPtype, TCPtcd50=NTCPtd50,  TCPn=NTCPn,  TCPgamma50=NTCPgamma50)
             argL <- Filter(Negate(is.null), argL)
@@ -494,7 +494,7 @@ shinyServer(function(input, output) {
         outSel <- constrOutInv[input$constrOut]
         interp <- c("linear", "spline", "ksmooth")[as.numeric(input$constrInterp)]
         EUDa   <- if(input$constrEUDa  != "") { as.numeric(input$constrEUDa)  } else { NULL }
-        EUDfn  <- if(input$constrEUDfn != "") { as.numeric(input$constrEUDfn) } else { NULL }
+        EUDfd  <- if(input$constrEUDfd != "") { as.numeric(input$constrEUDfd) } else { NULL }
         EUDab  <- if(input$constrEUDab != "") { as.numeric(input$constrEUDab) } else { NULL }
 
         NTCPtype    <- c("probit", "logit", "poisson")[as.numeric(input$constrNTCPtype)]
@@ -516,7 +516,7 @@ shinyServer(function(input, output) {
             argL <- list(x=dvh,
                          constr=constr, byPat=TRUE, interp=interp,
                          semSign=input$constrSemSign, sortBy=sortBy,
-                         EUDa=EUDa, EUDfn=EUDfn, EUDab=EUDab,
+                         EUDa=EUDa, EUDfd=EUDfd, EUDab=EUDab,
                          NTCPtype=NTCPtype, NTCPtd50=NTCPtd50, NTCPn=NTCPn, NTCPm=NTCPm, NTCPgamma50=NTCPgamma50,
                           TCPtype=NTCPtype, TCPtcd50=NTCPtd50,  TCPn=NTCPn,  TCPm=NTCPm,  TCPgamma50=NTCPgamma50)
             argL <- Filter(Negate(is.null), argL)
@@ -569,7 +569,7 @@ shinyServer(function(input, output) {
         content=function(file) {
             interp <- c("linear", "spline", "ksmooth")[as.numeric(input$constrInterp)]
             EUDa   <- if(input$constrEUDa  != "") { as.numeric(input$constrEUDa)  } else { NULL }
-            EUDfn  <- if(input$constrEUDfn != "") { as.numeric(input$constrEUDfn) } else { NULL }
+            EUDfd  <- if(input$constrEUDfd != "") { as.numeric(input$constrEUDfd) } else { NULL }
             EUDab  <- if(input$constrEUDab != "") { as.numeric(input$constrEUDab) } else { NULL }
     
             NTCPtype    <- c("probit", "logit", "poisson")[as.numeric(input$constrNTCPtype)]
@@ -580,7 +580,7 @@ shinyServer(function(input, output) {
 
             argL <- list(x=DVH()$DVH,
                          constr=DVHconstr(), interp=interp,
-                         EUDa=EUDa, EUDfn=EUDfn, EUDab=EUDab,
+                         EUDa=EUDa, EUDfd=EUDfd, EUDab=EUDab,
                          NTCPtype=NTCPtype, NTCPtd50=NTCPtd50, NTCPn=NTCPn, NTCPm=NTCPm, NTCPgamma50=NTCPgamma50,
                           TCPtype=NTCPtype, TCPtcd50=NTCPtd50,  TCPn=NTCPn,  TCPm=NTCPm,  TCPgamma50=NTCPgamma50)
             argL   <- Filter(Negate(is.null), argL)
@@ -720,7 +720,7 @@ shinyServer(function(input, output) {
         } else if(input$BEDtype == '2') {
             getEQD2(D=D, fd=fd, fn=fn, ab=ab)
         } else if(input$BEDtype == '3') {
-            getIsoEffD(D1=D1, D2=D2, fd1=fd1, fd2=fd2, fn1=fn1, fn2=fn2, ab=ab)
+            getIsoEffD(D1=D1, D2=D2, fd1=fd1, fd2=fd2, ab=ab)
         }
     })
 })

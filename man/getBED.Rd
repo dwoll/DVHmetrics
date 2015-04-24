@@ -20,15 +20,15 @@ getBED(D=NULL, fd=NULL, fn=NULL, ab=NULL)
 \method{getBED}{DVHLstLst}(D=NULL, fd=NULL, fn=NULL, ab=NULL)
 }
 \arguments{
-  \item{D}{Default: Total dose. If \code{NULL}, \code{fn} must be given. Alternative: One cumulative DVH (object of class \code{DVHs}, multiple cumulative DVHs from one patient with multiple structures (object of class \code{DVHLst}), or multiple cumulative DVHs from many patients, each with multiple structures (object of class \code{DVHLstLst}). See \code{\link[DVHmetrics]{readDVH}}. If some kind of \code{DVH} object, \code{fn} must be given.}
-  \item{fd}{Fractional dose.}
-  \item{fn}{Number of fractions. If \code{NULL}, \code{D} must be the total dose.}
-  \item{ab}{alpha/beta ratio for the relevant tissue.}
+  \item{D}{Default: Total dose. If \code{NULL}, \code{fn} must be given. Alternative: One cumulative DVH (object of class \code{DVHs}, multiple cumulative DVHs from one patient with multiple structures (object of class \code{DVHLst}), or multiple cumulative DVHs from many patients, each with multiple structures (object of class \code{DVHLstLst}). See \code{\link[DVHmetrics]{readDVH}}.}
+  \item{fd}{Fractional dose. If \code{D} is some kind of \code{DVH} object, only the first element will be used.}
+  \item{fn}{Number of fractions. If \code{NULL}, \code{D} must be the total dose. Ignored if \code{D} is some kind of \code{DVH} object.}
+  \item{ab}{alpha/beta ratio for the relevant tissue. If some kind of \code{DVH} object, only the first element will be used.}
 }
 \value{
-If \code{D} is the total dose: a data frame with variables \code{BED} and \code{fractDose}.
+Default method: A data frame with variables \code{BED}, \code{fractDose}, \code{ab}.
 
-If \code{D} is some kind of \code{DVH} object, a data frame with variables \code{BED}, \code{fractDose}, \code{patID}, and \code{structure}.
+If \code{D} is some kind of \code{DVH} object, the same kind of object is returned with the individual dose values converted to BED.
 }
 \references{
 Fowler, J. F. (2010). 21 years of Biologically Effective Dose. British Journal of Radiology, 83, 554-568.
@@ -39,5 +39,5 @@ Fowler, J. F. (2010). 21 years of Biologically Effective Dose. British Journal o
 }
 \examples{
 getBED(D=50, fd=2.5, ab=c(2, 3, 4))
-getBED(D=dataMZ[[1]], fn=20, ab=3)
+getBED(D=dataMZ[[c(1, 1)]], fd=1.8, ab=3)
 }

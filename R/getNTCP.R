@@ -105,7 +105,10 @@ function(x,
         2^(-exp(exp(1)*NTCPgamma50*(1-(EUD/NTCPtd50))))
     }
 
-    return(NTCP)
+    data.frame(NTCP=NTCP,
+               patID=x$patID,
+               structure=x$structure,
+               stringsAsFactors=FALSE)
 }
 
 getNTCP.DVHLst <-
@@ -113,11 +116,14 @@ function(x,
          NTCPtd50=NULL, NTCPm=NULL, NTCPn=NULL, NTCPgamma50=NULL,
          EUDa=NULL, EUDfn=NULL, EUDab=NULL,
          NTCPtype=c("probit", "logit", "poisson"), ...) {
-    unlist(Map(getNTCP, x,
-               NTCPtd50=list(NTCPtd50), NTCPm=list(NTCPm), NTCPn=list(NTCPn),
-               NTCPgamma50=list(NTCPgamma50), EUDa=list(EUDa),
-               EUDfn=list(EUDfn), EUDab=list(EUDab),
-               NTCPtype=list(NTCPtype)), recursive=FALSE)
+    NTCPl <- Map(getNTCP, x,
+                 NTCPtd50=list(NTCPtd50), NTCPm=list(NTCPm), NTCPn=list(NTCPn),
+                 NTCPgamma50=list(NTCPgamma50), EUDa=list(EUDa),
+                 EUDfn=list(EUDfn), EUDab=list(EUDab),
+                 NTCPtype=list(NTCPtype))
+    NTCPdf <- do.call("rbind", NTCPl)
+    rownames(NTCPdf) <- NULL
+    NTCPdf
 }
 
 getNTCP.DVHLstLst <-
@@ -125,9 +131,12 @@ function(x,
          NTCPtd50=NULL, NTCPm=NULL, NTCPn=NULL, NTCPgamma50=NULL,
          EUDa=NULL, EUDfn=NULL, EUDab=NULL,
          NTCPtype=c("probit", "logit", "poisson"), ...) {
-    unlist(Map(getNTCP, x,
-               NTCPtd50=list(NTCPtd50), NTCPm=list(NTCPm), NTCPn=list(NTCPn),
-               NTCPgamma50=list(NTCPgamma50), EUDa=list(EUDa),
-               EUDfn=list(EUDfn), EUDab=list(EUDab),
-               NTCPtype=list(NTCPtype)), recursive=FALSE)
+    NTCPl <- Map(getNTCP, x,
+                 NTCPtd50=list(NTCPtd50), NTCPm=list(NTCPm), NTCPn=list(NTCPn),
+                 NTCPgamma50=list(NTCPgamma50), EUDa=list(EUDa),
+                 EUDfn=list(EUDfn), EUDab=list(EUDab),
+                 NTCPtype=list(NTCPtype))
+    NTCPdf <- do.call("rbind", NTCPl)
+    rownames(NTCPdf) <- NULL
+    NTCPdf
 }

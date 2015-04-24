@@ -1,5 +1,4 @@
-## under Unix-like OS, we don't have
-## choose.files(), choose.dir() and Filters
+## under Unix-like OS, we don't have choose.files(), choose.dir() and Filters
 ## TODO: fix for fPath=NA -> no initial /
 parseDVH <- function(x, type=c("Eclipse", "Cadplan", "Masterplan", "Pinnacle")) {
     type <- match.arg(type)

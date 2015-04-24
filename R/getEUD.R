@@ -1,12 +1,12 @@
 ## we need ... because getMetric() will also pass parameters
 ## intended for other functions through ...
 getEUD <-
-function(x, EUDa, EUDfn=NULL, EUDab=NULL, ...) {
+function(x, EUDa, EUDfd=NULL, EUDab=NULL, ...) {
     UseMethod("getEUD")
 }
 
 getEUD.DVHs <-
-function(x, EUDa, EUDfn=NULL, EUDab=NULL, ...) {
+function(x, EUDa, EUDfd=NULL, EUDab=NULL, ...) {
     if(length(EUDa) > 1) {
 		warning(paste0("Will only use EUDa=", EUDa[1]))
 		EUDa <- EUDa[1]
@@ -31,10 +31,8 @@ function(x, EUDa, EUDfn=NULL, EUDab=NULL, ...) {
 
     ## convert dose to EQD2 if possible
     volume <- xD$dvh[ , "volume"]
-    dose   <- if(!is.null(EUDfn) && !is.null(EUDab)) {
-        Dmax <- getMetric(x, "DMAX")$DMAX
-        fd   <- Dmax/EUDfn
-        getEQD2(D=xD$dvh[ , "dose"], fd=fd, ab=EUDab)$EQD2
+    dose   <- if(!is.null(EUDfd) && !is.null(EUDab)) {
+        getEQD2(D=xD$dvh[ , "dose"], fd=EUDfd, ab=EUDab)$EQD2
     } else {
         xD$dvh[ , "dose"]
     }
@@ -54,18 +52,18 @@ function(x, EUDa, EUDfn=NULL, EUDab=NULL, ...) {
 }
 
 getEUD.DVHLst <-
-function(x, EUDa, EUDfn=NULL, EUDab=NULL, ...) {
+function(x, EUDa, EUDfd=NULL, EUDab=NULL, ...) {
     EUDl  <- Map(getEUD, x,
-                 EUDa=list(EUDa), EUDfn=list(EUDfn), EUDab=list(EUDab))
+                 EUDa=list(EUDa), EUDfd=list(EUDfd), EUDab=list(EUDab))
     EUDdf <- do.call("rbind", EUDl)
     rownames(EUDdf) <- NULL
     EUDdf
 }
 
 getEUD.DVHLstLst <-
-function(x, EUDa, EUDfn=NULL, EUDab=NULL, ...) {
+function(x, EUDa, EUDfd=NULL, EUDab=NULL, ...) {
     EUDl  <- Map(getEUD, x,
-                 EUDa=list(EUDa), EUDfn=list(EUDfn), EUDab=list(EUDab))
+                 EUDa=list(EUDa), EUDfd=list(EUDfd), EUDab=list(EUDab))
     EUDdf <- do.call("rbind", EUDl)
     rownames(EUDdf) <- NULL
     EUDdf

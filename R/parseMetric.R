@@ -6,7 +6,7 @@ parseMetric <- function(x, doseUnit=NULL, volUnit=NULL) {
     
     ## regular expression for components of a metric character string
     ## allow for V10%_CC or D10cc_% pattern for returning absolute volumes / relative doses
-    pattern <- "^([DV])([.[:digit:]]+|MIN|MAX|MEAN|MEDIAN|RX|SD|EUD|EUD2|NTCP|TCP)([%]|GY|CGY|CC)*(_[%]|_GY|_CGY|_CC)*.*"
+    pattern <- "^([DV])([.[:digit:]]+|MIN|MAX|MEAN|MEDIAN|RX|SD|EUD|NTCP|TCP)([%]|GY|CGY|CC)*(_[%]|_GY|_CGY|_CC)*.*"
     
     ## extract components
     DV      <- sub(pattern, "\\1", x)   # get a volume or a dose?
@@ -18,7 +18,7 @@ parseMetric <- function(x, doseUnit=NULL, volUnit=NULL) {
     unitDV <- ifelse(nzchar(unitDV_), sub("_", "", unitDV_), NA_character_)
 
     ## special dose/probability cases
-    specDose  <- valRef %in% c("MIN", "MAX", "MEAN", "MEDIAN", "RX", "SD", "EUD", "EUD2", "NTCP", "TCP")
+    specDose  <- valRef %in% c("MIN", "MAX", "MEAN", "MEDIAN", "RX", "SD", "EUD", "NTCP", "TCP")
     valRefNum <- ifelse((DV == "D") & specDose, NA_real_,      suppressWarnings(as.numeric(valRef)))
     unitRef   <- ifelse((DV == "D") & specDose, NA_character_, unitRef)
 
@@ -75,7 +75,7 @@ parseMetric <- function(x, doseUnit=NULL, volUnit=NULL) {
     validPattern <- grepl(pattern, x)
     validUnitRef <- ((DV == "D") &
                      ((unitRef %in% c("%", "CC")) |
-                      (valRef  %in% c("MIN", "MAX", "MEAN", "MEDIAN", "RX", "SD", "EUD", "EUD2", "NTCP", "TCP")))) |
+                      (valRef  %in% c("MIN", "MAX", "MEAN", "MEDIAN", "RX", "SD", "EUD", "NTCP", "TCP")))) |
                     ((DV == "V") & (unitRef %in% c("%", "GY", "CGY")))
     validUnitDV  <- is.na(unitDV) |
                     ((DV == "D") & (unitDV  %in% c("%", "GY", "CGY"))) |

@@ -1,11 +1,9 @@
 # TODO
 ## Medium term
 
- * `approx(..., yleft=0, yright=0)`?
  * DVHshiny vignette -> document BED/EQD2 pane
  * allow `checkConstraint(x, "DNTCP < 50%")` instead of `0.5Gy`
  * `getMetric()`, `checkConstraint()`, `readDVH()` -> multicore support
- * `readConstraint()` needs to be platform dependent (`file.choose()`)
  * read files exported from TomoTherapy Hi-Art, iPlan, BrainLab
  * `readDVH()` -> if `x` is a directory, read all files in it
  * `readDVH()` -> if `x` is a zip file, read all files in it

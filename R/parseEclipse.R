@@ -28,7 +28,7 @@ parseEclipse <- function(x, planInfo=FALSE) {
         elem <- gsub(pat, "\\1", line, perl=TRUE, ignore.case=TRUE)
         grp2 <- gsub(pat, "\\2", line, perl=TRUE, ignore.case=TRUE)
         grp3 <- gsub(pat, "\\3", line, perl=TRUE, ignore.case=TRUE)
-        if((nchar(grp2) > 0) || (nchar(grp3) > 0)) {
+        if(nzchar(grp2) || nzchar(grp3)) {
             warning("Non-standard dose line found")
         }
 
@@ -226,7 +226,7 @@ parseEclipse <- function(x, planInfo=FALSE) {
         ## read line length(strct) for cases where file does not end with a
         ## blank line -> this will then be last DVH line, otherwise blank
         ## check if dvh is all blank -> no data
-        if(all(nchar(strct[dvhStart:length(strct)]) == 0L)) {
+        if(all(!nzchar(strct[dvhStart:length(strct)]))) {
             return(NULL)
         }
         

@@ -6,16 +6,16 @@
 \description{
 Functionality for analyzing dose-volume histograms
 (DVH) in radiation oncology: Read DVH text files,
-calculate DVH metrics, gEUD, NTCP, TCP, show DVH diagrams,
-check and visualize quality assurance constraints
+calculate DVH metrics, gEUD, BED, EQD2, NTCP, TCP, show DVH
+diagrams, check and visualize quality assurance constraints
 for the DVH. Includes web-based graphical user interface.
 }
 \details{
 \tabular{ll}{
 Package: \tab DVHmetrics\cr
 Type: \tab Package\cr
-Version: \tab 0.2.0.900\cr
-Date: \tab 2015-04-07\cr
+Version: \tab 0.3\cr
+Date: \tab 2015-04-29\cr
 License: \tab GPL (>= 2)\cr
 }
 }

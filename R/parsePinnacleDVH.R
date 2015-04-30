@@ -88,7 +88,7 @@ parsePinnacleDVH <- function(x, structInfo, info) {
 
     ## extract DVH as a matrix and store preceding information
     ## check if dvh is all blank -> no data
-    if(all(nchar(x[dvhStart:dvhStop]) == 0L)) {
+    if(all(!nzchar(x[dvhStart:dvhStop]))) {
         return(NULL)
     }
     

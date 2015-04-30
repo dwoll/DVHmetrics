@@ -184,7 +184,7 @@ parseCadplan <- function(x, planInfo=FALSE) {
         ## read line length(strct) for cases where file does not end with a
         ## blank line -> this will then be last DVH line, otherwise blank
         ## check if dvh is all blank -> no data
-        if(all(nchar(strct[dvhStart:length(strct)]) == 0L)) {
+        if(all(!nzchar(strct[dvhStart:length(strct)]))) {
             return(NULL)
         }
 

@@ -119,7 +119,7 @@ shinyServer(function(input, output) {
         splitOpts  <- c('1'="structure", '2'="metric", '3'="patID")
         selMetrics <- if(length(input$metrInput) > 0) {
             metrRaw <- unlist(strsplit(input$metrInput, "[[:blank:],]"))
-            metrRaw[nchar(metrRaw) > 0]
+            metrRaw[nzchar(metrRaw)]
         } else {
             c("DMEAN", "D1CC", "V10%")
         }
@@ -185,7 +185,7 @@ shinyServer(function(input, output) {
             splitOpts <- c('1'="metric", '2'="structure", '3'="patID")
             selMetrics <- if(length(input$metrInput) > 0) {
                 metrRaw <- unlist(strsplit(input$metrInput, "[[:blank:],]"))
-                metrRaw[nchar(metrRaw) > 0]
+                metrRaw[nzchar(metrRaw)]
             } else {
                 "DMEAN"
             }

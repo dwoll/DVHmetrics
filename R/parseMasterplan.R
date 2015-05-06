@@ -1,5 +1,5 @@
 #####---------------------------------------------------------------------------
-## parse character vector from Eclipse DVH file
+## parse character vector from Masterplan DVH file
 parseMasterplan <- function(x, planInfo=FALSE) {
     planInfo <- as.character(planInfo)
 

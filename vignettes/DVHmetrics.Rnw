@@ -592,7 +592,7 @@ getIsoEffD(D1=70, fd1=2, fd2=3, ab=c(3.5, 10))
 
 The same functions can be used to convert complete DVHs to BED, EQD2, or to the iso-effective dose corresponding to some other fraction dose.
 
-<<cBED1>>=
+<<cBED2>>=
 getEQD2(D=dataMZ[[c(1, 1)]], fd=2.5, ab=3)
 @
 

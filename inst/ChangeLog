@@ -2,6 +2,11 @@ $Date: 2015-05-04 16:24:29 +0000 (Mon, 04 May 2015) $
 
 DVHMETRICS RELEASE VERSIONS at http://cran.r-project.org/
 
+Version 0.3.0.900 (May 15, 2015)
+    * readDVH()
+      - add support for Elekta Monaco (thanks: Reid Thompson),
+        and for Tomo HiArt files (thanks: Nico Banz)
+
 Version 0.3 (May 5, 2015)
     * getMetric()
       - fix bug: V*% was incorrect
@@ -25,6 +30,7 @@ Version 0.2 (April 7, 2015)
         with new data read from file (regardless of TPS origin)
       - add support for data exported by Pinnacle3 that conforms to a
         specific directory layout / file structure explained in the docs
+        (thanks: Bjorne Riis)
       - fix bug: read first DVH line as well
     * convertDVH()
       - new function to convert between differential and cumulative DVH

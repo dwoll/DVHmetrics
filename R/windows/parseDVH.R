@@ -1,9 +1,15 @@
-parseDVH <- function(x, type=c("Eclipse", "Cadplan", "Masterplan", "Pinnacle")) {
+parseDVH <- function(x, type=c("Eclipse", "Cadplan", "Masterplan",
+                               "Pinnacle", "Monaco", "HiArt")) {
     type <- match.arg(type)
 
     ## name them using patient IDs
     getPatID <- function(txt) {
-        if(type != "Pinnacle") {
+        if(type == "Monaco") {
+            header <- unlist(strsplit(txt[1], " [|] "))
+            trimWS(sub("^Patient ID: .+[~](.+)$", "\\1", header[1]))
+        } else if(type == "HiArt") {
+            gsub("[^a-z0-9]", "\\1", tempfile(pattern="", tmpdir=""))
+        } else if(type != "Pinnacle") {
             IDline <- txt[grep("^(Patient ID|Case)[[:blank:]]*:", txt)]
             IDres  <- sub("^.+?:[[:blank:]]+([[:alnum:][:punct:][:blank:]]+$)", "\\1", IDline, perl=TRUE)
             collWS(trimWS(IDres, side="both"))

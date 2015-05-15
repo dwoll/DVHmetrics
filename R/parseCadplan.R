@@ -86,7 +86,7 @@ parseCadplan <- function(x, planInfo=FALSE) {
     DVHtype <- getDVHtype(header)
 
     ## extract DVH from one structure section and store in a list
-    ## with DVH itself as a data frame
+    ## with DVH itself as a matrix
     getDVH <- function(strct, info) {
         plan <- info$plan
 

@@ -91,7 +91,7 @@ parseMasterplan <- function(x, planInfo=FALSE) {
     }
 
     ## extract DVH from one structure section and store in a list
-    ## with DVH itself as a data frame
+    ## with DVH itself as a matrix
     getDVH <- function(strct, info) {
         ## extract information from info list
         doseRx    <- info$doseRx

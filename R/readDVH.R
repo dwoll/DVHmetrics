@@ -31,10 +31,14 @@ readDVH <- function(x, type=c("Eclipse", "Cadplan", "Masterplan", "Pinnacle",
     ## -> copy the random ID from parseDVH to all DVHs
     if(type == "HiArt") {
         setID <- function(dvhL, id) {
-            lapply(dvhL, function(y) {
+            dvhLOut <- lapply(dvhL, function(y) {
                 y$patID <- id
                 y
             })
+            
+            class(dvhLOut) <- "DVHLst"
+            attr(dvhLOut, which="byPat") <- TRUE
+            dvhLOut
         }
         
         dvhLL <- lapply(dvhLL, setID, id=names(dvhLL))

@@ -2,10 +2,17 @@ $Date: 2015-05-04 16:24:29 +0000 (Mon, 04 May 2015) $
 
 DVHMETRICS RELEASE VERSIONS at http://cran.r-project.org/
 
-Version 0.3.0.900 (May 15, 2015)
+Version 0.3.1 (July 13, 2015)
+    * DESCRIPTION, NAMESPACE
+      - changes necessary for current R-devel
     * readDVH()
       - add support for Elekta Monaco (thanks: Reid Thompson),
         and for Tomo HiArt files (thanks: Nico Banz)
+    * convertDVH()
+      - in DVHs objects, a differential DVH is saved to list
+        element dvhDiff, a cumulative DVH is saved to list element
+        dvh. The original DVH is copied to the other list element,
+        respectively.
 
 Version 0.3 (May 5, 2015)
     * getMetric()

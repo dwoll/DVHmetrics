@@ -1,4 +1,6 @@
-importFrom(utils, read.table, write.table)
+import(stats)
+import(utils)
+#importFrom(utils, read.table, read.csv, write.table, glob2rx, head, tail, file_test, unzip, choose.dir, choose.files, Filter)
 importFrom(ggplot2, ggplot, aes_string, geom_point, geom_line, ggtitle, ggsave)
 importFrom(ggplot2, coord_cartesian, annotation_custom, theme_bw, xlab, ylab)
 importFrom(ggplot2, scale_shape_manual, scale_y_continuous, expand_limits)

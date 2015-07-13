@@ -194,8 +194,19 @@ function(x, toType=c("asis", "cumulative", "differential"),
     } else if(((toType     != "asis") && (toType     != x$DVHtype)) &&
               ((toDoseUnit == "asis") || (toDoseUnit == x$doseUnit))) {
         ## just change DVH type
-        DVH$dvh <- convertDVH(x$dvh, toType=toType, toDoseUnit="asis",
-                              interp=interp, nodes=nodes, perDose=perDose)
+        DVHout <- convertDVH(x$dvh, toType=toType, toDoseUnit="asis",
+                             interp=interp, nodes=nodes, perDose=perDose)
+
+        if(toType == "differential") {
+            ## if differential -> use dvhDiff and copy cumulative DVH
+            DVH$dvh     <- x$dvh
+            DVH$dvhDiff <- DVHout
+        } else {
+            ## if cumulative -> use dvh and copy differential DVH
+            DVH$dvh     <- DVHout
+            DVH$dvhDiff <- x$dvh
+        }
+
         DVH$DVHtype <- toType
     } else if(((toType     != "asis") && (toType     != x$DVHtype)) &&
               ((toDoseUnit != "asis") && (toDoseUnit != x$doseUnit))) {
@@ -208,8 +219,19 @@ function(x, toType=c("asis", "cumulative", "differential"),
             NA_real_
         }
 
-        DVH$dvh <- convertDVH(x$dvh, toType=toType, toDoseUnit=toDoseUnit,
-                              interp=interp, nodes=nodes, perDose=perDose)
+        DVHout <- convertDVH(x$dvh, toType=toType, toDoseUnit=toDoseUnit,
+                             interp=interp, nodes=nodes, perDose=perDose)
+
+        if(toType == "differential") {
+            ## if differential -> use dvhDiff and copy cumulative DVH
+            DVH$dvh     <- x$dvh
+            DVH$dvhDiff <- DVHout
+        } else {
+            ## if cumulative -> use dvh and copy differential DVH
+            DVH$dvh     <- DVHout
+            DVH$dvhDiff <- x$dvh
+        }
+
         DVH$doseMin   <- cf*x$doseMin
         DVH$doseMax   <- cf*x$doseMax
         DVH$doseRx    <- cf*x$doseRx

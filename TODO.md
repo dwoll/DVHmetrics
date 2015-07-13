@@ -4,9 +4,9 @@
  * DVHshiny vignette -> document BED/EQD2 pane
  * allow `checkConstraint(x, "DNTCP < 50%")` instead of `0.5Gy`
  * `getMetric()`, `checkConstraint()`, `readDVH()` -> multicore support
- * read files exported from iPlan, BrainLab
  * `readDVH()` -> if `x` is a directory, read all files in it
  * `readDVH()` -> if `x` is a zip file, read all files in it
+ * read files exported from iPlan, BrainLab
 
 ## Long term
 
@@ -22,12 +22,12 @@
  * harmonize structures by reading equivalence file, possibly with regex
 
 # build
- * "c:\program files\r\r-3.1.0\bin\x64\Rcmd.exe" INSTALL --build DVHmetrics_0.3.0.900.tar.gz
- * "c:\program files\r\r-3.1.0\bin\x64\Rcmd.exe" build DVHmetrics --resave-data --compact-vignettes="both"
- * "c:\program files\r\r-3.1.0\bin\x64\Rcmd.exe" check DVHmetrics_0.3.0.900.tar.gz --as-cran
- * `install.packages("d:/daniel_work/workspace/DVHmetrics_0.3.tar.gz", repos=NULL, type="source")`
+ * "c:\program files\r\r-3.2.1\bin\x64\Rcmd.exe" INSTALL --build DVHmetrics_0.3.1.tar.gz
+ * "c:\program files\r\r-3.2.1\bin\x64\Rcmd.exe" build DVHmetrics --resave-data --compact-vignettes="both"
+ * "c:\program files\r\r-3.2.1\bin\x64\Rcmd.exe" check DVHmetrics_0.3.1.tar.gz --as-cran
+ * `install.packages("d:/daniel_work/workspace/DVHmetrics_0.3.1.tar.gz", repos=NULL, type="source")`
 
- * "c:\program files\r\r-devel\bin\x64\Rcmd.exe" INSTALL --build DVHmetrics_0.3.0.900.tar.gz
+ * "c:\program files\r\r-devel\bin\x64\Rcmd.exe" INSTALL --build DVHmetrics_0.3.1.tar.gz
  * "c:\program files\r\r-devel\bin\x64\Rcmd.exe" build DVHmetrics --resave-data --compact-vignettes="both"
- * "c:\program files\r\r-devel\bin\x64\Rcmd.exe" check DVHmetrics_0.3.0.900.tar.gz --as-cran
- * `install.packages("h:/workspace/DVHmetrics_0.2.0.900.tar.gz", repos=NULL, type="source")`
+ * "c:\program files\r\r-devel\bin\x64\Rcmd.exe" check DVHmetrics_0.3.1.tar.gz --as-cran
+ * `install.packages("h:/workspace/DVHmetrics_0.3.1.tar.gz", repos=NULL, type="source")`

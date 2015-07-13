@@ -50,7 +50,8 @@ Points[] =\{
 \value{
 Returns an object of class \code{DVHLstLst}. This is a list (one component with class \code{DVHLst} for each original file from one patient) of lists (each component is an object of class \code{DVHs}). A \code{DVHs} object is a list with the following components:
 \describe{
-\item{\code{dvh}}{\code{matrix} - DVH values}
+\item{\code{dvh}}{\code{matrix} - cumulative DVH values}
+\item{\code{dvhDiff}}{\code{matrix} - differential DVH values, only created a) if original file contained a differential DVH or b) by \code{\link[DVHmetrics]{convertDVH}}}
 \item{\code{patID}}{\code{character} string - patient ID}
 \item{\code{date}}{\code{character} string - date of DVH export}
 \item{\code{type}}{\code{character} string - cumulative or differential DVH}
@@ -73,7 +74,8 @@ Returns an object of class \code{DVHLstLst}. This is a list (one component with 
 \code{\link[DVHmetrics]{print.DVHs}},
 \code{\link[DVHmetrics]{showDVH}},
 \code{\link[DVHmetrics]{getMetric}},
-\code{\link[DVHmetrics]{checkConstraint}}
+\code{\link[DVHmetrics]{checkConstraint}},
+\code{\link[DVHmetrics]{convertDVH}}
 }
 \examples{
 \dontrun{

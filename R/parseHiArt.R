@@ -1,6 +1,6 @@
 #####---------------------------------------------------------------------------
 ## parse character vector from Eclipse DVH file
-parseHiArt <- function(x, planInfo=FALSE) {
+parseHiArt <- function(x, planInfo=FALSE, courseAsID=FALSE) {
     planInfo <- as.character(planInfo)
 
     ## find columns for structure, dose, volume

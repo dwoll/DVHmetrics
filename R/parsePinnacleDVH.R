@@ -1,6 +1,6 @@
 #####---------------------------------------------------------------------------
 ## combine info from one Pinnacle patient directory = DVHLst
-mergePinnaclePat  <- function(x, planInfo=FALSE) {
+mergePinnaclePat  <- function(x, planInfo=FALSE, courseAsID=FALSE) {
     planInfo  <- as.character(planInfo)
     
     ## we need these files
@@ -18,7 +18,7 @@ mergePinnaclePat  <- function(x, planInfo=FALSE) {
         doseElem <- grep("PrescriptionDose", names(fRead$DoseInfo.csv), ignore.case=TRUE)
         doseUnit <- sub("^[[:alpha:]]+[.](cGy|Gy)$", "\\1", names(fRead$DoseInfo.csv)[doseElem], ignore.case=TRUE)
         
-        doseRxIdx   <- grep("Dosis.+(cGy|Gy)",     names(fRead$DoseInfo), ignore.case=TRUE)
+        doseRxIdx   <- grep("Dosis.+(cGy|Gy)",   names(fRead$DoseInfo), ignore.case=TRUE)
         fracDoseIdx <- grep("PrescriptionDose",  names(fRead$DoseInfo), ignore.case=TRUE)
         
         info <- list(patID=removeWS(fRead$PatInfo.csv$MedicalRecordNumber),

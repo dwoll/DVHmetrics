@@ -2,7 +2,7 @@
 ## returns a list (1 component per DVH file) of lists (1 component = 1 list per structure)
 readDVH <- function(x, type=c("Eclipse", "Cadplan", "Masterplan", "Pinnacle",
                               "Monaco", "HiArt"),
-                    planInfo=FALSE, add) {
+                    planInfo=FALSE, courseAsID=FALSE, add) {
     type <- match.arg(type)
 
     dvhRawL <- if(missing(x)) {
@@ -20,7 +20,7 @@ readDVH <- function(x, type=c("Eclipse", "Cadplan", "Masterplan", "Pinnacle",
                        HiArt=parseHiArt)
     
     dvhLL <- if(length(dvhRawL) >= 1L) {
-        res <- Map(parseFun, dvhRawL, planInfo=planInfo)
+        res <- Map(parseFun, dvhRawL, planInfo=planInfo, courseAsID=courseAsID)
         Filter(Negate(is.null), res)
     } else {
         warning("No files selected")
@@ -28,7 +28,7 @@ readDVH <- function(x, type=c("Eclipse", "Cadplan", "Masterplan", "Pinnacle",
     }
     
     ## for HiArt files, no patient ID is given
-    ## -> copy the random ID from parseDVH to all DVHs
+    ## -> copy the ID from parseDVH to all DVHs
     if(type == "HiArt") {
         setID <- function(dvhL, id) {
             dvhLOut <- lapply(dvhL, function(y) {
@@ -42,6 +42,18 @@ readDVH <- function(x, type=c("Eclipse", "Cadplan", "Masterplan", "Pinnacle",
         }
         
         dvhLL <- lapply(dvhLL, setID, id=names(dvhLL))
+    }
+
+    ## for courseAsID
+    ## -> copy DVH ID to list names
+    if(courseAsID) {
+        getID <- function(dvhL) {
+            dvhL[[1]]$patID
+        }
+
+        IDs <- vapply(dvhLL, getID, character(1))
+        names(dvhLL) <- IDs
+        dvhLL
     }
 
     ## check if result should be added to existing object

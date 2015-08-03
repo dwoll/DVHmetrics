@@ -1,6 +1,6 @@
 #####---------------------------------------------------------------------------
 ## parse character vector from Eclipse DVH file
-parseEclipse <- function(x, planInfo=FALSE) {
+parseEclipse <- function(x, planInfo=FALSE, courseAsID=FALSE) {
     planInfo <- as.character(planInfo)
 
     ## function to extract one information element from a number of lines
@@ -80,6 +80,12 @@ parseEclipse <- function(x, planInfo=FALSE) {
     patName <- getElem("Patient Name[[:blank:]]*:", header)   # patient name
     patID   <- getElem("^Patient ID[[:blank:]]*:",  header)   # patient id
     plan    <- getElem("^Plan[[:blank:]]?(sum)?:",  header)   # treatment plan
+    course  <- getElem("^Course[[:blank:]]*:",      header)   # course
+
+    ## generate new ID if courseAsID is set
+    if(courseAsID) {
+        patID <- removeWS(paste(patID, course, sep="_"))
+    }
 
     ## some information specific to PASSOS - quadrant is coded in plan
     quadrant <- if(planInfo == "QuadrantUlm") {
@@ -274,6 +280,7 @@ parseEclipse <- function(x, planInfo=FALSE) {
                     date=info$date,
                     DVHtype=info$DVHtype,
                     plan=info$plan,
+                    course=info$course,
                     quadrant=info$quadrant,
                     structure=structure,
                     structVol=structVol,
@@ -302,7 +309,7 @@ parseEclipse <- function(x, planInfo=FALSE) {
 
     ## list of DVH data frames with component name = structure
     info <- list(patID=patID, patName=patName, date=DVHdate,
-                 DVHtype=DVHtype, plan=plan, quadrant=quadrant,
+                 DVHtype=DVHtype, plan=plan, course=course, quadrant=quadrant,
                  doseRx=doseRx, isoDoseRx=isoDoseRx, doseUnit=doseUnit)
     dvhL <- lapply(structList, getDVH, info=info)
     dvhL <- Filter(Negate(is.null), dvhL)

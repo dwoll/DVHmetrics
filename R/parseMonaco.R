@@ -1,6 +1,6 @@
 #####---------------------------------------------------------------------------
 ## parse character vector from Eclipse DVH file
-parseMonaco <- function(x, planInfo=FALSE) {
+parseMonaco <- function(x, planInfo=FALSE, courseAsID=FALSE) {
     planInfo <- as.character(planInfo)
 
     ## extract file header and header info

@@ -57,6 +57,7 @@ Returns an object of class \code{DVHLstLst}. This is a list (one component with 
 \item{\code{date}}{\code{character} string - date of DVH export}
 \item{\code{type}}{\code{character} string - cumulative or differential DVH}
 \item{\code{plan}}{\code{character} string - plan name}
+\item{\code{course}}{\code{character} string - course - currently Eclipse only}
 \item{\code{structure}}{\code{character} string - structure name}
 \item{\code{structVol}}{\code{numeric} - structure volume}
 \item{\code{doseUnit}}{\code{character} string - measurement unit dose}

@@ -4,12 +4,13 @@ DVHMETRICS RELEASE VERSIONS at http://cran.r-project.org/
 
 Version 0.3.1 (August 03, 2015)
     * DESCRIPTION, NAMESPACE
-      - changes necessary for current R-devel
+      - import base packages to accomodate new R-devel
     * readDVH()
       - add support for Elekta Monaco (thanks: Reid Thompson),
-        and for Tomo HiArt files (thanks: Nico Banz)
+      - add support for Tomo HiArt (thanks: Nico Banz)
+      - read Course header entry for Eclipse files
       - add option courseAsID for appending the Course to the
-        original patient ID. Currently only supported for Eclipse.
+        original patient ID
     * convertDVH()
       - in DVHs objects, a differential DVH is saved to list
         element dvhDiff, a cumulative DVH is saved to list element

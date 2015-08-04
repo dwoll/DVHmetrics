@@ -2,6 +2,8 @@
 ## Medium term
 
  * DVHshiny vignette -> document BED/EQD2 pane
+ * Course: allow to be a grouping variable like patient ID?
+ * Course: represent in patient -> course -> structure hierarchy?
  * allow `checkConstraint(x, "DNTCP < 50%")` instead of `0.5Gy`
  * `getMetric()`, `checkConstraint()`, `readDVH()` -> multicore support
  * `readDVH()` -> if `x` is a directory, read all files in it
@@ -16,7 +18,7 @@
  * `getDMEAN()` bandwidth choice for `locpoly()` when `dpill()` fails
  * `getDMEAN()` adaptive binning grid size for `locpoly()` with small bandwidth
  * merge DVH files from the same patient ID
- * add Eclipse fields: Comment, Exported by, Description, Course, Plan Status, Approval Status, Dose Coverage, Sampling Coverage, Equivalent Sphere Diameter, Conformity Index, Gradient Measure
+ * add Eclipse fields: Comment, Exported by, Description, Plan Status, Approval Status, Dose Coverage, Sampling Coverage, Equivalent Sphere Diameter, Conformity Index, Gradient Measure
  * convert `RadOnc` objects to `DVHmetrics` objects and back
  * `showConstraint()` -> draw constraint arrows as custom geoms
  * harmonize structures by reading equivalence file, possibly with regex

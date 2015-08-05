@@ -253,6 +253,22 @@ With the \textsf{Save as PDF} download button, the diagrams can be saved to a si
 
 %%%%---------------------------------------------------------------------------
 %%%%---------------------------------------------------------------------------
+\section{BED, EQD2, Isoeffective Dose}
+%%%%---------------------------------------------------------------------------
+%%%%---------------------------------------------------------------------------
+
+Based on the linear-quadratic model for the proportion of surviving cells $S$ after dose $d$ \cite{IAEA2008}, several dose conversions for fractionated dose delivery can be calculated:
+
+\begin{itemize}
+\item Biologically effective dose (BED): BED depends on the total dose $D$, on the fractionation scheme (given either by fractional dose $d$ or by the number of fractions), and on the tissue-dependent $\alpha / \beta$ ratio.
+
+\item Isoeffective dose: Given two different fractionation schemes and the tissue-dependent $\alpha / \beta$ ratio, a specific total dose $D_{2}$ for the second fractionation scheme corresponds to the total dose $D_{1}$ from a reference fractionation scheme. Each fractionation scheme may be given either by the fractional dose $d$ or by the number of fractions. Given any three input values, the fourth value is calculated.
+
+\item 2Gy fractions biologically equivalent dose (EQD$_{2}$): EQD$_{2}$ is a special case of isoeffective dose calculation, where the conversion is to a fractionation scheme with 2Gy fractional dose.
+\end{itemize}
+
+%%%%---------------------------------------------------------------------------
+%%%%---------------------------------------------------------------------------
 \section{Technical information}
 \label{sec:technical}
 %%%%---------------------------------------------------------------------------
@@ -266,7 +282,7 @@ The \textsf{About} tab provides background information on technical details: It 
 %%%%---------------------------------------------------------------------------
 %%%%---------------------------------------------------------------------------
 
-The authors thank Marcus Stockinger for ideas on checking quality assurance constraints, Sandra B\"{u}hrdel and Hannes Rennau for example DVH files exported from different treatment planning systems.
+The authors thank Marcus Stockinger for ideas on checking quality assurance constraints as well as Sandra B\"{u}hrdel, Hannes Rennau, Ulrich Wolf, Bjorne Riis and Nico Banz for example DVH files exported from different treatment planning systems.
 
 %%%%---------------------------------------------------------------------------
 %%%%---------------------------------------------------------------------------

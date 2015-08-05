@@ -1,9 +1,6 @@
 # TODO
 ## Medium term
 
- * DVHshiny vignette -> document BED/EQD2 pane
- * Course: allow to be a grouping variable like patient ID?
- * Course: represent in patient -> course -> structure hierarchy?
  * allow `checkConstraint(x, "DNTCP < 50%")` instead of `0.5Gy`
  * `getMetric()`, `checkConstraint()`, `readDVH()` -> multicore support
  * `readDVH()` -> if `x` is a directory, read all files in it
@@ -12,7 +9,7 @@
 
 ## Long term
 
- * Jupyter notebook
+ * expand Jupyter notebook
  * Shiny app: better way to save old data instead of temp-file
  * `getDMEAN()` `smooth.spline()` -> `tol` must be strictly positive
  * `getDMEAN()` bandwidth choice for `locpoly()` when `dpill()` fails

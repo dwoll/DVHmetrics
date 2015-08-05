@@ -553,12 +553,12 @@ saveDVH(sc, file="c:/folder/dvhConstraint.pdf")
 
 %%%%---------------------------------------------------------------------------
 %%%%---------------------------------------------------------------------------
-\section{BED, EQD2, isoeffective dose}
+\section{BED, EQD2, Isoeffective Dose}
 \label{sec:BED}
 %%%%---------------------------------------------------------------------------
 %%%%---------------------------------------------------------------------------
 
-The linear-quadratic model for the fraction of surviving cells $S$ after dose $d$ is \cite{IAEA2008}:
+The linear-quadratic model for the proportion of surviving cells $S$ after dose $d$ is \cite{IAEA2008}:
 
 $$
 S = e^{-(\alpha d + \beta d^{2})}
@@ -602,7 +602,7 @@ getEQD2(D=dataMZ[[c(1, 1)]], fd=2.5, ab=3)
 %%%%---------------------------------------------------------------------------
 %%%%---------------------------------------------------------------------------
 
-The authors thank Marcus Stockinger for ideas on checking quality assurance constraints, Sandra B\"{u}hrdel for example DVH files exported from CadPlan, and Hannes Rennau for example DVH files exported from MasterPlan.
+The authors thank Marcus Stockinger for ideas on checking quality assurance constraints as well as Sandra B\"{u}hrdel, Hannes Rennau, Ulrich Wolf, Bjorne Riis and Nico Banz for example DVH files exported from different treatment planning systems.
 
 %%%%---------------------------------------------------------------------------
 %%%%---------------------------------------------------------------------------

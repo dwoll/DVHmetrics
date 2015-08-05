@@ -34,16 +34,16 @@ Uses functionality provided by the R packages [ggplot2](http://cran.r-project.or
 
 #### References
 
-R Core Team (2014). R: A language and environment for statistical computing.  
+R Core Team (2015). R: A language and environment for statistical computing.  
 R Foundation for Statistical Computing, Vienna, Austria.  
 [http://www.R-project.org/](http://www.R-project.org/)
 
 RStudio Inc. (2015). shiny: Web Application Framework for R.  
-R package version 0.11.1.  
+R package version 0.12.1.  
 [http://CRAN.R-project.org/package=shiny](http://CRAN.R-project.org/package=shiny)
 
 Wand, M (2015). KernSmooth: Functions for Kernel Smoothing Supporting Wand & Jones (1995).  
-R package version 2.23-14.  
+R package version 2.23-15.  
 [http://CRAN.R-project.org/package=KernSmooth](http://CRAN.R-project.org/package=KernSmooth)
 
 Wickham, H (2007). Reshaping Data with the reshape Package.  

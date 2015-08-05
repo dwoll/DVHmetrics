@@ -1,10 +1,10 @@
-$Date: 2015-08-03 16:25:29 +0000 (Mon, 03 Aug 2015) $
+$Date: 2015-08-05 09:25:29 +0000 (Wed, 05 Aug 2015) $
 
 DVHMETRICS RELEASE VERSIONS at http://cran.r-project.org/
 
-Version 0.3.1 (August 03, 2015)
+Version 0.3.1 (August 05, 2015)
     * DESCRIPTION, NAMESPACE
-      - import base packages to accomodate new R-devel
+      - import utils and stats to accomodate new R-devel
     * readDVH()
       - add support for Elekta Monaco (thanks: Reid Thompson),
       - add support for Tomo HiArt (thanks: Nico Banz)

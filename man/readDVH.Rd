@@ -24,9 +24,9 @@ Differential DVHs are automatically converted to cumulative DVHs, but the differ
 
 Sum plans are supported.
 
-Support for Tomo HiArt files is currently limited to those with absolute dose and relative volume. Since HiArt files do not contain info on patient ID, the current workaround is to generate a random ID.
+To export data from Tomo HiArt, copy to clipboard and then save to file from a text editor. Support for Tomo HiArt files is currently limited to those with absolute dose and relative volume. Please send an anonymized sample file if you need this functionality. Since HiArt files do not contain info on patient ID, the current workaround is to generate a random ID.
 
-Pinnacle3 files have to be exported using its own scripting facility such that information from one patient is contained in one directory. The directory layout for one patient has to be as follows (experimental, likely to change in future versions):
+Pinnacle3 files have to be exported using its own scripting facility such that information from one patient is contained in one directory. A suitable export script is available on request from the package authors. The directory layout for one patient has to be as follows (experimental, likely to change in future versions):
 \itemize{
 \item{Files (CSV format with column headers):
 \itemize{

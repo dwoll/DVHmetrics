@@ -2,6 +2,15 @@ $Date: 2015-08-05 09:25:29 +0000 (Wed, 05 Aug 2015) $
 
 DVHMETRICS RELEASE VERSIONS at http://cran.r-project.org/
 
+Version 0.3.1.0.900 (October 07, 2015)
+    * readDVH()
+      - add support for RayStation (thanks: Michael R. Young)
+      - allow structure names with leading non-alpha-numeric
+        characters
+    * getDMEAN()
+      - fix bug: version 0.3.1 broke DMEAN, DMIN, DMAX, DSD for
+        DVHs where these metrics were not exported from the TPS
+
 Version 0.3.1 (August 05, 2015)
     * DESCRIPTION, NAMESPACE
       - import utils and stats to accomodate new R-devel

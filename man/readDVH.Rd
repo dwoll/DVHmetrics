@@ -2,17 +2,17 @@
 \alias{readDVH}
 \title{Read DVH text files}
 \description{
-Reads single or multiple DVH text files as exported from Varian Eclipse(TM), CadPlan(TM), OnCentra MasterPlan(TM), Philipps Pinnacle3 (TM), Elekta Monaco, or Tomo HiArt. Supports cumulative and differential DVHs.
+Reads single or multiple DVH text files as exported from Varian Eclipse(TM), CadPlan(TM), OnCentra MasterPlan(TM), Philipps Pinnacle3 (TM), Elekta Monaco (TM), Tomo HiArt (TM), or RaySearch Labs RayStation (TM). Supports cumulative and differential DVHs.
 }
 \usage{
 readDVH(x,
         type=c("Eclipse", "Cadplan", "Masterplan",
-               "Pinnacle", "Monaco", "HiArt"),
+               "Pinnacle", "Monaco", "HiArt", "RayStation"),
         planInfo=FALSE, courseAsID=FALSE, add)
 }
 \arguments{
   \item{x}{\code{character} vector giving paths to DVH text files. May contain globbing symbols understood by \code{\link[base]{Sys.glob}}. If missing and in interactive mode, \code{readDVH} opens a file selector widget. Under Windows, this widget allows selecting multiple files simultaneously. For \code{type="Pinnacle"}, \code{x} should be one of the following: A directory with information for one patient, a directory with several sub-directories (one for each patient), or a zip file of such directories. Under Windows, if \code{x} is missing and \code{type="Pinnacle"}, \code{readDVH} opens a folder selector widget.}
-  \item{type}{\code{character} string. Indicates which program the DVH text files were exported from. Supported: \code{"Cadplan"} (tested with version 6.4.7), \code{"Eclipse"} (tested with Varian Eclipse version 8), \code{"Masterplan"} (tested with OnCentra MasterPlan version 4.3), \code{"Pinnacle"} (tested with Pinnacle3 version 9, see Details), \code{"Monaco"} (Elekta Monaco), or \code{"HiArt"} (TomoTherapy HiArt).}
+  \item{type}{\code{character} string. Indicates which program the DVH text files were exported from. Supported: \code{"Cadplan"} (tested with version 6.4.7), \code{"Eclipse"} (tested with Varian Eclipse version 8), \code{"Masterplan"} (tested with OnCentra MasterPlan version 4.3), \code{"Pinnacle"} (tested with Pinnacle3 version 9, see Details), \code{"Monaco"} (Elekta Monaco), \code{"HiArt"} (TomoTherapy HiArt), or \code{"RayStation"} (RaySearch Labs RayStation).}
   \item{planInfo}{Experimental: Either \code{FALSE} or \code{character} string. In the latter case, \code{readDVH} tries to extract additional information from the \code{Plan} field in the DVH file, e.g., the prescription dose for a sum plan or the boost quadrant. Undocumented, see source.}
   \item{courseAsID}{If \code{TRUE}, the \code{Course} entry in the header section of a DVH file is appended to the regular patient ID. Currently supported only for \code{type="Eclipse"}.}
   \item{add}{\code{DVHLstLst} object. Existing object that should be merged with the new data from the files.}
@@ -23,6 +23,8 @@ Absolute dose values need to be given in Gy or cGy, absolute volume values in cm
 Differential DVHs are automatically converted to cumulative DVHs, but the differential DVH information is kept.
 
 Sum plans are supported.
+
+For RayStation, only cumulative DVHs with absolute volume are currently supported. Volume is assumed to be measured in cm^3.
 
 To export data from Tomo HiArt, copy to clipboard and then save to file from a text editor. Support for Tomo HiArt files is currently limited to those with absolute dose and relative volume. Please send an anonymized sample file if you need this functionality. Since HiArt files do not contain info on patient ID, the current workaround is to generate a random ID.
 

@@ -1,5 +1,5 @@
 #####---------------------------------------------------------------------------
-## parse character vector from Eclipse DVH file
+## parse character vector from Elekta Monaco file
 parseMonaco <- function(x, planInfo=FALSE, courseAsID=FALSE) {
     planInfo <- as.character(planInfo)
 

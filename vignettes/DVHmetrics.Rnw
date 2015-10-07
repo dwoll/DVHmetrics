@@ -602,7 +602,7 @@ getEQD2(D=dataMZ[[c(1, 1)]], fd=2.5, ab=3)
 %%%%---------------------------------------------------------------------------
 %%%%---------------------------------------------------------------------------
 
-The authors thank Marcus Stockinger for ideas on checking quality assurance constraints as well as Sandra B\"{u}hrdel, Hannes Rennau, Ulrich Wolf, Bjorne Riis and Nico Banz for example DVH files exported from different treatment planning systems.
+The authors thank Marcus Stockinger for ideas on checking quality assurance constraints as well as Sandra B\"{u}hrdel, Hannes Rennau, Ulrich Wolf, Bjorne Riis, Nico Banz, and Michael R.\ Young for example DVH files exported from different treatment planning systems.
 
 %%%%---------------------------------------------------------------------------
 %%%%---------------------------------------------------------------------------

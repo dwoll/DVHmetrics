@@ -10,6 +10,7 @@ function(x, interp=c("linear", "spline", "ksmooth", "smoothSpl")) {
     ## differential DVH
     xD <- convertDVH(x, toType="differential", interp=interp, nodes=5001L)
 
+    ## median from cumulative DVH
     doseMed <- if(interp == "linear") {
         tryCatch(approx(x$dvh[ , "volumeRel"], x$dvh[ , "dose"], 50, method="linear", rule=1, ties=max)$y,
                  error=function(e) return(NA_real_))
@@ -46,30 +47,30 @@ function(x, interp=c("linear", "spline", "ksmooth", "smoothSpl")) {
         NA_real_
     }
 
+    ## min, max, mean, sd
     ## dose category mid-points
-    doseMidPt <- xD$dvh[ , "dose"]
+    doseMidPt <- xD$dvhDiff[ , "dose"]
     ## differential DVH -> volume is per Gy -> mult with bin-width
-    binW      <- diff(c(-xD$dvh[1, "dose"], xD$dvh[ , "dose"]))
-    volRelBin <- xD$dvh[ , "volumeRel"]*binW
+    binW      <- diff(c(-xD$dvhDiff[1, "dose"], xD$dvhDiff[ , "dose"]))
+    volRelBin <- xD$dvhDiff[ , "volumeRel"]*binW
 
     ## available volume
-    volume <- if(!all(is.na(xD$dvh[ , "volume"]))) {
-        xD$dvh[ , "volume"]
+    volume <- if(!all(is.na(xD$dvhDiff[ , "volume"]))) {
+        xD$dvhDiff[ , "volume"]
     } else {
-        xD$dvh[ , "volumeRel"]
+        xD$dvhDiff[ , "volumeRel"]
     }
 
-    doseMin <- min(xD$dvh[volume > 0, "dose"])
-    doseMax <- max(xD$dvh[volume > 0, "dose"])
+    doseMin <- min(xD$dvhDiff[volume > 0, "dose"])
+    doseMax <- max(xD$dvhDiff[volume > 0, "dose"])
     doseAvg <- sum(doseMidPt*volRelBin/100)
-    ## doseAvg <- sum(doseMidPt*(-1)*diff(x$dvh[, "volumeRel"]/100))
     doseSD  <- sqrt(sum(doseMidPt^2*volRelBin/100) - doseAvg^2)
 
     ## for mode, abs or rel volume does not matter
-    doseMode <- if(!all(is.na(xD$dvh[ , "volume"]))) {
-        xD$dvh[which.max(xD$dvh[ , "volume"]),    "dose"]
-    } else if(!all(is.na(xD$dvh[ , "volumeRel"]))) {
-        xD$dvh[which.max(xD$dvh[ , "volumeRel"]), "dose"]
+    doseMode <- if(!all(is.na(xD$dvhDiff[ , "volume"]))) {
+        xD$dvhDiff[which.max(xD$dvhDiff[ , "volume"]),    "dose"]
+    } else if(!all(is.na(xD$dvhDiff[ , "volumeRel"]))) {
+        xD$dvhDiff[which.max(xD$dvhDiff[ , "volumeRel"]), "dose"]
     } else {
         NA_real_
     }

@@ -1,7 +1,7 @@
 ## under Unix-like OS, we don't have choose.files(), choose.dir() and Filters
 ## TODO: fix for fPath=NA -> no initial /
 parseDVH <- function(x, type=c("Eclipse", "Cadplan", "Masterplan",
-                               "Pinnacle", "Monaco", "HiArt")) {
+                               "Pinnacle", "Monaco", "HiArt", "RayStation")) {
     type <- match.arg(type)
 
     ## name them using patient IDs
@@ -9,6 +9,10 @@ parseDVH <- function(x, type=c("Eclipse", "Cadplan", "Masterplan",
         if(type == "Monaco") {
             header <- unlist(strsplit(txt[1], " [|] "))
             trimWS(sub("^Patient ID: .+[~](.+)$", "\\1", header[1]))
+        } else if(type == "RayStation") {
+            IDline <- txt[grep("^(#PatientId):.+", txt)]
+            IDres  <- sub("^.+?:[[:blank:]]*([[:alnum:][:punct:][:blank:]]+$)", "\\1", IDline, perl=TRUE)
+            collWS(trimWS(IDres, side="both"))
         } else if(type == "HiArt") {
             gsub("[^a-z0-9]", "\\1", tempfile(pattern="", tmpdir=""))
         } else if(type != "Pinnacle") {

@@ -29,7 +29,7 @@ readDVH <- function(x, type=c("Eclipse", "Cadplan", "Masterplan", "Pinnacle",
     }
     
     ## for HiArt files, no patient ID is given
-    ## -> copy the ID from parseDVH to all DVHs
+    ## -> copy the random ID generated in parseDVH() to all DVHs
     if(type == "HiArt") {
         setID <- function(dvhL, id) {
             dvhLOut <- lapply(dvhL, function(y) {

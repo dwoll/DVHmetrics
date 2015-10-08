@@ -2,14 +2,25 @@
 ## dose, dose rel, volume, volume rel, N DVH nodes
 getKSmooth <- function(d, dR, v, vR, nodes=NULL) {
     nodes <- max(nodes, length(d))
-    bwDV  <- KernSmooth::dpill(d, v)
-    bwDVR <- KernSmooth::dpill(d, vR)
-    smDV  <- KernSmooth::locpoly(d, v,  bandwidth=bwDV,
-                                 gridsize=nodes, degree=3)
-    smDVR <- KernSmooth::locpoly(d, vR, bandwidth=bwDVR,
-                                 gridsize=nodes, degree=3)
     
-    ## dose rel -> just use equally spaced grid points
+    ## smooth
+    bwDV  <- try(KernSmooth::dpill(d, v))
+    bwDVR <- try(KernSmooth::dpill(d, vR))
+    smDV  <- try(KernSmooth::locpoly(d, v,  bandwidth=bwDV,
+                                     gridsize=nodes, degree=3))
+    smDVR <- try(KernSmooth::locpoly(d, vR, bandwidth=bwDVR,
+                                     gridsize=nodes, degree=3))
+    
+    ## dose
+    dose <- if(!inherits(smDV, "try-error")) {
+        smDV$x
+    } else if(!inherits(smDVR, "try-error")) {
+        smDVR$x
+    } else {
+        NA_real_
+    }
+
+    ## dose rel -> just use equally spaced grid points as is done in 
     doseRel <- if(!any(is.na(dR))) {
         rangeDR <- range(dR)
         seq(rangeDR[1], rangeDR[2], length.out=nodes)
@@ -17,7 +28,15 @@ getKSmooth <- function(d, dR, v, vR, nodes=NULL) {
         NA_real_
     }
 
-    return(cbind(dose=smDV$x, doseRel=doseRel, volume=smDV$y, volumeRel=smDVR$y))
+    volume <- if(!inherits(smDV, "try-error")) {
+        smDV$y
+    } else { NA_real_ }
+
+    volumeRel <- if(!inherits(smDVR, "try-error")) {
+        smDVR$y
+    } else { NA_real_ }
+
+    return(cbind(dose=dose, doseRel=doseRel, volume=volume, volumeRel=volumeRel))
 }
 
 ## function for cubic local polynomial smoothing
@@ -26,20 +45,26 @@ getSmoothSpl <- function(d, dR, v, vR, nodes=NULL) {
     nodes <- max(nodes, length(d))
 
     ## smooth
-    smDV  <- smooth.spline(d, v)
-    smDVR <- smooth.spline(d, vR)
+    smDV  <- try(smooth.spline(d, v))
+    smDVR <- try(smooth.spline(d, vR))
 
     ## dose, dose rel -> just use equally spaced grid points
     rangeD  <- range(d)
-    dose    <- seq(rangeD[1],  rangeD[2],  length.out=nodes)
+    dose    <- seq(rangeD[1],  rangeD[2], length.out=nodes)
     doseRel <- if(!any(is.na(dR))) {
         rangeDR <- range(dR)
         seq(rangeDR[1], rangeDR[2], length.out=nodes)
     } else {
         NA_real_
     }
-    volume    <- predict(smDV,  dose)$y
-    volumeRel <- predict(smDVR, dose)$y
+
+    volume <- if(!inherits(smDV, "try-error")) {
+        predict(smDV,  dose)$y
+    } else { NA_real_ }
+
+    volumeRel <- if(!inherits(smDVR, "try-error")) {
+        predict(smDVR, dose)$y
+    }
 
     return(cbind(dose=dose, doseRel=doseRel, volume=volume, volumeRel=volumeRel))
 }
@@ -50,8 +75,8 @@ getInterpSpl <- function(d, dR, v, vR, nodes=NULL) {
     nodes <- max(nodes, length(d))
     
     ## interpolation
-    smDV  <- splinefun(d, v,  method="fmm")
-    smDVR <- splinefun(d, vR, method="fmm")
+    smDV  <- try(splinefun(d, v,  method="fmm"))
+    smDVR <- try(splinefun(d, vR, method="fmm"))
     
     ## dose, dose rel -> just use equally spaced grid points
     rangeD  <- range(d)
@@ -62,8 +87,18 @@ getInterpSpl <- function(d, dR, v, vR, nodes=NULL) {
     } else {
         NA_real_
     }
-    volume    <- smDV(dose)
-    volumeRel <- smDVR(dose)
+
+    volume <- if(!inherits(smDV, "try-error")) {
+        smDV(dose)
+    } else {
+        NA_real_
+    }
+
+    volumeRel <- if(!inherits(smDVR, "try-error")) {
+        smDVR(dose)
+    } else {
+        NA_real_
+    }
 
     return(cbind(dose=dose, doseRel=doseRel, volume=volume, volumeRel=volumeRel))
 }

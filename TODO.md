@@ -1,9 +1,9 @@
 # TODO
 ## Medium term
 
- * fix getDMEAN()
- * add doseRxUnit and convert accordingly
- *  allow structure names with leading non-alpha-numeric characters
+ * convertDVH() -> re-normalize differential DVHs after interpolation
+ * add doseRxUnit and convert accordingly if planInfo="doseRx"
+ * allow structure names with leading non-alpha-numeric characters
  * allow `checkConstraint(x, "DNTCP < 50%")` instead of `0.5Gy`
  * `getMetric()`, `checkConstraint()`, `readDVH()` -> multicore support
  * `readDVH()` -> if `x` is a directory, read all files in it

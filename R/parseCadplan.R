@@ -69,7 +69,7 @@ parseCadplan <- function(x, planInfo=FALSE) {
     }
 
     ## split file into list of structure sections
-    sStart <- grep("^Histogram[[:blank:]]*:[[:blank:]]*[[:alnum:]]+", x)  # start of sections
+    sStart <- grep("^Histogram[[:blank:]]+: [[:alnum:][:punct:]]+", x)  # start of sections
     sLen   <- diff(c(sStart, length(x)+1))        # length of sections
     if((length(sLen) < 1L) || all(sLen < 1L)) {
         stop("No structures found")

@@ -59,9 +59,9 @@ function(x, metric, patID, structure,
                 NA_real_
             }
         } else if(interp == "ksmooth") {   # kernel smoothing
-            bw <- KernSmooth::dpill(vol, dose)
-            sm <- KernSmooth::locpoly(vol, dose, bandwidth=bw,
-                                      gridsize=1001L, degree=3)
+            bw <- try(KernSmooth::dpill(vol, dose))
+            sm <- try(KernSmooth::locpoly(vol, dose, bandwidth=bw,
+                                          gridsize=1001L, degree=3))
             if(!inherits(sm, "try-error")) {
                 idx <- which.min(abs(sm$x-val))
                 sm$y[idx]
@@ -69,8 +69,12 @@ function(x, metric, patID, structure,
                 NA_real_
             }
         } else if(interp == "spline") {  # does interpolation beyond bounds
-            sfun <- splinefun(vol, dose, method="monoH.FC", ties=max)
-            sfun(val)
+            sfun <- try(splinefun(vol, dose, method="monoH.FC", ties=max))
+            if(!inherits(sfun, "try-error")) {
+                sfun(val)
+            } else {
+                NA_real_
+            }
         }
     }
 
@@ -112,27 +116,22 @@ function(x, metric, patID, structure,
                 NA_real_
             }
         } else if(interp == "ksmooth") {   # kernel smoothing
-            bw <- KernSmooth::dpill(dose, vol)
-            sm <- KernSmooth::locpoly(dose, vol, bandwidth=bw,
-                                      gridsize=1001L, degree=3)
+            bw <- try(KernSmooth::dpill(dose, vol))
+            sm <- try(KernSmooth::locpoly(dose, vol, bandwidth=bw,
+                                          gridsize=1001L, degree=3))
             if(!inherits(sm, "try-error")) {
                 idx <- which.min(sm$x-val)
                 sm$y[idx]
             } else {
                 NA_real_
             }
-#         } else if(interp == "loess") {   # LOESS
-#             dat    <- data.frame(x=dose, y=vol)
-#             fit    <- loess(y ~ x, data=dat)
-#             fitOpt <- try(loessSelSpan(fit, data=dat))
-#             if(!inherits(fitOpt, "try-error")) {
-#                 predict(fitOpt, val)
-#             } else {
-#                 NA_real_
-#             }
         } else if(interp == "spline") {  # does interpolation beyond bounds
-            sfun <- splinefun(dose, vol, val, method="monoH.FC")
-            sfun(val)
+            sfun <- try(splinefun(dose, vol, val, method="monoH.FC"))
+            if(!inherits(sfun, "try-error")) {
+                sfun(val)
+            } else {
+                NA_real_
+            }
         }
     }
 

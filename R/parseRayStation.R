@@ -28,8 +28,8 @@ parseRayStation <- function(x, planInfo=FALSE, courseAsID=FALSE) {
         toupper(trimWS(elem))
     }
 
-    sStart <- grep("^#RoiName:[[:alnum:]]", x)     # start of sections
-    sLen   <- diff(c(sStart, length(x)+1))         # length of sections
+    sStart <- grep("^#RoiName:[[:alnum:][:punct:]]", x) # start of sections
+    sLen   <- diff(c(sStart, length(x)+1))              # length of sections
     if((length(sLen) < 1L) || all(sLen < 1L)) {
         stop("No structures found")
     }
@@ -44,7 +44,7 @@ parseRayStation <- function(x, planInfo=FALSE, courseAsID=FALSE) {
     DVHtype <- "cumulative"
     DVHdate <- NA_character_
 
-    doseRx  <- if(tolower(planInfo) == "doserx") {
+    doseRx <- if(tolower(planInfo) == "doserx") {
         doseRxUnit <- toupper(sub("^.+[[:blank:]][.[:digit:]]+(c?Gy).*$", "\\1",
                                   plan, perl=TRUE, ignore.case=TRUE))
 

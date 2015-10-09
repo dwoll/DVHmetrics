@@ -140,9 +140,16 @@ parseEclipse <- function(x, planInfo=FALSE, courseAsID=FALSE) {
         }
     }
 
+    doseUnit <- getDoseUnit(header)
+    if(!grepl("^(GY|CGY)$", doseUnit)) {
+        warning("Could not determine dose measurement unit")
+        doseUnit <- NA_character_
+    }
+
     doseRx0 <- getElem("^Prescribed dose.*:", header)
     ## check if sum plan
     doseRx  <- if((length(doseRx0) > 0) && (doseRx0 != "not defined")) {
+        doseRxUnit <- doseUnit
         getDose("^Prescribed dose.*:", header)
     } else {                                        # sum plan
         ## doseRx is encoded in plan name
@@ -163,12 +170,6 @@ parseEclipse <- function(x, planInfo=FALSE, courseAsID=FALSE) {
             warning("No info on prescribed dose")
             NA_real_
         }
-    }
-
-    doseUnit <- getDoseUnit(header)
-    if(!grepl("^(GY|CGY)$", doseUnit)) {
-        warning("Could not determine dose measurement unit")
-        doseUnit <- NA_character_
     }
 
     ## extract DVH from one structure section and store in a list
@@ -310,16 +311,18 @@ parseEclipse <- function(x, planInfo=FALSE, courseAsID=FALSE) {
                     doseMin=doseMin,
                     doseMax=doseMax,
                     doseRx=doseRx,
+                    doseRxUnit=doseRxUnit,
                     isoDoseRx=isoDoseRx,
                     doseAvg=doseAvg,
                     doseMed=doseMed,
                     doseMode=doseMode,
                     doseSD=doseSD)
 
-        ## convert differential DVH to cumulative
+        ## convert differential DVH (per unit dose) to cumulative
         ## and add differential DVH separately
         if(info$DVHtype == "differential") {
-            DVH$dvh     <- convertDVH(dvh, toType="cumulative", toDoseUnit="asis")
+            DVH$dvh     <- convertDVH(dvh, toType="cumulative",
+                                      toDoseUnit="asis", perDose=TRUE)
             DVH$dvhDiff <- dvh
         }
 

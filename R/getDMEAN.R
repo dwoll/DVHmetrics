@@ -24,8 +24,8 @@ function(x, interp=c("linear", "spline", "ksmooth", "smoothSpl")) {
         }
     } else if(interp == "ksmooth") {
         bw <- try(KernSmooth::dpill(x$dvh[ , "volumeRel"], x$dvh[ , "dose"]))
-        sm <- try(KernSmooth::locpoly(x$dvh[ , "volumeRel"], x$dvh[ , "dose"], bandwidth=bw,
-                                      gridsize=5001L, degree=3))
+        sm <- try(KernSmooth::locpoly(x$dvh[ , "volumeRel"], x$dvh[ , "dose"],
+                                      bandwidth=bw, gridsize=5001L, degree=3))
         if(!inherits(sm, "try-error")) {
             idx <- which.min(abs(sm$x-50))
             sm$y[idx]
@@ -43,35 +43,36 @@ function(x, interp=c("linear", "spline", "ksmooth", "smoothSpl")) {
         NA_real_
     }
 
-    ## min, max, mean, sd from differential DVH - but not per unit dose
+    ## min, max, mean, sd from differential DVH
     if(interp != "linear") {
         warning("Interpolation set to linear for min, max, mean, sd, mode")
         interp <- "linear"
     }
 
-    xD <- convertDVH(x, toType="differential", interp=interp, nodes=5001L, perDose=FALSE)
+    ## convert to differential DVH - but not per unit dose
+    xDiff <- convertDVH(x, toType="differential", interp=interp, nodes=5001L, perDose=FALSE)
 
     ## dose category mid-points
-    doseMidPt <- xD$dvhDiff[ , "dose"]
-    volRel    <- xD$dvhDiff[ , "volumeRel"]
+    doseMidPt <- xDiff$dvhDiff[ , "dose"]
+    volRel    <- xDiff$dvhDiff[ , "volumeRel"]
 
     ## available volume
-    volume <- if(!all(is.na(xD$dvhDiff[ , "volume"]))) {
-        xD$dvhDiff[ , "volume"]
+    volume <- if(!all(is.na(xDiff$dvhDiff[ , "volume"]))) {
+        xDiff$dvhDiff[ , "volume"]
     } else {
-        xD$dvhDiff[ , "volumeRel"]
+        xDiff$dvhDiff[ , "volumeRel"]
     }
 
-    doseMin <- min(xD$dvhDiff[volume > 0, "dose"])
-    doseMax <- max(xD$dvhDiff[volume > 0, "dose"])
+    doseMin <- min(xDiff$dvhDiff[volume > 0, "dose"])
+    doseMax <- max(xDiff$dvhDiff[volume > 0, "dose"])
     doseAvg <- sum(doseMidPt*volRel/100)
     doseSD  <- sqrt(sum(doseMidPt^2*volRel/100) - doseAvg^2)
 
     ## for mode, abs or rel volume does not matter
-    doseMode <- if(!all(is.na(xD$dvhDiff[ , "volume"]))) {
-        xD$dvhDiff[which.max(xD$dvhDiff[ , "volume"]),    "dose"]
-    } else if(!all(is.na(xD$dvhDiff[ , "volumeRel"]))) {
-        xD$dvhDiff[which.max(xD$dvhDiff[ , "volumeRel"]), "dose"]
+    doseMode <- if(!all(is.na(xDiff$dvhDiff[ , "volume"]))) {
+        xDiff$dvhDiff[which.max(xDiff$dvhDiff[ , "volume"]),    "dose"]
+    } else if(!all(is.na(xDiff$dvhDiff[ , "volumeRel"]))) {
+        xDiff$dvhDiff[which.max(xDiff$dvhDiff[ , "volumeRel"]), "dose"]
     } else {
         NA_real_
     }

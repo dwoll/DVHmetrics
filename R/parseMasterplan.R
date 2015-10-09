@@ -199,15 +199,12 @@ parseMasterplan <- function(x, planInfo=FALSE, courseAsID=FALSE) {
                     doseRx=doseRx,
                     isoDoseRx=isoDoseRx)
 
-        ## convert differential DVH to cumulative
+        ## convert differential DVH (per unit dose) to cumulative
         ## and add differential DVH separately
         if(info$DVHtype == "differential") {
-            DVH$dvh     <- convertDVH(dvh, toType="cumulative", toDoseUnit="asis")
+            DVH$dvh <- convertDVH(dvh, toType="cumulative",
+                                  toDoseUnit="asis", perDose=TRUE)
             DVH$dvhDiff <- dvh
-            dvhDiff     <- dvh
-        } else {
-            ## need differential DVH for mean dose etc.
-            dvhDiff <- convertDVH(dvh, toType="differential", toDoseUnit="asis")
         }
 
         ## Masterplan does not export mean/min/max ...

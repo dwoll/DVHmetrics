@@ -125,7 +125,9 @@ parseHiArt <- function(x, planInfo=FALSE, courseAsID=FALSE) {
         ## convert differential DVH to cumulative
         ## and add differential DVH separately
         if(DVHtype == "differential") {
-            DVH$dvh     <- convertDVH(dvh, toType="cumulative", toDoseUnit="asis")
+            warning("I assume differential DVH is per unit dose\nbut I have no information on this")
+            DVH$dvh <- convertDVH(dvh, toType="cumulative",
+                                  toDoseUnit="asis", perDose=TRUE)
             DVH$dvhDiff <- dvh
         }
 

@@ -41,7 +41,6 @@ parseRayStation <- function(x, planInfo=FALSE, courseAsID=FALSE) {
     patName <- getElem("#PatientName:", header)   # patient name
     patID   <- getElem("^#PatientId:",  header)   # patient id
     plan    <- getElem("^#Dosename:",   header)   # treatment plan
-    DVHtype <- "cumulative"
     DVHdate <- NA_character_
 
     doseRx <- if(tolower(planInfo) == "doserx") {
@@ -140,11 +139,24 @@ parseRayStation <- function(x, planInfo=FALSE, courseAsID=FALSE) {
         ## considering isoDoseRx
         dvh <- cbind(dvh, doseRel=dvh[ , "dose"]*isoDoseRx / doseRx)
 
+        ## check if volume is already sorted -> cumulative DVH
+        volume <- if(!any(is.na(dvh[ , "volumeRel"]))) {
+            dvh[ , "volumeRel"]
+        } else {
+            dvh[ , "volume"]
+        }
+
+        DVHtype <- if(isTRUE(all.equal(volume, sort(volume, decreasing=TRUE)))) {
+            "cumulative"
+        } else {
+            "differential"
+        }
+
         DVH <- list(dvh=dvh,
                     patName=info$patName,
                     patID=info$patID,
                     date=info$date,
-                    DVHtype=info$DVHtype,
+                    DVHtype=DVHtype,
                     plan=info$plan,
                     course=info$course,
                     quadrant=info$quadrant,
@@ -155,6 +167,7 @@ parseRayStation <- function(x, planInfo=FALSE, courseAsID=FALSE) {
                     doseMin=doseMin,
                     doseMax=doseMax,
                     doseRx=doseRx,
+                    doseRxUnit=doseRxUnit,
                     isoDoseRx=isoDoseRx,
                     doseAvg=doseAvg,
                     doseMed=doseMed,
@@ -163,8 +176,10 @@ parseRayStation <- function(x, planInfo=FALSE, courseAsID=FALSE) {
 
         ## convert differential DVH to cumulative
         ## and add differential DVH separately
-        if(info$DVHtype == "differential") {
-            DVH$dvh     <- convertDVH(dvh, toType="cumulative", toDoseUnit="asis")
+        if(DVHtype == "differential") {
+            warning("I assume differential DVH is per unit dose\nbut I have no information on this")
+            DVH$dvh <- convertDVH(dvh, toType="cumulative",
+                                  toDoseUnit="asis", perDose=TRUE)
             DVH$dvhDiff <- dvh
         }
 
@@ -174,8 +189,7 @@ parseRayStation <- function(x, planInfo=FALSE, courseAsID=FALSE) {
     }
 
     ## list of DVH data frames with component name = structure
-    info <- list(patID=patID, patName=patName, date=DVHdate,
-                 DVHtype=DVHtype, plan=plan,
+    info <- list(patID=patID, patName=patName, date=DVHdate, plan=plan,
                  doseRx=doseRx, doseRxUnit=doseRxUnit, isoDoseRx=isoDoseRx)
     dvhL <- lapply(structList, getDVH, info=info)
     dvhL <- Filter(Negate(is.null), dvhL)

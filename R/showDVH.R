@@ -74,21 +74,14 @@ function(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL,
     dvhDFL <- if(cumul) {
         ## cumulative DVH
         lapply(x, function(y) {
-            if(is.null(y$dvh)) {
-                y$dvh <- convertDVH(y$dvhDiff, toType="cumulative",
-                                    toDoseUnit="asis")
-            }
-
             data.frame(y$dvh, patID=y$patID, structure=y$structure,
                        stringsAsFactors=FALSE)
         })
     } else {
         lapply(x, function(y) {
             ## differential DVH - create if not yet present
-            if(is.null(y$dvhDiff)) {
-                y$dvhDiff <- convertDVH(y$dvh, toType="differential",
-                                        toDoseUnit="asis")
-            }
+            y$dvhDiff <- convertDVH(y$dvh, toType="differential",
+                                    toDoseUnit="asis", perDose=TRUE)
 
             data.frame(y$dvhDiff, patID=y$patID, structure=y$structure,
                        stringsAsFactors=FALSE)

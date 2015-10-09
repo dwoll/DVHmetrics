@@ -39,7 +39,7 @@ R Foundation for Statistical Computing, Vienna, Austria.
 [http://www.R-project.org/](http://www.R-project.org/)
 
 RStudio Inc. (2015). shiny: Web Application Framework for R.  
-R package version 0.12.1.  
+R package version 0.12.2.  
 [http://CRAN.R-project.org/package=shiny](http://CRAN.R-project.org/package=shiny)
 
 Wand, M (2015). KernSmooth: Functions for Kernel Smoothing Supporting Wand & Jones (1995).  

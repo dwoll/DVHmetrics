@@ -22,7 +22,7 @@ showDVH(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL,
 }
 \arguments{
   \item{x}{A single DVH (object of class \code{DVHs}), multiple DVHs from one patient/structure (object of class \code{DVHLst}), or multiple DVHs from many patients/structures (object of class \code{DVHLstLst}). See \code{\link[DVHmetrics]{readDVH}}. See Details.}
-  \item{cumul}{Show cumulative or differential DVH?}
+  \item{cumul}{Show cumulative or differential (per unit dose) DVH?}
   \item{byPat}{Relevant if multiple DVHs are given. If \code{x} has class \code{DVHLstLst}: \code{byPat=TRUE} means that one diagram shows DVHs from one patient with multiple structures. \code{byPat=FALSE} means that one diagram shows DVHs for one structure from multiple patients.}
   \item{patID}{\code{character} vector. Show diagram for these patients only. If missing, all patients are shown. Can be a regular expression, see \code{\link[base]{regex}}.}
   \item{structure}{\code{character} vector. Show diagram for these structures only. If missing, all structures are shown. Can be a regular expression, see \code{\link[base]{regex}}.}

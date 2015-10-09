@@ -18,6 +18,9 @@ function(x, DV) {
             data.matrix(x$dvh[ , c("dose",    "volume")])
         }
 
+        ## there may be duplicate points due to precision in DVH file
+        DVHmat <- unique(DVHmat)
+
         ## constraint point
         DVcpt <- c(oneDV$D, oneDV$V)
 

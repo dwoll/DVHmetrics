@@ -141,10 +141,11 @@ parseMonaco <- function(x, planInfo=FALSE, courseAsID=FALSE) {
                     doseMode=NA_real_,
                     doseSD=NA_real_)
 
-        ## convert differential DVH to cumulative
+        ## convert differential DVH (not per unit dose!) to cumulative
         ## and add differential DVH separately
         if(DVHtype == "differential") {
-            DVH$dvh     <- convertDVH(dvh, toType="cumulative", toDoseUnit="asis")
+            DVH$dvh <- convertDVH(dvh, toType="cumulative",
+                                  toDoseUnit="asis", perDose=FALSE)
             DVH$dvhDiff <- dvh
         }
 

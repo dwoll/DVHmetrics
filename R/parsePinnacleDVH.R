@@ -107,13 +107,6 @@ parsePinnacleDVH <- function(x, structInfo, info) {
     vars3 <- c("dose", "volume")
     colnames(dvh) <- vars3
 
-    ## determine DVH type -> volume monotonically decreasing?
-    info$DVHtype <- if(all(diff(dvh[ , "volume"]) >= 0)) {
-        "cumulative"
-    } else {
-        "differential"
-    }
-
     ## TODO: this should be exported
     warning("Iso-dose-Rx is assumed to be 100")
     info$isoDoseRx <- 100
@@ -153,6 +146,19 @@ parsePinnacleDVH <- function(x, structInfo, info) {
         volumeUnit <- "CC"
     }
 
+    ## check if volume is already sorted -> cumulative DVH
+    volume <- if(!any(is.na(dvh[ , "volumeRel"]))) {
+        dvh[ , "volumeRel"]
+    } else {
+        dvh[ , "volume"]
+    }
+
+    DVHtype <- if(isTRUE(all.equal(volume, sort(volume, decreasing=TRUE)))) {
+        "cumulative"
+    } else {
+        "differential"
+    }
+
     ## TODO: identify list elements for structVol, dose*, independent of unit
     volumeIdx  <- grep("Volume",   names(structInfo), ignore.case=TRUE)
     doseMinIdx <- grep("DoseMin",  names(structInfo), ignore.case=TRUE)
@@ -162,7 +168,7 @@ parsePinnacleDVH <- function(x, structInfo, info) {
                 patName=info$patName,
                 patID=info$patID,
                 date=info$date,
-                DVHtype=info$DVHtype,
+                DVHtype=DVHtype,
                 plan=info$plan,
                 fractionDose=info$fractionDose,
                 fractionN=info$fractionN,
@@ -179,8 +185,10 @@ parsePinnacleDVH <- function(x, structInfo, info) {
 
     ## convert differential DVH to cumulative
     ## and add differential DVH separately
-    if(info$DVHtype == "differential") {
-        DVH$dvh     <- convertDVH(dvh, toType="cumulative", toDoseUnit="asis")
+    if(DVHtype == "differential") {
+        warning("I assume differential DVH is per unit dose\nbut I have no information on this")
+        DVH$dvh <- convertDVH(dvh, toType="cumulative",
+                              toDoseUnit="asis", perDose=TRUE)
         DVH$dvhDiff <- dvh
     }
     

@@ -1,5 +1,5 @@
 ## parse character vector from Cadplan DVH file
-parseCadplan <- function(x, planInfo=FALSE) {
+parseCadplan <- function(x, planInfo=FALSE, courseAsID=FALSE) {
     ## function to extract one information element from a number of lines
     getElem <- function(pattern, ll, trim=TRUE, iCase=FALSE, collWS=TRUE) {
         line <- ll[grep(pattern, ll)]
@@ -85,6 +85,24 @@ parseCadplan <- function(x, planInfo=FALSE) {
     DVHdate <- getElem("^Date[[:blank:]]+:", header)         # export date
     DVHtype <- getDVHtype(header)
 
+    ## prescribed dose may be encoded in plan
+    if(tolower(planInfo) == "doserx") {
+        doseRxUnit <- toupper(sub("^.+_([.[:digit:]]+)(GY|CGY)_.*", "\\2",
+                                  plan, perl=TRUE, ignore.case=TRUE))
+    
+        if(!grepl("^(GY|CGY)$", doseRxUnit)) {
+            warning("Could not determine dose Rx unit")
+            doseRxUnit <- NA_character_
+        }
+        
+        drx <- sub("^[[:alnum:]]+_([.[:digit:]]+)(GY|CGY)_[[:alnum:]]*", "\\1",
+                   plan, perl=TRUE, ignore.case=TRUE)
+        doseRx <- as.numeric(drx)
+    } else {
+        doseRx     <- NA_real_
+        doseRxUnit <- NA_character_
+    }
+
     ## extract DVH from one structure section and store in a list
     ## with DVH itself as a matrix
     getDVH <- function(strct, info) {
@@ -96,7 +114,7 @@ parseCadplan <- function(x, planInfo=FALSE) {
 
         isoDoseRx0 <- getElem("^% for dose[[:blank:]]*:", strct)
         ## check if sum plan
-        isoDoseRx  <- if((length(isoDoseRx0) > 0) && (isoDoseRx0 != "not defined")) {
+        isoDoseRx <- if((length(isoDoseRx0) > 0) && (isoDoseRx0 != "not defined")) {
             as.numeric(isoDoseRx0)
         } else {                                        # sum plan -> use plan info?
             if(tolower(planInfo) == "doserx") {
@@ -108,26 +126,37 @@ parseCadplan <- function(x, planInfo=FALSE) {
             }
         }
 
-        doseRx0 <- getElem("^Prescr\\. dose.*:", strct)
-        ## check if sum plan
-        doseRx  <- if((length(doseRx0) > 0) && (doseRx0 != "not defined")) {
-            getDose("^Prescr\\. dose.*:", strct)
-        } else {                                        # sum plan
-            ## doseRx is encoded in plan name
-            if(tolower(planInfo) == "doserx") {
-                drx <- sub("^[[:alnum:]]+_([.[:digit:]]+)(GY|CGY)_[[:alnum:]]*", "\\1",
-                           plan, perl=TRUE, ignore.case=TRUE)
-                as.numeric(drx)
-            } else {
-                warning("No info on prescribed dose")
-                NA_real_
-            }
-        }
-
         doseUnit <- getDoseUnit(strct)
         if(!grepl("^(GY|CGY)$", doseUnit)) {
             doseUnit <- NA_character_
             warning("Could not determine dose measurement unit")
+        }
+
+        doseRx0 <- getElem("^Prescr\\. dose.*:", strct)
+        ## check if sum plan
+        doseRx <- if((length(doseRx0) > 0) && (doseRx0 != "not defined")) {
+            doseRxUnit <- doseUnit
+            getDose("^Prescr\\. dose.*:", strct)
+        } else {                                        # sum plan
+            ## doseRx may be encoded in plan name
+            if(tolower(planInfo) == "doserx") {
+                doseRxUnit <- info$doseRxUnit
+                info$doseRx
+            } else {
+                warning("No info on prescribed dose")
+                doseRxUnit <- NA_character_
+                NA_real_
+            }
+        }
+
+        ## check if we have dose Rx
+        ## if so, does it have the same unit as doseUnit -> convert
+        if(!is.na(doseUnit) && !is.na(doseRxUnit)) {
+            if((doseUnit == "GY") && (doseRxUnit == "CGY")) {
+                doseRx <- doseRx/100
+            } else if((doseUnit == "CGY") && (doseRxUnit == "GY")) {
+                doseRx <- doseRx*100
+            }
         }
 
         volumeUnit <- getVolUnit(strct)
@@ -231,7 +260,7 @@ parseCadplan <- function(x, planInfo=FALSE) {
                     patName=info$patName,
                     date=info$date,
                     DVHtype=info$DVHtype,
-                    plan=plan,
+                    plan=info$plan,
                     structure=structure,
                     structVol=structVol,
                     doseUnit=doseUnit,
@@ -239,15 +268,17 @@ parseCadplan <- function(x, planInfo=FALSE) {
                     doseMin=doseMin,
                     doseMax=doseMax,
                     doseRx=doseRx,
+                    doseRxUnit=doseRxUnit,
                     isoDoseRx=isoDoseRx,
                     doseAvg=doseAvg,
                     doseMed=doseMed,
                     doseSD=doseSD)
 
-        ## convert differential DVH to cumulative
+        ## convert differential DVH (not per unit dose!) to cumulative
         ## and add differential DVH separately
         if(info$DVHtype == "differential") {
-            DVH$dvh     <- convertDVH(dvh, toType="cumulative", toDoseUnit="asis")
+            DVH$dvh     <- convertDVH(dvh, toType="cumulative",
+                                      toDoseUnit="asis", perDose=FALSE)
             DVH$dvhDiff <- dvh
         }
 
@@ -257,7 +288,8 @@ parseCadplan <- function(x, planInfo=FALSE) {
     }
 
     ## list of DVH data frames with component name = structure
-    info <- list(patID=patID, patName=patName, plan=plan, date=DVHdate, DVHtype=DVHtype)
+    info <- list(patID=patID, patName=patName, plan=plan, date=DVHdate,
+                 DVHtype=DVHtype, doseRx=doseRx, doseRxUnit=doseRxUnit)
     dvhL <- lapply(structList, getDVH, info)
     dvhL <- Filter(Negate(is.null), dvhL)
     names(dvhL) <- sapply(dvhL, function(y) y$structure)

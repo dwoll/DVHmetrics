@@ -11,9 +11,12 @@ Suggests: knitr
 VignetteBuilder: knitr
 LazyData: yes
 Description: Functionality for analyzing dose-volume histograms (DVH)
-        in radiation oncology: Read DVH text files,
-        calculate DVH metrics, gEUD, BED, EQD2, NTCP, TCP, show DVH
-        diagrams, check and visualize quality assurance constraints
-        for the DVH. Includes web-based graphical user interface.
+        in radiation oncology: Read DVH text files, calculate DVH
+        metrics as well as generalized equivalent uniform dose (gEUD),
+        biologically effective dose (BED), equivalent dose in 2 Gy
+        fractions (EQD2), normal tissue complication probability
+        (NTCP), tumor control probability (TCP). Show DVH diagrams,
+        check and visualize quality assurance constraints for the DVH.
+        Includes web-based graphical user interface.
 License: GPL (>= 2)
 URL: https://github.com/dwoll/DVHmetrics/

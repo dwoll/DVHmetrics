@@ -2,7 +2,7 @@
 convertDVH <-
 function(x, toType=c("asis", "cumulative", "differential"),
          toDoseUnit=c("asis", "GY", "CGY"),
-         interp=c("asis", "linear"),#, "spline", "ksmooth", "smoothSpl"),
+         interp=c("asis", "linear", "spline", "ksmooth", "smoothSpl"),
          nodes=NULL, perDose=TRUE) {
     UseMethod("convertDVH")
 }
@@ -11,7 +11,7 @@ function(x, toType=c("asis", "cumulative", "differential"),
 convertDVH.matrix <-
 function(x, toType=c("asis", "cumulative", "differential"),
          toDoseUnit=c("asis", "GY", "CGY"),
-         interp=c("asis", "linear"),#, "spline", "ksmooth", "smoothSpl"),
+         interp=c("asis", "linear", "spline", "ksmooth", "smoothSpl"),
          nodes=NULL, perDose=TRUE) {
     toType     <- match.arg(toType)
     toDoseUnit <- match.arg(toDoseUnit)
@@ -45,8 +45,9 @@ function(x, toType=c("asis", "cumulative", "differential"),
     x <- do.call("rbind", lapply(xL, keepMaxVol))
     rownames(x) <- NULL
 
-    ## number of DVH points
-    N <- nrow(x)
+    ## number of DVH points -> determine nodes for interpolation
+    N     <- nrow(x)
+    nodes <- max(nodes, N)
     
     ## absolute and relative doses/volumes
     dose      <- x[ , "dose"]
@@ -68,16 +69,47 @@ function(x, toType=c("asis", "cumulative", "differential"),
         ## nothing to convert
         ## interpolate?
         if(!(interp %in% c("asis", "linear"))) {
+            ## if differential && perDose == FALSE
+            ## normalize -> interpolate -> re-normalize 
+            ## check if volume is already sorted -> cumulative DVH
+            volume <- if(!any(is.na(volumeRel))) {
+                volumeRel
+            } else {
+                volume
+            }
+    
+            DVHtype <- if(isTRUE(all.equal(volume, sort(volume, decreasing=TRUE)))) {
+                "cumulative"
+            } else {
+                "differential"
+            }
+            
+            if((DVHtype == "differential") && !perDose) {
+                ## if perDose == FALSE: normalize -> interpolate -> re-normalize
+                binW         <- diff(c(-doseConv[1], doseConv))
+                volumeNew    <- -diff(volume)    / binW
+                volumeRelNew <- -diff(volumeRel) / binW
+            }
+            
             sm <- switch(interp,
                          ksmooth=getKSmooth(    doseConv, doseRel, volume, volumeRel, nodes=nodes),
                          smoothSpl=getSmoothSpl(doseConv, doseRel, volume, volumeRel, nodes=nodes),
                          getInterpSpl(          doseConv, doseRel, volume, volumeRel, nodes=nodes)) # default
 
-            ## TODO: re-normalize if differential
-            doseNew      <- sm[ , "dose"]
-            doseRelNew   <- sm[ , "doseRel"]
-            volumeNew    <- sm[ , "volume"]
-            volumeRelNew <- sm[ , "volumeRel"]
+            doseNew    <- sm[ , "dose"]
+            doseRelNew <- sm[ , "doseRel"]
+
+            if((DVHtype == "differential") && !perDose) {
+                ## re-normalize to non-per-dose volume
+                ## start bin at 0 because no out-of-range interpolation
+                binW         <- diff(c(0, doseConv))
+                volumeNew    <- sm[ , "volume"]    * binW
+                volumeRelNew <- sm[ , "volumeRel"] * binW
+
+            } else {
+                volumeNew    <- sm[ , "volume"]
+                volumeRelNew <- sm[ , "volumeRel"]
+            }
         } else {
             doseNew      <- doseConv
             doseRelNew   <- doseRel
@@ -88,16 +120,31 @@ function(x, toType=c("asis", "cumulative", "differential"),
         ## convert from differential to cumulative DVH
         ## interpolate?
         if(!(interp %in% c("asis", "linear"))) {
+            if(!perDose) {
+                ## if perDose == FALSE: normalize -> interpolate -> re-normalize
+                binW         <- diff(c(-doseConv[1], doseConv))
+                volumeNew    <- -diff(volume)    / binW
+                volumeRelNew <- -diff(volumeRel) / binW
+            }
+
             sm <- switch(interp,
                          ksmooth=getKSmooth(    doseConv, doseRel, volume, volumeRel, nodes=nodes),
                          smoothSpl=getSmoothSpl(doseConv, doseRel, volume, volumeRel, nodes=nodes),
                          getInterpSpl(          doseConv, doseRel, volume, volumeRel, nodes=nodes)) # default
 
-            ## TODO: re-normalize
-            doseConv  <- sm[ , "dose"]
-            doseRel   <- sm[ , "doseRel"]
-            volume    <- sm[ , "volume"]
-            volumeRel <- sm[ , "volumeRel"]
+            doseConv <- sm[ , "dose"]
+            doseRel  <- sm[ , "doseRel"]
+            
+            if(!perDose) {
+                ## re-normalize to non-per-dose volume
+                ## start bin at 0 because no out-of-range interpolation
+                binW      <- diff(c(0, doseConv))
+                volume    <- sm[ , "volume"]    * binW
+                volumeRel <- sm[ , "volumeRel"] * binW
+            } else {
+                volume    <- sm[ , "volume"]
+                volumeRel <- sm[ , "volumeRel"]
+            }
         }
 
         ## dose category half-widths
@@ -112,18 +159,14 @@ function(x, toType=c("asis", "cumulative", "differential"),
         doseNew    <- c(doseMidPt,    doseConv[N] + doseCatHW[N-1])
         doseRelNew <- c(doseRelMidPt, doseRel[N]  + doseRelCatHW[N-1])
         
-        ## differential DVH -> volume is per Gy -> mult with bin-width
-        binW <- diff(c(-doseConv[1], doseConv))
-        volumeBin <- if(perDose) {
-            volume*binW
+        if(perDose) {
+            ## differential DVH -> volume is per Gy -> mult with bin-width
+            binW         <- diff(c(-doseConv[1], doseConv))
+            volumeBin    <- volume*binW
+            volumeRelBin <- volumeRel*binW
         } else {
-            volume
-        }
-
-        volumeRelBin <- if(perDose) {
-            volumeRel*binW
-        }  else {
-            volumeRel
+            volumeBin    <- volume
+            volumeRelBin <- volumeRel
         }
 
         ## volume "survival" curve starting at max volume
@@ -154,16 +197,31 @@ function(x, toType=c("asis", "cumulative", "differential"),
 
         ## interpolate?
         if(!(interp %in% c("asis", "linear"))) {
+            ## if perDose == FALSE: normalize -> interpolate -> re-normalize
+            if(!perDose) {
+                volumeNew    <- -diff(volume)    / binW
+                volumeRelNew <- -diff(volumeRel) / binW
+            }
+
+            ## interpolate
             sm <- switch(interp,
                   ksmooth=getKSmooth(  doseNew, doseRelNew, volumeNew, volumeRelNew, nodes=nodes),
                 smoothSpl=getSmoothSpl(doseNew, doseRelNew, volumeNew, volumeRelNew, nodes=nodes),
                 getInterpSpl(          doseNew, doseRelNew, volumeNew, volumeRelNew, nodes=nodes)) # default
 
-            ## TODO: re-normalize
-            doseNew      <- sm[ , "dose"]
-            doseRelNew   <- sm[ , "doseRel"]
-            volumeNew    <- sm[ , "volume"]
-            volumeRelNew <- sm[ , "volumeRel"]
+            doseNew    <- sm[ , "dose"]
+            doseRelNew <- sm[ , "doseRel"]
+
+            if(!perDose) {
+                ## re-normalize to non-per-dose volume
+                ## start bin at 0 because no out-of-range interpolation
+                binW         <- diff(c(0, doseNew))
+                volumeNew    <- sm[ , "volume"]   *binW
+                volumeRelNew <- sm[ , "volumeRel"]*binW
+            } else {
+                volumeNew    <- sm[ , "volume"]
+                volumeRelNew <- sm[ , "volumeRel"]
+            }
         }
     }
 
@@ -175,7 +233,7 @@ function(x, toType=c("asis", "cumulative", "differential"),
 convertDVH.DVHs <-
 function(x, toType=c("asis", "cumulative", "differential"),
          toDoseUnit=c("asis", "GY", "CGY"),
-         interp=c("asis", "linear"),#, "spline", "ksmooth", "smoothSpl"),
+         interp=c("asis", "linear", "spline", "ksmooth", "smoothSpl"),
          nodes=NULL, perDose=TRUE) {
     toType     <- match.arg(toType)
     toDoseUnit <- match.arg(toDoseUnit)
@@ -254,7 +312,7 @@ function(x, toType=c("asis", "cumulative", "differential"),
 convertDVH.DVHLst <-
 function(x, toType=c("asis", "cumulative", "differential"),
          toDoseUnit=c("asis", "GY", "CGY"),
-         interp=c("asis", "linear"),#, "spline", "ksmooth", "smoothSpl"),
+         interp=c("asis", "linear", "spline", "ksmooth", "smoothSpl"),
          nodes=NULL, perDose=TRUE) {
     toType     <- match.arg(toType)
     toDoseUnit <- match.arg(toDoseUnit)
@@ -273,7 +331,7 @@ function(x, toType=c("asis", "cumulative", "differential"),
 convertDVH.DVHLstLst <-
 function(x, toType=c("asis", "cumulative", "differential"),
          toDoseUnit=c("asis", "GY", "CGY"),
-         interp=c("asis", "linear"),#, "spline", "ksmooth", "smoothSpl"),
+         interp=c("asis", "linear", "spline", "ksmooth", "smoothSpl"),
          nodes=NULL, perDose=TRUE) {
     toType     <- match.arg(toType)
     toDoseUnit <- match.arg(toDoseUnit)

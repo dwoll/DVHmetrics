@@ -1,15 +1,15 @@
-$Date: 2015-10-09 09:25:29 +0000 (Fri, 09 Oct 2015) $
+$Date: 2015-10-12 13:25:29 +0000 (Mon, 12 Oct 2015) $
 
 DVHMETRICS RELEASE VERSIONS at http://cran.r-project.org/
 
-Version 0.3.1.0.900 (October 07, 2015)
+Version 0.3.2 (October 12, 2015)
     * readDVH()
       - add support for RayStation (thanks: Michael R. Young)
-      - fix bug: reading in Cadplan files works again
+      - fix bug: version 0.3.1 broke reading Cadplan files
       - fix bug: correctly convert Cadplan and Monaco
         differential DVHs to cumulative DVHs
-        (they are not per unit dose)
-      - allow structure names with leading non-alpha-numeric
+        (unlike Eclipse, they are not per unit dose)
+      - allow structure names with leading non-alphanumeric
         characters
     * getDMEAN()
       - fix bug: version 0.3.1 broke DMEAN, DMIN, DMAX, DSD for
@@ -18,9 +18,7 @@ Version 0.3.1.0.900 (October 07, 2015)
       - fix bug: if option interp was not set, different
         interpolation methods were used for different IDs when
         converting DVHLstLst objects
-      - temporarily remove option to smooth differential histogram
-        due to normalizing issues (may be added back in future
-        version)
+      - fix bug: correctly scale differential DVH for perDose=FALSE
 
 Version 0.3.1 (August 05, 2015)
     * DESCRIPTION, NAMESPACE

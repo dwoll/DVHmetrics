@@ -1,11 +1,12 @@
 getDMEAN <-
-function(x, interp=c("linear", "spline", "ksmooth", "smoothSpl")) {
+function(x, interp=c("linear", "spline", "ksmooth", "smoothSpl"), nodes=5001L) {
     UseMethod("getDMEAN")
 }
 
 getDMEAN.DVHs <-
-function(x, interp=c("linear", "spline", "ksmooth", "smoothSpl")) {
+function(x, interp=c("linear", "spline", "ksmooth", "smoothSpl"), nodes=5001L) {
     interp <- match.arg(interp)
+    nodes  <- max(nodes, nrow(x$dvh))
 
     ## median from cumulative DVH
     doseMed <- if(interp == "linear") {
@@ -25,7 +26,7 @@ function(x, interp=c("linear", "spline", "ksmooth", "smoothSpl")) {
     } else if(interp == "ksmooth") {
         bw <- try(KernSmooth::dpill(x$dvh[ , "volumeRel"], x$dvh[ , "dose"]))
         sm <- try(KernSmooth::locpoly(x$dvh[ , "volumeRel"], x$dvh[ , "dose"],
-                                      bandwidth=bw, gridsize=5001L, degree=3))
+                                      bandwidth=bw, gridsize=nodes, degree=3))
         if(!inherits(sm, "try-error")) {
             idx <- which.min(abs(sm$x-50))
             sm$y[idx]
@@ -44,13 +45,13 @@ function(x, interp=c("linear", "spline", "ksmooth", "smoothSpl")) {
     }
 
     ## min, max, mean, sd from differential DVH
-    if(interp != "linear") {
-        warning("Interpolation set to linear for min, max, mean, sd, mode")
-        interp <- "linear"
-    }
+    # if(interp != "linear") {
+    #     warning("Interpolation set to linear for min, max, mean, sd, mode")
+    #     interp <- "linear"
+    # }
 
     ## convert to differential DVH - but not per unit dose
-    xDiff <- convertDVH(x, toType="differential", interp=interp, nodes=5001L, perDose=FALSE)
+    xDiff <- convertDVH(x, toType="differential", interp=interp, nodes=nodes, perDose=FALSE)
 
     ## dose category mid-points
     doseMidPt <- xDiff$dvhDiff[ , "dose"]
@@ -111,18 +112,18 @@ function(x, interp=c("linear", "spline", "ksmooth", "smoothSpl")) {
 }
 
 getDMEAN.DVHLst <-
-function(x, interp=c("linear", "spline", "ksmooth", "smoothSpl")) {
+function(x, interp=c("linear", "spline", "ksmooth", "smoothSpl"), nodes=5001L) {
     interp <- match.arg(interp)
-    ml <- Map(getDMEAN, x, interp=interp)
+    ml <- Map(getDMEAN, x, interp=interp, nodes=nodes)
     df <- do.call("rbind", ml)
     rownames(df) <- NULL
     df
 }
 
 getDMEAN.DVHLstLst <-
-function(x, interp=c("linear", "spline", "ksmooth", "smoothSpl")) {
+function(x, interp=c("linear", "spline", "ksmooth", "smoothSpl"), nodes=5001L) {
     interp <- match.arg(interp)
-    ml <- Map(getDMEAN, x, interp=interp)
+    ml <- Map(getDMEAN, x, interp=interp, nodes=nodes)
     df <- do.call("rbind", ml)
     rownames(df) <- NULL
     df

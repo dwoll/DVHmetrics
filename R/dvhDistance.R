@@ -19,7 +19,7 @@ function(x, DV) {
         }
 
         ## there may be duplicate points due to precision in DVH file
-        DVHmat <- unique(DVHmat)
+        DVHmat <- unique(DVmat)
 
         ## constraint point
         DVcpt <- c(oneDV$D, oneDV$V)

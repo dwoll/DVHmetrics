@@ -72,13 +72,13 @@ function(x, toType=c("asis", "cumulative", "differential"),
             ## if differential && perDose == FALSE
             ## normalize -> interpolate -> re-normalize 
             ## check if volume is already sorted -> cumulative DVH
-            volume <- if(!any(is.na(volumeRel))) {
+            volumeSel <- if(!any(is.na(volumeRel))) {
                 volumeRel
             } else {
                 volume
             }
     
-            DVHtype <- if(isTRUE(all.equal(volume, sort(volume, decreasing=TRUE)))) {
+            DVHtype <- if(isTRUE(all.equal(volumeSel, sort(volumeSel, decreasing=TRUE)))) {
                 "cumulative"
             } else {
                 "differential"

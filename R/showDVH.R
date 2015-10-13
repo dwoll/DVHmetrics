@@ -145,7 +145,10 @@ function(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL,
         dfMSD$volRelHi1SD <- dfMSD$volRelM +   dfMSD$volRelSD
         dfMSD$volRelLo2SD <- dfMSD$volRelM - 2*dfMSD$volRelSD
         dfMSD$volRelHi2SD <- dfMSD$volRelM + 2*dfMSD$volRelSD
-        dvhDF <- merge(dvhDF, dfMSD, all.x=TRUE)
+        #dfMSD$doseRel     <- dfMSD$dose
+        #dfMSD$volume      <- dfMSD$volM
+        #dfMSD$volumeRel   <- dfMSD$volRelM
+        #dvhDF <- merge(dvhDF, dfMSD, all.x=TRUE)
     }
 
     volUnit <- if(rel) {
@@ -160,42 +163,54 @@ function(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL,
         x[[1]]$doseUnit
     }
 
-    ## plot - base layer
-    diag <- if(rel) {                    # relative volume
-        if(byPat) {
-            ggplot(dvhDF, aes_string(x="dose", y="volumeRel", color="structure"))
-        } else {
-            ggplot(dvhDF, aes_string(x="dose", y="volumeRel", color="patID"))
-        }
-    } else {                             # absolute volume
-        if(byPat) {
-            ggplot(dvhDF, aes_string(x="dose", y="volume",    color="structure"))
-        } else {
-            ggplot(dvhDF, aes_string(x="dose", y="volume",    color="patID"))
-        }
-    }
+    ## plot - empty base layer
+    diag <- ggplot()
 
     ## point-wise 1-SD, 2-SD shaded areas?
     diag <- if(addMSD) {
         if(rel) {
             diag +
-            geom_ribbon(aes_string(ymin="volRelLo1SD", ymax="volRelHi1SD"),
-                        alpha=0.1, linetype="blank") +
-            geom_ribbon(aes_string(ymin="volRelLo2SD", ymax="volRelHi2SD"),
-                        alpha=0.1, linetype="blank")
+            geom_ribbon(data=dfMSD,
+                        aes_string(x="dose", ymin="volRelLo1SD", ymax="volRelHi1SD"),
+                        alpha=0.2, linetype="blank") +
+            geom_ribbon(data=dfMSD,
+                        aes_string(x="dose", ymin="volRelLo2SD", ymax="volRelHi2SD"),
+                        alpha=0.2, linetype="blank")
         } else {
             diag +
-            geom_ribbon(aes_string(ymin="volLo1SD", ymax="volHi1SD"),
-                        alpha=0.1, linetype="blank") +
-            geom_ribbon(aes_string(ymin="volLo2SD", ymax="volHi2SD"),
-                        alpha=0.1, linetype="blank")
+            geom_ribbon(data=dfMSD,
+                        aes_string(x="dose", ymin="volLo1SD", ymax="volHi1SD"),
+                        alpha=0.2, linetype="blank") +
+            geom_ribbon(data=dfMSD,
+                        aes_string(x="dose", ymin="volLo2SD", ymax="volHi2SD"),
+                        alpha=0.2, linetype="blank")
         }
     } else {
         diag
     }
     
     ## actual DVHs
-    diag <- diag + geom_line(size=1.5)
+    diag <- if(rel) {                    # relative volume
+        if(byPat) {
+            diag + geom_line(data=dvhDF,
+                             aes_string(x="dose", y="volumeRel", color="structure"),
+                             size=1.2)
+        } else {
+            diag + geom_line(data=dvhDF,
+                             aes_string(x="dose", y="volumeRel", color="patID"),
+                             size=1.2)
+        }
+    } else {
+        if(byPat) {
+            diag + geom_line(data=dvhDF,
+                             aes_string(x="dose", y="volume", color="structure"),
+                             size=1.2)
+        } else {
+            diag + geom_line(data=dvhDF,
+                             aes_string(x="dose", y="volume", color="patID"),
+                             size=1.2)
+        }
+    }
 
     ## rescale x-axis
     diag <- if(is.finite(xMax)) {
@@ -214,9 +229,13 @@ function(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL,
     ## point-wise mean DVH?
     diag <- if(addMSD) {
         if(rel) {
-            diag + geom_line(aes_string(x="dose", y="volRelM"), color="black", size=1.2)
+            diag + geom_line(data=dfMSD,
+                             aes_string(x="dose", y="volRelM"),
+                             color="black", size=1.2)
         } else {
-            diag + geom_line(aes_string(x="dose", y="volM"),    color="black", size=1.2)
+            diag + geom_line(data=dfMSD,
+                             aes_string(x="dose", y="volM"),
+                             color="black", size=1.2)
         }
     } else {
         diag

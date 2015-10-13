@@ -50,31 +50,6 @@ function(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL,
         if(length(x) < 1L) { stop("No selected structure found") }
     }
 
-    ## choose upper x-axis limit (dose) - add 10%
-    ## TODO: up to first dose for which all structures reach threshold
-    xMax <- if(guessX == 1L) {
-        volGEQ <- lapply(x, function(y) {
-            y$dvh[ , "dose"][y$dvh[ , "volumeRel"] >= thresh] })
-        1.1*max(unlist(volGEQ), na.rm=TRUE)
-    } else {
-        1.1*max(c(guessX,
-                  vapply(x, function(y) {
-                  max(y$dvh[ , "dose"], na.rm=TRUE) }, numeric(1))))
-    }
-    
-    ## choose upper y-axis limit (volume) - add 3%
-    yMaxAbs <- 1.03*max(vapply(x, function(y) {
-                               max(y$dvh[ , "volume"],    na.rm=TRUE) }, numeric(1)))
-    yMaxRel <- 1.03*max(vapply(x, function(y) {
-                               max(y$dvh[ , "volumeRel"], na.rm=TRUE) }, numeric(1)))
-
-    ## title string
-    strTitle <- if(byPat) {
-        paste0("patient ",   x[[1]]$patID)
-    } else {
-        paste0("structure ", x[[1]]$structure)
-    }
-
     ## combine all data frames
     dvhDFL <- if(cumul) {
         ## cumulative DVH
@@ -94,6 +69,27 @@ function(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL,
     }
     
     dvhDF <- do.call("rbind", dvhDFL)
+
+    ## choose upper x-axis limit (dose) - add 10%
+    ## TODO: up to first dose for which all structures reach threshold
+    xMax <- if(guessX == 1L) {
+        volGEQ <- lapply(x, function(y) {
+            y$dvh[ , "dose"][y$dvh[ , "volumeRel"] >= thresh] })
+        1.1*max(unlist(volGEQ), na.rm=TRUE)
+    } else {
+        1.1*max(c(guessX, dvhDF$dose))
+    }
+    
+    ## choose upper y-axis limit (volume) - add 3%
+    yMaxAbs <- 1.03*max(dvhDF$volume)
+    yMaxRel <- 1.03*max(dvhDF$volumeRel)
+
+    ## title string
+    strTitle <- if(byPat) {
+        paste0("patient ",   x[[1]]$patID)
+    } else {
+        paste0("structure ", x[[1]]$structure)
+    }
     
     ## check if relative volume is available if requested
     yMax <- if(rel) {
@@ -172,7 +168,7 @@ function(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL,
             diag +
             geom_ribbon(data=dfMSD,
                         aes_string(x="dose", ymin="volRelLo1SD", ymax="volRelHi1SD"),
-                        alpha=0.2, linetype="blank") +
+                        alpha=0.25, linetype="blank") +
             geom_ribbon(data=dfMSD,
                         aes_string(x="dose", ymin="volRelLo2SD", ymax="volRelHi2SD"),
                         alpha=0.2, linetype="blank")
@@ -180,10 +176,10 @@ function(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL,
             diag +
             geom_ribbon(data=dfMSD,
                         aes_string(x="dose", ymin="volLo1SD", ymax="volHi1SD"),
-                        alpha=0.2, linetype="blank") +
+                        alpha=0.25, linetype="blank") +
             geom_ribbon(data=dfMSD,
                         aes_string(x="dose", ymin="volLo2SD", ymax="volHi2SD"),
-                        alpha=0.2, linetype="blank")
+                        alpha=0.3, linetype="blank")
         }
     } else {
         diag

@@ -21,12 +21,12 @@
  * harmonize structures by reading equivalence file, possibly with regex
 
 # build
- * "c:\program files\r\r-3.2.1\bin\x64\Rcmd.exe" INSTALL --build DVHmetrics_0.3.2.tar.gz
+ * "c:\program files\r\r-3.2.1\bin\x64\Rcmd.exe" INSTALL --build DVHmetrics_0.3.3.tar.gz
  * "c:\program files\r\r-3.2.1\bin\x64\Rcmd.exe" build DVHmetrics --resave-data --compact-vignettes="both"
- * "c:\program files\r\r-3.2.1\bin\x64\Rcmd.exe" check DVHmetrics_0.3.2.tar.gz --as-cran
- * `install.packages("d:/daniel_work/workspace/DVHmetrics_0.3.2.tar.gz", repos=NULL, type="source")`
+ * "c:\program files\r\r-3.2.1\bin\x64\Rcmd.exe" check DVHmetrics_0.3.3.tar.gz --as-cran
+ * `install.packages("d:/daniel_work/workspace/DVHmetrics_0.3.3.tar.gz", repos=NULL, type="source")`
 
- * "c:\program files\r\r-devel\bin\x64\Rcmd.exe" INSTALL --build DVHmetrics_0.3.2.tar.gz
+ * "c:\program files\r\r-devel\bin\x64\Rcmd.exe" INSTALL --build DVHmetrics_0.3.3.tar.gz
  * "c:\program files\r\r-devel\bin\x64\Rcmd.exe" build DVHmetrics --resave-data --compact-vignettes="both"
- * "c:\program files\r\r-devel\bin\x64\Rcmd.exe" check DVHmetrics_0.3.2.tar.gz --as-cran
- * `install.packages("h:/workspace/DVHmetrics_0.3.2.tar.gz", repos=NULL, type="source")`
+ * "c:\program files\r\r-devel\bin\x64\Rcmd.exe" check DVHmetrics_0.3.3.tar.gz --as-cran
+ * `install.packages("h:/workspace/DVHmetrics_0.3.3.tar.gz", repos=NULL, type="source")`

@@ -268,11 +268,13 @@ function(x, toType=c("asis", "cumulative", "differential"),
                                       interp=interp, nodes=nodes, perDose=perDose)
         } else {
             ## from differential to cumulative
-            DVH$dvh <- convertDVH(x$dvhDiff, toType=toType, toDoseUnit="asis",
-                                  interp=interp, nodes=nodes, perDose=perDose)
+            if(!is.null(x$dvhDiff)) {
+                DVH$dvh <- convertDVH(x$dvhDiff, toType=toType, toDoseUnit="asis",
+                                      interp=interp, nodes=nodes, perDose=perDose)
+            } else {
+                warning("No differential DVH found. Left cumulative DVH as is.")
+            }
         }
-
-        DVH$DVHtype <- toType
     } else if((toType != "asis") && (toDoseUnit != "asis")) {
         ## change DVH type and dose unit
         cf <- if( (toupper(x$doseUnit) == "CGY") && (toDoseUnit == "GY")) {
@@ -289,8 +291,12 @@ function(x, toType=c("asis", "cumulative", "differential"),
                                       interp=interp, nodes=nodes, perDose=perDose)
         } else {
             ## from differential to cumulative
-            DVH$dvh <- convertDVH(x$dvhDiff, toType=toType, toDoseUnit=toDoseUnit,
-                                  interp=interp, nodes=nodes, perDose=perDose)
+            if(!is.null(x$dvhDiff)) {
+                DVH$dvh <- convertDVH(x$dvhDiff, toType=toType, toDoseUnit=toDoseUnit,
+                                      interp=interp, nodes=nodes, perDose=perDose)
+            } else {
+                warning("No differential DVH found. Left cumulative DVH as is.")
+            }
         }
 
         DVH$doseMin   <- cf*x$doseMin
@@ -301,7 +307,6 @@ function(x, toType=c("asis", "cumulative", "differential"),
         DVH$doseMed   <- cf*x$doseMed
         DVH$doseMode  <- cf*x$doseMode
         DVH$doseSD    <- cf*x$doseSD
-        DVH$DVHtype   <- toType
         DVH$doseUnit  <- toDoseUnit
     }
     

@@ -328,7 +328,8 @@ shinyServer(function(input, output) {
                             patID=paste0("^", selPat, "$"),
                             structure=paste0("^", selStruct, "$"),
                             thresh=input$plotThreshVol,
-                            rel=rel)
+                            rel=rel,
+                            addMSD=input$plotMSD)
                 }
             })
 
@@ -380,7 +381,8 @@ shinyServer(function(input, output) {
                          patID=paste0("^", selPat, "$"),
                          structure=paste0("^", selStruct, "$"),
                          thresh=input$plotThreshVol,
-                         rel=rel)
+                         rel=rel,
+                         addMSD=input$plotMSD)
             pdf(file, width=7, height=5)
             do.call(showDVH, argL)
             dev.off()
@@ -409,6 +411,7 @@ shinyServer(function(input, output) {
             rel    <- input$plotPlotVol == "1"
             cumul  <- input$plotType    == "1"
             thresh <- input$plotThreshVol
+            addMSD <- input$plotMSD
             x <- if(byPat) {
                 dvh$DVH
             } else {
@@ -433,7 +436,8 @@ shinyServer(function(input, output) {
                 selPatI    <- if(byPat) { selPat[i] } else { selPat }
                 selStructI <- if(byPat) { selStruct } else { selStruct[i] }
                 makeDVHJPG(fN, dvh=x, byPat=byPat, rel=rel, cumul=cumul,
-                           selPat=selPatI, selStruct=selStructI, thresh=thresh)
+                           selPat=selPatI, selStruct=selStructI,
+                           addMSD=addMSD, thresh=thresh)
             }
 
             zip(zipfile=file, files=fNames)

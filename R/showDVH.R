@@ -1,14 +1,14 @@
 ## S3 generic method
 showDVH <-
 function(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL,
-         rel=TRUE, guessX=TRUE, thresh=1, show=TRUE, ...) {
+         rel=TRUE, guessX=TRUE, thresh=1, addMSD=FALSE, show=TRUE, ...) {
     UseMethod("showDVH")
 }
 
 ## plots 1 DVH file for 1 id and 1 structure
 showDVH.DVHs <-
 function(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL,
-         rel=TRUE, guessX=TRUE, thresh=1, show=TRUE, ...) {
+         rel=TRUE, guessX=TRUE, thresh=1, addMSD=FALSE, show=TRUE, ...) {
     x <- if(byPat) {
         setNames(list(x), x$structure)
     } else {
@@ -18,9 +18,8 @@ function(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL,
     class(x) <- "DVHLst"
     attr(x, which="byPat") <- byPat
 
-    #NextMethod("showDVH")
     showDVH.DVHLst(x, cumul=cumul, byPat=byPat, patID=patID, structure=structure,
-                   rel=rel, guessX=guessX, thresh=thresh, show=show)
+                   rel=rel, guessX=guessX, thresh=thresh, addMSD=addMSD, show=show)
 }
 
 ## plots 1 list of DVH objects
@@ -28,7 +27,7 @@ function(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL,
 ## for byPat=FALSE: 1 structure -> multiple patients
 showDVH.DVHLst <-
 function(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL,
-         rel=TRUE, guessX=TRUE, thresh=1, show=TRUE, ...) {
+         rel=TRUE, guessX=TRUE, thresh=1, addMSD=FALSE, show=TRUE, ...) {
     ## make sure DVH list is organized as required for byPat
     if(is.null(attributes(x)$byPat) || attributes(x)$byPat != byPat) {
         stop(c("DVH list organization by-patient / by-structure ",
@@ -63,6 +62,12 @@ function(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL,
                   max(y$dvh[ , "dose"], na.rm=TRUE) }, numeric(1))))
     }
     
+    ## choose upper y-axis limit (volume) - add 3%
+    yMaxAbs <- 1.03*max(vapply(x, function(y) {
+                               max(y$dvh[ , "volume"],    na.rm=TRUE) }, numeric(1)))
+    yMaxRel <- 1.03*max(vapply(x, function(y) {
+                               max(y$dvh[ , "volumeRel"], na.rm=TRUE) }, numeric(1)))
+
     ## title string
     strTitle <- if(byPat) {
         paste0("patient ",   x[[1]]$patID)
@@ -79,7 +84,7 @@ function(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL,
         })
     } else {
         lapply(x, function(y) {
-            ## differential DVH - create if not yet present
+            ## differential DVH - create first
             y$dvhDiff <- convertDVH(y$dvh, toType="differential",
                                     toDoseUnit="asis", perDose=TRUE)
 
@@ -91,12 +96,20 @@ function(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL,
     dvhDF <- do.call("rbind", dvhDFL)
     
     ## check if relative volume is available if requested
+    yMax <- if(rel) {
+        yMaxRel
+    } else {
+        yMaxAbs
+    }
+
     if(rel && all(is.na(dvhDF$volumeRel))) {
         warning("All relative volumes are missing, will try to show absolute volume")
-        rel <- FALSE
+        yMax <- yMaxAbs
+        rel  <- FALSE
     } else if(!rel && all(is.na(dvhDF$volume))) {
         warning("All absolute volumes are missing, will try to show relative volume")
-        rel <- FALSE
+        yMax <- yMaxRel
+        rel  <- TRUE
     }
 
     ## check if absolute dose is available
@@ -108,22 +121,31 @@ function(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL,
         FALSE
     }
 
-    diag0 <- if(rel) {                    # relative volume
+    ## check if point-wise volume mean and sd should be plotted
+    if(addMSD) {
+        ## generate point-wise mean/sd and merge back to data
         if(byPat) {
-            ggplot(dvhDF, aes_string(x="dose", y="volumeRel",
-                                     colour="structure"))
+            dfM  <- aggregate(cbind(volume, volumeRel) ~ patID + dose, data=dvhDF, FUN=mean)
+            dfSD <- aggregate(cbind(volume, volumeRel) ~ patID + dose, data=dvhDF, FUN=sd)
+            names(dfM)  <- c("patID", "dose", "volM",  "volRelM")
+            names(dfSD) <- c("patID", "dose", "volSD", "volRelSD")
         } else {
-            ggplot(dvhDF, aes_string(x="dose", y="volumeRel",
-                                     colour="patID"))
+            dfM  <- aggregate(cbind(volume, volumeRel) ~ structure + dose, data=dvhDF, FUN=mean)
+            dfSD <- aggregate(cbind(volume, volumeRel) ~ structure + dose, data=dvhDF, FUN=sd)
+            names(dfM)  <- c("structure", "dose", "volM",  "volRelM")
+            names(dfSD) <- c("structure", "dose", "volSD", "volRelSD")
         }
-    } else {                             # absolute volume
-        if(byPat) {
-            ggplot(dvhDF, aes_string(x="dose", y="volume",
-                                     colour="structure"))
-        } else {
-            ggplot(dvhDF, aes_string(x="dose", y="volume",
-                                     colour="patID"))
-        }
+
+        dfMSD <- merge(dfM, dfSD)
+        dfMSD$volLo1SD    <- dfMSD$volM    -   dfMSD$volSD
+        dfMSD$volHi1SD    <- dfMSD$volM    +   dfMSD$volSD
+        dfMSD$volLo2SD    <- dfMSD$volM    - 2*dfMSD$volSD
+        dfMSD$volHi2SD    <- dfMSD$volM    + 2*dfMSD$volSD
+        dfMSD$volRelLo1SD <- dfMSD$volRelM -   dfMSD$volRelSD
+        dfMSD$volRelHi1SD <- dfMSD$volRelM +   dfMSD$volRelSD
+        dfMSD$volRelLo2SD <- dfMSD$volRelM - 2*dfMSD$volRelSD
+        dfMSD$volRelHi2SD <- dfMSD$volRelM + 2*dfMSD$volRelSD
+        dvhDF <- merge(dvhDF, dfMSD, all.x=TRUE)
     }
 
     volUnit <- if(rel) {
@@ -138,25 +160,79 @@ function(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL,
         x[[1]]$doseUnit
     }
 
-    diag1 <- diag0 + geom_line(size=1.5)
-    # ggplot2::theme(legend.justification=c(1, 1), legend.position=c(1, 1))
-    diag2 <- if(is.finite(xMax)) {
-        diag1 + coord_cartesian(xlim=c(0, xMax)) + expand_limits(y=0)
+    ## plot - base layer
+    diag <- if(rel) {                    # relative volume
+        if(byPat) {
+            ggplot(dvhDF, aes_string(x="dose", y="volumeRel", color="structure"))
+        } else {
+            ggplot(dvhDF, aes_string(x="dose", y="volumeRel", color="patID"))
+        }
+    } else {                             # absolute volume
+        if(byPat) {
+            ggplot(dvhDF, aes_string(x="dose", y="volume",    color="structure"))
+        } else {
+            ggplot(dvhDF, aes_string(x="dose", y="volume",    color="patID"))
+        }
+    }
+
+    ## point-wise 1-SD, 2-SD shaded areas?
+    diag <- if(addMSD) {
+        if(rel) {
+            diag +
+            geom_ribbon(aes_string(ymin="volRelLo1SD", ymax="volRelHi1SD"),
+                        alpha=0.1, linetype="blank") +
+            geom_ribbon(aes_string(ymin="volRelLo2SD", ymax="volRelHi2SD"),
+                        alpha=0.1, linetype="blank")
+        } else {
+            diag +
+            geom_ribbon(aes_string(ymin="volLo1SD", ymax="volHi1SD"),
+                        alpha=0.1, linetype="blank") +
+            geom_ribbon(aes_string(ymin="volLo2SD", ymax="volHi2SD"),
+                        alpha=0.1, linetype="blank")
+        }
     } else {
-        diag1
+        diag
     }
     
-    diag3 <- diag2 + ggtitle(strTitle) +
+    ## actual DVHs
+    diag <- diag + geom_line(size=1.5)
+
+    ## rescale x-axis
+    diag <- if(is.finite(xMax)) {
+        diag + coord_cartesian(xlim=c(0, xMax)) + expand_limits(y=0)
+    } else {
+        diag
+    }
+    
+    ## rescale y-axsis
+    diag <- if(is.finite(yMax)) {
+        diag + coord_cartesian(ylim=c(0, yMax))
+    } else {
+        diag
+    }
+
+    ## point-wise mean DVH?
+    diag <- if(addMSD) {
+        if(rel) {
+            diag + geom_line(aes_string(x="dose", y="volRelM"), color="black", size=1.2)
+        } else {
+            diag + geom_line(aes_string(x="dose", y="volM"),    color="black", size=1.2)
+        }
+    } else {
+        diag
+    }
+
+    diag <- diag + ggtitle(strTitle) +
         theme_bw() +
         scale_y_continuous(expand=c(0, 0.6)) +
         xlab(paste0("Dose [",   doseUnit, "]")) +
         ylab(paste0("Volume [", volUnit,  "]"))
 
     if(show) {
-        print(diag3)
+        print(diag)
     }
 
-    return(invisible(diag3))
+    return(invisible(diag))
 }
 
 ## x is a DVH list (1 per id or 1 per structure) of lists
@@ -165,7 +241,7 @@ function(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL,
 ## or     for many structures -> multiple patients   per DVH
 showDVH.DVHLstLst <-
 function(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL,
-         rel=TRUE, guessX=TRUE, thresh=1, show=TRUE, ...) {
+         rel=TRUE, guessX=TRUE, thresh=1, addMSD=FALSE, show=TRUE, ...) {
     ## re-organize x into by-patient or by-structure form if necessary
     isByPat <- attributes(x)$byPat
     if(is.null(isByPat) || (isByPat != byPat)) {
@@ -190,7 +266,7 @@ function(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL,
 
     diagL <- Map(showDVH, x, cumul=cumul, byPat=byPat, rel=rel,
                  patID=list(patID), structure=list(structure),
-                 guessX=guessX, thresh=thresh, show=show, ...)
+                 guessX=guessX, thresh=thresh, addMSD=addMSD, show=show, ...)
 
     return(invisible(diagL))
 }

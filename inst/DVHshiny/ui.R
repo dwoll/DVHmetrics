@@ -85,7 +85,8 @@ shinyUI(fluidPage(
                             min=0, max=100, value=1),
                 radioButtons("plotType", label=h5("DVH type"),
                              list("Cumulative"=1,
-                                  "Differential"=2))
+                                  "Differential"=2)),
+                checkboxInput("plotMSD", "Show M + SD areas", FALSE)
             ),
             conditionalPanel(condition="input.task == 'Check constraints'",
                 radioButtons("constrIn", label=h4("Define constraints"),

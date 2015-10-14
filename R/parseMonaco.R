@@ -116,7 +116,7 @@ parseMonaco <- function(x, planInfo=FALSE, courseAsID=FALSE) {
             dvh[ , "volume"]
         }
 
-        DVHtype <- if(isTRUE(all.equal(volume, sort(volume, decreasing=TRUE)))) {
+        DVHtype <- if(isTRUE(all.equal(volume, sort(volume, decreasing=TRUE, na.last=TRUE)))) {
             "cumulative"
         } else {
             "differential"

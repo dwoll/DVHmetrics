@@ -110,8 +110,8 @@ getInterpLin <- function(d, dR, v, vR, nodes=NULL, rangeD=NULL) {
     if(is.null(rangeD)) { rangeD  <- range(d) }
     
     ## interpolation
-    smDV  <- try(approxfun(d, v,  method="linear", rule=1, ties=max))
-    smDVR <- try(approxfun(d, vR, method="linear", rule=1, ties=max))
+    smDV  <- try(approxfun(d, v,  method="linear", rule=2, ties=max))
+    smDVR <- try(approxfun(d, vR, method="linear", rule=2, ties=max))
     
     ## dose, dose rel -> just use equally spaced grid points
     dose    <- seq(rangeD[1],  rangeD[2], length.out=nodes)

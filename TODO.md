@@ -1,6 +1,8 @@
 # TODO
 ## Medium term
 
+ * showDVH(..., addMSD=TRUE) -> linearly interpolate dose on a grid first?
+   MasterPlan does not repeat identical volume values with different doses
  * document showDVH(..., addMSD=TRUE) in vignettes
  * allow `checkConstraint(x, "DNTCP < 50%")` instead of `0.5Gy`
  * `getMetric()`, `checkConstraint()`, `readDVH()` -> multicore support

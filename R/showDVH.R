@@ -91,21 +91,26 @@ function(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL,
         paste0("structure ", x[[1]]$structure)
     }
     
-    ## check if relative volume is available if requested
-    yMax <- if(rel) {
-        yMaxRel
+    ## set plot volume to absolute or relative
+    if(rel) {
+        yMax <- yMaxRel
+        dvhDF$volPlot <- dvhDF$volumeRel
     } else {
-        yMaxAbs
+        yMax <- yMaxAbs
+        dvhDF$volPlot <- dvhDF$volume
     }
 
+    ## check if relative volume is available if requested
     if(rel && all(is.na(dvhDF$volumeRel))) {
         warning("All relative volumes are missing, will try to show absolute volume")
         yMax <- yMaxAbs
         rel  <- FALSE
+        dvhDF$volPlot <- dvhDF$volume
     } else if(!rel && all(is.na(dvhDF$volume))) {
         warning("All absolute volumes are missing, will try to show relative volume")
         yMax <- yMaxRel
         rel  <- TRUE
+        dvhDF$volPlot <- dvhDF$volumeRel
     }
 
     ## check if absolute dose is available
@@ -119,32 +124,36 @@ function(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL,
 
     ## check if point-wise volume mean and sd should be plotted
     if(addMSD) {
-        ## generate point-wise mean/sd and merge back to data
+        ## generate point-wise mean/sd for binned dose
+        ## find minimum number of dose values in DVHs
+        doseLens <- vapply(x, function(z) { length(z$dvh[ , "dose"]) }, numeric(1))
+        dvhDF$doseBin <- cut(dvhDF$dose, breaks=min(doseLens)/10)
+        dfDM <- aggregate(dose ~ doseBin, data=dvhDF, FUN=mean, na.rm=TRUE)
+
         if(byPat) {
-            dfM  <- aggregate(cbind(volume, volumeRel) ~ patID + dose, data=dvhDF, FUN=mean)
-            dfSD <- aggregate(cbind(volume, volumeRel) ~ patID + dose, data=dvhDF, FUN=sd)
-            names(dfM)  <- c("patID", "dose", "volM",  "volRelM")
-            names(dfSD) <- c("patID", "dose", "volSD", "volRelSD")
+            dfM  <- aggregate(volPlot ~ patID + doseBin,     data=dvhDF, FUN=mean, na.rm=TRUE)
+            dfSD <- aggregate(volPlot ~ patID + doseBin,     data=dvhDF, FUN=sd,   na.rm=TRUE)
         } else {
-            dfM  <- aggregate(cbind(volume, volumeRel) ~ structure + dose, data=dvhDF, FUN=mean)
-            dfSD <- aggregate(cbind(volume, volumeRel) ~ structure + dose, data=dvhDF, FUN=sd)
-            names(dfM)  <- c("structure", "dose", "volM",  "volRelM")
-            names(dfSD) <- c("structure", "dose", "volSD", "volRelSD")
+            dfM  <- aggregate(volPlot ~ structure + doseBin, data=dvhDF, FUN=mean, na.rm=TRUE)
+            dfSD <- aggregate(volPlot ~ structure + doseBin, data=dvhDF, FUN=sd,   na.rm=TRUE)
         }
 
-        dfMSD <- merge(dfM, dfSD)
-        dfMSD$volLo1SD    <- dfMSD$volM    -   dfMSD$volSD
-        dfMSD$volHi1SD    <- dfMSD$volM    +   dfMSD$volSD
-        dfMSD$volLo2SD    <- dfMSD$volM    - 2*dfMSD$volSD
-        dfMSD$volHi2SD    <- dfMSD$volM    + 2*dfMSD$volSD
-        dfMSD$volRelLo1SD <- dfMSD$volRelM -   dfMSD$volRelSD
-        dfMSD$volRelHi1SD <- dfMSD$volRelM +   dfMSD$volRelSD
-        dfMSD$volRelLo2SD <- dfMSD$volRelM - 2*dfMSD$volRelSD
-        dfMSD$volRelHi2SD <- dfMSD$volRelM + 2*dfMSD$volRelSD
-        #dfMSD$doseRel     <- dfMSD$dose
-        #dfMSD$volume      <- dfMSD$volM
-        #dfMSD$volumeRel   <- dfMSD$volRelM
-        #dvhDF <- merge(dvhDF, dfMSD, all.x=TRUE)
+        ## rename columns in aggregated data frames
+        namesDFDM <- names(dfDM)
+        namesDFM  <- names(dfM)
+        namesDFSD <- names(dfSD)
+        namesDFDM[namesDFDM == "dose"]    <- "doseM"
+        namesDFM[ namesDFM  == "volPlot"] <- "volM"
+        namesDFSD[namesDFSD == "volPlot"] <- "volSD"
+        names(dfDM) <- namesDFDM
+        names(dfM)  <- namesDFM
+        names(dfSD) <- namesDFSD
+
+        dfMSD <- Reduce(merge, list(dfDM, dfM, dfSD))
+        dfMSD$volLo1SD <- dfMSD$volM -   dfMSD$volSD
+        dfMSD$volHi1SD <- dfMSD$volM +   dfMSD$volSD
+        dfMSD$volLo2SD <- dfMSD$volM - 2*dfMSD$volSD
+        dfMSD$volHi2SD <- dfMSD$volM + 2*dfMSD$volSD
     }
 
     volUnit <- if(rel) {
@@ -164,48 +173,26 @@ function(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL,
 
     ## point-wise 1-SD, 2-SD shaded areas?
     diag <- if(addMSD) {
-        if(rel) {
-            diag +
-            geom_ribbon(data=dfMSD,
-                        aes_string(x="dose", ymin="volRelLo1SD", ymax="volRelHi1SD"),
-                        alpha=0.25, linetype="blank") +
-            geom_ribbon(data=dfMSD,
-                        aes_string(x="dose", ymin="volRelLo2SD", ymax="volRelHi2SD"),
-                        alpha=0.2, linetype="blank")
-        } else {
-            diag +
-            geom_ribbon(data=dfMSD,
-                        aes_string(x="dose", ymin="volLo1SD", ymax="volHi1SD"),
-                        alpha=0.25, linetype="blank") +
-            geom_ribbon(data=dfMSD,
-                        aes_string(x="dose", ymin="volLo2SD", ymax="volHi2SD"),
-                        alpha=0.3, linetype="blank")
-        }
+        diag +
+        geom_ribbon(data=dfMSD,
+                    aes_string(x="doseM", ymin="volLo1SD", ymax="volHi1SD"),
+                    alpha=0.25, linetype="blank") +
+        geom_ribbon(data=dfMSD,
+                    aes_string(x="doseM", ymin="volLo2SD", ymax="volHi2SD"),
+                    alpha=0.2, linetype="blank")
     } else {
         diag
     }
     
     ## actual DVHs
-    diag <- if(rel) {                    # relative volume
-        if(byPat) {
-            diag + geom_line(data=dvhDF,
-                             aes_string(x="dose", y="volumeRel", color="structure"),
-                             size=1.2)
-        } else {
-            diag + geom_line(data=dvhDF,
-                             aes_string(x="dose", y="volumeRel", color="patID"),
-                             size=1.2)
-        }
+    diag <- if(byPat) {
+        diag + geom_line(data=dvhDF,
+                         aes_string(x="dose", y="volPlot", color="structure"),
+                         size=1.2)
     } else {
-        if(byPat) {
-            diag + geom_line(data=dvhDF,
-                             aes_string(x="dose", y="volume", color="structure"),
-                             size=1.2)
-        } else {
-            diag + geom_line(data=dvhDF,
-                             aes_string(x="dose", y="volume", color="patID"),
-                             size=1.2)
-        }
+        diag + geom_line(data=dvhDF,
+                         aes_string(x="dose", y="volPlot", color="patID"),
+                         size=1.2)
     }
 
     ## rescale x-axis
@@ -224,15 +211,9 @@ function(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL,
 
     ## point-wise mean DVH?
     diag <- if(addMSD) {
-        if(rel) {
-            diag + geom_line(data=dfMSD,
-                             aes_string(x="dose", y="volRelM"),
-                             color="black", size=1.2)
-        } else {
-            diag + geom_line(data=dfMSD,
-                             aes_string(x="dose", y="volM"),
-                             color="black", size=1.2)
-        }
+        diag + geom_line(data=dfMSD,
+                         aes_string(x="doseM", y="volM"),
+                         color="black", size=1.2)
     } else {
         diag
     }

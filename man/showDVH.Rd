@@ -29,14 +29,12 @@ showDVH(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL,
   \item{rel}{\code{logical}. Show relative volume?}
   \item{guessX}{\code{logical}. Try to clip the x-axis for better visibility of main DVH range?}
   \item{thresh}{\code{numeric} value. Relative volume threshold used with \code{guessX=TRUE}. Clip x-axis (+10\%) such that the "highest" DVH is cut off at this relative volume.}
-  \item{addMSD}{\code{logical}. If \code{TRUE}, diagram shows the point-wise volume mean for binned dose as well as shaded areas for point-wise 1-standard deviation and 2-standard deviations around this mean. See details.}
+  \item{addMSD}{\code{logical}. If \code{TRUE}, diagram shows the point-wise volume mean for dose as well as shaded areas for point-wise 1-standard deviation and 2-standard deviations around this mean.}
   \item{show}{\code{logical}. If \code{TRUE}, diagrams are shown, if \code{FALSE} diagrams are not shown - only \code{\link[ggplot2]{ggplot}} diagram objects are silently returned.}
   \item{...}{Further arguments passed to code{\link[base]{grep}}. Use \code{fixed=TRUE} for exact matching of \code{patID} and \code{structure}.}
 }
 \details{
 If multiple diagrams are produced, they are shown in the same graphics device. If interactive inspection is required, make sure you use an R development environment that saves previous diagrams and allows navigating between them - e.g., \href{http://www.rstudio.com/products/rstudio/download/}{RStudio} or \href{http://www.openanalytics.eu/downloads/architect}{OpenAnalytics Architect}.
-
-The point-wise mean and sd in a dose bin only take into account volume values that have an explicit dose. MasterPlan does not repeat identical volume values and can therefore make large dose steps where volume is constant over dose. For missing intermediate dose values, these curves currently do not count for mean and sd.
 }
 \value{
 Silently returns a \code{\link[ggplot2]{ggplot}} diagram object, or - when multiple diagrams are constructed - a list of \code{\link[ggplot2]{ggplot}} diagram objects.

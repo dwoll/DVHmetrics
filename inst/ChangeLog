@@ -7,6 +7,9 @@ Version 0.3.3.0.900 (October 13, 2015)
       - add option addMSD to show the point-wise volume
         mean DVH as well as shaded areas for point-wise 1-SD
         and 2-SD around the mean
+    * convertDVH()
+      - with toType="asis" and interp="linear", DVHs are
+        interpolated with equally spaced dose values
 
 Version 0.3.3 (October 13, 2015)
     * readDVH()

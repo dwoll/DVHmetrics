@@ -1,6 +1,6 @@
 ## function for cubic local polynomial smoothing
 ## dose, dose rel, volume, volume rel, N DVH nodes
-getKSmooth <- function(d, dR, v, vR, nodes=NULL) {
+getKSmooth <- function(d, dR, v, vR, nodes=NULL, rangeD=NULL) {
     nodes <- max(nodes, length(d))
     
     ## smooth
@@ -22,8 +22,8 @@ getKSmooth <- function(d, dR, v, vR, nodes=NULL) {
 
     ## dose rel -> just use equally spaced grid points as is done in 
     doseRel <- if(!any(is.na(dR))) {
-        rangeDR <- range(dR)
-        seq(rangeDR[1], rangeDR[2], length.out=nodes)
+        rangeD <- range(dR)
+        seq(rangeD[1], rangeD[2], length.out=nodes)
     } else {
         NA_real_
     }
@@ -41,15 +41,15 @@ getKSmooth <- function(d, dR, v, vR, nodes=NULL) {
 
 ## function for cubic local polynomial smoothing
 ## dose, dose rel, volume, volume rel, N DVH nodes
-getSmoothSpl <- function(d, dR, v, vR, nodes=NULL) {
+getSmoothSpl <- function(d, dR, v, vR, nodes=NULL, rangeD=NULL) {
     nodes <- max(nodes, length(d))
+    if(is.null(rangeD)) { rangeD  <- range(d) }
 
     ## smooth
     smDV  <- try(smooth.spline(d, v))
     smDVR <- try(smooth.spline(d, vR))
 
     ## dose, dose rel -> just use equally spaced grid points
-    rangeD  <- range(d)
     dose    <- seq(rangeD[1],  rangeD[2], length.out=nodes)
     doseRel <- if(!any(is.na(dR))) {
         rangeDR <- range(dR)
@@ -71,16 +71,50 @@ getSmoothSpl <- function(d, dR, v, vR, nodes=NULL) {
 
 ## function for cubic spline interpolation
 ## dose, dose rel, volume, volume rel, N DVH nodes
-getInterpSpl <- function(d, dR, v, vR, nodes=NULL) {
+getInterpSpl <- function(d, dR, v, vR, nodes=NULL, rangeD=NULL) {
     nodes <- max(nodes, length(d))
+    if(is.null(rangeD)) { rangeD  <- range(d) }
     
     ## interpolation
     smDV  <- try(splinefun(d, v,  method="fmm"))
     smDVR <- try(splinefun(d, vR, method="fmm"))
     
     ## dose, dose rel -> just use equally spaced grid points
-    rangeD  <- range(d)
-    dose    <- seq(rangeD[1],  rangeD[2],  length.out=nodes)
+    dose    <- seq(rangeD[1],  rangeD[2], length.out=nodes)
+    doseRel <- if(!any(is.na(dR))) {
+        rangeDR <- range(dR)
+        seq(rangeDR[1], rangeDR[2], length.out=nodes)
+    } else {
+        NA_real_
+    }
+
+    volume <- if(!inherits(smDV, "try-error")) {
+        smDV(dose)
+    } else {
+        NA_real_
+    }
+
+    volumeRel <- if(!inherits(smDVR, "try-error")) {
+        smDVR(dose)
+    } else {
+        NA_real_
+    }
+
+    return(cbind(dose=dose, doseRel=doseRel, volume=volume, volumeRel=volumeRel))
+}
+
+## function for linear interpolation
+## dose, dose rel, volume, volume rel, N DVH nodes
+getInterpLin <- function(d, dR, v, vR, nodes=NULL, rangeD=NULL) {
+    nodes <- max(nodes, length(d))
+    if(is.null(rangeD)) { rangeD  <- range(d) }
+    
+    ## interpolation
+    smDV  <- try(approxfun(d, v,  method="linear", rule=1, ties=max))
+    smDVR <- try(approxfun(d, vR, method="linear", rule=1, ties=max))
+    
+    ## dose, dose rel -> just use equally spaced grid points
+    dose    <- seq(rangeD[1],  rangeD[2], length.out=nodes)
     doseRel <- if(!any(is.na(dR))) {
         rangeDR <- range(dR)
         seq(rangeDR[1], rangeDR[2], length.out=nodes)

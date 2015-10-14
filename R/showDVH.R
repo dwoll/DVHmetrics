@@ -1,3 +1,40 @@
+## combine DVH data from a DVHLst object
+## interp is FALSE or gives number of nodes to interpolate
+combineDVHs <- function(x, cumul=TRUE, interp=FALSE, rangeD=NULL) {
+    ## differential DVH or interpolation - convert first
+    x <- if(cumul && !interp) {
+        ## cumulative without interpolation -> nothing to do
+        x
+    } else if(cumul && interp) {
+        ## cumulative with linear interpolation
+        convertDVH.DVHLst(x, toType="asis", interp="linear",
+                          nodes=interp, rangeD=rangeD, perDose=TRUE)
+    } else if(!cumul && !interp) {
+        ## differential without interpolation
+        convertDVH.DVHLst(x, toType="differential", perDose=TRUE)
+    } else if(!cumul && interp) {
+        ## differential with linear interpolation
+        convertDVH.DVHLst(x, toType="differential", interp="linear",
+                          nodes=interp, rangeD=rangeD, perDose=TRUE)
+    }
+
+    dvhDFL <- if(cumul) {
+        ## cumulative DVH
+        lapply(x, function(y) {
+            data.frame(y$dvh, patID=y$patID, structure=y$structure,
+                       stringsAsFactors=FALSE)
+        })
+    } else {
+        ## differential DVH
+        lapply(x, function(y) {
+            data.frame(y$dvhDiff, patID=y$patID, structure=y$structure,
+                       stringsAsFactors=FALSE)
+        })
+    }
+    
+    do.call("rbind", dvhDFL)
+}
+
 ## S3 generic method
 showDVH <-
 function(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL,
@@ -36,7 +73,7 @@ function(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL,
 
     guessX <- as.numeric(guessX)
 
-    ## if patIDs are selected, filter them here
+    ## if patIDs are selected, filter them here -> strips DVHLst class
     if(!is.null(patID)) {
         p <- trimWS(patID, side="both")
         x <- Filter(function(y) any(grepl(paste(p, collapse="|"), y$patID, ...)), x)
@@ -50,25 +87,17 @@ function(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL,
         if(length(x) < 1L) { stop("No selected structure found") }
     }
 
-    ## combine all data frames
-    dvhDFL <- if(cumul) {
-        ## cumulative DVH
-        lapply(x, function(y) {
-            data.frame(y$dvh, patID=y$patID, structure=y$structure,
-                       stringsAsFactors=FALSE)
-        })
+    ## combine all data frames in the DVHs
+    ## find number of dose values in DVHs
+    if(addMSD) {
+        doseLen <-      max(vapply(x, function(z) { length(z$dvh[ , "dose"]) }, numeric(1)))
+        rangeD  <- c(0, max(vapply(x, function(z) {    max(z$dvh[ , "dose"]) }, numeric(1))))
     } else {
-        lapply(x, function(y) {
-            ## differential DVH - create first
-            y$dvhDiff <- convertDVH(y$dvh, toType="differential",
-                                    toDoseUnit="asis", perDose=TRUE)
-
-            data.frame(y$dvhDiff, patID=y$patID, structure=y$structure,
-                       stringsAsFactors=FALSE)
-        })
+        doseLen <- FALSE
+        doseMax <- NULL
     }
-    
-    dvhDF <- do.call("rbind", dvhDFL)
+
+    dvhDF <- combineDVHs(x, cumul=cumul, interp=doseLen, rangeD=rangeD)
 
     ## choose upper x-axis limit (dose) - add 10%
     ## TODO: up to first dose for which all structures reach threshold
@@ -81,8 +110,8 @@ function(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL,
     }
     
     ## choose upper y-axis limit (volume) - add 3%
-    yMaxAbs <- 1.03*max(dvhDF$volume)
-    yMaxRel <- 1.03*max(dvhDF$volumeRel)
+    yMaxAbs <- 1.03*max(dvhDF$volume,    na.rm=TRUE)
+    yMaxRel <- 1.03*max(dvhDF$volumeRel, na.rm=TRUE)
 
     ## title string
     strTitle <- if(byPat) {
@@ -125,17 +154,17 @@ function(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL,
     ## check if point-wise volume mean and sd should be plotted
     if(addMSD) {
         ## generate point-wise mean/sd for binned dose
-        ## find minimum number of dose values in DVHs
-        doseLens <- vapply(x, function(z) { length(z$dvh[ , "dose"]) }, numeric(1))
-        dvhDF$doseBin <- cut(dvhDF$dose, breaks=min(doseLens)/10)
+        dvhDF$doseBin <- cut(dvhDF$dose, breaks=doseLen/5)
+
+        ## aggregate over dose bins - mean dose per bin first
         dfDM <- aggregate(dose ~ doseBin, data=dvhDF, FUN=mean, na.rm=TRUE)
 
         if(byPat) {
-            dfM  <- aggregate(volPlot ~ patID + doseBin,     data=dvhDF, FUN=mean, na.rm=TRUE)
-            dfSD <- aggregate(volPlot ~ patID + doseBin,     data=dvhDF, FUN=sd,   na.rm=TRUE)
+            dfM  <- aggregate(volPlot ~ patID + dose,     data=dvhDF, FUN=mean, na.rm=TRUE)
+            dfSD <- aggregate(volPlot ~ patID + dose,     data=dvhDF, FUN=sd,   na.rm=TRUE)
         } else {
-            dfM  <- aggregate(volPlot ~ structure + doseBin, data=dvhDF, FUN=mean, na.rm=TRUE)
-            dfSD <- aggregate(volPlot ~ structure + doseBin, data=dvhDF, FUN=sd,   na.rm=TRUE)
+            dfM  <- aggregate(volPlot ~ structure + dose, data=dvhDF, FUN=mean, na.rm=TRUE)
+            dfSD <- aggregate(volPlot ~ structure + dose, data=dvhDF, FUN=sd,   na.rm=TRUE)
         }
 
         ## rename columns in aggregated data frames
@@ -175,10 +204,10 @@ function(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL,
     diag <- if(addMSD) {
         diag +
         geom_ribbon(data=dfMSD,
-                    aes_string(x="doseM", ymin="volLo1SD", ymax="volHi1SD"),
+                    aes_string(x="dose", ymin="volLo1SD", ymax="volHi1SD"),
                     alpha=0.25, linetype="blank") +
         geom_ribbon(data=dfMSD,
-                    aes_string(x="doseM", ymin="volLo2SD", ymax="volHi2SD"),
+                    aes_string(x="dose", ymin="volLo2SD", ymax="volHi2SD"),
                     alpha=0.2, linetype="blank")
     } else {
         diag
@@ -212,7 +241,7 @@ function(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL,
     ## point-wise mean DVH?
     diag <- if(addMSD) {
         diag + geom_line(data=dfMSD,
-                         aes_string(x="doseM", y="volM"),
+                         aes_string(x="dose", y="volM"),
                          color="black", size=1.2)
     } else {
         diag

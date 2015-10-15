@@ -257,7 +257,7 @@ function(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL,
         diag
     }
     
-    ## rescale y-axsis
+    ## rescale y-axis
     diag <- if(is.finite(yMax)) {
         diag + coord_cartesian(ylim=c(0, yMax))
     } else {
@@ -272,12 +272,27 @@ function(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL,
     } else {
         diag
     }
-
+    
     diag <- diag + ggtitle(strTitle) +
         theme_bw() +
         scale_y_continuous(expand=c(0, 0.6)) +
         xlab(paste0("Dose [",   doseUnit, "]")) +
         ylab(paste0("Volume [", volUnit,  "]"))
+
+    ## have many structure/ID categories? -> move legend to bottom
+    nCateg <- if(byPat) {
+        length(unique(dvhDF$structure))
+    } else {
+        length(unique(dvhDF$patID))
+    }
+    
+    if(nCateg > 15) {
+        diag <- diag +
+            #theme(legend.position="bottom") +
+            #guides(color=guide_legend(nrow=2, byrow=TRUE))
+            #theme(legend.position="bottom") +
+            guides(color=guide_legend(ncol=2))
+    }
 
     if(show) {
         print(diag)

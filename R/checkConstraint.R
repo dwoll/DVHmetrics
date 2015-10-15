@@ -41,8 +41,17 @@ function(x, constr, byPat=TRUE, semSign=FALSE,
                " either could not be determined or is different from byPat"))
     }
 
+    ## restrict x and constr to the same IDs/structures
     xConstrSub  <- harmoConstrDVH(x, constr=constr, byPat=byPat)
-    constrParse <- Map(parseConstraint, xConstrSub$constr)
+
+    ## determine dose and volume units in x
+    xDoseUnits <- vapply(xConstrSub$x, function(y) y$doseUnit,   character(1))
+    xVolUnits  <- vapply(xConstrSub$x, function(y) y$volumeUnit, character(1))
+    
+    ## parse constraint and convert dose/volume units if necessary
+    constrParse <- Map(parseConstraint, xConstrSub$constr,
+                       doseUnit=xDoseUnits,
+                        volUnit=xVolUnits)
 
     ## calculate difference between 1 observed metric value and 1 constraint
     cmpMetrics <- function(observed, smInv, DV, valCmp, cmp, valRef, dstInfo) {

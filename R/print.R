@@ -17,7 +17,7 @@ print.DVHs <- function(x, ...) {
         cat("DVH: Patient '", x$patName,
             "' (ID ", x$patID,
             "), structure '", x$structure,
-            "' (", structVol, "CC),",
+            "' (", structVol, "),",
             " Dose: ", paste(signif(range(x$dvh[ , "dose"], na.rm=TRUE), 2), collapse="-"),
             x$doseUnit, "\n", sep="")
     }

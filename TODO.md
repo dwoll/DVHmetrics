@@ -2,7 +2,6 @@
 ## Medium term
 
  * function to return mean + SD DVH
- * document showDVH(..., addMSD=TRUE) in vignettes
  * allow `checkConstraint(x, "DNTCP < 50%")` instead of `0.5Gy`
  * `getMetric()`, `checkConstraint()`, `readDVH()` -> multicore support
  * `readDVH()` -> if `x` is a directory, read all files in it

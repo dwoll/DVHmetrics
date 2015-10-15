@@ -187,8 +187,9 @@ function(x, constr, byPat=TRUE, rel=TRUE, guessX=TRUE, thresh=1) {
         doseVolDF$ptMinVplot <- doseVolDF$ptMinVabs
     }
 
-    ## add to existing data and remove NAs from invalid constraints
-    diagDF <- na.omit(cbind(allDF, doseVolDF))
+    ## add to existing data and remove invalid constraints
+    diagDF <- cbind(allDF, doseVolDF)
+    diagDF <- diagDF[diagDF$valid, ]
 
     ## create separate arrow in absolute size - point lower left and upper right
     grLen <- 0.7
@@ -216,9 +217,10 @@ function(x, constr, byPat=TRUE, rel=TRUE, guessX=TRUE, thresh=1) {
     ## get DVH plot for relevant structures / IDs
     ## constraint may be more extreme than actual doses
     doseMax <- max(vapply(x, function(y) { max(y$dvh[ , "dose"]) }, numeric(1)))
-    if(any(diagDF$doseAbs > doseMax)) {
+    if(isTRUE(any(diagDF$doseAbs > doseMax))) {
         guessX <- max(diagDF$doseAbs)
     }
+
     diag <- showDVH(xConstrSub$x,
                     cumul=TRUE, byPat=byPat, rel=rel, guessX=guessX,
                     thresh=thresh, show=FALSE)

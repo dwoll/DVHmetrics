@@ -47,10 +47,18 @@ function(x, toType=c("asis", "cumulative", "differential"),
     x <- do.call("rbind", lapply(xL, keepMaxVol))
     rownames(x) <- NULL
 
-    ## number of DVH points -> determine nodes for interpolation
-    N     <- nrow(x)
-    nodes <- max(nodes, N)
-    
+    ## determine number of nodes for interpolation
+    nodes <- if(!is.null(nodes)) {
+        if(nodes < 2) {
+            warning("nodes is < 2 which is too few")
+            2
+        } else {
+            nodes
+        }
+    } else {
+        nrow(x)
+    }
+
     ## absolute and relative doses/volumes
     dose      <- x[ , "dose"]
     doseRel   <- x[ , "doseRel"]
@@ -158,6 +166,7 @@ function(x, toType=c("asis", "cumulative", "differential"),
         doseRelCatHW <- diff(doseRel)/2
 
         ## dose category mid-points, starting at 0
+        N <- nrow(x)
         doseMidPt    <- c(0, doseConv[-N] + doseCatHW)
         doseRelMidPt <- c(0, doseRel[-N]  + doseRelCatHW)
         

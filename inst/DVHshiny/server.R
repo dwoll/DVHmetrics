@@ -165,8 +165,8 @@ shinyServer(function(input, output) {
         if(!is.null(dvh)) {
             argL <- list(x=dvh,
                          metric=selMetrics,
-                         patID=paste0("^", selPat, "$"),
-                         structure=paste0("^", selStruct, "$"),
+                         patID=selPat,
+                         structure=selStruct,
                          sortBy=sortBy,
                          interp=interp,
                          EUDa=EUDa, EUDfd=EUDfd, EUDab=EUDab,
@@ -230,8 +230,8 @@ shinyServer(function(input, output) {
             }
             argL <- list(x=dvh,
                          metric=selMetrics,
-                         patID=paste0("^", selPat, "$"),
-                         structure=paste0("^", selStruct, "$"),
+                         patID=selPat,
+                         structure=selStruct,
                          sortBy=sortBy,
                          interp=interp,
                          EUDa=EUDa, EUDfd=EUDfd, EUDab=EUDab,
@@ -325,8 +325,8 @@ shinyServer(function(input, output) {
                     showDVH(x=x,
                             cumul=cumul,
                             byPat=byPat,
-                            patID=paste0("^", selPat, "$"),
-                            structure=paste0("^", selStruct, "$"),
+                            patID=selPat,
+                            structure=selStruct,
                             thresh=input$plotThreshVol,
                             rel=rel,
                             addMSD=input$plotMSD)
@@ -378,8 +378,8 @@ shinyServer(function(input, output) {
             argL <- list(x=x,
                          cumul=cumul,
                          byPat=byPat,
-                         patID=paste0("^", selPat, "$"),
-                         structure=paste0("^", selStruct, "$"),
+                         patID=selPat,
+                         structure=selStruct,
                          thresh=input$plotThreshVol,
                          rel=rel,
                          addMSD=input$plotMSD)
@@ -394,8 +394,8 @@ shinyServer(function(input, output) {
         argL <- list(x=dvh,
                      cumul=cumul,
                      byPat=byPat,
-                     patID=paste0("^", selPat, "$"),
-                     structure=paste0("^", selStruct, "$"),
+                     patID=selPat,
+                     structure=selStruct,
                      thresh=thresh,
                      rel=rel)
         jpeg(fName, quality=100, width=700, height=500)

@@ -4,7 +4,7 @@ getMetric <-
 function(x, metric, patID, structure,
      sortBy=c("none", "observed", "patID", "structure", "metric"),
     splitBy=c("none", "patID", "structure", "metric"),
-     interp=c("linear", "spline", "ksmooth"), ...) {
+     interp=c("linear", "spline", "ksmooth"), fixed=TRUE, ...) {
     UseMethod("getMetric")
 }
 
@@ -14,7 +14,7 @@ getMetric.DVHs <-
 function(x, metric, patID, structure,
      sortBy=c("none", "observed", "patID", "structure", "metric"),
     splitBy=c("none", "patID", "structure", "metric"),
-     interp=c("linear", "spline", "ksmooth"), ...) {
+     interp=c("linear", "spline", "ksmooth"), fixed=TRUE, ...) {
 
     interp <- match.arg(interp)
 
@@ -96,7 +96,13 @@ function(x, metric, patID, structure,
             dose <- cf * x$dvh[ , "dose"]
 
             ## check if max dose is smaller than requested % of prescribed dose
-            if(val > (cf * x$doseMax)) {
+            doseMax <- if(!is.na(x$doseMax)) {
+                x$doseMax
+            } else {
+                getDMEAN(x)$doseMax
+            }
+
+            if(val > (cf * doseMax)) {
                 warning("max dose is less than requested dose")
                 return(0)
             }
@@ -220,26 +226,34 @@ getMetric.DVHLst <-
 function(x, metric, patID, structure,
      sortBy=c("none", "observed", "patID", "structure", "metric"),
     splitBy=c("none", "patID", "structure", "metric"),
-     interp=c("linear", "spline", "ksmooth"), ...) {
+     interp=c("linear", "spline", "ksmooth"), fixed=TRUE, ...) {
 
-    dots  <- list(...)
-    fixed <- if("fixed" %in% names(dots)) {
-        dots$fixed
-    } else {
-        FALSE
-    }
+    dots <- list(...)
 
     if(!missing(patID)) {
         ## filter by patID
         p <- trimWS(patID, side="both")
-        x <- Filter(function(y) any(grepl(paste(p, collapse="|"), y$patID, fixed=fixed)), x)
+        x <- Filter(function(y) {
+            if(fixed) {
+                any(y$patID %in% p)
+            } else {
+                any(grepl(paste(p, collapse="|"), y$patID))
+            }
+        }, x)
+
         if(length(x) < 1L) { stop("selected patient not found") }
     }
 
     if(!missing(structure)) {
         ## filter by structure
         s <- trimWS(structure, side="both")
-        x <- Filter(function(y) any(grepl(paste(s, collapse="|"), y$structure, fixed=fixed)), x)
+        x <- Filter(function(y) {
+            if(fixed) {
+                any(y$structure %in% s)
+            } else {
+                any(grepl(paste(s, collapse="|"), y$structure))
+            }
+        }, x)
         if(length(x) < 1L) { stop("selected structure not found") }
     }
 
@@ -280,14 +294,9 @@ getMetric.DVHLstLst <-
 function(x, metric, patID, structure,
      sortBy=c("none", "observed", "patID", "structure", "metric"),
     splitBy=c("none", "patID", "structure", "metric"),
-     interp=c("linear", "spline", "ksmooth"), ...) {
+     interp=c("linear", "spline", "ksmooth"), fixed=TRUE, ...) {
 
-    dots  <- list(...)
-    fixed <- if("fixed" %in% names(dots)) {
-        dots$fixed
-    } else {
-        FALSE
-    }
+    dots <- list(...)
 
     ## re-organize x into by-patient form if necessary
     isByPat <- attributes(x)$byPat
@@ -298,7 +307,14 @@ function(x, metric, patID, structure,
     ## if patIDs are selected, filter those
     if(!missing(patID)) {
         p <- trimWS(patID, side="both")
-        x <- Filter(function(y) any(grepl(paste(p, collapse="|"), y[[1]]$patID, fixed=fixed)), x)
+        x <- Filter(function(y) {
+            if(fixed) {
+                any(y[[1]]$patID %in% p)
+            } else {
+                any(grepl(paste(p, collapse="|"), y[[1]]$patID))
+            }
+        }, x)
+
         if(length(x) < 1L) { stop("No selected patient found") }
     }
 
@@ -313,7 +329,14 @@ function(x, metric, patID, structure,
         ## if structures are selected, filter those
         if(!is.null(structure)) {
             s <- trimWS(structure, side="both")
-            y <- Filter(function(z) any(grepl(paste(s, collapse="|"), z$structure, fixed=fixed)), y)
+            y <- Filter(function(z) {
+                if(fixed) {
+                    any(z$structure %in% s)
+                } else {
+                    any(grepl(paste(s, collapse="|"), z$structure))
+                }
+            }, y)
+
             if(length(y) < 1L) { stop("No selected structure found") }
         }
 

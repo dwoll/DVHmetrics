@@ -10,6 +10,13 @@ Version 0.3.3.0.900 (October 13, 2015)
     * convertDVH()
       - with toType="asis" and interp="linear", DVHs are
         interpolated with equally spaced dose values
+    * getMetric(), showDVH()
+      - change default: match supplied IDs and structure names
+        exactly to allow for structures containing '+' signs,
+        use fixed=FALSE for regular expression matching
+    * checkConstraint(), showConstraint()
+      - fix bug: make functions work for files not exported
+        from Eclipse or Cadplan
 
 Version 0.3.3 (October 13, 2015)
     * readDVH()

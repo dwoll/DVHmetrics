@@ -2,16 +2,22 @@
 print.DVHs <- function(x, ...) {
     dots <- list(...)
 
+    structVol <- if(!is.na(x$structVol)) {
+        paste(signif(x$structVol, 2), x$volumeUnit)
+    } else {
+        "? CC"
+    }
+
     if(("noID" %in% names(dots)) && (dots$noID == TRUE)) {
-        cat("DVH: Structure ", x$structure,
-            " (", signif(x$structVol, 2), "CC),",
+        cat("DVH: Structure '", x$structure,
+            "' (", structVol, "),",
             " Dose: ", paste(signif(range(x$dvh[ , "dose"], na.rm=TRUE), 2), collapse="-"),
             x$doseUnit, "\n", sep="")
     } else {
         cat("DVH: Patient '", x$patName,
             "' (ID ", x$patID,
             "), structure '", x$structure,
-            "' (", signif(x$structVol, 2), "CC),",
+            "' (", structVol, "CC),",
             " Dose: ", paste(signif(range(x$dvh[ , "dose"], na.rm=TRUE), 2), collapse="-"),
             x$doseUnit, "\n", sep="")
     }

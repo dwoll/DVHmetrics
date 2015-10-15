@@ -1,6 +1,7 @@
 # TODO
 ## Medium term
 
+ * function to return mean + SD DVH
  * document showDVH(..., addMSD=TRUE) in vignettes
  * allow `checkConstraint(x, "DNTCP < 50%")` instead of `0.5Gy`
  * `getMetric()`, `checkConstraint()`, `readDVH()` -> multicore support
@@ -18,7 +19,7 @@
  * merge DVH files from the same patient ID
  * add Eclipse fields: Comment, Exported by, Description, Plan Status, Approval Status, Dose Coverage, Sampling Coverage, Equivalent Sphere Diameter, Conformity Index, Gradient Measure
  * convert `RadOnc` objects to `DVHmetrics` objects and back
- * `showConstraint()` -> draw constraint arrows as custom geoms (coming in `ggplot2` 1.1.0)
+ * `showConstraint()` -> draw constraint arrows as custom geoms (coming in `ggplot2` 1.1.0 https://github.com/hadley/ggplot2/blob/master/vignettes/extending-ggplot2.Rmd)
  * harmonize structures by reading equivalence file, possibly with regex
 
 # build

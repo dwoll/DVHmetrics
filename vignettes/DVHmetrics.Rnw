@@ -226,9 +226,9 @@ Function \texttt{getMetric()} calculates freely-defined DVH metrics based on dat
 \item Example metrics are listed in table \ref{tab:metrics}. By default, metrics are calculated using linear interpolation between adjacent supporting points of the cumulative DVH -- without extrapolating beyond the observed volume or dose. The interpolation method can be changed to use monotone Hermite splines \cite{Fritsch1980}, or to local polynomial regression with a Gaussian kernel \cite{Wand1995}. The kernel bandwidth is then determined by the direct plug-in method \cite{Ruppert1995}.
 \end{itemize}
 
-\item Option \texttt{patID}: Which patient IDs should be analyzed. IDs are interpreted as regular expressions matched against those found in the DVH files. Also supply \texttt{fixed=TRUE} for exact matching. If missing, the metrics are calculated for all patients.
+\item Option \texttt{patID}: Which patient IDs should be analyzed. With \texttt{fixed=FALSE}, IDs are interpreted as regular expressions matched against those found in the DVH files. By default, IDs are matched exactly. If missing, the metrics are calculated for all patients.
 
-\item Option \texttt{structure}: Which structure should be analyzed. Structure names are interpreted as regular expressions matched against those found in the DVH files. Also supply \texttt{fixed=TRUE} for exact matching. If missing, the metrics are calculated for all structures.
+\item Option \texttt{structure}: Which structure should be analyzed. With \texttt{fixed=FALSE}, structure names are interpreted as regular expressions matched against those found in the DVH files. By default, structure names are matched exactly. If missing, the metrics are calculated for all structures.
 
 \item Option \texttt{sortBy}: Results can be sorted according to these variables:
 \begin{itemize}
@@ -393,18 +393,18 @@ Cumulative as well as differential DVH diagrams can be generated with \texttt{sh
 showDVH(dataMZ, byPat=TRUE)
 @
 
-Patient IDs and structures can be selected with the \texttt{patID="$\langle$ID$\rangle$"} option and the \texttt{structure="$\langle$NAME$\rangle$"} option. Both accept regular expressions. For exact matching, also supply \texttt{fixed=TRUE}. By default, all patients/structures are shown.
+Patient IDs and structures can be selected with the \texttt{patID="$\langle$ID$\rangle$"} option and the \texttt{structure="$\langle$NAME$\rangle$"} option. With \texttt{fixed=FALSE}, both accept regular expressions. By default, IDs and structure names are matched exactly. By default, all patients/structures are shown.
 
 <<cPlots2, out.width='3in'>>=
 showDVH(dataMZ, byPat=FALSE, patID=c("P123", "P234"))
 @
 
-By default, the relative DVH is shown. Absolute volume can be plotted with the \texttt{rel=FALSE} option. For differential DVH, set \texttt{cumul=FALSE}.
+By default, the relative DVH is shown. Absolute volume (if available in the input files) can be plotted with the \texttt{rel=FALSE} option. For differential DVH, set \texttt{cumul=FALSE}.
 
 <<cPlots3, out.width='3in'>>=
 ## match strcuture containing "VALVE" and "AMYOC"
 showDVH(dataMZ, cumul=FALSE, rel=FALSE,
-        structure=c("VALVE", "AMYOC"))
+        structure=c("VALVE", "AMYOC"), fixed=FALSE)
 @
 
 Option \texttt{thresh} allows to restrict the range of the $x$-axis such that only relative volumes larger than \texttt{thresh} appear. Use option \texttt{show=FALSE} to prevent the diagrams from being shown if you just need the returned object (here: \texttt{dvhPlot}) to later save the diagrams to file.
@@ -413,6 +413,13 @@ Option \texttt{thresh} allows to restrict the range of the $x$-axis such that on
 ## just save the diagram but don't show it
 dvhPlot <- showDVH(dataMZ, structure=c("HEART", "AOVALVE", "AVNODE"),
                    rel=FALSE, thresh=0.001, show=FALSE)
+@
+
+With option \texttt{addMSD=TRUE}, the diagram also shows the point-wise mean DVH as a black curve as well as grey shaded areas for the regions defined by the point-wise 1 standard deviation and 2 standard deviations around this mean. This can be useful for evaluating different plan options: The DVHs for each plan need to be exported using a different patient ID which thus serves as a plan identifier. With \texttt{byPat=FALSE} and \texttt{addMSD=TRUE}, the resulting DVHs can then be visually assessed.
+
+<<cPlots5, out.width='3in'>>=
+## just save the diagram but don't show it
+showDVH(dataMZ, structure="HEART", byPat=FALSE, addMSD=TRUE)
 @
 
 %%%%---------------------------------------------------------------------------

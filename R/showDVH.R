@@ -1,6 +1,7 @@
 ## combine DVH data from a DVHLst object
 ## interp is FALSE or gives number of nodes to interpolate
-combineDVHs <- function(x, cumul=TRUE, interp=FALSE, rangeD=NULL) {
+combineDVHs <-
+function(x, cumul=TRUE, interp=FALSE, rangeD=NULL) {
     ## differential DVH or interpolation - convert first
     x <- if(cumul && !interp) {
         ## cumulative without interpolation -> nothing to do
@@ -18,6 +19,7 @@ combineDVHs <- function(x, cumul=TRUE, interp=FALSE, rangeD=NULL) {
                           nodes=interp, rangeD=rangeD, perDose=TRUE)
     }
 
+    ## extract actual DVH from each DVHs object
     dvhDFL <- if(cumul) {
         ## cumulative DVH
         lapply(x, function(y) {
@@ -38,14 +40,14 @@ combineDVHs <- function(x, cumul=TRUE, interp=FALSE, rangeD=NULL) {
 ## S3 generic method
 showDVH <-
 function(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL,
-         rel=TRUE, guessX=TRUE, thresh=1, addMSD=FALSE, show=TRUE, ...) {
+         rel=TRUE, guessX=TRUE, thresh=1, addMSD=FALSE, show=TRUE, fixed=TRUE) {
     UseMethod("showDVH")
 }
 
 ## plots 1 DVH file for 1 id and 1 structure
 showDVH.DVHs <-
 function(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL,
-         rel=TRUE, guessX=TRUE, thresh=1, addMSD=FALSE, show=TRUE, ...) {
+         rel=TRUE, guessX=TRUE, thresh=1, addMSD=FALSE, show=TRUE, fixed=TRUE) {
     x <- if(byPat) {
         setNames(list(x), x$structure)
     } else {
@@ -64,7 +66,8 @@ function(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL,
 ## for byPat=FALSE: 1 structure -> multiple patients
 showDVH.DVHLst <-
 function(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL,
-         rel=TRUE, guessX=TRUE, thresh=1, addMSD=FALSE, show=TRUE, ...) {
+         rel=TRUE, guessX=TRUE, thresh=1, addMSD=FALSE, show=TRUE, fixed=TRUE) {
+
     ## make sure DVH list is organized as required for byPat
     if(is.null(attributes(x)$byPat) || attributes(x)$byPat != byPat) {
         stop(c("DVH list organization by-patient / by-structure ",
@@ -76,25 +79,42 @@ function(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL,
     ## if patIDs are selected, filter them here -> strips DVHLst class
     if(!is.null(patID)) {
         p <- trimWS(patID, side="both")
-        x <- Filter(function(y) any(grepl(paste(p, collapse="|"), y$patID, ...)), x)
+        x <- Filter(function(y) { 
+            if(fixed) {
+                any(y$patID %in% p)
+            } else {
+                any(grepl(paste(p, collapse="|"), y$patID))
+            }
+        }, x)
+
         if(length(x) < 1L) { stop("No selected patient found") }
     }
 
     ## if structures are selected, filter them here
     if(!is.null(structure)) {
         s <- trimWS(structure, side="both")
-        x <- Filter(function(y) any(grepl(paste(s, collapse="|"), y$structure, ...)), x)
+        x <- Filter(function(y) {
+            if(fixed) {
+                any(y$structure %in% s)
+            } else {
+                any(grepl(paste(s, collapse="|"), y$structure))
+            }
+        }, x)
+
         if(length(x) < 1L) { stop("No selected structure found") }
     }
 
     ## combine all data frames in the DVHs
     ## find number of dose values in DVHs
     if(addMSD) {
-        doseLen <-      max(vapply(x, function(z) { length(z$dvh[ , "dose"]) }, numeric(1)))
         rangeD  <- c(0, max(vapply(x, function(z) {    max(z$dvh[ , "dose"]) }, numeric(1))))
+        doseLen <-      max(vapply(x, function(z) { length(z$dvh[ , "dose"]) }, numeric(1)))
+        
+        ## coarser dose grid for M+SD but with at least 100 nodes
+        doseLen <- max(100, ceiling(doseLen/5))
     } else {
+        rangeD  <- NULL
         doseLen <- FALSE
-        doseMax <- NULL
     }
 
     dvhDF <- combineDVHs(x, cumul=cumul, interp=doseLen, rangeD=rangeD)
@@ -109,37 +129,30 @@ function(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL,
         1.1*max(c(guessX, dvhDF$dose))
     }
     
-    ## choose upper y-axis limit (volume) - add 3%
-    yMaxAbs <- 1.03*max(dvhDF$volume,    na.rm=TRUE)
-    yMaxRel <- 1.03*max(dvhDF$volumeRel, na.rm=TRUE)
-
-    ## title string
-    strTitle <- if(byPat) {
-        paste0("patient ",   x[[1]]$patID)
-    } else {
-        paste0("structure ", x[[1]]$structure)
-    }
-    
     ## set plot volume to absolute or relative
+    ## and choose upper y-axis limit (volume) - add 3%
     if(rel) {
-        yMax <- yMaxRel
-        dvhDF$volPlot <- dvhDF$volumeRel
+        ## relative volume - check if available
+        if(all(is.na(dvhDF$volumeRel))) {
+            warning("All relative volumes are missing, will try to show absolute volume")
+            yMax <- 1.03*max(dvhDF$volume, na.rm=TRUE)
+            rel  <- FALSE
+            dvhDF$volPlot <- dvhDF$volume
+        } else {
+            yMax <- min(c(103, 1.03*max(dvhDF$volumeRel, na.rm=TRUE)))
+            dvhDF$volPlot <- dvhDF$volumeRel
+        }
     } else {
-        yMax <- yMaxAbs
-        dvhDF$volPlot <- dvhDF$volume
-    }
-
-    ## check if relative volume is available if requested
-    if(rel && all(is.na(dvhDF$volumeRel))) {
-        warning("All relative volumes are missing, will try to show absolute volume")
-        yMax <- yMaxAbs
-        rel  <- FALSE
-        dvhDF$volPlot <- dvhDF$volume
-    } else if(!rel && all(is.na(dvhDF$volume))) {
-        warning("All absolute volumes are missing, will try to show relative volume")
-        yMax <- yMaxRel
-        rel  <- TRUE
-        dvhDF$volPlot <- dvhDF$volumeRel
+        ## absolute volume - check if available
+        if(all(is.na(dvhDF$volume))) {
+            warning("All absolute volumes are missing, will try to show relative volume")
+            yMax <- min(c(103, 1.03*max(dvhDF$volumeRel, na.rm=TRUE)))
+            rel  <- TRUE
+            dvhDF$volPlot <- dvhDF$volumeRel
+        } else {
+            yMax <- 1.03*max(dvhDF$volume, na.rm=TRUE)
+            dvhDF$volPlot <- dvhDF$volume
+        }
     }
 
     ## check if absolute dose is available
@@ -168,27 +181,26 @@ function(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL,
         }
 
         ## rename columns in aggregated data frames
+        ## dfM stays as is because "volPlot" is used in top layer of the plot
         namesDFDM <- names(dfDM)
-        namesDFM  <- names(dfM)
         namesDFSD <- names(dfSD)
         namesDFDM[namesDFDM == "dose"]    <- "doseM"
-        namesDFM[ namesDFM  == "volPlot"] <- "volM"
         namesDFSD[namesDFSD == "volPlot"] <- "volSD"
         names(dfDM) <- namesDFDM
-        names(dfM)  <- namesDFM
         names(dfSD) <- namesDFSD
 
         dfMSD <- Reduce(merge, list(dfDM, dfM, dfSD))
-        dfMSD$volLo1SD <- dfMSD$volM -   dfMSD$volSD
-        dfMSD$volHi1SD <- dfMSD$volM +   dfMSD$volSD
-        dfMSD$volLo2SD <- dfMSD$volM - 2*dfMSD$volSD
-        dfMSD$volHi2SD <- dfMSD$volM + 2*dfMSD$volSD
+        dfMSD$volLo1SD <- dfMSD$volPlot -   dfMSD$volSD
+        dfMSD$volHi1SD <- dfMSD$volPlot +   dfMSD$volSD
+        dfMSD$volLo2SD <- dfMSD$volPlot - 2*dfMSD$volSD
+        dfMSD$volHi2SD <- dfMSD$volPlot + 2*dfMSD$volSD
     }
 
-    volUnit <- if(rel) {
-        "%"
+    ## title string
+    strTitle <- if(byPat) {
+        paste0("patient ",   x[[1]]$patID)
     } else {
-        x[[1]]$volumeUnit
+        paste0("structure ", x[[1]]$structure)
     }
 
     doseUnit <- if(isDoseRel) {
@@ -197,8 +209,22 @@ function(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL,
         x[[1]]$doseUnit
     }
 
+    volUnit <- if(rel) {
+        if(cumul) {
+            "%"
+        } else {
+            paste0("%/", doseUnit)
+        }
+    } else {
+        if(cumul) {
+            x[[1]]$volumeUnit
+        } else {
+            paste0(x[[1]]$volumeUnit, "/", doseUnit)
+        }
+    }
+
     ## plot - empty base layer
-    diag <- ggplot()
+    diag <- ggplot(dvhDF, aes_string(x="dose", y="volPlot"))
 
     ## point-wise 1-SD, 2-SD shaded areas?
     diag <- if(addMSD) {
@@ -241,7 +267,7 @@ function(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL,
     ## point-wise mean DVH?
     diag <- if(addMSD) {
         diag + geom_line(data=dfMSD,
-                         aes_string(x="dose", y="volM"),
+                         aes_string(x="dose", y="volPlot"),
                          color="black", size=1.2)
     } else {
         diag
@@ -266,7 +292,8 @@ function(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL,
 ## or     for many structures -> multiple patients   per DVH
 showDVH.DVHLstLst <-
 function(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL,
-         rel=TRUE, guessX=TRUE, thresh=1, addMSD=FALSE, show=TRUE, ...) {
+         rel=TRUE, guessX=TRUE, thresh=1, addMSD=FALSE, show=TRUE, fixed=TRUE) {
+
     ## re-organize x into by-patient or by-structure form if necessary
     isByPat <- attributes(x)$byPat
     if(is.null(isByPat) || (isByPat != byPat)) {
@@ -276,7 +303,14 @@ function(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL,
     ## if byPat=TRUE and patIDs are selected, filter them here
     if(byPat && !is.null(patID)) {
         p <- trimWS(patID, side="both")
-        x <- Filter(function(y) any(grepl(paste(p, collapse="|"), y[[1]]$patID, ...)), x)
+        x <- Filter(function(y) {
+            if(fixed) {
+                any(y[[1]]$patID %in% p)
+            } else {
+                any(grepl(paste(p, collapse="|"), y[[1]]$patID))
+            }
+        }, x)
+
         if(length(x) < 1L) { stop("No selected patient found") }
         patID <- NULL
     }
@@ -284,14 +318,21 @@ function(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL,
     ## if byPat=FALSE and structures are selected, filter them here
     if(!byPat && !is.null(structure)) {
         s <- trimWS(structure, side="both")
-        x <- Filter(function(y) any(grepl(paste(s, collapse="|"), y[[1]]$structure, ...)), x)
+        x <- Filter(function(y) {
+            if(fixed) {
+                any(y[[1]]$structure %in% s)
+            } else {
+                any(grepl(paste(s, collapse="|"), y[[1]]$structure))
+            }
+        }, x)
+
         if(length(x) < 1L) { stop("No selected structure found") }
         structure <- NULL
     }
 
     diagL <- Map(showDVH, x, cumul=cumul, byPat=byPat, rel=rel,
                  patID=list(patID), structure=list(structure),
-                 guessX=guessX, thresh=thresh, addMSD=addMSD, show=show, ...)
+                 guessX=guessX, thresh=thresh, addMSD=addMSD, show=show, fixed=fixed)
 
     return(invisible(diagL))
 }

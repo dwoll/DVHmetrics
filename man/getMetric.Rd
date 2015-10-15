@@ -11,32 +11,33 @@ Simultaneously calculates multiple metrics for multiple cumulative DVHs.
 getMetric(x, metric, patID, structure,
            sortBy=c("none", "observed", "patID", "structure", "metric"),
           splitBy=c("none", "patID", "structure", "metric"),
-           interp=c("linear", "spline", "ksmooth"), ...)
+           interp=c("linear", "spline", "ksmooth"), fixed=TRUE, ...)
 
 \method{getMetric}{DVHs}(x, metric, patID, structure,
            sortBy=c("none", "observed", "patID", "structure", "metric"),
           splitBy=c("none", "patID", "structure", "metric"),
-           interp=c("linear", "spline", "ksmooth"), ...)
+           interp=c("linear", "spline", "ksmooth"), fixed=TRUE, ...)
 
 \method{getMetric}{DVHLst}(x, metric, patID, structure,
            sortBy=c("none", "observed", "patID", "structure", "metric"),
           splitBy=c("none", "patID", "structure", "metric"),
-           interp=c("linear", "spline", "ksmooth"), ...)
+           interp=c("linear", "spline", "ksmooth"), fixed=TRUE, ...)
 
 \method{getMetric}{DVHLstLst}(x, metric, patID, structure,
            sortBy=c("none", "observed", "patID", "structure", "metric"),
           splitBy=c("none", "patID", "structure", "metric"),
-           interp=c("linear", "spline", "ksmooth"), ...)
+           interp=c("linear", "spline", "ksmooth"), fixed=TRUE, ...)
 }
 \arguments{
   \item{x}{One cumulative DVH (object of class \code{DVHs}, multiple cumulative DVHs from one patient with multiple structures (object of class \code{DVHLst}), or multiple cumulative DVHs from many patients, each with multiple structures (object of class \code{DVHLstLst}). See \code{\link[DVHmetrics]{readDVH}}.}
   \item{metric}{\code{character} vector defining one or more DVH metrics. See Details for their definition. For metrics involving the relative dose, the DVH must contain the prescription dose.}
-  \item{patID}{\code{character} vector. Calculate given DVH metrics for these patients only. If missing, DVH metrics are calculated for all patients. Can be a regular expression, see \code{\link[base]{regex}}.}
-  \item{structure}{\code{character} vector. Calculate given DVH metrics for these structures only. If missing, DVH metrics are calculated for all structures. Can be a regular expression, see \code{\link[base]{regex}}.}
+  \item{patID}{\code{character} vector. Calculate given DVH metrics for these patients only. If missing, DVH metrics are calculated for all patients. Can be a regular expression if additional argument \code{fixed=FALSE} is supplied as well, see \code{\link[base]{regex}}.}
+  \item{structure}{\code{character} vector. Calculate given DVH metrics for these structures only. If missing, DVH metrics are calculated for all structures. Can be a regular expression if additional argument \code{fixed=FALSE} is supplied as well, see \code{\link[base]{regex}}.}
   \item{sortBy}{\code{character} vector giving the sorting criteria for the output data frame.}
   \item{splitBy}{\code{character} vector. Split results into a list of data frames where list components are defined by groups from combining these variables.}
   \item{interp}{\code{character}. Method of interpolation between DVH points: Linear interpolation using \code{\link[stats]{approx}}, monotone Hermite spline interpolation using \code{\link[stats]{splinefun}}, or local polynomial regression using \code{\link[KernSmooth]{locpoly}} with kernel bandwidth chosen by the direct plug-in method using \code{\link[KernSmooth]{dpill}}.}
-  \item{...}{Further arguments. \code{fixed=TRUE} is passed to \code{\link[base]{grep}} for exact matching of \code{patID} and \code{structure}. Arguments passed to \code{\link[DVHmetrics]{getEUD}} (for \code{metric="DEUD"}), \code{\link[DVHmetrics]{getTCP}} (for \code{metric="DTCP"}), or \code{\link[DVHmetrics]{getNTCP}} (for \code{metric="DNTCP"}).}
+  \item{fixed}{\code{logical}. Use \code{fixed=FALSE} for regular expression matching of \code{patID} and \code{structure}.}
+  \item{...}{Further arguments passed to \code{\link[DVHmetrics]{getEUD}} (for \code{metric="DEUD"}), \code{\link[DVHmetrics]{getTCP}} (for \code{metric="DTCP"}), or \code{\link[DVHmetrics]{getNTCP}} (for \code{metric="DNTCP"}).}
 }
 \details{
 A \emph{pre-specified} DVH metric is one of the following character strings:
@@ -102,7 +103,8 @@ getMetric(dataMZ, c("D1CC", "V10\%_CC"),
 getMetric(dataMZ, c("D1CC", "V10\%_CC"),
           patID="23",
           structure=c("AMYOC", "VALVE"),
-          splitBy="patID")
+          splitBy="patID",
+          fixed=FALSE)
 
 # gEUD with a=2
 getMetric(dataMZ[[c(1, 1)]], "DEUD", EUDa=2)

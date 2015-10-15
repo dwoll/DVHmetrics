@@ -4,13 +4,14 @@ function(conversion="CGY2GY") {
     conversion <- toupper(removeWS(conversion))
 
     ## check how the conversion factor is indicated
-    idxGY2GY  <- conversion %in% c("GY2GY")
-    idxCGY2GY <- conversion %in% c("CGY2GY")
-    idxGY2CGY <- conversion %in% c("GY2CGY")
-    idxCC2CC  <- conversion %in% c("CC2CC")
+    idxGY2GY   <- conversion %in% c("GY2GY")
+    idxCGY2GY  <- conversion %in% c("CGY2GY")
+    idxGY2CGY  <- conversion %in% c("GY2CGY")
+    idxCGY2CGY <- conversion %in% c("CGY2CGY")
+    idxCC2CC   <- conversion %in% c("CC2CC")
 
     ## did we catch all requested conversion types?
-    idxAll <- idxGY2GY | idxCGY2GY | idxGY2CGY | idxCC2CC
+    idxAll <- idxGY2GY | idxCGY2GY | idxGY2CGY | idxCGY2CGY | idxCC2CC
     if(!all(idxAll)) {
         warning(c('Conversion type(s) "', paste(conversion[!idxAll], collapse=", "),
                   '" not found - conversion factor set to NA'))
@@ -19,10 +20,11 @@ function(conversion="CGY2GY") {
     convFac <- rep(NA_real_, length(conversion))
 
     ## conversion factors for dose units
-    convFac[idxGY2GY]  <- 1
-    convFac[idxCGY2GY] <- 1/100
-    convFac[idxGY2CGY] <- 100
-    convFac[idxCC2CC]  <- 1
+    convFac[idxGY2GY]   <- 1
+    convFac[idxCGY2GY]  <- 1/100
+    convFac[idxGY2CGY]  <- 100
+    convFac[idxCGY2CGY] <- 1
+    convFac[idxCC2CC]   <- 1
 
     return(convFac)
 }

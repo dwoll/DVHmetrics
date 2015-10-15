@@ -17,6 +17,8 @@ Version 0.3.3.0.900 (October 13, 2015)
     * checkConstraint(), showConstraint()
       - fix bug: make functions work for files not exported
         from Eclipse or Cadplan
+      - fix bug: make functions work with DVH files with
+        duplicate rows
 
 Version 0.3.3 (October 13, 2015)
     * readDVH()

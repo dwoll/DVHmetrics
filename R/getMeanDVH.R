@@ -1,13 +1,15 @@
 ## S3 generic method
 getMeanDVH <-
-function(x, cumul=TRUE, purge=3, byPat=TRUE, patID=NULL, structure=NULL,
+function(x, fun=c("mean", "median", "sd"),
+         cumul=TRUE, purge=3, byPat=TRUE, patID=NULL, structure=NULL,
          interp=c("linear", "spline", "smoothSpl"), fixed=TRUE) {
     UseMethod("getMeanDVH")
 }
 
 ## for completeness sake - "mean" of just 1 DVH
 getMeanDVH.DVHs <-
-function(x, cumul=TRUE, purge=3, byPat=TRUE, patID=NULL, structure=NULL,
+function(x, fun=c("mean", "median", "sd"),
+         cumul=TRUE, purge=3, byPat=TRUE, patID=NULL, structure=NULL,
          interp=c("linear", "spline", "smoothSpl"), fixed=TRUE) {
     interp <- match.arg(interp)
 
@@ -20,12 +22,14 @@ function(x, cumul=TRUE, purge=3, byPat=TRUE, patID=NULL, structure=NULL,
     class(x) <- "DVHLst"
     attr(x, which="byPat") <- byPat
 
-    getMeanDVH.DVHLst(x, cumul=cumul, purge=purge, byPat=byPat, patID=patID,
-                      structure=structure, interp=interp, fixed=fixed)
+    getMeanDVH.DVHLst(x, fun=fun, cumul=cumul, purge=purge, byPat=byPat,
+                      patID=patID, structure=structure, interp=interp,
+                      fixed=fixed)
 }
 
 getMeanDVH.DVHLst <-
-function(x, cumul=TRUE, purge=3, byPat=TRUE, patID=NULL, structure=NULL,
+function(x, fun=c("mean", "median", "sd"),
+         cumul=TRUE, purge=3, byPat=TRUE, patID=NULL, structure=NULL,
          interp=c("linear", "spline", "smoothSpl"), fixed=TRUE) {
     interp <- match.arg(interp)
 
@@ -100,43 +104,29 @@ function(x, cumul=TRUE, purge=3, byPat=TRUE, patID=NULL, structure=NULL,
     dvhDF <- do.call("rbind", dvhDFL)
 
     ## generate point-wise mean/sd for dose -> aggregate over dose
-    if(byPat) {
-        dfM  <- aggregate(cbind(volume, volumeRel) ~ patID + dose,
-                          data=dvhDF, FUN=mean, na.action=na.pass)
-        dfSD <- aggregate(cbind(volume, volumeRel) ~ patID + dose,
-                          data=dvhDF, FUN=sd,   na.action=na.pass)
-    } else {
-        dfM  <- aggregate(cbind(volume, volumeRel) ~ structure + dose,
-                          data=dvhDF, FUN=mean, na.action=na.pass)
-        dfSD <- aggregate(cbind(volume, volumeRel) ~ structure + dose,
-                          data=dvhDF, FUN=sd,   na.action=na.pass)
+    getAggr <- function(y) {
+        FUN <- eval(parse(text=y))
+        dat <- if(byPat) {
+            aggregate(cbind(volume, volumeRel) ~ patID + dose,
+                      data=dvhDF, FUN=FUN, na.action=na.pass)
+        } else {
+            aggregate(cbind(volume, volumeRel) ~ structure + dose,
+                      data=dvhDF, FUN=FUN, na.action=na.pass)
+        }
+
+        ## rename columns in aggregated data frames
+        namesDat <- names(dat)
+        namesDat[namesDat == "volume"]    <- paste0("volume",    toupper(y))
+        namesDat[namesDat == "volumeRel"] <- paste0("volumeRel", toupper(y))
+        names(dat) <- namesDat
+        dat
     }
 
-    ## rename columns in aggregated data frames
-    ## dfM stays as is because "volPlot" is used in top layer of the plot
-    namesDFM  <- names(dfM)
-    namesDFSD <- names(dfSD)
-    namesDFM[ namesDFM  == "volume"]    <- "volumeM"
-    namesDFSD[namesDFSD == "volume"]    <- "volumeSD"
-    namesDFM[ namesDFM  == "volumeRel"] <- "volumeRelM"
-    namesDFSD[namesDFSD == "volumeRel"] <- "volumeRelSD"
-    names(dfM)  <- namesDFM
-    names(dfSD) <- namesDFSD
-    
-    ## combine mean and sd
-    dfMSD <- merge(dfM, dfSD)
-    
-    ## add M +/- 1SD, 2SD
-    dfMSD$volLo1SD <- dfMSD$volumeM -   dfMSD$volumeSD
-    dfMSD$volHi1SD <- dfMSD$volumeM +   dfMSD$volumeSD
-    dfMSD$volLo2SD <- dfMSD$volumeM - 2*dfMSD$volumeSD
-    dfMSD$volHi2SD <- dfMSD$volumeM + 2*dfMSD$volumeSD
+    ## get all point-wise estimates
+    dfL <- lapply(fun, getAggr)
 
-    dfMSD$volRelLo1SD <- dfMSD$volumeRelM -   dfMSD$volumeRelSD
-    dfMSD$volRelHi1SD <- dfMSD$volumeRelM +   dfMSD$volumeRelSD
-    dfMSD$volRelLo2SD <- dfMSD$volumeRelM - 2*dfMSD$volumeRelSD
-    dfMSD$volRelHi2SD <- dfMSD$volumeRelM + 2*dfMSD$volumeRelSD
-
+    ## combine point-wise estimates
+    dfMSD <- Reduce(merge, dfL)
     rownames(dfMSD) <- NULL
     dfMSD
 }
@@ -146,7 +136,8 @@ function(x, cumul=TRUE, purge=3, byPat=TRUE, patID=NULL, structure=NULL,
 ## either for many patients   -> multiple structures per DVH
 ## or     for many structures -> multiple patients   per DVH
 getMeanDVH.DVHLstLst <-
-function(x, cumul=TRUE, purge=3, byPat=TRUE, patID=NULL, structure=NULL,
+function(x, fun=c("mean", "median", "sd"),
+         cumul=TRUE, purge=3, byPat=TRUE, patID=NULL, structure=NULL,
          interp=c("linear", "spline", "smoothSpl"), fixed=TRUE) {
     interp <- match.arg(interp)
 
@@ -186,8 +177,8 @@ function(x, cumul=TRUE, purge=3, byPat=TRUE, patID=NULL, structure=NULL,
         structure <- NULL
     }
 
-    resDFL <- Map(getMeanDVH, x, cumul=cumul, purge=purge, byPat=byPat,
-                  patID=list(patID), structure=list(structure),
+    resDFL <- Map(getMeanDVH, x, fun=list(fun), cumul=cumul, purge=purge,
+                  byPat=byPat, patID=list(patID), structure=list(structure),
                   interp=interp, fixed=fixed)
 
     resDF <- do.call("rbind", resDFL)

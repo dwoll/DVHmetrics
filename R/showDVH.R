@@ -111,7 +111,7 @@ function(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL,
         doseLen <-      max(vapply(x, function(z) { length(z$dvh[ , "dose"]) }, numeric(1)))
         
         ## coarser dose grid for M+SD but with at least 100 nodes
-        doseLen <- max(100, ceiling(doseLen/5))
+        doseLen <- max(100, ceiling(doseLen/3))
     } else {
         rangeD  <- NULL
         doseLen <- FALSE
@@ -166,12 +166,7 @@ function(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL,
 
     ## check if point-wise volume mean and sd should be plotted
     if(addMSD) {
-        ## generate point-wise mean/sd for binned dose
-        dvhDF$doseBin <- cut(dvhDF$dose, breaks=doseLen/5)
-
-        ## aggregate over dose bins - mean dose per bin first
-        dfDM <- aggregate(dose ~ doseBin, data=dvhDF, FUN=mean, na.rm=TRUE)
-
+        ## generate point-wise mean/sd for dose -> aggregate over dose
         if(byPat) {
             dfM  <- aggregate(volPlot ~ patID + dose,     data=dvhDF, FUN=mean, na.rm=TRUE)
             dfSD <- aggregate(volPlot ~ patID + dose,     data=dvhDF, FUN=sd,   na.rm=TRUE)
@@ -182,14 +177,11 @@ function(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL,
 
         ## rename columns in aggregated data frames
         ## dfM stays as is because "volPlot" is used in top layer of the plot
-        namesDFDM <- names(dfDM)
         namesDFSD <- names(dfSD)
-        namesDFDM[namesDFDM == "dose"]    <- "doseM"
         namesDFSD[namesDFSD == "volPlot"] <- "volSD"
-        names(dfDM) <- namesDFDM
         names(dfSD) <- namesDFSD
 
-        dfMSD <- Reduce(merge, list(dfDM, dfM, dfSD))
+        dfMSD <- Reduce(merge, list(dfM, dfSD))
         dfMSD$volLo1SD <- dfMSD$volPlot -   dfMSD$volSD
         dfMSD$volHi1SD <- dfMSD$volPlot +   dfMSD$volSD
         dfMSD$volLo2SD <- dfMSD$volPlot - 2*dfMSD$volSD

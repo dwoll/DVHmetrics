@@ -1,7 +1,7 @@
 # TODO
 ## Medium term
 
- * function to return mean + SD DVH
+ * vignette -> `getMeanDVH()`
  * allow `checkConstraint(x, "DNTCP < 50%")` instead of `0.5Gy`
  * `getMetric()`, `checkConstraint()`, `readDVH()` -> multicore support
  * `readDVH()` -> if `x` is a directory, read all files in it
@@ -30,4 +30,4 @@
  * "c:\program files\r\r-devel\bin\x64\Rcmd.exe" INSTALL --build DVHmetrics_0.3.3.tar.gz
  * "c:\program files\r\r-devel\bin\x64\Rcmd.exe" build DVHmetrics --resave-data --compact-vignettes="both"
  * "c:\program files\r\r-devel\bin\x64\Rcmd.exe" check DVHmetrics_0.3.3.tar.gz --as-cran
- * `install.packages("h:/workspace/DVHmetrics_0.3.3.tar.gz", repos=NULL, type="source")`
+ * `install.packages("h:/workspace/DVHmetrics_0.3.3.0.900.tar.gz", repos=NULL, type="source")`

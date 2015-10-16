@@ -30,7 +30,8 @@ export(getBED,
        getEUD,
        getNTCP,
        getTCP,
-       getDMEAN)
+       getDMEAN,
+       getMeanDVH)
 
 S3method(saveMetric,      data.frame)
 S3method(saveMetric,      list)
@@ -74,3 +75,6 @@ S3method(getEQD2,         DVHLstLst)
 S3method(getDMEAN,        DVHs)
 S3method(getDMEAN,        DVHLst)
 S3method(getDMEAN,        DVHLstLst)
+S3method(getMeanDVH,      DVHs)
+S3method(getMeanDVH,      DVHLst)
+S3method(getMeanDVH,      DVHLstLst)

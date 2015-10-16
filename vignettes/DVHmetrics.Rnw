@@ -296,7 +296,8 @@ Calculate metrics \texttt{D10\%} and \texttt{V5Gy} for all structures containing
 getMetric(dataMZ, metric=c("D10%", "V5Gy"),
           structure=c("AMYOC", "VALVE"),
           patID="23",
-          sortBy=c("metric", "observed"))
+          sortBy=c("metric", "observed"),
+          fixed=FALSE)
 @
 
 Calculate metrics \texttt{DMEAN} and \texttt{D5cc} for structure \texttt{HEART} for all patients in \texttt{dataMZ}, sort by the observed value of the metric, and split the output such that one table is generated for each metric.

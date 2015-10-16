@@ -13,7 +13,7 @@ saveMetric(x, file = "", ...)
 }
 \arguments{
   \item{x}{\code{data.frame} or \code{list} - the result from \code{\link[DVHmetrics]{getMetric}}.}
-  \item{file}{\code{character} string. Path to file.}
+  \item{file}{\code{character}. Path to file.}
   \item{...}{Further arguments passed to \code{\link[utils]{write.table}} - e.g., \code{dec="."} to define the decimal separator as point or \code{sep="\t"} to define the column sepator as tab.}
 }
 \details{This is a wrapper for \code{\link[utils]{write.table}}.}

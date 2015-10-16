@@ -215,8 +215,32 @@ function(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL,
         }
     }
 
-    ## plot - empty base layer
+    ## do we have many structure/ID categories? -> more legend columns
+    nCateg <- if(byPat) {
+        length(unique(dvhDF$structure))
+    } else {
+        length(unique(dvhDF$patID))
+    }
+
+    ## 15 entries per legend column
+    nLegendCols <- (nCateg %/% 15) + 1            # number of categories
+
+    ## do the actual plotting
     diag <- ggplot(dvhDF, aes_string(x="dose", y="volPlot"))
+
+    ## rescale x-axis
+    diag <- if(is.finite(xMax)) {
+        diag + coord_cartesian(xlim=c(0, xMax))
+    } else {
+        diag
+    }
+    
+    ## rescale y-axis
+    diag <- if(is.finite(yMax)) {
+        diag + coord_cartesian(ylim=c(0, yMax))
+    } else {
+        diag
+    }
 
     ## point-wise 1-SD, 2-SD shaded areas?
     diag <- if(addMSD) {
@@ -242,21 +266,7 @@ function(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL,
                          size=1.2)
     }
 
-    ## rescale x-axis
-    diag <- if(is.finite(xMax)) {
-        diag + coord_cartesian(xlim=c(0, xMax)) + expand_limits(y=0)
-    } else {
-        diag
-    }
-    
-    ## rescale y-axis
-    diag <- if(is.finite(yMax)) {
-        diag + coord_cartesian(ylim=c(0, yMax))
-    } else {
-        diag
-    }
-
-    ## point-wise mean DVH?
+    ## add point-wise mean DVH?
     diag <- if(addMSD) {
         diag + geom_line(data=dfMSD,
                          aes_string(x="dose", y="volPlot"),
@@ -264,27 +274,16 @@ function(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL,
     } else {
         diag
     }
-    
-    diag <- diag + ggtitle(strTitle) +
+
+    ## final diagram
+    diag <- diag +
+        ggtitle(strTitle) +
         theme_bw() +
-        scale_y_continuous(expand=c(0, 0.6)) +
+        expand_limits(y=0) +                      # make sure 0 is included
+        scale_y_continuous(expand=c(0, 0.6)) +    # no space below y=0
+        guides(color=guide_legend(ncol=nLegendCols)) +
         xlab(paste0("Dose [",   doseUnit, "]")) +
         ylab(paste0("Volume [", volUnit,  "]"))
-
-    ## have many structure/ID categories? -> move legend to bottom
-    nCateg <- if(byPat) {
-        length(unique(dvhDF$structure))
-    } else {
-        length(unique(dvhDF$patID))
-    }
-    
-    if(nCateg > 15) {
-        diag <- diag +
-            #theme(legend.position="bottom") +
-            #guides(color=guide_legend(nrow=2, byrow=TRUE))
-            #theme(legend.position="bottom") +
-            guides(color=guide_legend(ncol=2))
-    }
 
     if(show) {
         print(diag)

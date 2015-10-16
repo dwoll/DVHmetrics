@@ -3,10 +3,14 @@ $Date: 2015-10-12 13:25:29 +0000 (Tue, 13 Oct 2015) $
 DVHMETRICS RELEASE VERSIONS at http://cran.r-project.org/
 
 Version 0.3.3.0.900 (October 13, 2015)
+    * getMeanDVH()
+      - new function that returns the point-wise mean DVH
+        together with point-wise 1-SD and 2-SD around the
+        mean for a given list of DVHs
     * showDVH()
-      - add option addMSD to show the point-wise volume
-        mean DVH as well as shaded areas for point-wise 1-SD
-        and 2-SD around the mean
+      - add option addMSD to show the point-wise mean DVH
+        as well as shaded areas for point-wise 1-SD and
+        2-SD around the mean
     * convertDVH()
       - with toType="asis" and interp="linear", DVHs are
         interpolated with equally spaced dose values

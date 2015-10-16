@@ -19,7 +19,7 @@ showConstraint(x, constr, byPat=TRUE, rel=TRUE, guessX=TRUE, thresh=1)
 \arguments{
   \item{x}{A single DVH (object of class \code{DVHs}), multiple DVHs from one patient/structure (object of class \code{DVHLst}), or multiple DVHs from many patients/structures (object of class \code{DVHLstLst}). See \code{\link[DVHmetrics]{readDVH}}. See Details.}
   \item{constr}{One or more constraints - given as a \code{character} vector or as a \code{data.frame}. See \code{\link[DVHmetrics]{checkConstraint}} for their definition.}
-  \item{byPat}{Relevant if multiple DVHs are given. If \code{x} has class \code{DVHLstLst}: \code{byPat=TRUE} means that one diagram shows DVHs from one patient with multiple structures. \code{byPat=FALSE} means that one diagram shows DVHs for one structure from multiple patients.}
+  \item{byPat}{\code{logical}. Relevant if multiple DVHs are given. If \code{x} has class \code{DVHLstLst}: \code{byPat=TRUE} means that one diagram shows DVHs from one patient with multiple structures. \code{byPat=FALSE} means that one diagram shows DVHs for one structure from multiple patients.}
   \item{rel}{\code{logical}. Show relative volume?}
   \item{guessX}{\code{logical}. Try to clip the x-axis for better visibility of main DVH range?}
   \item{thresh}{\code{numeric} value. Relative volume threshold used with \code{guessX=TRUE}. Clip x-axis (+10\%) such that the "highest" DVH is cut off at this relative volume.}

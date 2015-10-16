@@ -1,6 +1,11 @@
+## DVH smoothing
+## ... in getKSmooth(), getSmoothSpl(), getInterpLin() is ignored
+## and used to catch method="FMM" or method="monoH.FC" meant for getInterpSpl()
+## when called from convertDVH()
+
 ## function for cubic local polynomial smoothing
 ## dose, dose rel, volume, volume rel, N DVH nodes
-getKSmooth <- function(d, dR, v, vR, nodes=NULL, rangeD=NULL) {
+getKSmooth <- function(d, dR, v, vR, nodes=NULL, rangeD=NULL, ...) {
     nodes <- if(is.null(nodes)) {
         length(d)
     } else {
@@ -56,7 +61,7 @@ getKSmooth <- function(d, dR, v, vR, nodes=NULL, rangeD=NULL) {
 
 ## function for cubic local polynomial smoothing
 ## dose, dose rel, volume, volume rel, N DVH nodes
-getSmoothSpl <- function(d, dR, v, vR, nodes=NULL, rangeD=NULL) {
+getSmoothSpl <- function(d, dR, v, vR, nodes=NULL, rangeD=NULL, ...) {
     nodes <- if(is.null(nodes)) {
         length(d)
     } else {
@@ -104,7 +109,10 @@ getSmoothSpl <- function(d, dR, v, vR, nodes=NULL, rangeD=NULL) {
 
 ## function for cubic spline interpolation
 ## dose, dose rel, volume, volume rel, N DVH nodes
-getInterpSpl <- function(d, dR, v, vR, nodes=NULL, rangeD=NULL) {
+getInterpSpl <- function(d, dR, v, vR, nodes=NULL, rangeD=NULL,
+                         method=c("fmm", "monoH.FC")) {
+    method <- match.arg(method)
+
     nodes <- if(is.null(nodes)) {
         length(d)
     } else {
@@ -115,13 +123,13 @@ getInterpSpl <- function(d, dR, v, vR, nodes=NULL, rangeD=NULL) {
     
     ## interpolation
     smDV <- if(!all(is.na(v))) {
-        try(splinefun(d, v, method="fmm"))
+        try(splinefun(d, v, method=method))
     } else {
         function(x) { return(NA_real_) }
     }
 
     smDVR <- if(!all(is.na(vR))) {
-        try(splinefun(d, vR, method="fmm"))
+        try(splinefun(d, vR, method=method))
     } else {
         function(x) { return(NA_real_) }
     }
@@ -152,7 +160,7 @@ getInterpSpl <- function(d, dR, v, vR, nodes=NULL, rangeD=NULL) {
 
 ## function for linear interpolation
 ## dose, dose rel, volume, volume rel, N DVH nodes
-getInterpLin <- function(d, dR, v, vR, nodes=NULL, rangeD=NULL) {
+getInterpLin <- function(d, dR, v, vR, nodes=NULL, rangeD=NULL, ...) {
     nodes <- if(is.null(nodes)) {
         length(d)
     } else {

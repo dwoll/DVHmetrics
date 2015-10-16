@@ -39,15 +39,15 @@ function(x, cumul=TRUE, interp=FALSE, rangeD=NULL) {
 
 ## S3 generic method
 showDVH <-
-function(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL,
-         rel=TRUE, guessX=TRUE, thresh=1, addMSD=FALSE, show=TRUE, fixed=TRUE) {
+function(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL, rel=TRUE,
+         guessX=TRUE, thresh=1, addMSD=FALSE, show=TRUE, fixed=TRUE) {
     UseMethod("showDVH")
 }
 
 ## plots 1 DVH file for 1 id and 1 structure
 showDVH.DVHs <-
-function(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL,
-         rel=TRUE, guessX=TRUE, thresh=1, addMSD=FALSE, show=TRUE, fixed=TRUE) {
+function(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL, rel=TRUE,
+         guessX=TRUE, thresh=1, addMSD=FALSE, show=TRUE, fixed=TRUE) {
     x <- if(byPat) {
         setNames(list(x), x$structure)
     } else {
@@ -65,8 +65,8 @@ function(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL,
 ## for byPat=TRUE:  1 patient   -> multiple structures
 ## for byPat=FALSE: 1 structure -> multiple patients
 showDVH.DVHLst <-
-function(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL,
-         rel=TRUE, guessX=TRUE, thresh=1, addMSD=FALSE, show=TRUE, fixed=TRUE) {
+function(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL, rel=TRUE,
+         guessX=TRUE, thresh=1, addMSD=FALSE, show=TRUE, fixed=TRUE) {
 
     ## make sure DVH list is organized as required for byPat
     if(is.null(attributes(x)$byPat) || attributes(x)$byPat != byPat) {
@@ -297,8 +297,8 @@ function(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL,
 ## either for many patients   -> multiple structures per DVH
 ## or     for many structures -> multiple patients   per DVH
 showDVH.DVHLstLst <-
-function(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL,
-         rel=TRUE, guessX=TRUE, thresh=1, addMSD=FALSE, show=TRUE, fixed=TRUE) {
+function(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL, rel=TRUE,
+         guessX=TRUE, thresh=1, addMSD=FALSE, show=TRUE, fixed=TRUE) {
 
     ## re-organize x into by-patient or by-structure form if necessary
     isByPat <- attributes(x)$byPat

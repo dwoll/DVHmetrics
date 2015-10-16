@@ -50,7 +50,7 @@ function(x, toType=c("asis", "cumulative", "differential"),
     ## determine number of nodes for interpolation
     nodes <- if(!is.null(nodes)) {
         if(nodes < 2) {
-            warning("nodes is < 2 which is too few")
+            warning("nodes is < 2 which is too few, - set to 2")
             2
         } else {
             nodes
@@ -88,10 +88,12 @@ function(x, toType=c("asis", "cumulative", "differential"),
                 volume
             }
     
-            DVHtype <- if(isTRUE(all.equal(volumeSel, sort(volumeSel, decreasing=TRUE)))) {
-                "cumulative"
+            if(isTRUE(all.equal(volumeSel, sort(volumeSel, decreasing=TRUE)))) {
+                DVHtype   <- "cumulative"
+                splMethod <- "monoH.FC"   # for spline interpolation -> monotonic
             } else {
-                "differential"
+                DVHtype   <- "differential"
+                splMethod <- "fmm"        # for spline interpolation
             }
             
             if((DVHtype == "differential") && !perDose) {
@@ -107,7 +109,8 @@ function(x, toType=c("asis", "cumulative", "differential"),
                             smoothSpl=getSmoothSpl,
                             getInterpSpl) # default
 
-            sm <- smFun(doseConv, doseRel, volume, volumeRel, nodes=nodes, rangeD=rangeD)
+            sm <- smFun(doseConv, doseRel, volume, volumeRel, nodes=nodes,
+                        rangeD=rangeD, method=splMethod)
             doseNew    <- sm[ , "dose"]
             doseRelNew <- sm[ , "doseRel"]
 
@@ -145,7 +148,8 @@ function(x, toType=c("asis", "cumulative", "differential"),
                             smoothSpl=getSmoothSpl,
                             getInterpSpl) # default
 
-            sm <- smFun(doseConv, doseRel, volume, volumeRel, nodes=nodes, rangeD=rangeD)
+            sm <- smFun(doseConv, doseRel, volume, volumeRel, nodes=nodes,
+                        rangeD=rangeD, method="monoH.FC")
             doseConv <- sm[ , "dose"]
             doseRel  <- sm[ , "doseRel"]
             
@@ -225,7 +229,8 @@ function(x, toType=c("asis", "cumulative", "differential"),
                             smoothSpl=getSmoothSpl,
                             getInterpSpl) # default
 
-            sm <- smFun(doseNew, doseRelNew, volumeNew, volumeRelNew, nodes=nodes, rangeD=rangeD)
+            sm <- smFun(doseNew, doseRelNew, volumeNew, volumeRelNew,
+                        nodes=nodes, rangeD=rangeD, method="fmm")
             doseNew    <- sm[ , "dose"]
             doseRelNew <- sm[ , "doseRel"]
 

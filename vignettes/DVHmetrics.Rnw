@@ -416,7 +416,9 @@ dvhPlot <- showDVH(dataMZ, structure=c("HEART", "AOVALVE", "AVNODE"),
                    rel=FALSE, thresh=0.001, show=FALSE)
 @
 
-With option \texttt{addMSD=TRUE}, the diagram also shows the point-wise mean DVH as a black curve as well as grey shaded areas for the regions defined by the point-wise 1 standard deviation and 2 standard deviations around this mean. This can be useful for evaluating different plan options: The DVHs for each plan need to be exported using a different patient ID which thus serves as a plan identifier. With \texttt{byPat=FALSE} and \texttt{addMSD=TRUE}, the resulting DVHs can then be visually assessed.
+With option \texttt{addMSD=TRUE}, the diagram also shows the point-wise mean DVH as a black curve as well as grey shaded areas for the regions defined by the point-wise 1 standard deviation and 2 standard deviations around this mean. \texttt{getMeanDVH()} returns a data frame with the point-wise mean/SD.
+
+This feature can be useful for evaluating different plan options: The DVHs for each plan need to be exported using a different patient ID which thus serves as a plan identifier. With \texttt{byPat=FALSE} and \texttt{addMSD=TRUE}, the resulting DVHs can then be visually assessed.
 
 <<cPlots5, out.width='3in'>>=
 ## just save the diagram but don't show it

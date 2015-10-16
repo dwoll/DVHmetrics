@@ -145,7 +145,7 @@ shinyServer(function(input, output) {
         } else {
             NULL
         }
-        interp  <- c("linear", "spline", "ksmooth")[as.numeric(input$metrInterp)]
+        interp  <- "linear" # c("linear", "spline", "ksmooth")[as.numeric(input$metrInterp)]
         EUDa    <- if(input$metrEUDa  != "") { as.numeric(input$metrEUDa)  } else { NULL }
         EUDfd   <- if(input$metrEUDfd != "") { as.numeric(input$metrEUDfd) } else { NULL }
         EUDab   <- if(input$metrEUDab != "") { as.numeric(input$metrEUDab) } else { NULL }
@@ -500,7 +500,7 @@ shinyServer(function(input, output) {
         constr <- DVHconstr()
         dvh    <- DVH()$DVH
         outSel <- constrOutInv[input$constrOut]
-        interp <- c("linear", "spline", "ksmooth")[as.numeric(input$constrInterp)]
+        interp <- "linear" #c("linear", "spline", "ksmooth")[as.numeric(input$constrInterp)]
         EUDa   <- if(input$constrEUDa  != "") { as.numeric(input$constrEUDa)  } else { NULL }
         EUDfd  <- if(input$constrEUDfd != "") { as.numeric(input$constrEUDfd) } else { NULL }
         EUDab  <- if(input$constrEUDab != "") { as.numeric(input$constrEUDab) } else { NULL }

@@ -53,3 +53,8 @@ constrOutInv <- c("1"="patID", "2"="structure", "3"="constraint", "4"="observed"
                   "5"="compliance", "6"="deltaV", "7"="deltaVpc", "8"="deltaD",
                   "9"="deltaDpc", "10"="dstMin", "11"="dstMinRel",
                   "12"="ptMinD", "13"="ptMinV")
+
+## Hodges-Lehman pseudo median
+pseudoMed <- function(x) {
+    wilcox.test(x, conf.int=TRUE)$estimate
+}

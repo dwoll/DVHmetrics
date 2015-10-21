@@ -211,7 +211,8 @@ shinyServer(function(input, output) {
             } else {
                 NULL
             }
-            interp  <- c("linear", "spline", "ksmooth")[as.numeric(input$metrInterp)]
+
+            interp  <- "linear"
             EUDa    <- if(input$metrEUDa  != "") { as.numeric(input$metrEUDa)  } else { NULL }
             EUDfd   <- if(input$metrEUDfd != "") { as.numeric(input$metrEUDfd) } else { NULL }
             EUDab   <- if(input$metrEUDab != "") { as.numeric(input$metrEUDab) } else { NULL }
@@ -448,6 +449,39 @@ shinyServer(function(input, output) {
         contentType = "application/zip"
     )
 
+    output$saveDVHMSD <- downloadHandler(
+        filename=function() { "DVH_M_SD.txt" },
+        content=function(file) {
+            dvh    <- DVH()
+            byPat  <- input$plotByPat   == '1'
+            cumul  <- input$plotType    == '1'
+            x <- if(byPat) {
+                dvh$DVH
+            } else {
+                dvh$DVHbyStruct
+            }
+
+            selPat    <- getStrIDs(dvh$DVH, what="patient")[  as.numeric(input$plotSelPat)]
+            selStruct <- getStrIDs(dvh$DVH, what="structure")[as.numeric(input$plotSelStruct)]
+
+            argL <- list(x=x,
+                         fun=list(mean=mean, median=median, min=min, max=max, sd=sd),
+                         byPat=byPat,
+                         thin=1,
+                         cumul=cumul,
+                         patID=selPat,
+                         structure=selStruct,
+                         interp="linear",
+                         fixed=TRUE)
+            argL   <- Filter(Negate(is.null), argL)
+            DVHMSD <- do.call(getMeanDVH, argL)
+            dec    <- c('1'=".",  '2'=",")[input$saveDVHDec]
+            sep    <- c('1'="\t", '2'=" ", '3'=",", '4'=";")[input$saveDVHSep]
+            write.table(DVHMSD, file=file, dec=dec, sep=sep, row.names=FALSE)
+        },
+        contentType='text/plain' # MIME type
+    )
+
     ## reactive conductor
     DVHconstr <- reactive({
         input$applyConstraints
@@ -575,7 +609,7 @@ shinyServer(function(input, output) {
     output$saveConstrTxt <- downloadHandler(
         filename=function() { "constraints.txt" },
         content=function(file) {
-            interp <- c("linear", "spline", "ksmooth")[as.numeric(input$constrInterp)]
+            interp <-"linear"
             EUDa   <- if(input$constrEUDa  != "") { as.numeric(input$constrEUDa)  } else { NULL }
             EUDfd  <- if(input$constrEUDfd != "") { as.numeric(input$constrEUDfd) } else { NULL }
             EUDab  <- if(input$constrEUDab != "") { as.numeric(input$constrEUDab) } else { NULL }

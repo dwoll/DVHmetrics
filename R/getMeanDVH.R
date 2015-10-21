@@ -1,15 +1,15 @@
 ## S3 generic method
 getMeanDVH <-
-function(x, fun=c("mean", "median", "sd"),
-         cumul=TRUE, purge=3, byPat=TRUE, patID=NULL, structure=NULL,
+function(x, fun=list(mean=mean, median=median, sd=sd),
+         cumul=TRUE, thin=1, byPat=TRUE, patID=NULL, structure=NULL,
          interp=c("linear", "spline", "smoothSpl"), fixed=TRUE) {
     UseMethod("getMeanDVH")
 }
 
 ## for completeness sake - "mean" of just 1 DVH
 getMeanDVH.DVHs <-
-function(x, fun=c("mean", "median", "sd"),
-         cumul=TRUE, purge=3, byPat=TRUE, patID=NULL, structure=NULL,
+function(x, fun=list(mean=mean, median=median, sd=sd),
+         cumul=TRUE, thin=1, byPat=TRUE, patID=NULL, structure=NULL,
          interp=c("linear", "spline", "smoothSpl"), fixed=TRUE) {
     interp <- match.arg(interp)
 
@@ -22,14 +22,14 @@ function(x, fun=c("mean", "median", "sd"),
     class(x) <- "DVHLst"
     attr(x, which="byPat") <- byPat
 
-    getMeanDVH.DVHLst(x, fun=fun, cumul=cumul, purge=purge, byPat=byPat,
+    getMeanDVH.DVHLst(x, fun=fun, cumul=cumul, thin, byPat=byPat,
                       patID=patID, structure=structure, interp=interp,
                       fixed=fixed)
 }
 
 getMeanDVH.DVHLst <-
-function(x, fun=c("mean", "median", "sd"),
-         cumul=TRUE, purge=3, byPat=TRUE, patID=NULL, structure=NULL,
+function(x, fun=list(mean=mean, median=median, sd=sd),
+         cumul=TRUE, thin=1, byPat=TRUE, patID=NULL, structure=NULL,
          interp=c("linear", "spline", "smoothSpl"), fixed=TRUE) {
     interp <- match.arg(interp)
 
@@ -72,7 +72,7 @@ function(x, fun=c("mean", "median", "sd"),
     nodes  <-      max(vapply(x, function(z) { length(z$dvh[ , "dose"]) }, numeric(1)))
         
     ## coarser dose grid for M+SD but with at least 100 nodes
-    nodes <- max(100, ceiling(nodes/purge))
+    nodes <- max(100, ceiling(nodes/thin))
 
     ## average cumulative or differential DVH?
     x <- if(cumul) {
@@ -104,26 +104,25 @@ function(x, fun=c("mean", "median", "sd"),
     dvhDF <- do.call("rbind", dvhDFL)
 
     ## generate point-wise mean/sd for dose -> aggregate over dose
-    getAggr <- function(y) {
-        FUN <- eval(parse(text=y))
+    getAggr <- function(fun, symbol) {
         dat <- if(byPat) {
             aggregate(cbind(volume, volumeRel) ~ patID + dose,
-                      data=dvhDF, FUN=FUN, na.action=na.pass)
+                      data=dvhDF, FUN=fun, na.action=na.pass)
         } else {
             aggregate(cbind(volume, volumeRel) ~ structure + dose,
-                      data=dvhDF, FUN=FUN, na.action=na.pass)
+                      data=dvhDF, FUN=fun, na.action=na.pass)
         }
 
         ## rename columns in aggregated data frames
         namesDat <- names(dat)
-        namesDat[namesDat == "volume"]    <- paste0("volume",    toupper(y))
-        namesDat[namesDat == "volumeRel"] <- paste0("volumeRel", toupper(y))
+        namesDat[namesDat == "volume"]    <- paste0("volume",    symbol)
+        namesDat[namesDat == "volumeRel"] <- paste0("volumeRel", symbol)
         names(dat) <- namesDat
         dat
     }
 
     ## get all point-wise estimates
-    dfL <- lapply(fun, getAggr)
+    dfL <- Map(getAggr, fun, toupper(names(fun)))
 
     ## combine point-wise estimates
     dfMSD <- Reduce(merge, dfL)
@@ -136,8 +135,8 @@ function(x, fun=c("mean", "median", "sd"),
 ## either for many patients   -> multiple structures per DVH
 ## or     for many structures -> multiple patients   per DVH
 getMeanDVH.DVHLstLst <-
-function(x, fun=c("mean", "median", "sd"),
-         cumul=TRUE, purge=3, byPat=TRUE, patID=NULL, structure=NULL,
+function(x, fun=list(mean=mean, median=median, sd=sd),
+         cumul=TRUE, thin=1, byPat=TRUE, patID=NULL, structure=NULL,
          interp=c("linear", "spline", "smoothSpl"), fixed=TRUE) {
     interp <- match.arg(interp)
 
@@ -177,7 +176,7 @@ function(x, fun=c("mean", "median", "sd"),
         structure <- NULL
     }
 
-    resDFL <- Map(getMeanDVH, x, fun=list(fun), cumul=cumul, purge=purge,
+    resDFL <- Map(getMeanDVH, x, fun=list(fun), cumul=cumul, thin,
                   byPat=byPat, patID=list(patID), structure=list(structure),
                   interp=interp, fixed=fixed)
 

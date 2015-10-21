@@ -99,7 +99,7 @@ shinyUI(fluidPage(
                                  radioButtons("constrDec", "Decimal separator:",
                                               list("."=1, ","=2)),
                                  radioButtons("constrSep", "Column separator:",
-                                              list("\\t"=1, "' '"=2, ","=3, ";"=4),
+                                              list("\\t (tab)"=1, "' ' (space)"=2, ", (comma)"=3, "; (semicolon)"=4),
                                               selected=2)),
                 conditionalPanel(condition="input.constrIn == '3'",
                                  h5("Paste constraints:"),
@@ -107,7 +107,7 @@ shinyUI(fluidPage(
                                  radioButtons("constrPasteDec", "Decimal separator:",
                                               list("."=1, ","=2)),
                                  radioButtons("constrPasteSep", "Column separator:",
-                                              list("\\t"=1, "' '"=2, ","=3, ";"=4),
+                                              list("\\t (tab)"=1, "' ' (space)"=2, ", (comma)"=3, "; (semicolon)"=4),
                                               selected=2)),
                 actionButton("applyConstraints", "Apply"),
                 #radioButtons("constrInterp", label=h5("DVH interpolation"),
@@ -218,14 +218,20 @@ shinyUI(fluidPage(
                     radioButtons("saveMetrDec", "Decimal separator:",
                                  list("."=1, ","=2)),
                     radioButtons("saveMetrSep", "Column separator:",
-                                 list("\\t"=1, "' '"=2, ","=3, ";"=4)))
+                                 list("\\t (tab)"=1, "' ' (space)"=2, ", (comma)"=3, "; (semicolon)"=4)))
                 ),
                 tabPanel("Show DVH",
                     h6("Show cumulative DVH diagrams"),
                     downloadButton("saveDVHPDF", "Save as PDF"),
                     downloadButton("saveDVHJPG", "Save as JPEGs (zipped to one file)"),
                     #plotOutput("DVHplotOrg"),
-                    uiOutput("DVHplot")
+                    uiOutput("DVHplot"),
+                    downloadButton("saveDVHMSD", "Save DVH Mean + SD as text file"),
+                    inputPanel(
+                    radioButtons("saveDVHDec", "Decimal separator:",
+                                 list("."=1, ","=2)),
+                    radioButtons("saveDVHSep", "Column separator:",
+                                 list("\\t (tab)"=1, "' ' (space)"=2, ", (comma)"=3, "; (semicolon)"=4)))
                 ),
                 tabPanel("Check constraints",
                     h6("Check constraints"),
@@ -235,7 +241,7 @@ shinyUI(fluidPage(
                     radioButtons("saveConstrDec", "Decimal separator:",
                                  list("."=1, ","=2)),
                     radioButtons("saveConstrSep", "Column separator:",
-                                 list("\\t"=1, "' '"=2, ","=3, ";"=4)))
+                                 list("\\t (tab)"=1, "' ' (space)"=2, ", (comma)"=3, "; (semicolon)"=4)))
                 ),
                 tabPanel("Show constraints",
                     h6("Show constraints in DVH diagrams"),

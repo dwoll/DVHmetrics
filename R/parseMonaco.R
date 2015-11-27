@@ -109,18 +109,11 @@ parseMonaco <- function(x, planInfo=FALSE, courseAsID=FALSE) {
             dvh <- cbind(dvh, doseRel=NA_real_)
         }
 
-        ## check if volume is already sorted -> cumulative DVH
-        volume <- if(isVolRel) {
-            dvh[ , "volumeRel"]
-        } else {
-            dvh[ , "volume"]
-        }
+        ## check if dose is increasing
+        stopifnot(isIncreasing(dvh))
 
-        DVHtype <- if(isTRUE(all.equal(volume, sort(volume, decreasing=TRUE, na.last=TRUE)))) {
-            "cumulative"
-        } else {
-            "differential"
-        }
+        ## differential or cumulative DVH
+        DVHtype <- dvhType(dvh)
 
         DVH <- list(dvh=dvh,
                     patName=info$patName,

@@ -121,6 +121,35 @@ mergeDVH <- function(...)  {
 }
 
 #####---------------------------------------------------------------------------
+## check DVH matrix for having increasing dose
+isIncreasing <- function(x)  {
+    dose <- if(!any(is.na(x[ , "dose"]))) {
+        x[ , "dose"]
+    } else {
+        x[ , "doseRel"]
+    }
+
+    isTRUE(all.equal(dose, sort(dose, decreasing=FALSE, na.last=TRUE)))
+}
+
+#####---------------------------------------------------------------------------
+## check DVH matrix if differential or cumulative
+dvhType <- function(x)  {
+    ## check if volume is already sorted -> cumulative DVH
+    volume <- if(!any(is.na(x[ , "volumeRel"]))) {
+        x[ , "volumeRel"]
+    } else {
+        x[ , "volume"]
+    }
+
+    if(isTRUE(all.equal(volume, sort(volume, decreasing=TRUE, na.last=TRUE)))) {
+        "cumulative"
+    } else {
+        "differential"
+    }
+}
+
+#####---------------------------------------------------------------------------
 ## trim whitespace on beginning/end of string
 trimWS <- function(x, side="both")  {
     side <- match.arg(side, c("left", "right", "both"))

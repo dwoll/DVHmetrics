@@ -138,19 +138,12 @@ parseRayStation <- function(x, planInfo=FALSE, courseAsID=FALSE) {
         ## add information we don't have yet: relative dose
         ## considering isoDoseRx
         dvh <- cbind(dvh, doseRel=dvh[ , "dose"]*isoDoseRx / doseRx)
+        
+        ## check if dose is increasing
+        stopifnot(isIncreasing(dvh))
 
-        ## check if volume is already sorted -> cumulative DVH
-        volume <- if(!any(is.na(dvh[ , "volumeRel"]))) {
-            dvh[ , "volumeRel"]
-        } else {
-            dvh[ , "volume"]
-        }
-
-        DVHtype <- if(isTRUE(all.equal(volume, sort(volume, decreasing=TRUE, na.last=TRUE)))) {
-            "cumulative"
-        } else {
-            "differential"
-        }
+        ## differential or cumulative DVH
+        DVHtype <- dvhType(dvh)
 
         DVH <- list(dvh=dvh,
                     patName=info$patName,

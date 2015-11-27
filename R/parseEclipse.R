@@ -296,6 +296,9 @@ parseEclipse <- function(x, planInfo=FALSE, courseAsID=FALSE) {
             # 100*(dvh$dose/(doseRx/(isoDoseRx/100)))
         }
 
+        ## check if dose is increasing
+        stopifnot(isIncreasing(dvh))
+
         DVH <- list(dvh=dvh,
                     patName=info$patName,
                     patID=info$patID,

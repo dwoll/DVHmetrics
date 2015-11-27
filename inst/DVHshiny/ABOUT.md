@@ -28,7 +28,7 @@ Source code at: [github.com/dwoll/DVHshiny/](https://github.com/dwoll/DVHshiny/)
 
 #### Acknowledgements
 
-Thanks to Marcus Stockinger for testing and feedback, to Sandra Bührdel, Hannes Rennau, Ulrich Wolf, Bjorne Riis, Nico Banz, and Michael R. Young for sample DVH files.
+Thanks to Marcus Stockinger and Michael R. Young for testing and feedback, to Sandra Bührdel, Hannes Rennau, Ulrich Wolf, Bjorne Riis, Nico Banz, and Michael R. Young for sample DVH files.
 Created with the [Shiny](http://shiny.rstudio.com/) web application framework powered by [RStudio](http://www.rstudio.com/).
 Uses functionality provided by the R packages [ggplot2](http://cran.r-project.org/package=ggplot2), [reshape2](http://cran.r-project.org/package=reshape2), [grid](http://cran.r-project.org/package=grid), and [KernSmooth](http://cran.r-project.org/package=KernSmooth).
 

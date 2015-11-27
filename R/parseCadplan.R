@@ -255,6 +255,9 @@ parseCadplan <- function(x, planInfo=FALSE, courseAsID=FALSE) {
             # 100*(dvh$dose/(doseRx/(isoDoseRx/100)))
         }
 
+        ## check if dose is increasing
+        stopifnot(isIncreasing(dvh))
+
         DVH <- list(dvh=dvh,
                     patID=info$patID,
                     patName=info$patName,

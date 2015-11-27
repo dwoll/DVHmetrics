@@ -30,11 +30,11 @@ function(x, EUDa, EUDfd=NULL, EUDab=NULL, ...) {
     xD <- convertDVH(x, toType="differential", toDoseUnit="asis", perDose=FALSE)
 
     ## convert dose to EQD2 if possible
-    volume <- xD$dvh[ , "volume"]
+    volume <- xD$dvhDiff[ , "volume"]
     dose   <- if(!is.null(EUDfd) && !is.null(EUDab)) {
-        getEQD2(D=xD$dvh[ , "dose"], fd=EUDfd, ab=EUDab)$EQD2
+        getEQD2(D=xD$dvhDiff[ , "dose"], fd=EUDfd, ab=EUDab)$EQD2
     } else {
-        xD$dvh[ , "dose"]
+        xD$dvhDiff[ , "dose"]
     }
 
     volDose <- volume*dose^EUDa / xD$structVol

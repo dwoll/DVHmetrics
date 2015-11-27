@@ -2,11 +2,11 @@ $Date: 2015-10-12 13:25:29 +0000 (Tue, 13 Oct 2015) $
 
 DVHMETRICS RELEASE VERSIONS at http://cran.r-project.org/
 
-Version 0.3.3.0.900 (October 13, 2015)
+Version 0.3.4 (November 27, 2015)
     * getMeanDVH()
-      - new function that returns the point-wise mean DVH
-        together with point-wise 1-SD and 2-SD around the
-        mean for a given list of DVHs
+      - new function that returns point-wise aggregates of
+        several DVHs, by default the mean, median, standard
+        deviation, minimum and maximum of the volumes
     * showDVH()
       - add option addMSD to show the point-wise mean DVH
         as well as shaded areas for point-wise 1-SD and
@@ -21,8 +21,11 @@ Version 0.3.3.0.900 (October 13, 2015)
     * checkConstraint(), showConstraint()
       - fix bug: make functions work for files not exported
         from Eclipse or Cadplan
-      - fix bug: make functions work with DVH files with
+      - fix bug: make functions work for DVH files with
         duplicate rows
+    * getEUD(), getNTCP(), getTCP()
+      - fix bug: version 0.3.1 broke EUD calculation and
+        therefore NTCP/TCP calculation
 
 Version 0.3.3 (October 13, 2015)
     * readDVH()

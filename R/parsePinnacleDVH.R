@@ -146,18 +146,11 @@ parsePinnacleDVH <- function(x, structInfo, info) {
         volumeUnit <- "CC"
     }
 
-    ## check if volume is already sorted -> cumulative DVH
-    volume <- if(!any(is.na(dvh[ , "volumeRel"]))) {
-        dvh[ , "volumeRel"]
-    } else {
-        dvh[ , "volume"]
-    }
+    ## check if dose is increasing
+    stopifnot(isIncreasing(dvh))
 
-    DVHtype <- if(isTRUE(all.equal(volume, sort(volume, decreasing=TRUE, na.last=TRUE)))) {
-        "cumulative"
-    } else {
-        "differential"
-    }
+    ## differential or cumulative DVH
+    DVHtype <- dvhType(dvh)
 
     ## TODO: identify list elements for structVol, dose*, independent of unit
     volumeIdx  <- grep("Volume",   names(structInfo), ignore.case=TRUE)

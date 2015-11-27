@@ -25,7 +25,7 @@ getNTCP(x, NTCPtd50=NULL, NTCPm=NULL, NTCPn=NULL, NTCPgamma50=NULL,
         NTCPtype=c("probit", "logit", "poisson"), ...)
 }
 \arguments{
-  \item{x}{Total dose. If \code{NULL}, \code{nf} must be given.}
+  \item{x}{One cumulative DVH (object of class \code{DVHs}, multiple cumulative DVHs from one patient with multiple structures (object of class \code{DVHLst}), or multiple cumulative DVHs from many patients, each with multiple structures (object of class \code{DVHLstLst}). See \code{\link[DVHmetrics]{readDVH}}.}
   \item{NTCPtd50}{Tolerance dose with 50\% complication probability.}
   \item{NTCPm}{Probit/logit Parameter m. Equal to 1 / (NTCPgamma50*sqrt(2*pi)).}
   \item{NTCPn}{Parameter n. Equal to 1/a with exponential gEUD paramter a.}

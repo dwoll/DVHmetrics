@@ -10,7 +10,7 @@ getTCP(x, TCPtcd50=NULL, TCPm=NULL, TCPn=NULL, TCPgamma50=NULL,
        TCPtype=c("probit", "logit", "poisson"), ...)
 }
 \arguments{
-  \item{x}{Total dose. If \code{NULL}, \code{nf} must be given.}
+  \item{x}{One cumulative DVH (object of class \code{DVHs}, multiple cumulative DVHs from one patient with multiple structures (object of class \code{DVHLst}), or multiple cumulative DVHs from many patients, each with multiple structures (object of class \code{DVHLstLst}). See \code{\link[DVHmetrics]{readDVH}}.}
   \item{TCPtcd50}{Tolerance dose with 50\% tumor control probability.}
   \item{TCPm}{Probit/logit Parameter m. Equal to 1 / (NTCPgamma50*sqrt(2*pi)).}
   \item{TCPn}{Parameter n. Equal to 1/a with exponential gEUD paramter a.}

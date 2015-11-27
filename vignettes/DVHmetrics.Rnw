@@ -376,6 +376,21 @@ getNTCP(dataMZ[[1]], NTCPtd50=40, NTCPm=0.6, NTCPn=0.5, NTCPtype="probit")
 
 %%%%---------------------------------------------------------------------------
 %%%%---------------------------------------------------------------------------
+\subsection{Point-wise mean DVH with standard deviations}
+\label{sec:pointWise}
+%%%%---------------------------------------------------------------------------
+%%%%---------------------------------------------------------------------------
+
+Function \texttt{getMeanDVH()} returns the point-wise mean and median DVH with the point-wise standard deviation for a given list of input DVHs. Other point-wise measures may be calculated as well. Before calculating the point-wise mean and SD, DVHs are first linearly interpolated such that they possess the same set of nodes. This feature can be useful for evaluating different plan options: The DVHs for each plan need to be exported using a different patient ID which thus serves as a plan identifier. See section \ref{sec:showDVH} to show the mean DVH with SD regions.
+
+<<cPointWise1>>=
+# point-wise mean and SD for structure HEART over all patients
+m <- getMeanDVH(dataMZ, fun=list(M=mean, SD=sd), byPat=FALSE, structure="HEART")
+head(m)
+@
+
+%%%%---------------------------------------------------------------------------
+%%%%---------------------------------------------------------------------------
 \section{DVH diagrams}
 \label{sec:plot}
 %%%%---------------------------------------------------------------------------
@@ -403,7 +418,7 @@ showDVH(dataMZ, byPat=FALSE, patID=c("P123", "P234"))
 By default, the relative DVH is shown. Absolute volume (if available in the input files) can be plotted with the \texttt{rel=FALSE} option. For differential DVH, set \texttt{cumul=FALSE}.
 
 <<cPlots3, out.width='3in'>>=
-## match strcuture containing "VALVE" and "AMYOC"
+# match structures containing "VALVE" and "AMYOC"
 showDVH(dataMZ, cumul=FALSE, rel=FALSE,
         structure=c("VALVE", "AMYOC"), fixed=FALSE)
 @
@@ -411,17 +426,15 @@ showDVH(dataMZ, cumul=FALSE, rel=FALSE,
 Option \texttt{thresh} allows to restrict the range of the $x$-axis such that only relative volumes larger than \texttt{thresh} appear. Use option \texttt{show=FALSE} to prevent the diagrams from being shown if you just need the returned object (here: \texttt{dvhPlot}) to later save the diagrams to file.
 
 <<cPlots4, out.width='3in'>>=
-## just save the diagram but don't show it
+# just save the diagram but don't show it
 dvhPlot <- showDVH(dataMZ, structure=c("HEART", "AOVALVE", "AVNODE"),
                    rel=FALSE, thresh=0.001, show=FALSE)
 @
 
-With option \texttt{addMSD=TRUE}, the diagram also shows the point-wise mean DVH as a black curve as well as grey shaded areas for the regions defined by the point-wise 1 standard deviation and 2 standard deviations around this mean. \texttt{getMeanDVH()} returns a data frame with the point-wise mean/SD.
-
-This feature can be useful for evaluating different plan options: The DVHs for each plan need to be exported using a different patient ID which thus serves as a plan identifier. With \texttt{byPat=FALSE} and \texttt{addMSD=TRUE}, the resulting DVHs can then be visually assessed.
+With option \texttt{addMSD=TRUE}, the diagram also shows the point-wise mean DVH as a black curve as well as grey shaded areas for the regions defined by the point-wise 1 standard deviation and 2 standard deviations around this mean (see section \ref{sec:pointWise}). With \texttt{byPat=FALSE} and \texttt{addMSD=TRUE}, the average DVH for one structure over many patients can be visually assessed.
 
 <<cPlots5, out.width='3in'>>=
-## just save the diagram but don't show it
+# add point-wise mean DVH and 1 SD/2 SD regions
 showDVH(dataMZ, structure="HEART", byPat=FALSE, addMSD=TRUE)
 @
 

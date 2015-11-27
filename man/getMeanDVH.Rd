@@ -36,7 +36,7 @@ getMeanDVH(x, fun=list(mean=mean, median=median, sd=sd),
   \item{fixed}{\code{logical}. Use \code{fixed=FALSE} for regular expression matching of \code{patID} and \code{structure}.}
 }
 \details{
-Before calculating the point-wise mean andSD, DVHs in \code{x} are first linearly interpolated with \code{\link[DVHmetrics]{convertDVH}} using the same set of nodes.
+Before calculating the point-wise mean and SD, DVHs in \code{x} are first linearly interpolated with \code{\link[DVHmetrics]{convertDVH}} using the same set of nodes.
 }
 \value{
 Returns a data frame with point-wise mean DVH averaged over structures (\code{byPat=TRUE}) or over patients (\code{byPat=FALSE}) including the point-wise standard deviation or other measures as controlled by \code{fun}.

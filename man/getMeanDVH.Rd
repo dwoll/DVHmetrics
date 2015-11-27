@@ -8,19 +8,19 @@
 Returns the point-wise mean and median DVH with the point-wise standard deviation for a given list of input DVHs. Other point-wise measures may be calculated as well.
 }
 \usage{
-getMeanDVH(x, fun=c(mean=mean, median=median, sd=sd),
+getMeanDVH(x, fun=list(mean=mean, median=median, sd=sd),
            cumul=TRUE, thin=1, byPat=TRUE, patID=NULL, structure=NULL,
            interp=c("linear", "spline", "smoothSpl"), fixed=TRUE)
 
-\method{getMeanDVH}{DVHs}(x, fun=c(mean=mean, median=median, sd=sd),
+\method{getMeanDVH}{DVHs}(x, fun=list(mean=mean, median=median, sd=sd),
            cumul=TRUE, thin=1, byPat=TRUE, patID=NULL, structure=NULL,
            interp=c("linear", "spline", "smoothSpl"), fixed=TRUE)
 
-\method{getMeanDVH}{DVHLst}(x, fun=c(mean=mean, median=median, sd=sd),
+\method{getMeanDVH}{DVHLst}(x, fun=list(mean=mean, median=median, sd=sd),
            cumul=TRUE, thin=1, byPat=TRUE, patID=NULL, structure=NULL,
            interp=c("linear", "spline", "smoothSpl"), fixed=TRUE)
 
-\method{getMeanDVH}{DVHLstLst}(x, fun=c(mean=mean, median=median, sd=sd),
+\method{getMeanDVH}{DVHLstLst}(x, fun=list(mean=mean, median=median, sd=sd),
            cumul=TRUE, thin=1, byPat=TRUE, patID=NULL, structure=NULL,
            interp=c("linear", "spline", "smoothSpl"), fixed=TRUE)
 }
@@ -51,7 +51,7 @@ head(res1)
 
 # average differential DVHs, use kernel smoothing
 # matches patients P123 and P234
-res2 <- getMeanDVH(dataMZ, fun=c(min=min, max=max),
+res2 <- getMeanDVH(dataMZ, fun=list(min=min, max=max),
                    cumul=FALSE, byPat=FALSE,
                    patID="23", interp="smoothSpl", fixed=FALSE)
 head(res2)

@@ -18,8 +18,8 @@ mergePinnaclePat  <- function(x, planInfo=FALSE, courseAsID=FALSE) {
         doseElem <- grep("PrescriptionDose", names(fRead$DoseInfo.csv), ignore.case=TRUE)
         doseUnit <- sub("^[[:alpha:]]+[.](cGy|Gy)$", "\\1", names(fRead$DoseInfo.csv)[doseElem], ignore.case=TRUE)
         
-        doseRxIdx   <- grep("Dosis.+(cGy|Gy)",   names(fRead$DoseInfo), ignore.case=TRUE)
-        fracDoseIdx <- grep("PrescriptionDose",  names(fRead$DoseInfo), ignore.case=TRUE)
+        doseRxIdx   <- grep("Dosis.+(cGy|Gy)",   names(fRead$DoseInfo.csv), ignore.case=TRUE)
+        fracDoseIdx <- grep("PrescriptionDose",  names(fRead$DoseInfo.csv), ignore.case=TRUE)
         
         info <- list(patID=removeWS(fRead$PatInfo.csv$MedicalRecordNumber),
                      patName=collWS(trimWS(paste(fRead$PatInfo.csv$FirstName, fRead$PatInfo.csv$LastName))),
@@ -111,16 +111,9 @@ parsePinnacleDVH <- function(x, structInfo, info) {
     warning("Iso-dose-Rx is assumed to be 100")
     info$isoDoseRx <- 100
 
-    ## catch special case: structVol is 0.0 due to limited precision
-    if("volume" %in% vars3) {
-        info$structVol <- if(info$DVHtype == "cumulative") {
-            max(c(info$structVol, dvh[ , "volume"]))
-        } else {
-            ## reconstruct volumes -> volume is per gray -> mult with bin width
-            volBin <- dvh[ , "volume"]*diff(c(-dvh[1, "dose"], dvh[ , "dose"]))
-            max(c(info$structVol, sum(volBin)))
-        }
-    }
+    ## structure volume
+    volumeIdx <- grep("^Volume", names(structInfo), ignore.case=TRUE)
+    info$structVol <- structInfo[[volumeIdx]]
 
     ## add information we don't have yet: relative/absolute volume
     if((       "volumeRel" %in% vars3) && !("volume"    %in% vars3)) {
@@ -153,10 +146,9 @@ parsePinnacleDVH <- function(x, structInfo, info) {
     DVHtype <- dvhType(dvh)
 
     ## TODO: identify list elements for structVol, dose*, independent of unit
-    volumeIdx  <- grep("Volume",   names(structInfo), ignore.case=TRUE)
-    doseMinIdx <- grep("DoseMin",  names(structInfo), ignore.case=TRUE)
-    doseMaxIdx <- grep("DoseMax",  names(structInfo), ignore.case=TRUE)
-    doseAvgIdx <- grep("DoseMean", names(structInfo), ignore.case=TRUE)
+    doseMinIdx <- grep("^DoseMin",  names(structInfo), ignore.case=TRUE)
+    doseMaxIdx <- grep("^DoseMax",  names(structInfo), ignore.case=TRUE)
+    doseAvgIdx <- grep("^DoseMean", names(structInfo), ignore.case=TRUE)
     DVH <- list(dvh=dvh,
                 patName=info$patName,
                 patID=info$patID,
@@ -179,9 +171,8 @@ parsePinnacleDVH <- function(x, structInfo, info) {
     ## convert differential DVH to cumulative
     ## and add differential DVH separately
     if(DVHtype == "differential") {
-        warning("I assume differential DVH is per unit dose\nbut I have no information on this")
         DVH$dvh <- convertDVH(dvh, toType="cumulative",
-                              toDoseUnit="asis", perDose=TRUE)
+                              toDoseUnit="asis", perDose=FALSE)
         DVH$dvhDiff <- dvh
     }
     

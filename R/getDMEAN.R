@@ -10,32 +10,52 @@ function(x, interp=c("linear", "spline", "ksmooth", "smoothSpl"), nodes=5001L) {
 
     ## median from cumulative DVH
     doseMed <- if(interp == "linear") {
-        res <- try(approx(x$dvh[ , "volumeRel"], x$dvh[ , "dose"], 50, method="linear", rule=1, ties=max)$y)
+        res <- if(!all(is.na(x$dvh[ , "volumeRel"]))) {
+            try(approx(x$dvh[ , "volumeRel"], x$dvh[ , "dose"], 50, method="linear", rule=1, ties=max)$y)
+        } else {
+            NA_real_
+        }
+
         if(!inherits(res, "try-error")) {
             res
         } else {
             NA_real_
         }
     } else if(interp == "spline") {
-        sfun <- try(splinefun(x$dvh[ , "volumeRel"], x$dvh[ , "dose"], method="monoH.FC", ties=max))
-        if(!inherits(sfun, "try-error")) {
+        sfun <- if(!all(is.na(x$dvh[ , "volumeRel"]))) {
+            try(splinefun(x$dvh[ , "volumeRel"], x$dvh[ , "dose"], method="monoH.FC", ties=max))
+        } else {
+            NA_real_
+        }
+
+        if(!is.na(sfun) && !inherits(sfun, "try-error")) {
             sfun(50)
         } else {
             NA_real_
         }
     } else if(interp == "ksmooth") {
-        bw <- try(KernSmooth::dpill(x$dvh[ , "volumeRel"], x$dvh[ , "dose"]))
-        sm <- try(KernSmooth::locpoly(x$dvh[ , "volumeRel"], x$dvh[ , "dose"],
-                                      bandwidth=bw, gridsize=nodes, degree=3))
-        if(!inherits(sm, "try-error")) {
+        sm <- if(!all(is.na(x$dvh[ , "volumeRel"]))) {
+            bw <- try(KernSmooth::dpill(x$dvh[ , "volumeRel"], x$dvh[ , "dose"]))
+            try(KernSmooth::locpoly(x$dvh[ , "volumeRel"], x$dvh[ , "dose"],
+                                    bandwidth=bw, gridsize=nodes, degree=3))
+        } else {
+            NA_real_
+        }
+
+        if(!is.na(sm) && !inherits(sm, "try-error")) {
             idx <- which.min(abs(sm$x-50))
             sm$y[idx]
         } else {
             NA_real_
         }
     } else if(interp == "smoothSpl") {
-        sm <- try(smooth.spline(x$dvh[ , "volumeRel"], x$dvh[ , "dose"]))
-        if(!inherits(sm, "try-error")) {
+        sm <- if(!all(is.na(x$dvh[ , "volumeRel"]))) {
+            try(smooth.spline(x$dvh[ , "volumeRel"], x$dvh[ , "dose"]))
+        } else {
+            NA_real_
+        }
+
+        if(!is.na(sm) && !inherits(sm, "try-error")) {
             predict(sm, 50)$y
         } else {
             NA_real_

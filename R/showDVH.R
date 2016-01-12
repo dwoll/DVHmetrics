@@ -121,7 +121,7 @@ function(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL, rel=TRUE,
 
     ## choose upper x-axis limit (dose) - add 10%
     ## TODO: up to first dose for which all structures reach threshold
-    xMax <- if(guessX == 1L) {
+    xMax <- if((guessX == 1L) && !all(is.na(x[[1]]$dvh[ , "volumeRel"]))) {
         volGEQ <- lapply(x, function(y) {
             y$dvh[ , "dose"][y$dvh[ , "volumeRel"] >= thresh] })
         1.1*max(unlist(volGEQ), na.rm=TRUE)

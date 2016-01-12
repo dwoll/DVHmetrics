@@ -98,7 +98,12 @@ parseMonaco <- function(x, planInfo=FALSE, courseAsID=FALSE) {
 
         if(!("volumeRel" %in% haveVars)) {
             isVolRel <- FALSE
-            dvh <- cbind(dvh, volumeRel=NA_real_)
+            ## assume max volume is structure volume
+            volMax <- max(dvh[ , "volume"])
+            volRel <- 100*(dvh[ , "volume"] / volMax)
+            warning("Structure volume is assumed to be max available volume")
+            dvh <- cbind(dvh, volumeRel=volRel)
+            ## dvh <- cbind(dvh, volumeRel=NA_real_)
         }
 
         if(!("dose" %in% haveVars)) {
@@ -106,7 +111,11 @@ parseMonaco <- function(x, planInfo=FALSE, courseAsID=FALSE) {
         }
 
         if(!("doseRel" %in% haveVars)) {
-            dvh <- cbind(dvh, doseRel=NA_real_)
+            doseRel <- if(!is.null(info$doseRx) && !is.na(info$doseRx)) {
+                100*(dvh[ , "dose"] / info$doseRx)
+            } else { NA_real_ }
+            
+            dvh <- cbind(dvh, doseRel=doseRel)
         }
 
         ## check if dose is increasing
@@ -125,8 +134,8 @@ parseMonaco <- function(x, planInfo=FALSE, courseAsID=FALSE) {
                     structVol=NA_real_,
                     doseUnit=info$doseUnit,
                     volumeUnit=info$volumeUnit,
-                    doseRx=doseRx,
-                    isoDoseRx=isoDoseRx,
+                    doseRx=info$doseRx,
+                    isoDoseRx=info$isoDoseRx,
                     doseMin=NA_real_,
                     doseMax=NA_real_,
                     doseAvg=NA_real_,

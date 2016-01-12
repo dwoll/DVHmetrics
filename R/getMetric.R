@@ -146,7 +146,7 @@ function(x, metric, patID, structure,
         if(!pm$valid) {
             return(NA_real_)
         } else if(pm$DV == "D") {              # report a dose
-            if(pm$valRef %in% c("MIN", "MAX", "MEAN", "MEDIAN", "RX", "SD", "EUD", "NTCP", "TCP")) {
+            if(pm$valRef %in% c("MIN", "MAX", "MEAN", "MEDIAN", "SD", "EUD", "NTCP", "TCP")) {
                 cf <- if(!is.na(pm$unitDV)) {
                     getConvFac(paste0(x$doseUnit, "2", pm$unitDV))
                 } else {
@@ -165,17 +165,25 @@ function(x, metric, patID, structure,
                 }
 
                 cf *   if(pm$valRef == "MIN") {
-                    mmmrs$doseMin
+                    if(is.null(x$doseMin) || is.na(x$doseMin)) {
+                        mmmrs$doseMin
+                    } else { x$doseMin }
                 } else if(pm$valRef == "MAX") {
-                    mmmrs$doseMax
+                    if(is.null(x$doseMax) || is.na(x$doseMax)) {
+                        mmmrs$doseMax
+                    } else { x$doseMax }
                 } else if(pm$valRef == "MEAN") {
-                    mmmrs$doseAvg
+                    if(is.null(x$doseAvg) || is.na(x$doseAvg)) {
+                        mmmrs$doseAvg
+                    } else { x$doseAvg }
                 } else if(pm$valRef == "MEDIAN") {
-                    mmmrs$doseMed
-                } else if(pm$valRef == "RX") {
-                    mmmrs$doseRx
+                    if(is.null(x$doseMed) || is.na(x$doseMed)) {
+                        mmmrs$doseMed
+                    } else { x$doseMed }
                 } else if(pm$valRef == "SD") {
-                    mmmrs$doseSD
+                    if(is.null(x$doseSD) || is.na(x$doseSD)) {
+                        mmmrs$doseSD
+                    } else { x$doseSD }
                 } else if(pm$valRef == "EUD") {
                     getEUD(x, ...)$EUD
 				} else if(pm$valRef == "NTCP") {
@@ -186,6 +194,16 @@ function(x, metric, patID, structure,
                     warning("Unknown metric reference value")
                     NA_real_
                 }
+            } else if(pm$valRef == "RX") {
+                cf <- if(!is.na(pm$unitDV)) {
+                    getConvFac(paste0(x$doseUnit, "2", pm$unitDV))
+                } else {
+                    1
+                }
+                
+                cf * if(is.null(x$doseRx) || is.na(x$doseRx)) {
+                        mmmrs$doseRx
+                } else { x$doseRx }
             } else if(pm$unitRef == "%") {
                 getDose(pm$valRefNum,   type="relative",
                         unitRef=pm$unitRef, unitDV=pm$unitDV)

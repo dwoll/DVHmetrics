@@ -187,8 +187,8 @@ function(x, toType=c("asis", "cumulative", "differential"),
         ## dose category half-widths
         doseCatHW    <- diff(doseConv)/2
         doseRelCatHW <- diff(doseRel)/2
-        doseNew      <-    dose[-length(dose)]    + doseCatHW
-        doseRelNew   <- doseRel[-length(doseRel)] + doseRelCatHW
+        doseNew      <- doseConv[-length(doseConv)] + doseCatHW
+        doseRelNew   <-  doseRel[-length(doseRel)]  + doseRelCatHW
 
         ## differential DVH -> volume is per Gy -> divide by bin-width
         binW <- 2*doseCatHW

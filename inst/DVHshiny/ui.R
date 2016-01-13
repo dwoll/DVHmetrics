@@ -1,8 +1,6 @@
 ## TODO:
 ## multiple DVH/constraint plots with -> custom renderPlotList(), plotListOutput()
 ## footer
-library(shiny)
-library(markdown)
 source("helper.R")
 
 shinyUI(fluidPage(
@@ -63,13 +61,13 @@ shinyUI(fluidPage(
                 ),
                 uiOutput("metrSelPat"),
                 uiOutput("metrSelStruct"),
-                selectizeInput("metrSortBy", label=h4("Sort output table by:"),
-                               choices=c("Value"=1,
-                                         "Structure"=2,
-                                         "Metric"=3,
-                                         "Patient ID"=4),
-                               multiple=TRUE,
-                               options=c(placeholder='Click to select variables'))
+                selectizeInput("metrSortBy", label=h5("Sort output table by:"),
+                              choices=c("Value"=1,
+                                        "Structure"=2,
+                                        "Metric"=3,
+                                        "Patient ID"=4),
+                              multiple=TRUE)#,
+                              #options=c(placeholder='Click to select variables'))
             ),
             conditionalPanel(condition="input.task == 'Show DVH'",
                 h4("Plot options"),
@@ -139,7 +137,8 @@ shinyUI(fluidPage(
                 checkboxInput("constrSemSign", "Semantic negative sign", TRUE),
                 selectizeInput("constrOut", label=h5("Select table columns"),
                                choices=constrOut, multiple=TRUE,
-                               selected=c("1", "2", "3", "4", "5", "7", "9", "10", "11"), width="100%"),
+                               selected=c("1", "2", "3", "4", "5", "7", "9", "10", "11"),
+                               width="100%"),
                 selectizeInput("constrSortBy", label=h5("Sort output table by:"),
                                choices=c("Compliance"=1,
                                          "Distance"=2,
@@ -149,8 +148,8 @@ shinyUI(fluidPage(
                                          "Constraint"=6,
                                          "Patient ID"=7,
                                          "Structure"=8),
-                               multiple=TRUE,
-                               options=c(placeholder='Click to select variables'))
+                               multiple=TRUE)#,
+                               #options=c(placeholder='Click to select variables'))
             ),
             conditionalPanel(condition="input.task == 'Show constraints'",
                 h4("Plot options"),
@@ -198,7 +197,7 @@ shinyUI(fluidPage(
                                  textInput("BED_IED_AB", h5("alpha/beta ratio"),
                                            value="2")
                 )
-            ),
+                ),
             conditionalPanel(condition="input.task == 'About'",
                 h4("Background info")
             )

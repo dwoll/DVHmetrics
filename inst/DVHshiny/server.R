@@ -1,12 +1,9 @@
-library(shiny)
-library(DVHmetrics)
+source("helper.R")
 
 ## max number of IDs (=DVH files) we can make plots for
 maxNID <- 100
 
 shinyServer(function(input, output) {
-    source("helper.R")
-
     ## directory where current DVH data is saved
     DVHdir <- tempdir()
 
@@ -613,7 +610,7 @@ shinyServer(function(input, output) {
             EUDa   <- if(input$constrEUDa  != "") { as.numeric(input$constrEUDa)  } else { NULL }
             EUDfd  <- if(input$constrEUDfd != "") { as.numeric(input$constrEUDfd) } else { NULL }
             EUDab  <- if(input$constrEUDab != "") { as.numeric(input$constrEUDab) } else { NULL }
-    
+
             NTCPtype    <- c("probit", "logit", "poisson")[as.numeric(input$constrNTCPtype)]
             NTCPtd50    <- if(input$constrNTCPtd50    != "") { as.numeric(input$constrNTCPtd50)    } else { NULL }
             NTCPn       <- if(input$constrNTCPn       != "") { as.numeric(input$constrNTCPn)       } else { NULL }
@@ -696,7 +693,7 @@ shinyServer(function(input, output) {
         },
         contentType = "application/zip"
     )
-    
+
     output$BED <- renderPrint({
         if(input$BEDtype %in% c('1', '2')) {
             D <- if(input$BED_BED_D  != "") {

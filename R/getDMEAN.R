@@ -64,14 +64,13 @@ function(x, interp=c("linear", "spline", "ksmooth", "smoothSpl"), nodes=5001L) {
         NA_real_
     }
 
-    ## min, max, mean, sd from differential DVH
-    # if(interp != "linear") {
-    #     warning("Interpolation set to linear for min, max, mean, sd, mode")
-    #     interp <- "linear"
-    # }
-
     ## convert to differential DVH - but not per unit dose
-    xDiff <- convertDVH(x, toType="differential", interp=interp, nodes=nodes, perDose=FALSE)
+    xDiff <- if(interp == "linear") {
+        convertDVH(x, toType="differential", interp=interp, nodes=nodes, perDose=FALSE)
+    } else {
+        warning("non-linear interpolation of differential DVH not recommended for calculation of DMEAN, DMIN, DMAX, ...")
+        convertDVHsmoooth(x, toType="differential", interp=interp, nodes=nodes, perDose=FALSE)
+    }
 
     ## dose category mid-points
     doseMidPt <- xDiff$dvhDiff[ , "dose"]

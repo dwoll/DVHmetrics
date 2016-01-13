@@ -8,6 +8,17 @@ Version 0.3.5 (January 29, 2016)
       - when reading Monaco files without relative volume,
         structure volume is assumed to be max available
         volume, and relative volume is calculated
+    * getDMEAN()
+      - better accuracy of DMEAN, DMIN, DMAX through changes
+        in convertDVH()
+    * convertDVH()
+      - when converting to differential DVH, interpolate
+        cumulative DVH first, not differential DVH afterwards
+      - spline interpolation as well as spline and kernel
+        smoothing options are moved to convertDVHsmooth()
+    * convertDVHsmooth()
+      - new function with linear/spline interpolation as well
+        as kernel smoothing of the differential DVH
 
 Version 0.3.4 (November 27, 2015)
     * getMeanDVH()

@@ -168,7 +168,7 @@ getInterpLin <- function(d, dR, v, vR, nodes=NULL, rangeD=NULL, ...) {
     }
 
     if(is.null(rangeD)) {
-        rangeD  <- range(d)
+        rangeD <- range(d)
     }
     
     ## interpolation

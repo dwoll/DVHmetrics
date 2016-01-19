@@ -176,7 +176,7 @@ shinyServer(function(input, output) {
         } else {
             NULL
         }
-    }, options=list(pageLength=25))
+    })#, options=list(pageLength=25))
 
     output$saveMetrics <- downloadHandler(
         filename=function() { "metrics.txt" },
@@ -570,7 +570,7 @@ shinyServer(function(input, output) {
             NULL
         }
 
-    }, options=list(pageLength=25))
+    })#, options=list(pageLength=25))
 
 #     output$constraintPlotOrg <- renderPlot({
 #         constr <- DVHconstr()

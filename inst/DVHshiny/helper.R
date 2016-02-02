@@ -8,7 +8,6 @@ trimWS <- function(x, side="both")  {
     gsub(pattern, "", x)
 }
 
-
 getStrIDs <- function(x, what=c("structure", "patient"), choices=FALSE) {
     UseMethod("getStrIDs")
 }

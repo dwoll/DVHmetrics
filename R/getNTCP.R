@@ -5,10 +5,14 @@ function(x,
          TCPtcd50=NULL, TCPm=NULL, TCPn=NULL, TCPgamma50=NULL,
          EUDa=NULL, EUDfn=NULL, EUDab=NULL,
          TCPtype=c("probit", "logit", "poisson"), ...) {
-    getNTCP(x=x,
+    out <- getNTCP(x=x,
             NTCPtd50=TCPtcd50, NTCPm=TCPm, NTCPn=TCPn, NTCPgamma50=TCPgamma50,
             EUDa=EUDa, EUDfn=EUDfn, EUDab=EUDab,
             NTCPtype=TCPtype)
+    outNames <- names(out)
+    outNames[outNames == "NTCP"] <- "TCP"
+    names(out) <- outNames
+    out
 }
 
 getNTCP <-

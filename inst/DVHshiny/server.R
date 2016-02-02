@@ -1,3 +1,4 @@
+library(DVHmetrics)
 source("helper.R")
 
 ## max number of IDs (=DVH files) we can make plots for

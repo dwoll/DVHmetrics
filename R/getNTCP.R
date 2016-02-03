@@ -11,8 +11,7 @@ function(x,
             NTCPtype=TCPtype)
     outNames <- names(out)
     outNames[outNames == "NTCP"] <- "TCP"
-    names(out) <- outNames
-    out
+    setNames(out, outNames)
 }
 
 getNTCP <-

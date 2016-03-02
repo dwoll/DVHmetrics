@@ -61,9 +61,17 @@ parseMonaco <- function(x, planInfo=FALSE, courseAsID=FALSE) {
 #     Sys.setlocale("LC_TIME", lct)
 
     DVHspan <- x[4:(length(x)-2)]
-    con <- textConnection(DVHspan)
-    DVHall <- read.table(con, header=FALSE, stringsAsFactors=FALSE)
-    close(con)
+    DVHlen  <- length(DVHspan)    # last element is blank
+    ## problem: spaces in structure names -> parse manually
+    # DVHall <- read.table(text=, header=FALSE,
+    #                      stringsAsFactors=FALSE, comment.char="")
+    pat <- "^(.+?)[[:blank:]]+([.[:digit:]]+)[[:blank:]]+([.[:digit:]]+)$"
+    structs <- sub(pat, "\\1", DVHspan)[-DVHlen]
+    doses   <- as.numeric(sub(pat, "\\2", DVHspan)[-DVHlen])
+    volumes <- as.numeric(sub(pat, "\\3", DVHspan)[-DVHlen])
+    DVHall  <- data.frame(structure=structs, dose=doses, volume=volumes,
+                          stringsAsFactors=FALSE)   
+
     names(DVHall) <- if(isDoseRel) {
         if(isVolRel) {
             c("structure", "doseRel", "volumeRel")

@@ -1,6 +1,10 @@
 # TODO
+
+ * homogeneity index HI = (D_2 - D_98) / DRX or (D_2 - D_98) / DMEAN
+
 ## Medium term
 
+ * conformity index CI?
  * check out purr::transpose()
  * Shiny app: allow zoom into DVH diagrams
  * allow `checkConstraint(x, "DNTCP < 50%")` instead of `0.5Gy`
@@ -19,16 +23,16 @@
  * merge DVH files from the same patient ID
  * add Eclipse fields: Comment, Exported by, Description, Plan Status, Approval Status, Dose Coverage, Sampling Coverage, Equivalent Sphere Diameter, Conformity Index, Gradient Measure
  * convert `RadOnc` objects to `DVHmetrics` objects and back
- * `showConstraint()` -> draw constraint arrows as custom geoms (`ggplot2` 2.0.0 https://github.com/hadley/ggplot2/blob/master/vignettes/extending-ggplot2.Rmd)
+ * `showConstraint()` -> draw constraint arrows as custom geoms (`ggplot2` 2.1.0 https://github.com/hadley/ggplot2/blob/master/vignettes/extending-ggplot2.Rmd)
  * harmonize structures by reading equivalence file, possibly with regex
 
 # build
- * "c:\program files\r\r-3.2.1\bin\x64\Rcmd.exe" INSTALL --build DVHmetrics_0.3.4.tar.gz
+ * "c:\program files\r\r-3.2.1\bin\x64\Rcmd.exe" INSTALL --build DVHmetrics_0.3.5.tar.gz
  * "c:\program files\r\r-3.2.1\bin\x64\Rcmd.exe" build DVHmetrics --resave-data --compact-vignettes="both"
- * "c:\program files\r\r-3.2.1\bin\x64\Rcmd.exe" check DVHmetrics_0.3.4.tar.gz --as-cran
- * `install.packages("d:/daniel_work/workspace/DVHmetrics_0.3.4.tar.gz", repos=NULL, type="source")`
+ * "c:\program files\r\r-3.2.1\bin\x64\Rcmd.exe" check DVHmetrics_0.3.5.tar.gz --as-cran
+ * `install.packages("d:/daniel_work/workspace/DVHmetrics_0.3.5.tar.gz", repos=NULL, type="source")`
 
- * "c:\program files\r\r-devel\bin\x64\Rcmd.exe" INSTALL --build DVHmetrics_0.3.4.tar.gz
+ * "c:\program files\r\r-devel\bin\x64\Rcmd.exe" INSTALL --build DVHmetrics_0.3.5.tar.gz
  * "c:\program files\r\r-devel\bin\x64\Rcmd.exe" build DVHmetrics --resave-data --compact-vignettes="both"
- * "c:\program files\r\r-devel\bin\x64\Rcmd.exe" check DVHmetrics_0.3.4.tar.gz --as-cran
- * `install.packages("h:/workspace/DVHmetrics_0.3.4.tar.gz", repos=NULL, type="source")`
+ * "c:\program files\r\r-devel\bin\x64\Rcmd.exe" check DVHmetrics_0.3.5.tar.gz --as-cran
+ * `install.packages("h:/workspace/DVHmetrics_0.3.5.tar.gz", repos=NULL, type="source")`

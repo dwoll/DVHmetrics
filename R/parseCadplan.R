@@ -217,12 +217,10 @@ parseCadplan <- function(x, planInfo=FALSE, courseAsID=FALSE) {
             return(NULL)
         }
 
-        con <- textConnection(strct[dvhStart:length(strct)])
-        dvh <- data.matrix(read.table(con,
+        dvh <- data.matrix(read.table(text=strct[dvhStart:length(strct)],
                                       header=FALSE, stringsAsFactors=FALSE,
                                       colClasses=rep("numeric", length(vars3)),
                                       comment.char="", nrows=dvhLen))
-        close(con)
 
         ## rename
         colnames(dvh) <- vars3

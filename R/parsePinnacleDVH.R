@@ -10,7 +10,7 @@ mergePinnaclePat  <- function(x, planInfo=FALSE, courseAsID=FALSE) {
         warning(paste("Required files not found in directory", basename(x)))
         NULL
     } else {
-        Map(function(y) { read.csv(y, header=TRUE, stringsAsFactors=FALSE) }, reqFiles)
+        Map(function(y) { read.csv(y, header=TRUE, stringsAsFactors=FALSE, comment.char="") }, reqFiles)
     }
     
     if(!is.null(fRead)) {
@@ -95,12 +95,10 @@ parsePinnacleDVH <- function(x, structInfo, info) {
     ## strip trailing ,
     x[dvhStart:dvhStop] <- gsub("(^.+),$", "\\1", x[dvhStart:dvhStop])
     
-    con <- textConnection(x[dvhStart:dvhStop])
-    dvh <- data.matrix(read.csv(con,
+    dvh <- data.matrix(read.csv(text=x[dvhStart:dvhStop],
                                 header=FALSE, stringsAsFactors=FALSE,
                                 colClasses=rep("numeric", dvhCols),
                                 comment.char="", nrows=dvhLen))
-    close(con)
 
     ## set column names
     ## TODO: this should be exported

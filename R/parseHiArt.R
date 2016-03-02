@@ -1,14 +1,12 @@
 #####---------------------------------------------------------------------------
-## parse character vector from Eclipse DVH file
+## parse character vector from Tomo HiArt DVH file
 parseHiArt <- function(x, planInfo=FALSE, courseAsID=FALSE) {
     planInfo <- as.character(planInfo)
 
     ## find columns for structure, dose, volume
-    header  <- x[1]
-    conHead <- textConnection(header)
-    vars    <- as.matrix(read.csv(conHead, header=FALSE, stringsAsFactors=FALSE)[1, ])
-    close(conHead)
-    
+    vars <- as.matrix(read.csv(text=x[1], header=FALSE,
+                               stringsAsFactors=FALSE, comment.char="")[1, ])
+
     structIdx <- seq(1, length(vars), by=3)
     doseIdx   <- seq(2, length(vars), by=3)
     volumeIdx <- seq(3, length(vars), by=3)
@@ -45,9 +43,8 @@ parseHiArt <- function(x, planInfo=FALSE, courseAsID=FALSE) {
     }
 
     ## read all data
-    conDVH <- textConnection(x[-1])
-    datAll <- data.matrix(read.csv(conDVH, header=FALSE, stringsAsFactors=FALSE))
-    close(conDVH)
+    datAll <- data.matrix(read.csv(text=x[-1], header=FALSE,
+                                   stringsAsFactors=FALSE, comment.char=""))
 
     ## extract DVH from one structure section and store in a list
     ## with DVH itself as a matrix

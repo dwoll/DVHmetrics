@@ -1,12 +1,27 @@
+getSpecialMetrics <- function(forRegexp=FALSE) {
+    specials <- c("RX", "MIN", "MAX", "MEAN", "MEDIAN", "SD", "EUD", "NTCP", "TCP", "HI")
+    if(!forRegexp) {
+        specials
+    } else {
+        paste0(specials, collapse="|")
+    }
+}
+    
 ## parse metric character strings into components and ensure validity
 ## optionally convert dose unit and volume unit
 parseMetric <- function(x, doseUnit=NULL, volUnit=NULL) {
     ## remove whitespace and convert to upper case
     x <- toupper(removeWS(x))
     
+    ## special metrics that are recognized when prefixed with D, e.g., DMEAN, DEUD
+    specMetr    <- getSpecialMetrics()
+    specMetrPat <- getSpecialMetrics(forRegexp=TRUE)
+    
     ## regular expression for components of a metric character string
     ## allow for V10%_CC or D10cc_% pattern for returning absolute volumes / relative doses
-    pattern <- "^([DV])([.[:digit:]]+|MIN|MAX|MEAN|MEDIAN|RX|SD|EUD|NTCP|TCP)([%]|GY|CGY|CC)*(_[%]|_GY|_CGY|_CC)*.*"
+    pattern <- paste0("^([DV])([.[:digit:]]+|",
+                      specMetrPat,
+                      ")([%]|GY|CGY|CC)*(_[%]|_GY|_CGY|_CC)*.*")
     
     ## extract components
     DV      <- sub(pattern, "\\1", x)   # get a volume or a dose?
@@ -18,7 +33,7 @@ parseMetric <- function(x, doseUnit=NULL, volUnit=NULL) {
     unitDV <- ifelse(nzchar(unitDV_), sub("_", "", unitDV_), NA_character_)
 
     ## special dose/probability cases
-    specDose  <- valRef %in% c("MIN", "MAX", "MEAN", "MEDIAN", "RX", "SD", "EUD", "NTCP", "TCP")
+    specDose  <- valRef %in% specMetr
     valRefNum <- ifelse((DV == "D") & specDose, NA_real_,      suppressWarnings(as.numeric(valRef)))
     unitRef   <- ifelse((DV == "D") & specDose, NA_character_, unitRef)
 
@@ -75,7 +90,7 @@ parseMetric <- function(x, doseUnit=NULL, volUnit=NULL) {
     validPattern <- grepl(pattern, x)
     validUnitRef <- ((DV == "D") &
                      ((unitRef %in% c("%", "CC")) |
-                      (valRef  %in% c("MIN", "MAX", "MEAN", "MEDIAN", "RX", "SD", "EUD", "NTCP", "TCP")))) |
+                      (valRef  %in% specMetr))) |
                     ((DV == "V") & (unitRef %in% c("%", "GY", "CGY")))
     validUnitDV  <- is.na(unitDV) |
                     ((DV == "D") & (unitDV  %in% c("%", "GY", "CGY"))) |

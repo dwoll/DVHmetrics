@@ -1,7 +1,5 @@
 # TODO
 
- * homogeneity index HI = (D_2 - D_98) / DRX or (D_2 - D_98) / DMEAN
-
 ## Medium term
 
  * conformity index CI?

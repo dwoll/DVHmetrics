@@ -212,6 +212,7 @@ Function \texttt{getMetric()} calculates freely-defined DVH metrics based on dat
 \item \texttt{"DMAX"}: The maximum dose of the non-zero-dose voxels in the structure.
 \item \texttt{"DSD"}: The standard deviation of the dose in the structure.
 \item \texttt{"DRX"}: The prescription dose.
+\item \texttt{"DHI"}: The Homogeneity Index according to ICRU 83: (D2\%-D98\%)/D50\%.
 \item \texttt{"DEUD"}: The generalized equivalent uniform dose (gEUD, \citeNP{Niemierko1999,Wu2002}). This can be based on EQD$_{2}$ values if information on the fractionation is provided as well \cite{IAEA2008}.
 \item \texttt{"DNTCP"}: The normal tissue complication probability (NTCP) according to the Lyman \citeyear{Lyman1985} probit model, the Niemierko \citeyear{Niemierko1999} logit model, or the K\"{a}llman \citeyear{Kallman1992} Poisson (relative seriality) model. This can be based on EQD$_{2}$ values if information on the fractionation is provided as well.
 \item \texttt{"DTCP"}: The tumor control probability (TCP) according to the same models as NTCP.

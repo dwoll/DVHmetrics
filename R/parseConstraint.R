@@ -7,6 +7,9 @@ function(x, doseUnit=NULL, volUnit=NULL) {
     ## remove whitespace and convert to upper case
     x <- toupper(removeWS(x))
 
+    ## special metrics that are recognized when prefixed with D, e.g., DMEAN, DEUD
+    specMetr <- getSpecialMetrics()
+
     ## split constraints into metric and comparison
     cnstrSpl <- strsplit(x, ">|<|<=|>=")
     metric   <- vapply(cnstrSpl, function(x) head(x, n=1), character(1)) # metric part
@@ -17,7 +20,7 @@ function(x, doseUnit=NULL, volUnit=NULL) {
     pm <- parseMetric(metric, doseUnit=doseUnit, volUnit=volUnit)
     
     ## identify cases of special dose metric DMEAN etc.
-    specDose <- pm$valRef %in% c("MIN", "MAX", "MEAN", "MEDIAN", "RX", "SD", "EUD", "NTCP", "TCP")
+    specDose <- pm$valRef %in% specMetr
 
     ## comparison details
     pattern    <- "^([.[:digit:]]+)([%]|GY|CGY|CC)$"
@@ -80,7 +83,7 @@ function(x, doseUnit=NULL, volUnit=NULL) {
 
     ## special cases
     metricInv <- ifelse((pm$DV == "D") &
-                        (pm$valRef %in% c("MIN", "MAX", "MEAN", "MEDIAN", "RX", "SD", "EUD", "NTCP", "TCP")),
+                        (pm$valRef %in% specMetr),
                         NA_character_,
                         paste0(DVinv, valRefInv, unitRefInv, "_", pm$unitRef))
 

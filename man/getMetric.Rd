@@ -48,6 +48,7 @@ A \emph{pre-specified} DVH metric is one of the following character strings:
 \item \code{"DMAX"}: The maximum dose of the non-zero-dose voxels in the structure.
 \item \code{"DSD"}: The standard deviation of the dose in the structure.
 \item \code{"DRX"}: The prescription dose.
+\item \code{"DHI"}: The Homogeneity Index according to ICRU 83: (D2\%-D98\%)/D50\%.
 \item \code{"DEUD"}: The generalized equivalent uniform dose (gEUD). See \code{\link[DVHmetrics]{getEUD}} for mandatory and optional parameters.
 \item \code{"DNTCP"}: The normal tissue complication probability (NTCP). See \code{\link[DVHmetrics]{getNTCP}} for mandatory and optional parameters.
 \item \code{"DTCP"}: The tumor control probability (TCP). See \code{\link[DVHmetrics]{getNTCP}} for mandatory and optional parameters.

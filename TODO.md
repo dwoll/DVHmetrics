@@ -3,8 +3,8 @@
 ## Medium term
 
  * conformity index CI?
- * check out purr::transpose()
  * Shiny app: allow zoom into DVH diagrams
+ * Shiny app: shinydashboard?
  * allow `checkConstraint(x, "DNTCP < 50%")` instead of `0.5Gy`
  * `getMetric()`, `checkConstraint()`, `readDVH()` -> multicore support
  * `readDVH()` -> if `x` is a directory, read all files in it

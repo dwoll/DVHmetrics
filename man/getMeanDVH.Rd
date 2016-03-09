@@ -10,19 +10,19 @@ Returns the point-wise mean and median DVH with the point-wise standard deviatio
 \usage{
 getMeanDVH(x, fun=list(mean=mean, median=median, sd=sd),
            cumul=TRUE, thin=1, byPat=TRUE, patID=NULL, structure=NULL,
-           interp=c("linear", "spline", "smoothSpl"), fixed=TRUE)
+           fixed=TRUE)
 
 \method{getMeanDVH}{DVHs}(x, fun=list(mean=mean, median=median, sd=sd),
            cumul=TRUE, thin=1, byPat=TRUE, patID=NULL, structure=NULL,
-           interp=c("linear", "spline", "smoothSpl"), fixed=TRUE)
+           fixed=TRUE)
 
 \method{getMeanDVH}{DVHLst}(x, fun=list(mean=mean, median=median, sd=sd),
            cumul=TRUE, thin=1, byPat=TRUE, patID=NULL, structure=NULL,
-           interp=c("linear", "spline", "smoothSpl"), fixed=TRUE)
+           fixed=TRUE)
 
 \method{getMeanDVH}{DVHLstLst}(x, fun=list(mean=mean, median=median, sd=sd),
            cumul=TRUE, thin=1, byPat=TRUE, patID=NULL, structure=NULL,
-           interp=c("linear", "spline", "smoothSpl"), fixed=TRUE)
+           fixed=TRUE)
 }
 \arguments{
   \item{x}{A single DVH (object of class \code{DVHs}), multiple DVHs from one patient/structure (object of class \code{DVHLst}), or multiple DVHs from many patients/structures (object of class \code{DVHLstLst}). See \code{\link[DVHmetrics]{readDVH}}.}
@@ -32,7 +32,6 @@ getMeanDVH(x, fun=list(mean=mean, median=median, sd=sd),
   \item{byPat}{\code{logical}. Relevant if multiple DVHs are given. \code{byPat=TRUE} means that for each patient, DVHs for multiple structures are averaged point wise. \code{byPat=FALSE} means that for each structure, DVHs for multiple patients averaged point wise.}
   \item{patID}{\code{character} vector. Include DVHs for these patients only when calculating mean/SD. If missing, all patients are used. Can be a regular expression with \code{fixed=FALSE}, see \code{\link[base]{regex}}.}
   \item{structure}{\code{character} vector. Include DVHs for these structures only when calculating mean/SD. If missing, all structures are used. Can be a regular expression with \code{fixed=FALSE}, see \code{\link[base]{regex}}.}
-  \item{interp}{\code{character}. Interpolation method for the differential DVH. \code{"asis"} and \code{"linear"} for no interpolation. \code{"spline"} for spline interpolation using \code{\link[stats]{splinefun}} (\code{"fmm"} for differential, \code{"monoH.FC"} for cumulative DVHs), \code{"smoothSpl"} for a smoothing spline using \code{\link[stats]{smooth.spline}}, with the smoothing parameter chosen by generalized crossvalidation.}
   \item{fixed}{\code{logical}. Use \code{fixed=FALSE} for regular expression matching of \code{patID} and \code{structure}.}
 }
 \details{
@@ -49,10 +48,10 @@ Returns a data frame with point-wise mean DVH averaged over structures (\code{by
 res1 <- getMeanDVH(dataMZ, byPat=TRUE, structure=c("HEART", "AMYOCL"))
 head(res1)
 
-# average differential DVHs, use kernel smoothing
+# average differential DVHs
 # matches patients P123 and P234
 res2 <- getMeanDVH(dataMZ, fun=list(min=min, max=max),
                    cumul=FALSE, byPat=FALSE,
-                   patID="23", interp="smoothSpl", fixed=FALSE)
+                   patID="23", fixed=FALSE)
 head(res2)
 }

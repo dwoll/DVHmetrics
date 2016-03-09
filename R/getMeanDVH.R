@@ -2,7 +2,7 @@
 getMeanDVH <-
 function(x, fun=list(mean=mean, median=median, sd=sd),
          cumul=TRUE, thin=1, byPat=TRUE, patID=NULL, structure=NULL,
-         interp=c("linear", "spline", "smoothSpl"), fixed=TRUE) {
+         fixed=TRUE) {
     UseMethod("getMeanDVH")
 }
 
@@ -10,8 +10,7 @@ function(x, fun=list(mean=mean, median=median, sd=sd),
 getMeanDVH.DVHs <-
 function(x, fun=list(mean=mean, median=median, sd=sd),
          cumul=TRUE, thin=1, byPat=TRUE, patID=NULL, structure=NULL,
-         interp=c("linear", "spline", "smoothSpl"), fixed=TRUE) {
-    interp <- match.arg(interp)
+         fixed=TRUE) {
 
     x <- if(byPat) {
         setNames(list(x), x$structure)
@@ -23,15 +22,13 @@ function(x, fun=list(mean=mean, median=median, sd=sd),
     attr(x, which="byPat") <- byPat
 
     getMeanDVH.DVHLst(x, fun=fun, cumul=cumul, thin, byPat=byPat,
-                      patID=patID, structure=structure, interp=interp,
-                      fixed=fixed)
+                      patID=patID, structure=structure, fixed=fixed)
 }
 
 getMeanDVH.DVHLst <-
 function(x, fun=list(mean=mean, median=median, sd=sd),
          cumul=TRUE, thin=1, byPat=TRUE, patID=NULL, structure=NULL,
-         interp=c("linear", "spline", "smoothSpl"), fixed=TRUE) {
-    interp <- match.arg(interp)
+         fixed=TRUE) {
 
     ## make sure DVH list is organized as required for byPat
     if(is.null(attributes(x)$byPat) || attributes(x)$byPat != byPat) {
@@ -77,11 +74,11 @@ function(x, fun=list(mean=mean, median=median, sd=sd),
     ## average cumulative or differential DVH?
     x <- if(cumul) {
         ## cumulative with linear interpolation
-        convertDVH.DVHLst(x, toType="asis", interp=interp,
+        convertDVH.DVHLst(x, toType="asis", interp="linear",
                           nodes=nodes, rangeD=rangeD, perDose=TRUE)
     } else {
         ## differential with linear interpolation
-        convertDVH.DVHLst(x, toType="differential", interp=interp,
+        convertDVH.DVHLst(x, toType="differential", interp="linear",
                           nodes=nodes, rangeD=rangeD, perDose=TRUE)
     }
 
@@ -137,8 +134,7 @@ function(x, fun=list(mean=mean, median=median, sd=sd),
 getMeanDVH.DVHLstLst <-
 function(x, fun=list(mean=mean, median=median, sd=sd),
          cumul=TRUE, thin=1, byPat=TRUE, patID=NULL, structure=NULL,
-         interp=c("linear", "spline", "smoothSpl"), fixed=TRUE) {
-    interp <- match.arg(interp)
+         fixed=TRUE) {
 
     ## re-organize x into by-patient or by-structure form if necessary
     isByPat <- attributes(x)$byPat
@@ -178,7 +174,7 @@ function(x, fun=list(mean=mean, median=median, sd=sd),
 
     resDFL <- Map(getMeanDVH, x, fun=list(fun), cumul=cumul, thin,
                   byPat=byPat, patID=list(patID), structure=list(structure),
-                  interp=interp, fixed=fixed)
+                  fixed=fixed)
 
     resDF <- do.call("rbind", resDFL)
     rownames(resDF) <- NULL

@@ -162,7 +162,7 @@ function(x, metric, patID, structure,
                                   is.null(x$doseAvg),
                                   is.null(x$doseMed),
                                   is.null(x$doseSD))) &&
-                            !(valRef %in% c("HI", "EUD", "NTCP", "TCP"))) {
+                            !(pm$valRef %in% c("HI", "EUD", "NTCP", "TCP"))) {
                     getDMEAN(x, interp=interp)
                 } else {
                     x

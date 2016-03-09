@@ -69,7 +69,7 @@ function(x, interp=c("linear", "spline", "ksmooth", "smoothSpl"), nodes=5001L) {
         convertDVH(x, toType="differential", interp=interp, nodes=nodes, perDose=FALSE)
     } else {
         warning("non-linear interpolation of differential DVH not recommended for calculation of DMEAN, DMIN, DMAX, ...")
-        convertDVHsmoooth(x, toType="differential", interp=interp, nodes=nodes, perDose=FALSE)
+        convertDVHsmooth(x, toType="differential", interp=interp, nodes=nodes, perDose=FALSE)
     }
 
     ## dose category mid-points

@@ -4,7 +4,7 @@ DVHMETRICS RELEASE VERSIONS at http://cran.r-project.org/
 
 Version 0.3.5 (March 8, 2016)
     * readDVH()
-      - fix bug: fix reading Pinnacle files
+      - fix bug when reading Pinnacle files
       - Monaco files can now have spaces in structure names
         (thanks: Alan Kalet)
       - when reading Monaco files without relative volume,

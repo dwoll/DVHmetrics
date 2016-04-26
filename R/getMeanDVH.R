@@ -6,7 +6,7 @@ function(x, fun=list(mean=mean, median=median, sd=sd),
     UseMethod("getMeanDVH")
 }
 
-## for completeness sake - "mean" of just 1 DVH
+## for completeness' sake - "mean" of just 1 DVH
 getMeanDVH.DVHs <-
 function(x, fun=list(mean=mean, median=median, sd=sd),
          cumul=TRUE, thin=1, byPat=TRUE, patID=NULL, structure=NULL,
@@ -124,6 +124,14 @@ function(x, fun=list(mean=mean, median=median, sd=sd),
     ## combine point-wise estimates
     dfMSD <- Reduce(merge, dfL)
     rownames(dfMSD) <- NULL
+
+    ## add information about original patIDs / structures
+    if(byPat) {
+        dfMSD$structure <- paste(sort(unique(dvhDF$structure)), collapse="_")
+    } else {
+        dfMSD$patID     <- paste(sort(unique(dvhDF$patID)),     collapse="_")
+    }
+
     dfMSD
 }
 

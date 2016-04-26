@@ -31,7 +31,7 @@ function(x, file="", ...) {
     comps  <- gsub("\\.", "_", names(x))
     fNames <- paste0(first, comps, last)
 
-    if(length(addArgs) > 0) {
+    if(length(addArgs) > 0L) {
         Map(saveMetric.data.frame, x, file=fNames, ...)
     } else {
         Map(saveMetric.data.frame, x, file=fNames)
@@ -64,7 +64,7 @@ function(x, file="", ...) {
     file  <- paste0(first, comps, last)
 
     ### ... my be NULL -> cannot use Map()
-    if(length(addArgs) > 0) {
+    if(length(addArgs) > 0L) {
         Map(ggsave, x, filename=file, ...)
     } else {
         Map(ggsave, x, filename=file)

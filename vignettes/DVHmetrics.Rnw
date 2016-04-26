@@ -264,6 +264,7 @@ Metric                & Reference       & Unit reference & Result    & Unit resu
 \texttt{"DSD"}        & ---             & ---      & absolute dose   & as in DVH \\
 \texttt{"DMIN"}       & ---             & ---      & absolute dose   & as in DVH \\
 \texttt{"DMAX"}       & ---             & ---      & absolute dose   & as in DVH \\\hline
+\texttt{"DHI"}        & ---             & ---      & dose ratio      & --- \\
 \texttt{"DNTCP"}      & ---             & ---      & probability     & --- \\
 \texttt{"DTCP"}       & ---             & ---      & probability     & --- \\\hline
 \end{tabular}

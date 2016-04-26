@@ -32,7 +32,7 @@ function(x,
               !is.null(NTCPm) || !is.null(NTCPgamma50),
               !is.null(NTCPn) || !is.null(EUDa))
 
-    if(length(NTCPtd50) > 1) {
+    if(length(NTCPtd50) > 1L) {
     	warning(paste0("Will only use NTCPtd50=", NTCPtd50[1]))
     	NTCPtd50 <- NTCPtd50[1]
     }
@@ -43,7 +43,7 @@ function(x,
     }
 
     if(is.null(NTCPm)) {
-        if(length(NTCPgamma50) > 1) {
+        if(length(NTCPgamma50) > 1L) {
     		warning(paste0("Will only use NTCPgamma50=", NTCPgamma50[1]))
     		NTCPgamma50 <- NTCPgamma50[1]
         }
@@ -55,7 +55,7 @@ function(x,
 
         NTCPm <- 1 / (NTCPgamma50*sqrt(2*pi))
     } else {
-        if(length(NTCPm) > 1) {
+        if(length(NTCPm) > 1L) {
     		warning(paste0("Will only use NTCPm=", NTCPm[1]))
     		NTCPm <- NTCPm[1]
         }
@@ -69,7 +69,7 @@ function(x,
     }
 
     if(!is.null(EUDa)) {
-        if(length(EUDa) > 1) {
+        if(length(EUDa) > 1L) {
     		warning(paste0("Will only use EUDa=", EUDa[1]))
     		EUDa <- EUDa[1]
     	}
@@ -81,7 +81,7 @@ function(x,
 
         NTCPn <- 1/EUDa
     } else {
-        if(length(NTCPn) > 1) {
+        if(length(NTCPn) > 1L) {
     		warning(paste0("Will only use NTCPn=", NTCPn[1]))
     		NTCPn <- NTCPn[1]
     	}

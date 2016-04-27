@@ -3,7 +3,6 @@
 ## Medium term
 
  * UTF-8 issue with Eclipse files and cm^3 line under OS X.
- * function to compare mean DVHs from different groups
  * check that expensive calculations (e.g., conversion to differential DVH) are done only once, and then stored
  * conformity index CI?
  * Shiny app: allow zoom into DVH diagrams

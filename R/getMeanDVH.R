@@ -127,9 +127,11 @@ function(x, fun=list(mean=mean, median=median, sd=sd),
 
     ## add information about original patIDs / structures
     if(byPat) {
-        dfMSD$structure <- paste(sort(unique(dvhDF$structure)), collapse="_")
+        dfMSD$structure <- abbreviate(paste(sort(unique(dvhDF$structure)), collapse="_"),
+                                      minlength=20)
     } else {
-        dfMSD$patID     <- paste(sort(unique(dvhDF$patID)),     collapse="_")
+        dfMSD$patID     <- abbreviate(paste(sort(unique(dvhDF$patID)),     collapse="_"),
+                                      minlength=20)
     }
 
     dfMSD

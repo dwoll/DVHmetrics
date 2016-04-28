@@ -115,12 +115,18 @@ function(x, byPat=TRUE, patID=NULL, structure=NULL, rel=TRUE,
     ## do the actual plotting
     diag <- if(byPat) {
         ggplot(dvhDF, aes_string(x="dose", y="volPlot",
-                                 group="patID", color="patID", fill="patID")) +
-            facet_grid(as.formula("structure ~ ."))
+                                 group="patID", color="patID", fill="patID"))
     } else {
         ggplot(dvhDF, aes_string(x="dose", y="volPlot",
-                                 group="structure", color="structure", fill="structure")) +
-            facet_grid(as.formula("patID ~ ."))
+                                 group="structure", color="structure", fill="structure"))
+    }
+
+    diag <- if(byPat && (length(unique(dvhDF$structure)) > 1L)) {
+        diag + facet_grid(as.formula("structure ~ ."))
+    } else if(!byPat && (length(unique(dvhDF$patID)) > 1L)){
+        diag + facet_grid(as.formula("patID ~ ."))
+    } else {
+        diag
     }
 
     ## rescale x-axis, y-axis

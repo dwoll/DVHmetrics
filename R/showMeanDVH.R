@@ -1,7 +1,8 @@
 ## plots 1 list of average DVHs +/1 SD
 showMeanDVH <-
 function(x, byPat=TRUE, patID=NULL, structure=NULL, rel=TRUE,
-         guessX=TRUE, thresh=1, show=TRUE, fixed=TRUE, showSD=TRUE, color=TRUE) {
+         guessX=TRUE, thresh=1, show=TRUE, fixed=TRUE, showSD=TRUE,
+         color=TRUE, facet=TRUE) {
     guessX <- as.numeric(guessX)
 
     ## combine all mean DVHs in x - might a list or just 1 data frame
@@ -103,27 +104,39 @@ function(x, byPat=TRUE, patID=NULL, structure=NULL, rel=TRUE,
     }
 
     ## do we have many structure/ID categories? -> more legend columns
-    nCateg <- if(byPat) {
-        length(unique(dvhDF$patID))
+    if(byPat) {
+        nCateg <- length(unique(dvhDF$patID))
+        nGroup <- length(unique(dvhDF$structure))
     } else {
-        length(unique(dvhDF$structure))
+        nCateg <- length(unique(dvhDF$structure))
+        nGroup <- length(unique(dvhDF$patID))
+    }
+
+    ## add category/group interaction
+    if(nGroup > 1L) {
+        dvhDF$ID_struct <- interaction(dvhDF$patID, dvhDF$structure, drop=TRUE)
     }
 
     ## 15 entries per legend column
     nLegendCols <- (nCateg %/% 15) + 1            # number of categories
 
     ## do the actual plotting
-    diag <- if(byPat) {
-        ggplot(dvhDF, aes_string(x="dose", y="volPlot",
-                                 group="patID", color="patID", fill="patID"))
+    diag <- if(facet || (nGroup <= 1L)) {
+        if(byPat) {
+            ggplot(dvhDF, aes_string(x="dose", y="volPlot",
+                                     group="patID", color="patID", fill="patID"))
+        } else {
+            ggplot(dvhDF, aes_string(x="dose", y="volPlot",
+                                     group="structure", color="structure", fill="structure"))
+        }
     } else {
         ggplot(dvhDF, aes_string(x="dose", y="volPlot",
-                                 group="structure", color="structure", fill="structure"))
-    }
+                                 group="ID_struct", color="ID_struct", fill="ID_struct"))
+    } 
 
-    diag <- if(byPat && (length(unique(dvhDF$structure)) > 1L)) {
+    diag <- if(byPat && (nGroup > 1L) && facet) {
         diag + facet_grid(as.formula("structure ~ ."))
-    } else if(!byPat && (length(unique(dvhDF$patID)) > 1L)){
+    } else if(!byPat && (nGroup > 1L) && facet){
         diag + facet_grid(as.formula("patID ~ ."))
     } else {
         diag

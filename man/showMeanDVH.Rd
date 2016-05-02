@@ -7,7 +7,7 @@ Displays average dose volume histograms.
 \usage{
 showDVH(x, byPat=TRUE, patID=NULL, structure=NULL,
         rel=TRUE, guessX=TRUE, thresh=1, show=TRUE, fixed=TRUE,
-        showSD=TRUE, color=TRUE)
+        showSD=TRUE, color=TRUE, facet=TRUE)
 }
 \arguments{
   \item{x}{A data frame as returned by \code{\link[DVHmetrics]{getMeanDVH}} or a list of such data frames. See Details.}
@@ -21,6 +21,7 @@ showDVH(x, byPat=TRUE, patID=NULL, structure=NULL,
   \item{fixed}{\code{logical}. Use \code{fixed=FALSE} for regular expression matching of \code{patID} and \code{structure}.}
   \item{showSD}{\code{logical}. If \code{TRUE}, diagram shows shaded areas for point-wise 1-standard deviation and 2-standard deviations around this mean. See details.}
   \item{color}{\code{logical}. If \code{TRUE}, diagram uses color to distinguish groups. If \code{FALSE}, colors are greyscale, and line types are used to distinguish groups.}
+  \item{facet}{\code{logical}. If \code{TRUE}, different structures (for \code{byPat=FALSE} or different patients (for \code{byPat=TRUE} go into separate panels using \code{\link[ggplot2]{facet_grid}}. If \code{FALSE}, everything is shown in the same panel.}
 }
 \details{
   TODO

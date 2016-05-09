@@ -18,31 +18,33 @@ function(x, EUDa, EUDfd=NULL, EUDab=NULL, ...) {
 	}
 
     ## special cases
-	if(isTRUE(all.equal(EUDa, 1))) {
-		return(getMetric(x, "DMEAN")$DMEAN)
+	gEUD <- if(isTRUE(all.equal(EUDa, 1))) {
+		getMetric(x, "DMEAN")$DMEAN
 	} else if(is.infinite(EUDa) && (EUDa > 0)) {  # +Inf
-		return(getMetric(x, "DMAX")$DMAX)
+		getMetric(x, "DMAX")$DMAX
 	} else if(is.infinite(EUDa) && (EUDa < 0)) {  # -Inf
-		return(getMetric(x, "DMIN")$DMIN)
-	}
-
-    ## get differential DVH
-    xD <- convertDVH(x, toType="differential", toDoseUnit="asis", perDose=FALSE)
-
-    ## convert dose to EQD2 if possible
-    volume <- xD$dvhDiff[ , "volume"]
-    dose   <- if(!is.null(EUDfd) && !is.null(EUDab)) {
-        getEQD2(D=xD$dvhDiff[ , "dose"], fd=EUDfd, ab=EUDab)$EQD2
-    } else {
-        xD$dvhDiff[ , "dose"]
-    }
-
-    volDose <- volume*dose^EUDa / xD$structVol
-    wtMean  <- sum(volDose[volume > 0], na.rm=TRUE)
-    gEUD    <- wtMean^(1/EUDa)
-	if(!is.finite(gEUD)) {
-		warning("Numerical problems encountered, NA returned")
-		gEUD <- NA_real_
+		getMetric(x, "DMIN")$DMIN
+	} else {
+        ## get differential DVH
+        xD <- convertDVH(x, toType="differential", toDoseUnit="asis", perDose=FALSE)
+    
+        ## convert dose to EQD2 if possible
+        volume <- xD$dvhDiff[ , "volume"]
+        dose   <- if(!is.null(EUDfd) && !is.null(EUDab)) {
+            getEQD2(D=xD$dvhDiff[ , "dose"], fd=EUDfd, ab=EUDab)$EQD2
+        } else {
+            xD$dvhDiff[ , "dose"]
+        }
+    
+        volDose <- volume*dose^EUDa / xD$structVol
+        wtMean  <- sum(volDose[volume > 0], na.rm=TRUE)
+        geud    <- wtMean^(1/EUDa)
+    	if(!is.finite(geud)) {
+    		warning("Numerical problems encountered, NA returned")
+    		geud <- NA_real_
+    	}
+        
+        geud
 	}
 
     data.frame(EUD=gEUD,

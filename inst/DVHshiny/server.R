@@ -469,7 +469,6 @@ shinyServer(function(input, output) {
                          cumul=cumul,
                          patID=selPat,
                          structure=selStruct,
-                         interp="linear",
                          fixed=TRUE)
             argL   <- Filter(Negate(is.null), argL)
             DVHMSD <- do.call(getMeanDVH, argL)

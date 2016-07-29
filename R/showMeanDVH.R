@@ -171,16 +171,16 @@ function(x, byPat=TRUE, patID=NULL, structure=NULL, rel=TRUE,
     ## im grey -> linetype
     diag <- if(color) {
         diag +
-            geom_line(aes_string(x="dose", y="volPlot"), size=1.2)
+            geom_line(aes_string(x="dose", y="volPlot"), size=0.9)
     } else {
         if(byPat) {
             diag +
-                geom_line(aes_string(x="dose", y="volPlot", linetype="patID"), size=1.2) +
+                geom_line(aes_string(x="dose", y="volPlot", linetype="patID"), size=0.9) +
                 scale_color_grey(start=0, end=0.5) +
                 scale_fill_grey()
         } else {
             diag +
-                geom_line(aes_string(x="dose", y="volPlot", linetype="structure"), size=1.2) +
+                geom_line(aes_string(x="dose", y="volPlot", linetype="structure"), size=0.9) +
                 scale_color_grey(start=0, end=0.5) +
                 scale_fill_grey()
         }

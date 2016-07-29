@@ -2,15 +2,15 @@
 \alias{showMeanDVH}
 \title{Show average dose volume histograms}
 \description{
-Displays average dose volume histograms.
+Displays average dose volume histograms grouped by patients or structures.
 }
 \usage{
-showDVH(x, byPat=TRUE, patID=NULL, structure=NULL,
-        rel=TRUE, guessX=TRUE, thresh=1, show=TRUE, fixed=TRUE,
-        showSD=TRUE, color=TRUE, facet=TRUE)
+showMeanDVH(x, byPat=TRUE, patID=NULL, structure=NULL,
+            rel=TRUE, guessX=TRUE, thresh=1, show=TRUE, fixed=TRUE,
+            showSD=TRUE, color=TRUE, facet=TRUE)
 }
 \arguments{
-  \item{x}{A data frame as returned by \code{\link[DVHmetrics]{getMeanDVH}} or a list of such data frames. See Details.}
+  \item{x}{A data frame as returned by \code{\link[DVHmetrics]{getMeanDVH}} or a list of such data frames.}
   \item{byPat}{\code{logical}. Relevant if multiple DVHs are given. If \code{x} has class \code{DVHLstLst}: \code{byPat=TRUE} means that one diagram shows DVHs from one patient with multiple structures. \code{byPat=FALSE} means that one diagram shows DVHs for one structure from multiple patients.}
   \item{patID}{\code{character} vector. Show diagram for these patients only. If missing, all patients are shown. Can be a regular expression with \code{fixed=FALSE}, see \code{\link[base]{regex}}.}
   \item{structure}{\code{character} vector. Show diagram for these structures only. If missing, all structures are shown. Can be a regular expression with \code{fixed=FALSE}, see \code{\link[base]{regex}}.}
@@ -35,5 +35,7 @@ Silently returns a \code{\link[ggplot2]{ggplot}} diagram object, or - when multi
 \code{\link[DVHmetrics]{getMeanDVH}}
 }
 \examples{
-# TODO
+# mean DVH for HEART and AMYOCL averaged over patients
+res <- getMeanDVH(dataMZ, byPat=FALSE, structure=c("HEART", "AMYOCL"))
+showMeanDVH(res)
 }

@@ -2,6 +2,7 @@
 
 ## Medium term
 
+ * `getNTCP()` relative seriality model (equation 18 in Kaellman et al.)
  * UTF-8 issue with Eclipse files and cm^3 line under OS X.
  * check that expensive calculations (e.g., conversion to differential DVH) are done only once, and then stored
  * conformity index CI?
@@ -32,7 +33,7 @@
  * "c:\program files\r\r-3.2.1\bin\x64\Rcmd.exe" check DVHmetrics_0.3.5.tar.gz --as-cran
  * `install.packages("d:/daniel_work/workspace/DVHmetrics_0.3.5.tar.gz", repos=NULL, type="source")`
 
- * "c:\program files\r\r-devel\bin\x64\Rcmd.exe" INSTALL --build DVHmetrics_0.3.5.tar.gz
+ * "c:\program files\r\r-devel\bin\x64\Rcmd.exe" INSTALL --build DVHmetrics_0.3.6.tar.gz
  * "c:\program files\r\r-devel\bin\x64\Rcmd.exe" build DVHmetrics --resave-data --compact-vignettes="both"
- * "c:\program files\r\r-devel\bin\x64\Rcmd.exe" check DVHmetrics_0.3.5.tar.gz --as-cran
- * `install.packages("h:/workspace/DVHmetrics_0.3.5.tar.gz", repos=NULL, type="source")`
+ * "c:\program files\r\r-devel\bin\x64\Rcmd.exe" check DVHmetrics_0.3.6.tar.gz --as-cran
+ * `install.packages("h:/workspace/DVHmetrics_0.3.6.tar.gz", repos=NULL, type="source")`

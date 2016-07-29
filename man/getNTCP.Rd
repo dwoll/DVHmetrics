@@ -5,7 +5,7 @@
 \alias{getNTCP.DVHLstLst}
 \title{Normal tissue complication probability (NTCP)}
 \description{
-Calculate normal tissue complication probability (NTCP) from Lyman's probit model, Niemierko's logit model, or Kaellman's Poisson model. May be based on EQD2.
+Calculate normal tissue complication probability (NTCP) from Lyman's probit model, Niemierko's logit model, or the Poisson model. May be based on EQD2.
 }
 \usage{
 getNTCP(x, NTCPtd50=NULL, NTCPm=NULL, NTCPn=NULL, NTCPgamma50=NULL,
@@ -33,11 +33,11 @@ getNTCP(x, NTCPtd50=NULL, NTCPm=NULL, NTCPn=NULL, NTCPgamma50=NULL,
   \item{EUDa}{If gEUD should be based on EQD2: Exponential parameter a.}
   \item{EUDfn}{If gEUD should be based on EQD2: Number of fractions.}
   \item{EUDab}{If gEUD should be based on EQD2: alpha/beta ratio for the relevant tissue.}
-  \item{NTCPtype}{\code{"probit"} - Lyman probit model, \code{"logit"} - Niemierko logit model, \code{"poisson"} - Kaellman Poisson (relative seriality) model.}
+  \item{NTCPtype}{\code{"probit"} - Lyman probit model, \code{"logit"} - Niemierko logit model, \code{"poisson"} - Poisson model.}
   \item{...}{Ignored. Used to catch additional arguments passed from \code{\link[DVHmetrics]{getMetric}}.}
 }
 \details{
-For DVH reduction, gEUD is used. This is equivalent to the Kutcher-Burman DVH reduction scheme.
+For DVH reduction, gEUD is used. This is equivalent to the Kutcher-Burman DVH reduction scheme. The probit model is given in equation (1), the logit model in eqation (2), and the Poisson model in equation (3) in Kaellman (1992), with gEUD plugged in for D.
 }
 \value{
 A data frame with variables \code{NTCP}, \code{patID}, and \code{structure}.

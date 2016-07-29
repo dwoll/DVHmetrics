@@ -1,11 +1,13 @@
-$Date: 2016-03-08 13:25:29 +0000 (Tue, 8 Mar 2016) $
+$Date: 2016-07-29 15:45:29 +0000 (Fri, 29 Jul 2016) $
 
 DVHMETRICS RELEASE VERSIONS at http://cran.r-project.org/
 
-Version 0.3.6 (March 8, 2016)
+Version 0.3.6 (July 27, 2016)
     * showMeanDVH()
       - experimental new function to visually compare average
         DVHs from several groups of patients
+    * runGUI()
+      - fix showing average DVHs
     * getEUD()
       - fix error for EUDa = 1, EUDa = -Inf, EUDa = +Inf
 

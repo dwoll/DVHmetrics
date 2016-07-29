@@ -259,18 +259,18 @@ function(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL, rel=TRUE,
     diag <- if(byPat) {
         diag + geom_line(data=dvhDF,
                          aes_string(x="dose", y="volPlot", color="structure"),
-                         size=1.2)
+                         size=1)
     } else {
         diag + geom_line(data=dvhDF,
                          aes_string(x="dose", y="volPlot", color="patID"),
-                         size=1.2)
+                         size=1)
     }
 
     ## add point-wise mean DVH?
     diag <- if(addMSD) {
         diag + geom_line(data=dfMSD,
                          aes_string(x="dose", y="volPlot"),
-                         color="black", size=1.2)
+                         color="black", size=0.9, linetype="dashed")
     } else {
         diag
     }

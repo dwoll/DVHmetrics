@@ -2,7 +2,8 @@
 
 ## Medium term
 
- * `getNTCP()` relative seriality model (equation 18 in Kaellman et al.)
+ * Check changes in `RadOnc` TomoTherapy, RayStation import
+ * `getNTCP()` relative seriality model (equation 18 in Kaellman et al.), from differential DVH with density / per unit dose
  * UTF-8 issue with Eclipse files and cm^3 line under OS X.
  * check that expensive calculations (e.g., conversion to differential DVH) are done only once, and then stored
  * conformity index CI?

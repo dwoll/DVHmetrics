@@ -1,7 +1,7 @@
 #####---------------------------------------------------------------------------
 ## returns a list (1 component per DVH file) of lists (1 component = 1 list per structure)
 readDVH <- function(x, type=c("Eclipse", "Cadplan", "Masterplan", "Pinnacle",
-                              "Monaco", "HiArt", "RayStation"),
+                              "Monaco", "HiArt", "RayStation", "PRIMO"),
                     planInfo=FALSE, courseAsID=FALSE, add) {
     type <- match.arg(type)
 
@@ -18,7 +18,8 @@ readDVH <- function(x, type=c("Eclipse", "Cadplan", "Masterplan", "Pinnacle",
                        Pinnacle=mergePinnaclePat,
                        Monaco=parseMonaco,
                        HiArt=parseHiArt,
-                       RayStation=parseRayStation)
+                       RayStation=parseRayStation,
+                       PRIMO=parsePRIMO)
     
     dvhLL <- if(length(dvhRawL) >= 1L) {
         res <- Map(parseFun, dvhRawL, planInfo=planInfo, courseAsID=courseAsID)

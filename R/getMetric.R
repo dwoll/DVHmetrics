@@ -87,7 +87,7 @@ function(x, metric, patID, structure,
             ## check if max dose is smaller than requested % of prescribed dose
             ## do this here -> while there is approx(..., yright=0)
             ## nothing of that sort exists for spline()
-            if(val > 100) {
+            if(val > max(dose)) {
                 warning("max dose is less than requested dose")
                 return(0)
             }

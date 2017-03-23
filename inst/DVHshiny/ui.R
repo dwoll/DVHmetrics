@@ -17,7 +17,7 @@ shinyUI(fluidPage(
                                  radioButtons("DVHtype", "DVH file format:",
                                               list("Eclipse"=1, "CadPlan"=2, "MasterPlan"=3,
                                                    "Pinnacle3"=4, "Monaco"=5, "HiArt"=6,
-                                                   "RayStation"=7)),
+                                                   "RayStation"=7, "ProSoma"=8)),
                                  fileInput("DVHupload", "Select DVH file:", multiple=TRUE),
                                  radioButtons("DVHplanInfo", "Information encoded in plan:",
                                               list("None"=1, "Prescribed dose"=2)),

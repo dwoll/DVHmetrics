@@ -1,5 +1,5 @@
 #####---------------------------------------------------------------------------
-## parse character vector from Tomo HiArt DVH file
+## parse character vector from PRIMO DVH file
 parsePRIMO <- function(x, planInfo=FALSE, courseAsID=FALSE) {
     planInfo <- as.character(planInfo)
 

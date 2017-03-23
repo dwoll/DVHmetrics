@@ -1,6 +1,7 @@
 parseDVH <- function(x, type=c("Eclipse", "Cadplan", "Masterplan",
                                "Pinnacle", "Monaco", "HiArt", "RayStation",
-                               "PRIMO")) {
+                               "ProSoma")) {
+                               #"PRIMO")) {
     type <- match.arg(type)
 
     ## name them using patient IDs
@@ -12,7 +13,7 @@ parseDVH <- function(x, type=c("Eclipse", "Cadplan", "Masterplan",
             IDline <- txt[grep("^(#PatientId):.+", txt)]
             IDres  <- sub("^.+?:[[:blank:]]*([[:alnum:][:punct:][:blank:]]+$)", "\\1", IDline, perl=TRUE)
             collWS(trimWS(IDres, side="both"))
-        } else if(type == "HiArt") {
+        } else if(type %in% c("HiArt", "ProSoma")) {
             gsub("[^a-z0-9]", "\\1", tempfile(pattern="", tmpdir=""))
         } else if(type != "Pinnacle") {
             IDline <- txt[grep("^(Patient ID|Case|# Project)[[:blank:]]*:", txt)]

@@ -84,6 +84,12 @@ function(x, metric, patID, structure,
         if(type == "relative") {         # given dose is relative
             dose <- x$dvh[ , "doseRel"]
 
+            ## check if we have relative dose
+            if(all(is.na(dose))) {
+                warning("no information on relative dose")
+                return(NA_real_)
+            }
+
             ## check if max dose is smaller than requested % of prescribed dose
             ## do this here -> while there is approx(..., yright=0)
             ## nothing of that sort exists for spline()
@@ -99,10 +105,15 @@ function(x, metric, patID, structure,
             doseMax <- if(!is.na(x$doseMax)) {
                 x$doseMax
             } else {
-                getDMEAN(x)$doseMax
+                m <- try(getDMEAN(x)$doseMax)
+                if(!inherits(m, "try-error")) {
+                    m
+                } else {
+                    NA_real_
+                }
             }
 
-            if(val > (cf * doseMax)) {
+            if(!is.na(doseMax) && (val > (cf * doseMax))) {
                 warning("max dose is less than requested dose")
                 return(0)
             }

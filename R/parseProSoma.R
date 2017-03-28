@@ -225,7 +225,6 @@ parseProSoma <- function(x, planInfo=FALSE, courseAsID=FALSE) {
                     DVHtype=DVHtype,
                     plan=info$plan,
                     course=NA_character_,
-                    quadrant=NA_character_,
                     structure=structure,
                     structVol=structVol,
                     doseUnit=doseUnit,
@@ -244,12 +243,12 @@ parseProSoma <- function(x, planInfo=FALSE, courseAsID=FALSE) {
         ## and add differential DVH separately
         if(info$DVHtype == "differential") {
             stop("differential DVH currently not supported")
-            DVH$dvh     <- convertDVH(dvh,
-                                      toType="cumulative",
-                                      toDoseUnit="asis",
-                                      perDose=FALSE)
-                                      #perDose=TRUE)
-            DVH$dvhDiff <- dvh
+            # DVH$dvh     <- convertDVH(dvh,
+            #                           toType="cumulative",
+            #                           toDoseUnit="asis",
+            #                           #perDose=FALSE)
+            #                           #perDose=TRUE)
+            # DVH$dvhDiff <- dvh
         }
 
         ## set class
@@ -260,7 +259,6 @@ parseProSoma <- function(x, planInfo=FALSE, courseAsID=FALSE) {
     ## list of DVH data frames with component name = structure
     info <- list(patID=patID, patName=patName, date=DVHdate,
                  DVHtype=DVHtype, plan=plan, course=NA_character_,
-                 quadrant=NA_character_,
                  doseRx=doseRx, doseRxUnit=doseRxUnit,
                  isoDoseRx=isoDoseRx)
     dvhL <- lapply(structList, getDVH, info=info)

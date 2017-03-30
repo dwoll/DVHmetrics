@@ -15,8 +15,12 @@ parseDVH <- function(x, type=c("Eclipse", "Cadplan", "Masterplan",
             IDline <- txt[grep("^(#PatientId):.+", txt)]
             IDres  <- sub("^.+?:[[:blank:]]*([[:alnum:][:punct:][:blank:]]+$)", "\\1", IDline, perl=TRUE)
             collWS(trimWS(IDres, side="both"))
-        } else if(type %in% c("HiArt", "ProSoma")) {
+        } else if(type == "HiArt") {
             gsub("[^a-z0-9]", "\\1", tempfile(pattern="", tmpdir=""))
+        } else if(type == "ProSoma") {
+            patName <- paste0(substr(trimWS(rev(strsplit(txt[1], ",")[[1]])), 1, 1))
+            randStr <- gsub("[^a-z0-9]", "\\1", tempfile(pattern="", tmpdir=""))
+            paste(randStr, patName, collapse="_")
         } else if(type != "Pinnacle") {
             IDline <- txt[grep("^(Patient ID|Case|# Project)[[:blank:]]*:", txt)]
             IDres  <- sub("^.+?:[[:blank:]]+([[:alnum:][:punct:][:blank:]]+$)", "\\1", IDline, perl=TRUE)

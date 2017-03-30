@@ -23,18 +23,22 @@ parseEclipse <- function(x, planInfo=FALSE, courseAsID=FALSE) {
     }
 
     getDose <- function(pattern, ll, doseRx) {
-        line <- ll[grep(pattern, ll)]
+        line <- trimWS(ll[grep(pattern, ll)], side="both")
         pat  <- "^.+?:[^[:digit:]]*([[:digit:][:punct:]]+)(Gy|cGy|%)*([[:alnum:][:punct:][:blank:]]*)$"
         elem <- gsub(pat, "\\1", line, perl=TRUE, ignore.case=TRUE)
         grp2 <- gsub(pat, "\\2", line, perl=TRUE, ignore.case=TRUE)
         grp3 <- gsub(pat, "\\3", line, perl=TRUE, ignore.case=TRUE)
         if(nzchar(grp2) || nzchar(grp3)) {
-            warning("Non-standard dose line found")
+            header  <- x[seq_len(sStart[1]-1)]                        # header
+            patID   <- getElem("^Patient ID[[:blank:]]*:",  header)   # patient id
+            warning(paste(patID, ": Non-standard dose line found"))
         }
 
         num <- as.numeric(trimWS(elem))
         if(is.na(num)) {
-            warning("No dose found")
+            header  <- x[seq_len(sStart[1]-1)]                        # header
+            patID   <- getElem("^Patient ID[[:blank:]]*:",  header)   # patient id
+            warning(paste(patID, ": No dose found"))
         }
 
         if(grepl("\\[%\\]", line)) {

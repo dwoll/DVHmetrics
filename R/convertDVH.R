@@ -4,7 +4,8 @@ convertDVH <-
 function(x, toType=c("asis", "cumulative", "differential"),
          toDoseUnit=c("asis", "GY", "CGY"),
          interp=c("asis", "linear"),
-         nodes=NULL, rangeD=NULL, perDose=TRUE) {
+         nodes=NULL, rangeD=NULL,
+         perDose=TRUE) {
     UseMethod("convertDVH")
 }
 
@@ -13,11 +14,12 @@ convertDVH.matrix <-
 function(x, toType=c("asis", "cumulative", "differential"),
          toDoseUnit=c("asis", "GY", "CGY"),
          interp=c("asis", "linear"),
-         nodes=NULL, rangeD=NULL, perDose=TRUE) {
+         nodes=NULL, rangeD=NULL,
+         perDose=TRUE) {
     toType     <- match.arg(toType)
     toDoseUnit <- match.arg(toDoseUnit)
     interp     <- match.arg(interp)
-    
+
     if(!is.null(nodes)) { stopifnot(nodes > 2L) }
 
     ## matrix may include duplicate rows
@@ -102,7 +104,7 @@ function(x, toType=c("asis", "cumulative", "differential"),
                 "differential"
             }
             
-            if((DVHtype == "differential") && !perDose) {
+            if((DVHtype == "differential") && (perDose == FALSE)) {
                 ## if perDose == FALSE: normalize -> interpolate -> re-normalize
                 binW         <- diff(c(-doseConv[1], doseConv))
                 volumeNew    <- -diff(volume)    / binW
@@ -115,7 +117,7 @@ function(x, toType=c("asis", "cumulative", "differential"),
             doseNew    <- sm[ , "dose"]
             doseRelNew <- sm[ , "doseRel"]
 
-            if((DVHtype == "differential") && !perDose) {
+            if((DVHtype == "differential") && (perDose == FALSE)) {
                 ## re-normalize to non-per-dose volume
                 ## start bin at 0 because no out-of-range interpolation
                 binW         <- diff(c(0, doseConv))
@@ -147,12 +149,12 @@ function(x, toType=c("asis", "cumulative", "differential"),
         doseNew    <- c(doseMidPt,    doseConv[N] + doseCatHW[N-1])
         doseRelNew <- c(doseRelMidPt, doseRel[N]  + doseRelCatHW[N-1])
         
-        if(perDose) {
+        if(perDose == TRUE) {
             ## differential DVH -> volume is per Gy -> mult with bin-width
             binW         <- diff(c(-doseConv[1], doseConv))
             volumeBin    <- volume*binW
             volumeRelBin <- volumeRel*binW
-        } else {
+        } else if(perDose == FALSE) {
             volumeBin    <- volume
             volumeRelBin <- volumeRel
         }
@@ -192,15 +194,15 @@ function(x, toType=c("asis", "cumulative", "differential"),
 
         ## differential DVH -> volume is per Gy -> divide by bin-width
         binW <- 2*doseCatHW
-        volumeNew <- if(perDose) {
+        volumeNew <- if(perDose == TRUE) {
             -diff(volume) / binW
-        } else {
+        } else if(perDose == FALSE) {
             -diff(volume)
         }
 
-        volumeRelNew <- if(perDose) {
+        volumeRelNew <- if(perDose == TRUE) {
             -diff(volumeRel) / binW
-        } else {
+        } else if(perDose == FALSE) {
             -diff(volumeRel)
         }
     }
@@ -214,7 +216,8 @@ convertDVH.DVHs <-
 function(x, toType=c("asis", "cumulative", "differential"),
          toDoseUnit=c("asis", "GY", "CGY"),
          interp=c("asis", "linear"),
-         nodes=NULL, rangeD=NULL, perDose=TRUE) {
+         nodes=NULL, rangeD=NULL,
+         perDose=TRUE) {
     toType     <- match.arg(toType)
     toDoseUnit <- match.arg(toDoseUnit)
 
@@ -227,12 +230,14 @@ function(x, toType=c("asis", "cumulative", "differential"),
         ## cumulative
         DVH$dvh <- convertDVH(x$dvh, toType=toType,
                               toDoseUnit="asis", interp=interp,
-                              nodes=nodes, rangeD=rangeD, perDose=perDose)
+                              nodes=nodes, rangeD=rangeD,
+                              perDose=perDose)
         ## differential
         if(!is.null(x$dvhDiff)) {
             DVH$dvhDiff <- convertDVH(x$dvhDiff, toType=toType,
                                       toDoseUnit="asis", interp=interp,
-                                      nodes=nodes, rangeD=rangeD, perDose=perDose)
+                                      nodes=nodes, rangeD=rangeD,
+                                      perDose=perDose)
         }
     } else if((toType == "asis") && (toDoseUnit != "asis") && (interp == "asis")) {
         ## just change dose unit in DVH and remaining dose values
@@ -247,12 +252,14 @@ function(x, toType=c("asis", "cumulative", "differential"),
         ## cumulative
         DVH$dvh <- convertDVH(x$dvh, toType=toType,
                               toDoseUnit="asis", interp=interp,
-                              nodes=nodes, rangeD=rangeD, perDose=perDose)
+                              nodes=nodes, rangeD=rangeD,
+                              perDose=perDose)
         ## differential
         if(!is.null(x$dvhDiff)) {
             DVH$dvhDiff <- convertDVH(x$dvhDiff, toType=toType,
                                       toDoseUnit="asis", interp=interp,
-                                      nodes=nodes, rangeD=rangeD, perDose=perDose)
+                                      nodes=nodes, rangeD=rangeD,
+                                      perDose=perDose)
         }
 
         DVH$dvh[ , "dose"] <- cf*x$dvh[ , "dose"]
@@ -292,13 +299,15 @@ function(x, toType=c("asis", "cumulative", "differential"),
             ## from cumulative to differential
             DVH$dvhDiff <- convertDVH(x$dvh, toType=toType,
                                       toDoseUnit="asis", interp=interp,
-                                      nodes=nodes, rangeD=rangeD, perDose=perDose)
+                                      nodes=nodes, rangeD=rangeD,
+                                      perDose=perDose)
         } else {
             ## from differential to cumulative
             if(!is.null(x$dvhDiff)) {
                 DVH$dvh <- convertDVH(x$dvhDiff, toType=toType,
                                       toDoseUnit="asis", interp=interp,
-                                      nodes=nodes, rangeD=rangeD, perDose=perDose)
+                                      nodes=nodes, rangeD=rangeD,
+                                      perDose=perDose)
             } else {
                 warning("No differential DVH found. Left cumulative DVH as is.")
             }
@@ -317,13 +326,15 @@ function(x, toType=c("asis", "cumulative", "differential"),
             ## from cumulative to differential
             DVH$dvhDiff <- convertDVH(x$dvh, toType=toType,
                                       toDoseUnit=toDoseUnit, interp=interp,
-                                      nodes=nodes, rangeD=rangeD, perDose=perDose)
+                                      nodes=nodes, rangeD=rangeD,
+                                      perDose=perDose)
         } else {
             ## from differential to cumulative
             if(!is.null(x$dvhDiff)) {
                 DVH$dvh <- convertDVH(x$dvhDiff, toType=toType,
                                       toDoseUnit=toDoseUnit, interp=interp,
-                                      nodes=nodes, rangeD=rangeD, perDose=perDose)
+                                      nodes=nodes, rangeD=rangeD,
+                                      perDose=perDose)
             } else {
                 warning("No differential DVH found. Left cumulative DVH as is.")
             }
@@ -348,7 +359,8 @@ convertDVH.DVHLst <-
 function(x, toType=c("asis", "cumulative", "differential"),
          toDoseUnit=c("asis", "GY", "CGY"),
          interp=c("asis", "linear"),
-         nodes=NULL, rangeD=NULL, perDose=TRUE) {
+         nodes=NULL, rangeD=NULL,
+         perDose=TRUE) {
     toType     <- match.arg(toType)
     toDoseUnit <- match.arg(toDoseUnit)
     interp     <- match.arg(interp)
@@ -370,7 +382,8 @@ convertDVH.DVHLstLst <-
 function(x, toType=c("asis", "cumulative", "differential"),
          toDoseUnit=c("asis", "GY", "CGY"),
          interp=c("asis", "linear"),
-         nodes=NULL, rangeD=NULL, perDose=TRUE) {
+         nodes=NULL, rangeD=NULL,
+         perDose=TRUE) {
     toType     <- match.arg(toType)
     toDoseUnit <- match.arg(toDoseUnit)
     interp     <- match.arg(interp)

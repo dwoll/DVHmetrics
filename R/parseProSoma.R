@@ -1,5 +1,3 @@
-## TODO is differential DVH volume / per Gy?
-
 #####---------------------------------------------------------------------------
 ## parse character vector from ProSoma DVH file
 parseProSoma <- function(x, planInfo=FALSE, courseAsID=FALSE) {
@@ -180,7 +178,7 @@ parseProSoma <- function(x, planInfo=FALSE, courseAsID=FALSE) {
         vars3[grep(patDoseRel, vars2, ignore.case=TRUE)] <- "doseRel"
         vars3[grep(patVolRel,  vars2, ignore.case=TRUE)] <- "volumeRel"
         vars3[grepl(patVolD,   vars2, ignore.case=TRUE) &
-              (DVHtype == "differential")] <- "volume"
+              (DVHtype == "differential")] <- "volumeRel"
 
         ## extract DVH as a matrix and store preceding information
         ## read line length(strct) for cases where file does not end with a
@@ -242,13 +240,12 @@ parseProSoma <- function(x, planInfo=FALSE, courseAsID=FALSE) {
         ## convert differential DVH (per unit dose) to cumulative
         ## and add differential DVH separately
         if(info$DVHtype == "differential") {
-            stop("differential DVH currently not supported")
-            # DVH$dvh     <- convertDVH(dvh,
-            #                           toType="cumulative",
-            #                           toDoseUnit="asis",
-            #                           #perDose=FALSE)
-            #                           #perDose=TRUE)
-            # DVH$dvhDiff <- dvh
+            # stop("differential DVH currently not supported")
+            DVH$dvh     <- convertDVH(dvh,
+                                      toType="cumulative",
+                                      toDoseUnit="asis",
+                                      perDose=FALSE)
+            DVH$dvhDiff <- dvh
         }
 
         ## set class

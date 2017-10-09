@@ -54,7 +54,7 @@ parseEclipse <- function(x, planInfo=FALSE, courseAsID=FALSE) {
     }
 
     getDoseUnit <- function(ll) {
-        line <- ll[grep("^Prescribed dose.+:", ll)]
+        line <- ll[grep("^(Prescribed|Total) dose.+:", ll)]
         elem <- sub("^.+\\[(GY|CGY)\\][[:blank:]]*:.+", "\\1", line, perl=TRUE, ignore.case=TRUE)
         toupper(trimWS(elem))
     }
@@ -150,11 +150,11 @@ parseEclipse <- function(x, planInfo=FALSE, courseAsID=FALSE) {
         doseUnit <- NA_character_
     }
 
-    doseRx0 <- getElem("^Prescribed dose.*:", header)
+    doseRx0 <- getElem("^(Prescribed|Total) dose.*:", header)
     ## check if sum plan
     doseRx  <- if((length(doseRx0) > 0) && (doseRx0 != "not defined")) {
         doseRxUnit <- doseUnit
-        getDose("^Prescribed dose.*:", header)
+        getDose("^(Prescribed|Total) dose.*:", header)
     } else {                                        # sum plan
         ## doseRx is encoded in plan name
         if(tolower(planInfo) == "doserx") {

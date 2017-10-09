@@ -36,7 +36,7 @@ showDVH(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL,
 \details{
 If multiple diagrams are produced, they are shown in the same graphics device. If interactive inspection is required, make sure you use an R development environment that saves previous diagrams and allows navigating between them - e.g., \href{http://www.rstudio.com/products/rstudio/download/}{RStudio} or \href{http://www.openanalytics.eu/downloads/architect}{OpenAnalytics Architect}.
 
-For \code{addMSD=TRUE}, the number of DVH nodes (dose values) is reduced by 1/3 of the maximum number of nodes in \code{x}. Before calculating the point-wise mean andSD, DVHs in \code{x} are first linearly interpolated using the same set of nodes.
+For \code{addMSD=TRUE}, the number of DVH nodes (dose values) is reduced by 1/3 of the maximum number of nodes in \code{x}. Before calculating the point-wise mean and SD, DVHs in \code{x} are first linearly interpolated using the same set of nodes.
 }
 \value{
 Silently returns a \code{\link[ggplot2]{ggplot}} diagram object, or - when multiple diagrams are constructed - a list of \code{\link[ggplot2]{ggplot}} diagram objects.

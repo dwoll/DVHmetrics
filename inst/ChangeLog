@@ -5,6 +5,7 @@ DVHMETRICS RELEASE VERSIONS at http://cran.r-project.org/
 Version 0.3.6.0.900 (March 23, 2017)
     * readDVH()
       - add support for ProSoma (thanks: Manfred Sassowsky)
+      - add support for Eclipse 15 (thanks: Stefania Naccarato)
 
 Version 0.3.6 (July 27, 2016)
     * showMeanDVH()

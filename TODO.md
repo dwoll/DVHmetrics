@@ -1,10 +1,13 @@
 # TODO
 
+ * EQD2 - document that this method assumes homogeneous dose distribution in the volume
+
 ## Medium term
 
+ * Enable reading UTF-8 files (Eclipse 15, Eclipse cm^3 line under OS X)
+ * PRIMO support
  * Check changes in `RadOnc` TomoTherapy, RayStation import
  * `getNTCP()` relative seriality model (equation 18 in Kaellman et al.), from differential DVH with density / per unit dose
- * UTF-8 issue with Eclipse files and cm^3 line under OS X.
  * check that expensive calculations (e.g., conversion to differential DVH) are done only once, and then stored
  * conformity index CI?
  * Shiny app: allow zoom into DVH diagrams

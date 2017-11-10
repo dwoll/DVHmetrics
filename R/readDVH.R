@@ -1,7 +1,7 @@
 #####---------------------------------------------------------------------------
 ## returns a list (1 component per DVH file) of lists (1 component = 1 list per structure)
 readDVH <- function(x, type=c("Eclipse", "Cadplan", "Masterplan", "Pinnacle",
-                              "Monaco", "HiArt", "RayStation", "ProSoma"),# "PRIMO"),
+                              "Monaco", "HiArt", "RayStation", "ProSoma", "PRIMO"),
                     planInfo=FALSE, courseAsID=FALSE, add) {
     type <- match.arg(type)
 
@@ -19,8 +19,8 @@ readDVH <- function(x, type=c("Eclipse", "Cadplan", "Masterplan", "Pinnacle",
                        Monaco=parseMonaco,
                        HiArt=parseHiArt,
                        RayStation=parseRayStation,
-                       ProSoma=parseProSoma)
-                       #PRIMO=parsePRIMO)
+                       ProSoma=parseProSoma,
+                       PRIMO=parsePRIMO)
     
     dvhLL <- if(length(dvhRawL) >= 1L) {
         res <- Map(parseFun, dvhRawL, planInfo=planInfo, courseAsID=courseAsID)
@@ -30,9 +30,9 @@ readDVH <- function(x, type=c("Eclipse", "Cadplan", "Masterplan", "Pinnacle",
         NULL
     }
     
-    ## for HiArt and ProSoma files, no patient ID is given
+    ## for HiArt, ProSoma and PRIMO files, no patient ID is given
     ## -> copy the random ID generated in parseDVH() to all DVHs
-    if(type %in% c("HiArt", "ProSoma")) {
+    if(type %in% c("HiArt", "ProSoma", "PRIMO")) {
         setID <- function(dvhL, id) {
             dvhLOut <- lapply(dvhL, function(y) {
                 y$patID <- id

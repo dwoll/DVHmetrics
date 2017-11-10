@@ -23,58 +23,71 @@ parsePRIMO <- function(x, planInfo=FALSE, courseAsID=FALSE) {
     }
 
     getDVHtype <- function(ll) {
-        line <- ll[grep("^# Type:", ll)]
-        elem <- sub("^# Type:[[:blank:]]+(Cumulative|Differential)", "\\1",
+        line <- ll[grep("^# Mode:", ll)]
+        elem <- sub("^# Mode:[[:blank:]]+(Cumulative|Differential)", "\\1",
                     line, perl=TRUE, ignore.case=TRUE)
         tolower(trimWS(elem))
     }
 
-    sStart <- grep("^# Structure: ", x)     # start sections
+    sStart <- grep("^# _________________", x) # start of DVH matrix
     sLen   <- diff(c(sStart, length(x)+1))  # length of sections
-    if((length(sLen) < 1L) || all(sLen < 1L)) {
-        stop("No structures found")
-    }
-
-    structList <- Map(function(start, len) x[start:(start+len-1)], sStart, sLen)
 
     ## extract file header and header info
-    header     <- x[seq_len(sStart[1]-2)]                        # header
-    patName    <- getElem("^# Project:",  header)   # patient id
-    patID      <- gsub("[^a-z0-9]", "\\1", tempfile(pattern="", tmpdir=""))
+    header     <- x[seq_len(sStart[1]-1)]                        # header
+    patName    <- gsub("[^a-z0-9]", "\\1", tempfile(pattern="", tmpdir=""))
+    patID      <- getElem("^# Project:",  header)   # patient id
     plan       <- NA_character_
     doseRx     <- NA_real_
     isoDoseRx  <- NA_real_
-    DVHdate    <- getElem("^# Date:", header)
+    DVHdate    <- NA_character_
     DVHtype    <- getDVHtype(header)
     doseRx     <- NA_real_
 
+    ## get dose and volume units
+    varDose  <- sub("^.+Dose \\((.+?)\\)[[:blank:]]+.+$",
+                    "\\1", header[grep("Dose \\(.+?\\)",   header)])
+    varVol   <- sub("^.+Volume \\((.+?)\\)$",
+                    "\\1", header[grep("Volume \\(.+?\\)", header)])
+    if(grepl("%", varDose, ignore.case=TRUE)) {
+        isDoseRel <- TRUE
+        doseUnit  <- "PERCENT"
+    } else {
+        ## TODO: need example file for this
+        warning("PRIMO files with absolute dose are not implemented")
+        isDoseRel <- FALSE
+        doseUnit  <- NA_character_
+    }
+
+    if(grepl("%", varVol, ignore.case=TRUE)) {
+        isVolRel   <- TRUE
+        volumeUnit <- "PERCENT"
+    } else {
+        warning("PRIMO files with absolute volume are not implemented")
+        ## TODO: need example file for this
+        isVolRel   <- FALSE
+        volumeUnit <- NA_character_
+    }
+
+    ## find columns for structure, dose, volume
+    varTxt <- x[sStart+1]
+    varTxt <- gsub("^#[[:blank:]]+(.+)$", "\\1", varTxt)
+    vars   <- as.matrix(read.table(text=varTxt, header=FALSE, sep="\t",
+                                   stringsAsFactors=FALSE, comment.char="")[1, ])
+
+    nStructs  <- length(vars) - 4
+    structIdx <- 2:(nStructs+1)
+    doseIdx   <- rep(1, nStructs)
+    volumeIdx <- 3:(nStructs+2)
+
+    ## read all data
+    datAll <- data.matrix(read.table(text=x[(sStart[1]+3):(sStart[1]+sLen-1)],
+                                     header=FALSE, dec=",", sep="\t",
+                                     stringsAsFactors=FALSE, comment.char=""))
+
     ## extract DVH from one structure section and store in a list
     ## with DVH itself as a matrix
-    getDVH <- function(strct, info) {
-        ## TODO get dose and volume units
-        varDose <- sub("^# Ave\. Dose \\[(.+?)\\]: .+$",
-                       "\\1", header[grep("^Ave\. Dose", header)])
-        varVol  <- sub("^# Volume \\[(.+?)\\]: .+$",
-                       "\\1", header[grep("^# Volume",   header)])
-        if(grepl("%", varDose, ignore.case=TRUE)) {
-            isDoseRel <- TRUE
-            doseUnit  <- "PERCENT"
-        } else {
-            ## TODO: need example file for this
-            warning("PRIMO files with absolute dose are not implemented")
-            isDoseRel <- FALSE
-            doseUnit  <- NA_character_
-        }
-    
-        if(grepl("%", varVol, ignore.case=TRUE)) {
-            isVolRel   <- TRUE
-            volumeUnit <- "PERCENT"
-        } else {
-            warning("PRIMO files with absolute volume are not implemented")
-            ## TODO: need example file for this
-            isVolRel   <- FALSE
-            volumeUnit <- NA_character_
-        }
+    getDVH <- function(strIdx, dIdx, vIdx, info) {
+        structure <- vars[[strIdx]][1]
 
         ## extract DVH as a matrix and set variable names
         dvh <- datAll[ , c(dIdx, vIdx)]
@@ -153,8 +166,9 @@ parsePRIMO <- function(x, planInfo=FALSE, courseAsID=FALSE) {
 
     ## list of DVH data frames with component name = structure
     info <- list(patID=patID, patName=patName, date=DVHdate,
-                 plan=plan, doseRx=doseRx, isoDoseRx=isoDoseRx)
-    dvhL <- lapply(structList, getDVH, info=info)
+                 plan=plan, doseRx=doseRx, isoDoseRx=isoDoseRx,
+                 doseUnit=doseUnit, volumeUnit=volumeUnit)
+    dvhL <- Map(getDVH, structIdx, doseIdx, volumeIdx, info=list(info))
     dvhL <- Filter(Negate(is.null), dvhL)
     names(dvhL) <- sapply(dvhL, function(y) y$structure)
     if(length(unique(names(dvhL))) < length(dvhL)) {

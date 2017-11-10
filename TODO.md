@@ -1,11 +1,13 @@
 # TODO
 
+ * `getEUD()` make numerically stable for dose in cGy and large `EUDa`
  * EQD2 - document that this method assumes homogeneous dose distribution in the volume
 
 ## Medium term
 
  * Enable reading UTF-8 files (Eclipse 15, Eclipse cm^3 line under OS X)
  * PRIMO support
+ * Read dates using "%A %d %B %Y %H:%M:%S" - requires being able to correctly set locale, host OS needs to support it
  * Check changes in `RadOnc` TomoTherapy, RayStation import
  * `getNTCP()` relative seriality model (equation 18 in Kaellman et al.), from differential DVH with density / per unit dose
  * check that expensive calculations (e.g., conversion to differential DVH) are done only once, and then stored

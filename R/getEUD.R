@@ -36,7 +36,11 @@ function(x, EUDa, EUDfd=NULL, EUDab=NULL, ...) {
             xD$dvhDiff[ , "dose"]
         }
     
-        volDose <- volume*dose^EUDa / xD$structVol
+        ## numerically unstable with large dose (in cGy) and EUDa
+        ## -> take logs log(volume) - log(xD$structVol) + EUDa * log(dose)
+        ## and try to carry logs up to geud calculation, only then go
+        ## back to original scale
+        volDose <- (volume / xD$structVol) * (dose^EUDa)
         wtMean  <- sum(volDose[volume > 0], na.rm=TRUE)
         geud    <- wtMean^(1/EUDa)
     	if(!is.finite(geud)) {

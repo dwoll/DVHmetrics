@@ -7,6 +7,8 @@ Version 0.3.6.0.900 (November 11, 2017)
       - add support for ProSoma (thanks: Manfred Sassowsky)
       - add support for Eclipse 15 (thanks: Stefania Naccarato)
       - add support for PRIMO 0.3.1 (UNFINISHED)
+      - pass argument encoding to readLines() to enable UTF-8
+        (UNFINISHED)
 
 Version 0.3.6 (July 27, 2016)
     * showMeanDVH()

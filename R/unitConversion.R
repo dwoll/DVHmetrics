@@ -4,14 +4,27 @@ function(conversion="CGY2GY") {
     conversion <- toupper(removeWS(conversion))
 
     ## check how the conversion factor is indicated
-    idxGY2GY   <- conversion %in% c("GY2GY")
-    idxCGY2GY  <- conversion %in% c("CGY2GY")
-    idxGY2CGY  <- conversion %in% c("GY2CGY")
-    idxCGY2CGY <- conversion %in% c("CGY2CGY")
-    idxCC2CC   <- conversion %in% c("CC2CC")
+    idxCGY2GY  <- conversion == c("CGY2GY")
+    idxCGY2EVG <- conversion == c("CGY2EV/G")
+
+    idxGY2CGY  <- conversion == c("GY2CGY")
+    idxGY2EVG  <- conversion == c("GY2EV/G")
+
+    idxEVG2CGY <- conversion == c("EV/G2CGY")
+    idxEVG2GY  <- conversion == c("EV/G2GY")
+
+    idxCGY2CGY <- conversion == c("CGY2CGY")
+    idxGY2GY   <- conversion == c("GY2GY")
+    idxEVG2EVG <- conversion == c("EV/G2EV/G")
+
+    idxCC2CC   <- conversion == c("CC2CC")
 
     ## did we catch all requested conversion types?
-    idxAll <- idxGY2GY | idxCGY2GY | idxGY2CGY | idxCGY2CGY | idxCC2CC
+    idxAll <- idxCGY2GY  | idxCGY2EVG |
+              idxGY2CGY  | idxGY2EVG  |
+              idxEVG2CGY | idxEVG2GY  |
+              idxCGY2CGY | idxGY2GY   | idxEVG2EVG | idxCC2CC
+
     if(!all(idxAll)) {
         warning(c('Conversion type(s) "', paste(conversion[!idxAll], collapse=", "),
                   '" not found - conversion factor set to NA'))
@@ -20,10 +33,19 @@ function(conversion="CGY2GY") {
     convFac <- rep(NA_real_, length(conversion))
 
     ## conversion factors for dose units
-    convFac[idxGY2GY]   <- 1
     convFac[idxCGY2GY]  <- 1/100
+    convFac[idxCGY2EVG] <- NA_real_
+
     convFac[idxGY2CGY]  <- 100
+    convFac[idxGY2EVG]  <- NA_real_
+
+    convFac[idxEVG2CGY] <- NA_real_
+    convFac[idxEVG2GY]  <- NA_real_
+
     convFac[idxCGY2CGY] <- 1
+    convFac[idxGY2GY]   <- 1
+    convFac[idxEVG2EVG] <- 1
+
     convFac[idxCC2CC]   <- 1
 
     return(convFac)
@@ -44,7 +66,7 @@ function(x="CGY2GY", first=TRUE) {
         return(NA_character_)
     }
 
-    knownUnits <- c("CGY", "GY", "CC")
+    knownUnits <- c("CGY", "GY", "EV/G", "CC")
     isKnown    <- sapply(units, function(x) { all(x %in% knownUnits) })
     if(!all(isKnown)) {
         warning(c("Unit not recognized - needs to be one of\n",

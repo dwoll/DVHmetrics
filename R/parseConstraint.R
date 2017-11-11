@@ -23,7 +23,7 @@ function(x, doseUnit=NULL, volUnit=NULL) {
     specDose <- pm$valRef %in% specMetr
 
     ## comparison details
-    pattern    <- "^([.[:digit:]]+)([%]|GY|CGY|CC)$"
+    pattern    <- "^([.[:digit:]]+)([%]|GY|CGY|EV/G|CC)$"
     valCmp     <- sub(pattern, "\\1", comp)
     valCmpNum  <- as.numeric(valCmp)
     unitCmp    <- sub(pattern, "\\2", comp)

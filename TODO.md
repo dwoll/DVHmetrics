@@ -1,14 +1,13 @@
 # TODO
 
- * `getEUD()` make numerically stable for dose in cGy and large `EUDa`
- * EQD2 - document that this method assumes homogeneous dose distribution in the volume
+ * Enable reading UTF-8 files (Eclipse 15, Eclipse cm^3 line under OS X)
+ * `parsePRIMO()` - implement differential DVH, absolute volume
+ * `getEUD()` - make numerically stable for dose in cGy and large `EUDa`
 
 ## Medium term
 
- * Enable reading UTF-8 files (Eclipse 15, Eclipse cm^3 line under OS X)
- * PRIMO support
  * Read dates using "%A %d %B %Y %H:%M:%S" - requires being able to correctly set locale, host OS needs to support it
- * Check changes in `RadOnc` TomoTherapy, RayStation import
+ * Check changes in `RadOnc` TomoTherapy, RayStation, Aria 13 import
  * `getNTCP()` relative seriality model (equation 18 in Kaellman et al.), from differential DVH with density / per unit dose
  * check that expensive calculations (e.g., conversion to differential DVH) are done only once, and then stored
  * conformity index CI?
@@ -22,7 +21,6 @@
 
 ## Long term
 
- * expand Jupyter notebook
  * Shiny app: better way to save old data instead of temp-file
  * `getDMEAN()` `smooth.spline()` -> `tol` must be strictly positive
  * `getDMEAN()` bandwidth choice for `locpoly()` when `dpill()` fails
@@ -34,9 +32,9 @@
  * harmonize structures by reading equivalence file, possibly with regex
 
 # build
- * "c:\program files\r\r-3.2.1\bin\x64\Rcmd.exe" INSTALL --build DVHmetrics_0.3.5.tar.gz
- * "c:\program files\r\r-3.2.1\bin\x64\Rcmd.exe" build DVHmetrics --resave-data --compact-vignettes="both"
- * "c:\program files\r\r-3.2.1\bin\x64\Rcmd.exe" check DVHmetrics_0.3.5.tar.gz --as-cran
+ * "c:\program files\r\r-3.4.2patched\bin\x64\Rcmd.exe" INSTALL --build DVHmetrics_0.3.5.tar.gz
+ * "c:\program files\r\r-3.4.2patched\bin\x64\Rcmd.exe" build DVHmetrics --resave-data --compact-vignettes="both"
+ * "c:\program files\r\r-3.4.2patched\bin\x64\Rcmd.exe" check DVHmetrics_0.3.5.tar.gz --as-cran
  * `install.packages("d:/daniel_work/workspace/DVHmetrics_0.3.5.tar.gz", repos=NULL, type="source")`
 
  * "c:\program files\r\r-devel\bin\x64\Rcmd.exe" INSTALL --build DVHmetrics_0.3.6.tar.gz

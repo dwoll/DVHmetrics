@@ -6,7 +6,7 @@
 \alias{getEQD2.DVHLstLst}
 \title{2Gy fractions biologically equivalent dose (EQD2)}
 \description{
-Calculate dose in 2Gy fractions biologically equivalent dose according to the linear-quadratic model.
+Calculate dose in 2Gy fractions biologically equivalent dose according to the linear-quadratic model, assuming a homogeneous dose distribution within the volume.
 }
 \usage{
 getEQD2(D=NULL, fd=NULL, fn=NULL, ab=NULL)
@@ -26,7 +26,7 @@ getEQD2(D=NULL, fd=NULL, fn=NULL, ab=NULL)
   \item{ab}{alpha/beta ratio for the relevant tissue.  If \code{D} is some kind of \code{DVH} object, only the first element will be used.}
 }
 \details{
-EQD2 is a special case of isoeffective dose calculation with fractional dose \code{d2=2}, see \code{\link[DVHmetrics]{getIsoEffD}}.
+EQD2 is a special case of isoeffective dose calculation with fractional dose \code{d2=2}, see \code{\link[DVHmetrics]{getIsoEffD}}. The calculation assumes a homogeneous dose distribution within the volume.
 }
 \value{
 Default method: A data frame with variables \code{EQD2}, \code{fractDose}, \code{ab}.

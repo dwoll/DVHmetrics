@@ -1,6 +1,6 @@
 #####---------------------------------------------------------------------------
 ## parse character vector from PRIMO DVH file
-parsePRIMO <- function(x, planInfo=FALSE, courseAsID=FALSE) {
+parsePRIMO_v015 <- function(x, planInfo=FALSE, courseAsID=FALSE) {
     planInfo <- as.character(planInfo)
 
     ## function to extract one information element from a number of lines

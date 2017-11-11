@@ -21,7 +21,7 @@ parseMetric <- function(x, doseUnit=NULL, volUnit=NULL) {
     ## allow for V10%_CC or D10cc_% pattern for returning absolute volumes / relative doses
     pattern <- paste0("^([DV])([.[:digit:]]+|",
                       specMetrPat,
-                      ")([%]|GY|CGY|CC)*(_[%]|_GY|_CGY|_CC)*.*")
+                      ")([%]|GY|CGY|EV/G|CC)*(_[%]|_GY|_CGY|_EV/G|_CC)*.*")
     
     ## extract components
     DV      <- sub(pattern, "\\1", x)   # get a volume or a dose?
@@ -91,9 +91,9 @@ parseMetric <- function(x, doseUnit=NULL, volUnit=NULL) {
     validUnitRef <- ((DV == "D") &
                      ((unitRef %in% c("%", "CC")) |
                       (valRef  %in% specMetr))) |
-                    ((DV == "V") & (unitRef %in% c("%", "GY", "CGY")))
+                    ((DV == "V") & (unitRef %in% c("%", "GY", "CGY", "EV/G")))
     validUnitDV  <- is.na(unitDV) |
-                    ((DV == "D") & (unitDV  %in% c("%", "GY", "CGY"))) |
+                    ((DV == "D") & (unitDV  %in% c("%", "GY", "CGY", "EV/G"))) |
                     ((DV == "V") & (unitDV  %in% c("%", "CC")))
 
     valid <- validPattern & validUnitRef & validUnitDV

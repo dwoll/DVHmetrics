@@ -2,9 +2,10 @@
 ## TODO: fix for fPath=NA -> no initial /
 parseDVH <- function(x, type=c("Eclipse", "Cadplan", "Masterplan",
                                "Pinnacle", "Monaco", "HiArt", "RayStation",
-                               "ProSoma", "PRIMO")) {
+                               "ProSoma", "PRIMO"), ...) {
     type <- match.arg(type)
-
+    dots <- list(...)
+    
     ## name them using patient IDs
     getPatID <- function(txt) {
         if(type == "Monaco") {
@@ -37,12 +38,18 @@ parseDVH <- function(x, type=c("Eclipse", "Cadplan", "Masterplan",
         }
     }
 
+    readFile <- function(f) {
+        con <- file(f, "r", ...)
+        on.exit(close(con))
+        readLines(con=con)
+    }
+
     DVHraw <- if(type != "Pinnacle") {
         files <- Sys.glob(x)
         files <- Filter(function(y) file_test(op="-f", y), files)
         if(length(files) >= 1L) {
             ## read in files into a list of character vectors
-            lapply(files, readLines)
+            lapply(files, readFile)
         } else {
             character(0)
         }

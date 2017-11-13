@@ -10,7 +10,9 @@ mergePinnaclePat  <- function(x, planInfo=FALSE, courseAsID=FALSE) {
         warning(paste("Required files not found in directory", basename(x)))
         NULL
     } else {
-        Map(function(y) { read.csv(y, header=TRUE, stringsAsFactors=FALSE, comment.char="") }, reqFiles)
+        Map(function(y) {
+            read.csv(y, header=TRUE, stringsAsFactors=FALSE, comment.char="")
+        }, reqFiles)
     }
     
     if(!is.null(fRead)) {

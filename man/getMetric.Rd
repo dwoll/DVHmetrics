@@ -57,7 +57,7 @@ A \emph{free} DVH metric is a character string which has three mandatory element
 \itemize{
 \item 1st letter \code{"D"} or \code{"V"}: \code{"D"} If the requested value is a dose, \code{"V"} if it is a volume.
 \item 2nd element \code{<number>}: If the first letter is \code{"D"}, this gives the volume for which the dose value of the cumulative DVH should be reported. If the first letter is \code{"V"}, this gives the dose for which the volume value of the cumulative DVH should be reported.
-\item 3rd element \code{<measurement unit>}: The measurement unit for the 2nd element of the metric. Absolute volumes are indicated by \code{"CC"} for cubic centimeter, relative volumes by \code{"\%"}. Absolute doses are indicated by \code{"Gy"} for Gray or \code{"cGy"} for Centigray, relative doses by \code{"\%"}.
+\item 3rd element \code{<measurement unit>}: The measurement unit for the 2nd element of the metric. Absolute volumes are indicated by \code{"CC"} for cubic centimeter, relative volumes by \code{"\%"}. Absolute doses are indicated by \code{"Gy"} for Gray, \code{"cGy"} for Centigray, or \code{"eV/g"} for uncalibrated dose in DVHs exported by PRIMO. Relative doses are indicated by \code{"\%"}.
 \item Optional 4th element \code{_<measurement unit>}: The measurement unit of the output value. Possible units are as for the 3rd element. If missing, dose is reported as absolute dose in the measurement unit used in the DVH. Volume is reported as relative volume in \%.
 }
 Examples:

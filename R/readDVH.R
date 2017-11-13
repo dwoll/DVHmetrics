@@ -2,13 +2,13 @@
 ## returns a list (1 component per DVH file) of lists (1 component = 1 list per structure)
 readDVH <- function(x, type=c("Eclipse", "Cadplan", "Masterplan", "Pinnacle",
                               "Monaco", "HiArt", "RayStation", "ProSoma", "PRIMO"),
-                    planInfo=FALSE, courseAsID=FALSE, add) {
+                    planInfo=FALSE, courseAsID=FALSE, add, ...) {
     type <- match.arg(type)
 
     dvhRawL <- if(missing(x)) {
-        parseDVH(type=type)
+        parseDVH(type=type, ...)
     } else {
-        parseDVH(x, type=type)
+        parseDVH(x, type=type, ...)
     }
     
     parseFun <- switch(type,

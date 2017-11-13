@@ -17,8 +17,8 @@ Data frame with quality assurance constraints to use with built-in DVH object \c
 See \code{\link[DVHmetrics]{checkConstraint}} for the definition of a constraint.
 }
 \seealso{
-\code{\link[DVHmetrics]{readConstraint}}
-\code{\link[DVHmetrics]{checkConstraint}}
+\code{\link[DVHmetrics]{readConstraint}},
+\code{\link[DVHmetrics]{checkConstraint}},
 \code{\link[DVHmetrics]{showConstraint}}
 }
 \examples{

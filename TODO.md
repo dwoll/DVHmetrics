@@ -1,8 +1,6 @@
 # TODO
 
- * Enable reading UTF-8 files (Eclipse 15, Eclipse cm^3 line under OS X)
  * `parsePRIMO()` - implement differential DVH, absolute volume
- * `getEUD()` - make numerically stable for dose in cGy and large `EUDa`
 
 ## Medium term
 

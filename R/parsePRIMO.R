@@ -85,20 +85,7 @@ parsePRIMO <- function(x, planInfo=FALSE, courseAsID=FALSE) {
         doseRxUnit <- NA_character_
         isoDoseRx  <- NA_real_
         doseUnit   <- getDoseUnit(strct)
-        if(doseUnit == "EV/G") {
-            warning("dose unit eV/g is currently not supported in DVH metrics")
-        }
 
-        ## check if we have dose Rx
-        ## if so, does it have the same unit as doseUnit -> convert
-        if(!is.na(doseUnit) && !is.na(doseRxUnit)) {
-            if((doseUnit == "GY") && (doseRxUnit == "CGY")) {
-                doseRx <- doseRx/100
-            } else if((doseUnit == "CGY") && (doseRxUnit == "GY")) {
-                doseRx <- doseRx*100
-            }
-        }
-        
         ## extract structure, volume, dose min, max, mean, median and sd
         structure <- getElem("^# Structure:", strct)
         structVol <- as.numeric(getElem("^# Volume.+:", strct))
@@ -141,8 +128,10 @@ parsePRIMO <- function(x, planInfo=FALSE, courseAsID=FALSE) {
         patDoseRel <- "^rel\\. dose"
         patVol     <- "^volume \\[[^%]\\]"
         patVolRel  <- "^volume \\[%\\]"
+        patVolD    <- "^dv/dd"  # differential DVH
         hits <- sum(c(grepl(patDose, vars2), grepl(patDoseRel, vars2),
-                      grepl(patVol,  vars2), grepl(patVolRel,  vars2)))
+                      grepl(patVol,  vars2), grepl(patVolRel,  vars2),
+                      grepl(patVolD, vars2)))
         if(length(vars2) != hits) {
             stop(c("Could not identify all DVH columns"),
                  paste(vars2, collapse=", "))
@@ -154,6 +143,7 @@ parsePRIMO <- function(x, planInfo=FALSE, courseAsID=FALSE) {
         vars3[grep(patDoseRel, vars2)] <- "doseRel"
         vars3[grep(patVol,     vars2)] <- "volume"
         vars3[grep(patVolRel,  vars2)] <- "volumeRel"
+        vars3[grep(patVolD,    vars2)] <- "volumeRel"
 
         ## extract DVH as a matrix and store preceding information
         ## check if dvh is all blank -> no data
@@ -174,12 +164,17 @@ parsePRIMO <- function(x, planInfo=FALSE, courseAsID=FALSE) {
             structVol <- if(info$DVHtype == "cumulative") {
                 max(c(structVol, dvh[ , "volume"]))
             } else {
-                ## reconstruct volumes -> volume is per gray -> mult with bin width
-                volBin <- dvh[ , "volume"]*diff(c(-dvh[1, "dose"], dvh[ , "dose"]))
-                max(c(structVol, sum(volBin)))
+                ## reconstruct volumes
+                max(c(structVol, sum(dvh[ , "volume"])))
             }
         }
         
+        ## if we have relative and absolute dose: add doseRx
+        if(("doseRel" %in% vars3) && ("dose" %in% vars3)) {
+            doseRx <- round(mean(dvh[ , "dose"] * 100 / dvh[ , "doseRel"],
+                                 na.rm=TRUE), digits=2)
+        }
+
         ## add information we don't have yet: relative/absolute volume
         if((       "volumeRel" %in% vars3) && !("volume"    %in% vars3)) {
             dvh <- cbind(dvh, volume=structVol*(dvh[ , "volumeRel"]/100))
@@ -187,11 +182,6 @@ parsePRIMO <- function(x, planInfo=FALSE, courseAsID=FALSE) {
             dvh <- cbind(dvh, volumeRel=100*(dvh[ , "volume"]/structVol))
         }
         
-        ## if we have relative and absolute dose: add doseRx
-        if(("doseRel" %in% vars3) && ("dose" %in% vars3)) {
-            doseRx <- mean(dvh[ , "dose"] * 100 / dvh[ , "doseRel"], na.rm=TRUE)
-        }
-
         ## add information we don't have yet: relative/absolute dose
         ## considering isoDoseRx
         if((    "doseRel" %in% vars3) && !("dose"    %in% vars3)) {
@@ -237,14 +227,12 @@ parsePRIMO <- function(x, planInfo=FALSE, courseAsID=FALSE) {
                     doseMode=doseMode,
                     doseSD=doseSD)
         
-        ## convert differential DVH (per unit dose) to cumulative
+        ## convert differential DVH to cumulative
         ## and add differential DVH separately
         if(info$DVHtype == "differential") {
-            stop("Differential DVH not yet implemented for PRIMO")
-            # warning("I assume differential DVH is per unit dose\nbut I have no information on this")
-            # DVH$dvh     <- convertDVH(dvh, toType="cumulative",
-            #                           toDoseUnit="asis", perDose=TRUE)
-            # DVH$dvhDiff <- dvh
+            DVH$dvh     <- convertDVH(dvh, toType="cumulative",
+                                      toDoseUnit="asis", perDose=FALSE)
+            DVH$dvhDiff <- dvh
         }
         
         ## set class

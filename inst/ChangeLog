@@ -1,12 +1,12 @@
-$Date: 2017-11-15 15:45:29 +0000 (Wed, 15 Nov 2017) $
+$Date: 2017-11-21 15:45:29 +0000 (Tue, 21 Nov 2017) $
 
 DVHMETRICS RELEASE VERSIONS at http://cran.r-project.org/
 
-Version 0.3.6.0.900 (November 15, 2017)
+Version 0.3.7 (November 21, 2017)
     * readDVH()
+      - add support for PRIMO 0.3.1
       - add support for ProSoma (thanks: Manfred Sassowsky)
-      - add support for Eclipse 15 (thanks: Stefania Naccarato)
-      - add support for PRIMO 0.3.1 (UNFINISHED)
+      - fix for Eclipse 15 (thanks: Stefania Naccarato)
       - pass argument encoding to file() to enable UTF-8 or
         UTF-8-BOM
     * getEUD() (and hence getNTCP())

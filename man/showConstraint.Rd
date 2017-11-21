@@ -27,7 +27,7 @@ showConstraint(x, constr, byPat=TRUE, rel=TRUE, guessX=TRUE, thresh=1)
 \details{
 Constraints are shown as points in the cumulative DVH with an additional arrow indicating where the cumulative DVH curve should lie relative to the constraint. On each DVH curve, the point with the minimal Euclidean distance to the constraint is indicated. Note that, visually, this point only has the minimal apparent distance if the aspect ratio of the diagram is 1.
 
-If multiple diagrams are produced, they are shown in the same graphics device. If interactive inspection is required, make sure you use an R development environment that saves previous diagrams and allows navigating between them - e.g., \href{http://www.rstudio.com/products/rstudio/download/}{RStudio} or \href{http://www.openanalytics.eu/downloads/architect}{OpenAnalytics Architect}.
+If multiple diagrams are produced, they are shown in the same graphics device. If interactive inspection is required, make sure you use an R development environment that saves previous diagrams and allows navigating between them - e.g., \href{https://www.rstudio.com/products/rstudio/download/}{RStudio} or \href{https://www.getarchitect.io/}{OpenAnalytics Architect}.
 }
 \value{
 Silently returns a \code{\link[ggplot2]{ggplot}} diagram object, or - when multiple diagrams are constructed - a list of \code{\link[ggplot2]{ggplot}} diagram objects.

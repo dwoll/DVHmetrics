@@ -10,32 +10,27 @@
 convertDVH(x, toType=c("asis", "cumulative", "differential"),
            toDoseUnit=c("asis", "GY", "CGY"),
            interp=c("asis", "linear"),
-           nodes=NULL, rangeD=NULL,
-           perDose=TRUE, structVol=NULL)
+           nodes=NULL, rangeD=NULL, perDose=TRUE)
 
 \method{convertDVH}{matrix}(x, toType=c("asis", "cumulative", "differential"),
            toDoseUnit=c("asis", "GY", "CGY"),
            interp=c("asis", "linear"),
-           nodes=NULL, rangeD=NULL,
-           perDose=TRUE, structVol=NULL)
+           nodes=NULL, rangeD=NULL, perDose=TRUE)
 
 \method{convertDVH}{DVHs}(x, toType=c("asis", "cumulative", "differential"),
            toDoseUnit=c("asis", "GY", "CGY"),
            interp=c("asis", "linear"),
-           nodes=NULL, rangeD=NULL,
-           perDose=TRUE, structVol=NULL)
+           nodes=NULL, rangeD=NULL, perDose=TRUE)
 
 \method{convertDVH}{DVHLst}(x, toType=c("asis", "cumulative", "differential"),
            toDoseUnit=c("asis", "GY", "CGY"),
            interp=c("asis", "linear"),
-           nodes=NULL, rangeD=NULL,
-           perDose=TRUE, structVol=NULL)
+           nodes=NULL, rangeD=NULL, perDose=TRUE)
 
 \method{convertDVH}{DVHLstLst}(x, toType=c("asis", "cumulative", "differential"),
            toDoseUnit=c("asis", "GY", "CGY"),
            interp=c("asis", "linear"),
-           nodes=NULL, rangeD=NULL,
-           perDose=TRUE, structVol=NULL)
+           nodes=NULL, rangeD=NULL, perDose=TRUE)
 }
 \arguments{
   \item{x}{One DVH (object of class \code{matrix} or \code{DVHs}, multiple cumulative DVHs from one patient with multiple structures (object of class \code{DVHLst}), or multiple cumulative DVHs from many patients, each with multiple structures (object of class \code{DVHLstLst}). See \code{\link[DVHmetrics]{readDVH}}.}

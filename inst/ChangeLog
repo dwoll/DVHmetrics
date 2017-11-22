@@ -1,8 +1,8 @@
-$Date: 2017-11-21 15:45:29 +0000 (Tue, 21 Nov 2017) $
+$Date: 2017-11-22 15:45:29 +0000 (Wed, 22 Nov 2017) $
 
-DVHMETRICS RELEASE VERSIONS at http://cran.r-project.org/
+DVHMETRICS RELEASE VERSIONS at https://cran.r-project.org/
 
-Version 0.3.7 (November 21, 2017)
+Version 0.3.7 (November 22, 2017)
     * readDVH()
       - add support for PRIMO 0.3.1
       - add support for ProSoma (thanks: Manfred Sassowsky)
@@ -12,6 +12,9 @@ Version 0.3.7 (November 21, 2017)
     * getEUD() (and hence getNTCP())
       - make more numerically stable for large dose values given
         in cGy and large exponent a (thanks: Jesper Pedersen)
+    * runGUI()
+      - enable interactive zoom for DVH diagrams and constraint
+        plots
 
 Version 0.3.6 (July 27, 2016)
     * showMeanDVH()

@@ -1,11 +1,13 @@
 ## S3 generic function
 showConstraint <-
-function(x, constr, byPat=TRUE, rel=TRUE, guessX=TRUE, thresh=1) {
+function(x, constr, byPat=TRUE, rel=TRUE, guessX=TRUE, guessY=TRUE,
+         thresh=1, show=TRUE, visible=FALSE) {
     UseMethod("showConstraint")
 }
 
 showConstraint.DVHs <-
-function(x, constr, byPat=TRUE, rel=TRUE, guessX=TRUE, thresh=1) {
+function(x, constr, byPat=TRUE, rel=TRUE, guessX=TRUE, guessY=TRUE,
+         thresh=1, show=TRUE, visible=FALSE) {
     x <- if(byPat) {
         setNames(list(x), x$structure)
     } else {
@@ -17,7 +19,8 @@ function(x, constr, byPat=TRUE, rel=TRUE, guessX=TRUE, thresh=1) {
 
     #NextMethod("showConstraint")
     showConstraint.DVHLst(x, constr=constr, byPat=byPat,
-                           guessX=guessX, rel=rel, thresh=thresh)
+                          guessX=guessX, guessY=guessY, rel=rel,
+                          thresh=thresh, show=show, visible=visible)
 }
 
 ## for byPat=TRUE
@@ -25,7 +28,8 @@ function(x, constr, byPat=TRUE, rel=TRUE, guessX=TRUE, thresh=1) {
 ## for byPat=FALSE
 ## x is a list of DVHs (1 per patient)
 showConstraint.DVHLst <-
-function(x, constr, byPat=TRUE, rel=TRUE, guessX=TRUE, thresh=1) {
+function(x, constr, byPat=TRUE, rel=TRUE, guessX=TRUE, guessY=TRUE,
+         thresh=1, show=TRUE, visible=FALSE) {
     ## make sure DVH list is organized as required for byPat
     if(is.null(attributes(x)$byPat) || attributes(x)$byPat != byPat) {
         stop(c("DVH list organization by-patient / by-structure",
@@ -217,12 +221,13 @@ function(x, constr, byPat=TRUE, rel=TRUE, guessX=TRUE, thresh=1) {
     ## get DVH plot for relevant structures / IDs
     ## constraint may be more extreme than actual doses
     doseMax <- max(vapply(x, function(y) { max(y$dvh[ , "dose"]) }, numeric(1)))
-    if(isTRUE(any(diagDF$doseAbs > doseMax))) {
+    if(isTRUE(any(diagDF$doseAbs > doseMax)) && (length(guessX) == 1L)) {
         guessX <- max(diagDF$doseAbs)
     }
 
     diag <- showDVH(xConstrSub$x,
-                    cumul=TRUE, byPat=byPat, rel=rel, guessX=guessX,
+                    cumul=TRUE, byPat=byPat, rel=rel,
+                    guessX=guessX, guessY=guessY,
                     thresh=thresh, show=FALSE)
 
     ## add constraint arrow to plot
@@ -254,14 +259,21 @@ function(x, constr, byPat=TRUE, rel=TRUE, guessX=TRUE, thresh=1) {
         diagC <- diagC + scale_shape_manual(values=seq_len(nConstr))
     }
 
-    print(diagC)
+    if(show) {
+        print(diagC)
+    }
 
-    return(invisible(diagC))
+    if(visible) {
+        diagC
+    } else {
+        invisible(diagC)
+    }
 }
 
 ## x is a DVH list (1 component per id) of lists
 showConstraint.DVHLstLst <-
-function(x, constr, byPat=TRUE, rel=TRUE, guessX=TRUE, thresh=1) {
+function(x, constr, byPat=TRUE, rel=TRUE, guessX=TRUE, guessY=TRUE,
+         thresh=1, show=TRUE, visible=FALSE) {
     ## re-organize x into by-patient or by-structure form if necessary
     isByPat <- attributes(x)$byPat
     xRO <- if(is.null(isByPat) || (isByPat != byPat)) {
@@ -275,7 +287,12 @@ function(x, constr, byPat=TRUE, rel=TRUE, guessX=TRUE, thresh=1) {
 
     diagL <- Map(showConstraint,
                  x=xConstrSub$x, constr=xConstrSub$constr,
-                 byPat=byPat, rel=rel, guessX=guessX, thresh=thresh)
+                 byPat=byPat, rel=rel, guessX=guessX, guessY=guessY,
+                 thresh=thresh, show=show, visible=visible)
 
-    return(invisible(diagL))
+    if(visible) {
+        diagL
+    } else {
+        invisible(diagL)
+    }
 }

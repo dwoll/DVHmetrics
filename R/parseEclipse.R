@@ -10,7 +10,7 @@ parseEclipse <- function(x, planInfo=FALSE, courseAsID=FALSE) {
         elem <- sub("^.+?:[[:blank:]]+([[:alnum:][:punct:][:blank:]]+$)", "\\1",
                     line, ignore.case=iCase, perl=TRUE)
         elem <- if(trim) {
-            trimWS(elem, side="both")
+            trimws(elem, which="both")
         } else {
             elem
         }
@@ -23,7 +23,7 @@ parseEclipse <- function(x, planInfo=FALSE, courseAsID=FALSE) {
     }
 
     getDose <- function(pattern, ll, doseRx) {
-        line <- trimWS(ll[grep(pattern, ll)], side="both")
+        line <- trimws(ll[grep(pattern, ll)], which="both")
         pat  <- "^.+?:[^[:digit:]]*([[:digit:][:punct:]]+)(Gy|cGy|%)*([[:alnum:][:punct:][:blank:]]*)$"
         elem <- gsub(pat, "\\1", line, perl=TRUE, ignore.case=TRUE)
         grp2 <- gsub(pat, "\\2", line, perl=TRUE, ignore.case=TRUE)
@@ -34,7 +34,7 @@ parseEclipse <- function(x, planInfo=FALSE, courseAsID=FALSE) {
             warning(paste(patID, ": Non-standard dose line found"))
         }
 
-        num <- as.numeric(trimWS(elem))
+        num <- as.numeric(trimws(elem))
         if(is.na(num)) {
             header  <- x[seq_len(sStart[1]-1)]                        # header
             patID   <- getElem("^Patient ID[[:blank:]]*:",  header)   # patient id
@@ -56,19 +56,40 @@ parseEclipse <- function(x, planInfo=FALSE, courseAsID=FALSE) {
     getDoseUnit <- function(ll) {
         line <- ll[grep("^(Prescribed|Total) dose.+:", ll)]
         elem <- sub("^.+\\[(GY|CGY)\\][[:blank:]]*:.+", "\\1", line, perl=TRUE, ignore.case=TRUE)
-        toupper(trimWS(elem))
+        toupper(trimws(elem))
     }
 
     getVolUnit <- function(ll) {
         line <- ll[grep("^Volume.+:", ll)]
         elem <- sub("^.+\\[(CM.+)\\][[:blank:]]*:.+", "\\1", line, perl=TRUE, ignore.case=TRUE)
-        toupper(trimWS(elem))
+        toupper(trimws(elem))
     }
 
     getDVHtype <- function(ll) {
         line <- ll[grep("^Type.+:", ll)]
         elem <- sub("^Type.+:[[:blank:]]+(Cumulative|Differential).+", "\\1", line, perl=TRUE, ignore.case=TRUE)
-        tolower(trimWS(elem))
+        tolower(trimws(elem))
+    }
+
+    # "%A %d %B %Y %H:%M:%S"
+    getDVHdate <- function(ll) {
+        line <- ll[grep("^Date[[:blank:]]+:", ll)]
+        elem <- trimws(sub("^Date[[:blank:]]+: (.+)$", "\\1", line))
+        d <- if(grepl("^[[:digit:]]{2}\\.", elem)) {
+            ## date format up to ARIA 12
+            as.Date(substr(elem, start=1, stop=10), format="%d.%m.%Y")
+        } else {
+            ## date format ARIA 13+ - locale dependent
+            ## remove ,
+            elem <- gsub("[,.]", "", elem)
+            as.Date(strptime(elem, format="%A %d %B %Y %H:%M:%S"))
+        }
+        
+        if(is.na(d)) {
+            elem
+        } else {
+            d
+        }
     }
 
     sStart <- grep("^Structure: [[:alnum:][:punct:]]", x) # start of sections
@@ -128,7 +149,7 @@ parseEclipse <- function(x, planInfo=FALSE, courseAsID=FALSE) {
         NA_character_
     }
 
-    DVHdate    <- getElem("^Date[[:blank:]]+:", header)
+    DVHdate    <- getDVHdate(header)
     DVHtype    <- getDVHtype(header)
     isoDoseRx0 <- getElem("^% for dose \\(%\\):", header)
     ## check if sum plan
@@ -230,7 +251,7 @@ parseEclipse <- function(x, planInfo=FALSE, courseAsID=FALSE) {
                         split="\\[[[:alpha:]%]+\\]", fixed=FALSE, perl=TRUE))
 
         ## remove leading and trailing white space
-        vars2 <- tolower(trimWS(vars1))
+        vars2 <- tolower(trimws(vars1))
 
         ## make sure we recognize all columns in the DVH
         patDose    <- "^dose"

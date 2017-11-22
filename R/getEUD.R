@@ -36,6 +36,9 @@ function(x, EUDa, EUDfd=NULL, EUDab=NULL, ...) {
             xD$dvhDiff[ , "dose"]
         }
     
+        volume <- volume[volume >= 0]
+        dose   <- dose[volume >= 0]
+
         ## numerically unstable with large dose (in cGy) and EUDa
         # volDose <- (volume / xD$structVol) * (dose^EUDa)
         # wtMean  <- sum(volDose[volume > 0], na.rm=TRUE)

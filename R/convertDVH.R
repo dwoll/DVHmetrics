@@ -240,13 +240,7 @@ function(x, toType=c("asis", "cumulative", "differential"),
         }
     } else if((toType == "asis") && (toDoseUnit != "asis") && (interp == "asis")) {
         ## just change dose unit in DVH and remaining dose values
-        cf <- if( (toupper(x$doseUnit) == "CGY") && (toDoseUnit == "GY")) {
-            1/100
-        } else if((toupper(x$doseUnit) == "GY")  && (toDoseUnit == "CGY")) {
-            100
-        } else {
-            NA_real_
-        }
+        cf <- getConvFac(paste0(x$doseUnit, "2", toDoseUnit))
 
         ## cumulative
         DVH$dvh <- convertDVH(x$dvh, toType=toType,
@@ -274,13 +268,7 @@ function(x, toType=c("asis", "cumulative", "differential"),
     } else if((toType == "asis") && (toDoseUnit != "asis") && (interp != "asis")) {
         ## change dose unit in DVH and remaining dose values
         ## and interpolate
-        cf <- if( (toupper(x$doseUnit) == "CGY") && (toDoseUnit == "GY")) {
-            1/100
-        } else if((toupper(x$doseUnit) == "GY")  && (toDoseUnit == "CGY")) {
-            100
-        } else {
-            NA_real_
-        }
+        cf <- getConvFac(paste0(x$doseUnit, "2", toDoseUnit))
 
         DVH$dvh[ , "dose"] <- cf*x$dvh[ , "dose"]
         DVH$doseMin   <- cf*x$doseMin
@@ -313,13 +301,7 @@ function(x, toType=c("asis", "cumulative", "differential"),
         }
     } else if((toType != "asis") && (toDoseUnit != "asis")) {
         ## change DVH type and dose unit
-        cf <- if( (toupper(x$doseUnit) == "CGY") && (toDoseUnit == "GY")) {
-            1/100
-        } else if((toupper(x$doseUnit) == "GY")  && (toDoseUnit == "CGY")) {
-            100
-        } else {
-            NA_real_
-        }
+        cf <- getConvFac(paste0(x$doseUnit, "2", toDoseUnit))
 
         if(toType == "differential") {
             ## from cumulative to differential

@@ -2,13 +2,10 @@
 
 ## Medium term
 
- * Read dates using "%A %d %B %Y %H:%M:%S" - requires being able to correctly set locale, host OS needs to support it
- * Check changes in `RadOnc` TomoTherapy, RayStation, Aria 13 import
  * `getNTCP()` relative seriality model (equation 18 in Kaellman et al.), from differential DVH with density / per unit dose
  * check that expensive calculations (e.g., conversion to differential DVH) are done only once, and then stored
  * conformity index CI?
- * Shiny app: allow zoom into DVH diagrams
- * Shiny app: shinydashboard?
+ * shiny app: shinydashboard?
  * allow `checkConstraint(x, "DNTCP < 50%")` instead of `0.5Gy`
  * `getMetric()`, `checkConstraint()`, `readDVH()` -> multicore support
  * `readDVH()` -> if `x` is a directory, read all files in it
@@ -17,7 +14,7 @@
 
 ## Long term
 
- * Shiny app: better way to save old data instead of temp-file
+ * shiny app: better way to save old data instead of temp-file
  * `getDMEAN()` `smooth.spline()` -> `tol` must be strictly positive
  * `getDMEAN()` bandwidth choice for `locpoly()` when `dpill()` fails
  * `getDMEAN()` adaptive binning grid size for `locpoly()` with small bandwidth

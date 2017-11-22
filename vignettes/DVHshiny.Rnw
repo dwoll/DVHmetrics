@@ -165,6 +165,8 @@ The output can be saved to a text file with the \textsf{Save as text file} downl
 
 To plot DVH diagrams for the currently active data, select the \textsf{Show DVH} tab (fig.\ \ref{fig:appShowDVH}). Depending on the first option in the left column, each DVH diagram either shows one patient with multiple structures, or one structure with multiple patients. Below, the left column shows checkboxes for the available patient IDs and for the available structures as extracted from the currently active data. The DVH either shows the relative or the absolute volume on the $y$-axis. The \textsf{Threshold volume} slider allows to restrict the range of the $x$-axis such that only relative volumes larger than the selected percentage appear. Either choose to plot the cumulative DVH, or the differential DVH. Finally, a point-wise mean DVH can be added to the diagram together with shaded areas for the point-wise 1 standard deviation and 2 standard deviations around that mean.
 
+Click and drag the mouse over the diagram to zoom into a region. Click outside the zoom region to reset the diagram.
+
 \begin{figure}[ht]
 \centering
 \includegraphics[width=12cm]{appShowDVH}
@@ -239,6 +241,8 @@ The output can be saved to a text file with the \textsf{Save as text file} downl
 %%%%---------------------------------------------------------------------------
 
 To visualize constraints that define a point in dose-volume space, select the \textsf{Show constraints} tab (fig.\ \ref{fig:appShowConstr}). Depending on the first option in the left column, each DVH diagram either shows one patient with multiple structures, or one structure with multiple patients. The DVH either shows the relative or the absolute volume on the $y$-axis. The \textsf{Threshold volume} slider allows to restrict the range of the $x$-axis such that only relative volumes larger than the selected percentage appear.
+
+Click and drag the mouse over the diagram to zoom into a region. Click outside the zoom region to reset the diagram.
 
 \begin{figure}[ht]
 \centering

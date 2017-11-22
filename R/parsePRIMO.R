@@ -62,6 +62,12 @@ parsePRIMO <- function(x, planInfo=FALSE, courseAsID=FALSE) {
         tolower(trimWS(elem))
     }
 
+    getDVHdate <- function(ll) {
+        line <- ll[grep("^# Date:", ll)]
+        elem <- substr(sub("^# Date: (.+)$", "\\1", line), start=1, stop=10)
+        as.Date(elem, format="%d.%m.%Y")
+    }
+
     sStart <- grep("^# Structure: ", x)     # start sections
     sLen   <- diff(c(sStart, length(x)+1))  # length of sections
     if((length(sLen) < 1L) || all(sLen < 1L)) {
@@ -75,7 +81,7 @@ parsePRIMO <- function(x, planInfo=FALSE, courseAsID=FALSE) {
     patName <- gsub("[^a-z0-9]", "\\1", tempfile(pattern="", tmpdir=""))
     patID   <- gsub("[^a-z0-9]", "\\1", tempfile(pattern="", tmpdir=""))
     plan    <- getElem("^# Project:",  header)
-    DVHdate <- getElem("^# Date:", header)
+    DVHdate <- getDVHdate(header)
     DVHtype <- getDVHtype(header)
 
     ## extract DVH from one structure section and store in a list

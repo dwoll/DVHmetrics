@@ -269,7 +269,12 @@ shinyServer(function(input, output) {
             lapply(seq_along(dvh$DVH), function(i) {
                 iMax <- sum(selPat %in% names(dvh$DVH))
                 if(i <= iMax) {    # avoid creating empty plots
-                    plotOutput(paste0("DVHplot", i))
+                    plotName <- paste0("DVHplot", i)
+                    plotOutput(plotName,
+                               dblclick=paste0(plotName, "_dblclick"),
+                               brush=brushOpts(id=paste0(plotName, "_brush"),
+                                               clip=TRUE,
+                                               resetOnNew=FALSE))
                 } else {
                     NULL
                 }
@@ -279,7 +284,12 @@ shinyServer(function(input, output) {
             lapply(seq_along(dvh$DVHbyStruct), function(i) {
                 iMax <- sum(selStruct %in% names(dvh$DVHbyStruct))
                 if(i <= iMax) {    # avoid creating empty plots
-                    plotOutput(paste0("DVHplot", i))
+                    plotName <- paste0("DVHplot", i)
+                    plotOutput(plotName,
+                               dblclick=paste0(plotName, "_dblclick"),
+                               brush=brushOpts(id=paste0(plotName, "_brush"),
+                                               clip=TRUE,
+                                               resetOnNew=FALSE))
                 } else {
                     NULL
                 }
@@ -321,14 +331,32 @@ shinyServer(function(input, output) {
                         dvh$DVHbyStruct[sharedNames][[localI]]
                     }
 
-                    showDVH(x=x,
-                            cumul=cumul,
-                            byPat=byPat,
-                            patID=selPat,
-                            structure=selStruct,
-                            thresh=input$plotThreshVol,
-                            rel=rel,
-                            addMSD=input$plotMSD)
+                    brush <- input[[paste0("DVHplot", localI, "_brush")]]
+                    if(!is.null(brush)) {
+                        showDVH(x=x,
+                                cumul=cumul,
+                                byPat=byPat,
+                                patID=selPat,
+                                structure=selStruct,
+                                guessX=c(brush$xmin, brush$xmax),
+                                guessY=c(brush$ymin, brush$ymax),
+                                thresh=input$plotThreshVol,
+                                rel=rel,
+                                addMSD=input$plotMSD,
+                                show=FALSE,
+                                visible=TRUE)
+                    } else {
+                        showDVH(x=x,
+                                cumul=cumul,
+                                byPat=byPat,
+                                patID=selPat,
+                                structure=selStruct,
+                                thresh=input$plotThreshVol,
+                                rel=rel,
+                                addMSD=input$plotMSD,
+                                show=FALSE,
+                                visible=TRUE)
+                    }
                 }
             })
 
@@ -349,11 +377,26 @@ shinyServer(function(input, output) {
                 if(is.null(constr) || (length(xConstrSub$x) < localI)) {
                     NULL
                 } else {
-                    showConstraint(x=xConstrSub$x[[localI]],
-                                   constr=xConstrSub$constr[[localI]],
-                                   byPat=byPat,
-                                   thresh=input$constrThreshVol,
-                                   rel=rel)
+                    brush <- input[[paste0("constraintPlot", localI, "_brush")]]
+                    if(!is.null(brush)) {
+                        showConstraint(x=xConstrSub$x[[localI]],
+                                       constr=xConstrSub$constr[[localI]],
+                                       byPat=byPat,
+                                       thresh=input$constrThreshVol,
+                                       guessX=c(brush$xmin, brush$xmax),
+                                       guessY=c(brush$ymin, brush$ymax),
+                                       rel=rel,
+                                       show=FALSE,
+                                       visible=TRUE)
+                    } else {
+                        showConstraint(x=xConstrSub$x[[localI]],
+                                       constr=xConstrSub$constr[[localI]],
+                                       byPat=byPat,
+                                       thresh=input$constrThreshVol,
+                                       rel=rel,
+                                       show=FALSE,
+                                       visible=TRUE)
+                    }
                 }
             })
         })
@@ -597,7 +640,13 @@ shinyServer(function(input, output) {
         }
 
         plotOutputL <- lapply(seq_along(xConstrSub$x), function(i) {
-            plotOutput(paste0("constraintPlot", i)) })
+            plotName <- paste0("constraintPlot", i)
+            plotOutput(plotName,
+                       dblclick=paste0(plotName, "_dblclick"),
+                       brush=brushOpts(id=paste0(plotName, "_brush"),
+                                       clip=TRUE,
+                                       resetOnNew=FALSE))
+        })
 
         ## convert the list to a tagList and return
         do.call(tagList, plotOutputL)

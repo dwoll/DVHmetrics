@@ -40,14 +40,16 @@ function(x, cumul=TRUE, interp=FALSE, rangeD=NULL) {
 ## S3 generic method
 showDVH <-
 function(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL, rel=TRUE,
-         guessX=TRUE, thresh=1, addMSD=FALSE, show=TRUE, fixed=TRUE) {
+         guessX=TRUE, guessY=TRUE, thresh=1, addMSD=FALSE,
+         show=TRUE, visible=FALSE, fixed=TRUE) {
     UseMethod("showDVH")
 }
 
 ## plots 1 DVH file for 1 id and 1 structure
 showDVH.DVHs <-
 function(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL, rel=TRUE,
-         guessX=TRUE, thresh=1, addMSD=FALSE, show=TRUE, fixed=TRUE) {
+         guessX=TRUE, guessY=TRUE, thresh=1, addMSD=FALSE,
+         show=TRUE, visible=FALSE, fixed=TRUE) {
     x <- if(byPat) {
         setNames(list(x), x$structure)
     } else {
@@ -58,7 +60,8 @@ function(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL, rel=TRUE,
     attr(x, which="byPat") <- byPat
 
     showDVH.DVHLst(x, cumul=cumul, byPat=byPat, patID=patID, structure=structure,
-                   rel=rel, guessX=guessX, thresh=thresh, addMSD=addMSD, show=show)
+                   rel=rel, guessX=guessX, guessY=guessY, thresh=thresh,
+                   addMSD=addMSD, show=show, visible=visible)
 }
 
 ## plots 1 list of DVH objects
@@ -66,7 +69,8 @@ function(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL, rel=TRUE,
 ## for byPat=FALSE: 1 structure -> multiple patients
 showDVH.DVHLst <-
 function(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL, rel=TRUE,
-         guessX=TRUE, thresh=1, addMSD=FALSE, show=TRUE, fixed=TRUE) {
+         guessX=TRUE, guessY=TRUE, thresh=1, addMSD=FALSE,
+         show=TRUE, visible=FALSE, fixed=TRUE) {
 
     ## make sure DVH list is organized as required for byPat
     if(is.null(attributes(x)$byPat) || attributes(x)$byPat != byPat) {
@@ -75,6 +79,7 @@ function(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL, rel=TRUE,
     }
 
     guessX <- as.numeric(guessX)
+    guessY <- as.numeric(guessY)
 
     ## if patIDs are selected, filter them here -> strips DVHLst class
     if(!is.null(patID)) {
@@ -119,38 +124,76 @@ function(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL, rel=TRUE,
 
     dvhDF <- combineDVHs(x, cumul=cumul, interp=doseLen, rangeD=rangeD)
 
-    ## choose upper x-axis limit (dose) - add 10%
+    ## choose x-axis limits (dose) - add 10% to upper limit
     ## TODO: up to first dose for which all structures reach threshold
-    xMax <- if((guessX == 1L) && !all(is.na(x[[1]]$dvh[ , "volumeRel"]))) {
-        volGEQ <- lapply(x, function(y) {
-            y$dvh[ , "dose"][y$dvh[ , "volumeRel"] >= thresh] })
-        1.1*max(unlist(volGEQ), na.rm=TRUE)
+    if(length(guessX) == 2L) {
+        xMin <- guessX[1]
+        xMax <- guessX[2]
     } else {
-        1.1*max(c(guessX, dvhDF$dose))
+        xMin <- 0
+        xMax <- if((guessX == 1) && !all(is.na(x[[1]]$dvh[ , "volumeRel"]))) {
+            ## guessX = TRUE
+            volGEQ <- lapply(x, function(y) {
+                y$dvh[ , "dose"][y$dvh[ , "volumeRel"] >= thresh] })
+            1.05*max(unlist(volGEQ), na.rm=TRUE)
+        } else if(guessX == 0L) {
+            ## guessX = FALSE
+            1.05*max(dvhDF$dose)
+        } else {
+            ## guessX = maximum
+            max(0.1, guessX)
+        }
     }
-    
+
     ## set plot volume to absolute or relative
-    ## and choose upper y-axis limit (volume) - add 3%
+    ## and choose y-axis limits (volume) - add 3% to upper limit
+    if(length(guessY) == 2L) {
+        yMin <- guessY[1]
+        yMax <- guessY[2]
+    } else {
+        yMin <- 0
+    }
+
     if(rel) {
         ## relative volume - check if available
         if(all(is.na(dvhDF$volumeRel))) {
             warning("All relative volumes are missing, will try to show absolute volume")
-            yMax <- 1.03*max(dvhDF$volume, na.rm=TRUE)
+            yMax <- if(length(guessY) == 1L) {
+                1.03*max(dvhDF$volume, na.rm=TRUE)
+            }
+
             rel  <- FALSE
             dvhDF$volPlot <- dvhDF$volume
         } else {
-            yMax <- min(c(103, 1.03*max(dvhDF$volumeRel, na.rm=TRUE)))
+            if(length(guessY) == 1L) {
+                yMax <- if(guessY == 1) {
+                    min(c(103, 1.03*max(dvhDF$volumeRel, na.rm=TRUE)))
+                } else {
+                    103
+                }
+            }
+
             dvhDF$volPlot <- dvhDF$volumeRel
         }
     } else {
         ## absolute volume - check if available
         if(all(is.na(dvhDF$volume))) {
             warning("All absolute volumes are missing, will try to show relative volume")
-            yMax <- min(c(103, 1.03*max(dvhDF$volumeRel, na.rm=TRUE)))
-            rel  <- TRUE
+            if(length(guessY) == 1L) {
+                yMax <- if(guessY == 1) {
+                    min(c(103, 1.03*max(dvhDF$volumeRel, na.rm=TRUE)))
+                } else {
+                    103
+                }
+            }
+
+            rel <- TRUE
             dvhDF$volPlot <- dvhDF$volumeRel
         } else {
-            yMax <- 1.03*max(dvhDF$volume, na.rm=TRUE)
+            yMax <- if(length(guessY) == 1L) {
+                1.03*max(dvhDF$volume, na.rm=TRUE)
+            }
+
             dvhDF$volPlot <- dvhDF$volume
         }
     }
@@ -190,9 +233,9 @@ function(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL, rel=TRUE,
 
     ## title string
     strTitle <- if(byPat) {
-        paste0("patient ",   x[[1]]$patID)
+        paste0("Patient ",   x[[1]]$patID)
     } else {
-        paste0("structure ", x[[1]]$structure)
+        paste0("Structure ", x[[1]]$structure)
     }
 
     doseUnit <- if(isDoseRel) {
@@ -229,15 +272,8 @@ function(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL, rel=TRUE,
     diag <- ggplot(dvhDF, aes_string(x="dose", y="volPlot"))
 
     ## rescale x-axis
-    diag <- if(is.finite(xMax)) {
-        diag + coord_cartesian(xlim=c(0, xMax))
-    } else {
-        diag
-    }
-    
-    ## rescale y-axis
-    diag <- if(is.finite(yMax)) {
-        diag + coord_cartesian(ylim=c(0, yMax))
+    diag <- if(is.finite(xMax) && is.finite(yMax)) {
+        diag + coord_cartesian(xlim=c(xMin, xMax), ylim=c(yMin, yMax))
     } else {
         diag
     }
@@ -279,8 +315,8 @@ function(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL, rel=TRUE,
     diag <- diag +
         ggtitle(strTitle) +
         theme_bw() +
-        expand_limits(y=0) +                      # make sure 0 is included
-        scale_y_continuous(expand=c(0, 0.6)) +    # no space below y=0
+        # expand_limits(y=0) +                      # make sure 0 is included
+        scale_y_continuous(expand=c(0, 0.6)) +
         guides(color=guide_legend(ncol=nLegendCols)) +
         xlab(paste0("Dose [",   doseUnit, "]")) +
         ylab(paste0("Volume [", volUnit,  "]"))
@@ -289,7 +325,11 @@ function(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL, rel=TRUE,
         print(diag)
     }
 
-    return(invisible(diag))
+    if(visible) {
+        diag
+    } else {
+        invisible(diag)
+    }
 }
 
 ## x is a DVH list (1 per id or 1 per structure) of lists
@@ -298,7 +338,8 @@ function(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL, rel=TRUE,
 ## or     for many structures -> multiple patients   per DVH
 showDVH.DVHLstLst <-
 function(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL, rel=TRUE,
-         guessX=TRUE, thresh=1, addMSD=FALSE, show=TRUE, fixed=TRUE) {
+         guessX=TRUE, guessY=TRUE, thresh=1, addMSD=FALSE,
+         show=TRUE, visible=FALSE, fixed=TRUE) {
 
     ## re-organize x into by-patient or by-structure form if necessary
     isByPat <- attributes(x)$byPat
@@ -338,7 +379,12 @@ function(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL, rel=TRUE,
 
     diagL <- Map(showDVH, x, cumul=cumul, byPat=byPat, rel=rel,
                  patID=list(patID), structure=list(structure),
-                 guessX=guessX, thresh=thresh, addMSD=addMSD, show=show, fixed=fixed)
+                 guessX=guessX, guessY=guessY, thresh=thresh,
+                 addMSD=addMSD, show=show, visible=visible, fixed=fixed)
 
-    return(invisible(diagL))
+    if(visible) {
+        diagL
+    } else {
+        invisible(diagL)
+    }
 }

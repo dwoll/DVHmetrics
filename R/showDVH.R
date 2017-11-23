@@ -158,11 +158,11 @@ function(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL, rel=TRUE,
         ## relative volume - check if available
         if(all(is.na(dvhDF$volumeRel))) {
             warning("All relative volumes are missing, will try to show absolute volume")
-            yMax <- if(length(guessY) == 1L) {
-                1.03*max(dvhDF$volume, na.rm=TRUE)
+            if(length(guessY) == 1L) {
+                yMax <- 1.03*max(dvhDF$volume, na.rm=TRUE)
             }
 
-            rel  <- FALSE
+            rel <- FALSE
             dvhDF$volPlot <- dvhDF$volume
         } else {
             if(length(guessY) == 1L) {
@@ -190,8 +190,8 @@ function(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL, rel=TRUE,
             rel <- TRUE
             dvhDF$volPlot <- dvhDF$volumeRel
         } else {
-            yMax <- if(length(guessY) == 1L) {
-                1.03*max(dvhDF$volume, na.rm=TRUE)
+            if(length(guessY) == 1L) {
+                yMax <- 1.03*max(dvhDF$volume, na.rm=TRUE)
             }
 
             dvhDF$volPlot <- dvhDF$volume
@@ -290,7 +290,7 @@ function(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL, rel=TRUE,
     } else {
         diag
     }
-    
+ 
     ## actual DVHs
     diag <- if(byPat) {
         diag + geom_line(data=dvhDF,

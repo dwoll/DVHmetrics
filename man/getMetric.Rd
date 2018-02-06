@@ -35,7 +35,7 @@ getMetric(x, metric, patID, structure,
   \item{structure}{\code{character} vector. Calculate given DVH metrics for these structures only. If missing, DVH metrics are calculated for all structures. Can be a regular expression if additional argument \code{fixed=FALSE} is supplied as well, see \code{\link[base]{regex}}.}
   \item{sortBy}{\code{character} vector giving the sorting criteria for the output data frame.}
   \item{splitBy}{\code{character} vector. Split results into a list of data frames where list components are defined by groups from combining these variables.}
-  \item{interp}{\code{character}. Method of interpolation between DVH points: Linear interpolation using \code{\link[stats]{approx}}, monotone Hermite spline interpolation using \code{\link[stats]{splinefun}}, or local polynomial regression using \code{\link[KernSmooth]{locpoly}} with kernel bandwidth chosen by the direct plug-in method using \code{\link[KernSmooth]{dpill}}.}
+  \item{interp}{\code{character}. Method of interpolation between DVH points: Linear interpolation using \code{\link[stats:approxfun]{approx}}, monotone Hermite spline interpolation using \code{\link[stats]{splinefun}}, or local polynomial regression using \code{\link[KernSmooth]{locpoly}} with kernel bandwidth chosen by the direct plug-in method using \code{\link[KernSmooth]{dpill}}.}
   \item{fixed}{\code{logical}. Use \code{fixed=FALSE} for regular expression matching of \code{patID} and \code{structure}.}
   \item{...}{Further arguments passed to \code{\link[DVHmetrics]{getEUD}} (for \code{metric="DEUD"}), \code{\link[DVHmetrics]{getTCP}} (for \code{metric="DTCP"}), or \code{\link[DVHmetrics]{getNTCP}} (for \code{metric="DNTCP"}).}
 }

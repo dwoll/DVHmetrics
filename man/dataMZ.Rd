@@ -20,7 +20,7 @@ See \code{\link[DVHmetrics]{readDVH}} for classes \code{DVHLstLst}, \code{DVHLst
 }
 \seealso{
 \code{\link[DVHmetrics]{readDVH}},
-\code{\link[DVHmetrics]{print.DVHs}}
+\code{\link[DVHmetrics:print]{print.DVHs}}
 }
 \examples{
 print(dataMZ, verbose=TRUE)

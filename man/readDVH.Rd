@@ -17,7 +17,7 @@ readDVH(x,
   \item{planInfo}{Experimental: Either \code{FALSE} or \code{character} string. In the latter case, \code{readDVH} tries to extract additional information from the \code{Plan} field in the DVH file, e.g., the prescription dose for a sum plan or the boost quadrant. Undocumented, see source.}
   \item{courseAsID}{\code{logical}. If \code{TRUE}, the \code{Course} entry in the header section of a DVH file is appended to the regular patient ID. Currently supported only for \code{type="Eclipse"}.}
   \item{add}{\code{DVHLstLst} object. Existing object that should be merged with the new data from the files.}
-  \item{...}{Additional arguments passed on to \code{\link[base]{file}}. Specify UTF-8 file encoding with \code{encoding="UTF-8"} or \code{encoding="UTF-8-BOM"} (when a byte-order-mark is used). Passing additional arguments is currently not supported when reading Pinnacle files.}
+  \item{...}{Additional arguments passed on to \code{\link[base:connections]{file}}. Specify UTF-8 file encoding with \code{encoding="UTF-8"} or \code{encoding="UTF-8-BOM"} (when a byte-order-mark is used). Passing additional arguments is currently not supported when reading Pinnacle files.}
 }
 \details{
 Absolute dose values need to be given in Gy, cGy, or eV/g for uncalibrated dose in DVHs exported by PRIMO. Absolute volume values need to be given in in cm^3.
@@ -26,7 +26,7 @@ Differential DVHs are automatically converted to cumulative DVHs, but the differ
 
 Sum plans are supported.
 
-For Eclipse starting with version 13, the date format is locale dependent as it uses words for day and month. Importing those dates as class \code{Date} requires that the correct locale is set (see \code{\link[base]{Sys.setlocale}}), and that files containing accents are read using the correct encoding (see above). Otherwise, date is stored as a character string.
+For Eclipse starting with version 13, the date format is locale dependent as it uses words for day and month. Importing those dates as class \code{Date} requires that the correct locale is set (see \code{\link[base:locales]{Sys.setlocale}}), and that files containing accents are read using the correct encoding (see above). Otherwise, date is stored as a character string.
 
 For RayStation, only cumulative DVHs with absolute volume are currently supported. Volume is assumed to be measured in cm^3.
 
@@ -82,7 +82,7 @@ Returns an object of class \code{DVHLstLst}. This is a list (one component with 
 \seealso{
 \code{\link[base]{Sys.glob}},
 \code{\link[base]{readLines}},
-\code{\link[DVHmetrics]{print.DVHs}},
+\code{\link[DVHmetrics:print]{print.DVHs}},
 \code{\link[DVHmetrics]{showDVH}},
 \code{\link[DVHmetrics]{getMetric}},
 \code{\link[DVHmetrics]{checkConstraint}},

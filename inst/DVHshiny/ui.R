@@ -19,6 +19,8 @@ shinyUI(fluidPage(
                                                    "Pinnacle3"=4, "Monaco"=5, "HiArt"=6,
                                                    "RayStation"=7, "ProSoma"=8, "PRIMO"=9)),
                                  fileInput("DVHupload", "Select DVH file:", multiple=TRUE),
+                                 # radioButtons("fileenc", "File encoding:",
+                                 #              list("Default"=1, "UTF-8"=2, "UTF-8-BOM"=3)),
                                  radioButtons("DVHplanInfo", "Information encoded in plan:",
                                               list("None"=1, "Prescribed dose"=2)),
                                  checkboxGroupInput("DVHreadOpts", label=NULL,

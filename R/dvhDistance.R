@@ -41,9 +41,9 @@ function(x, DV) {
         DVbu <- diag(1/lens, ncol=length(lens)) %*% DVbase
         
         ## orthogonal projections of all shifted constraint points
-        ## onto all subspaces in in subspace coords
+        ## onto all subspaces in subspace coords
         opAll <- DVbu %*% t(cptMat[-nrow(cptMat), , drop=FALSE])
-        op    <- diag(opAll)  # just the relevant projections (corresponding subscpace)
+        op    <- diag(opAll)  # just the relevant projections (corresponding subspace)
 
         ## check if projection is outside of DVH segment -> not in [0, segmentLength]
         outside <- (op < 0) | (op > lens)

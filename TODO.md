@@ -1,5 +1,8 @@
 # TODO
 
+ * move `shiny` to `Suggests:` instead of `Imports:`
+ * `readDVH()`: use `tryCatch()` to diagnose problems with input files containing umlauts / accents that are not in UTF-8 encoding
+
 ## Medium term
 
  * `getNTCP()` relative seriality model (equation 18 in Kaellman et al.), from differential DVH with density / per unit dose

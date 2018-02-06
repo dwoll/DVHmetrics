@@ -20,20 +20,26 @@ shinyServer(function(input, output) {
                                '4'="Pinnacle", '5'="Monaco", '6'="HiArt",
                                '7'="RayStation", '8'="ProSoma", '9'="PRIMO")
                     plans <- c('1'="none", '2'="doseRx")
+                    # encodings <- c('1'="Default", '2'="UTF-8", '3'="UTF-8-BOM")
+                    # enc <- encodings[input$fileenc]
+                    # if(enc == "Default") { enc <- NULL }
                     argL  <- if(("DVHadd" %in% input$DVHreadOpts) && file.exists("DVHprev.rds")) {
                         setwd(DVHdir)
                         add <- readRDS("DVHprev.Rds")
                         list(x=input$DVHupload$datapath,
                              type=types[input$DVHtype],
+                             # encoding=enc,
                              courseAsID=("DVHcourse" %in% input$DVHreadOpts),
                              planInfo=plans[input$DVHplanInfo],
                              add=add)
                     } else {
                         list(x=input$DVHupload$datapath,
                              type=types[input$DVHtype],
+                             # encoding=enc,
                              courseAsID=("DVHcourse" %in% input$DVHreadOpts),
                              planInfo=plans[input$DVHplanInfo])
                     }
+                    # argL <- Filter(Negate(is.null), argL)
                     do.call(readDVH, argL)
                 } else {
                     NULL

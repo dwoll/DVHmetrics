@@ -47,7 +47,7 @@ function(x, constr, byPat=TRUE, semSign=FALSE,
     ## determine dose and volume units in x
     xDoseUnits <- vapply(xConstrSub$x, function(y) y$doseUnit,   character(1))
     xVolUnits  <- vapply(xConstrSub$x, function(y) y$volumeUnit, character(1))
-    
+
     ## parse constraint and convert dose/volume units if necessary
     constrParse <- Map(parseConstraint, xConstrSub$constr,
                        doseUnit=xDoseUnits,
@@ -79,7 +79,7 @@ function(x, constr, byPat=TRUE, semSign=FALSE,
                            unlist(getMetric(dvh, metric=cnstr$metric, interp=interp, ...)),
                            NA_real_)
 
-        
+
         ## inverse metrics
         smInv <- ifelse(cnstr$valid,
                         unlist(getMetric(dvh, metric=cnstr$metricInv, interp=interp, ...)),
@@ -129,6 +129,7 @@ function(x, constr, byPat=TRUE, semSign=FALSE,
     ## transform into data frame
     compDF <- melt(compL, value.name="compliance")
     metrDF <- dcast(metrL, L1 + L2 ~ L3, value.var="observed")
+    ## reshape(metrL, direction="wide", v.names="observed", timevar="L3", idvar=c("L1", "L2"))
     resDF  <- merge(compDF, metrDF)
     names(resDF)[names(resDF) == "L1"] <- if(byPat) {
         "structure"
@@ -233,6 +234,8 @@ function(x, constr, byPat=TRUE, semSign=FALSE,
     resL$L1 <- NULL   # redundant with patID (bPat=TRUE) or structure (byPat=FALSE)
     resDF   <- dcast(resL, patID + structure + constraint + compliance ~ variable,
                      value.var="value")
+    ## reshape(resL, direction="wide", v.names="value", timevar="variable",
+    ##         idvar=c("patID", "structure", "constraint", "compliance"))
 
     ## reorder variables to return
     finDF <- data.frame(patID=resDF$patID,

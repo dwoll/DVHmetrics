@@ -1,6 +1,10 @@
 # TODO
 
- * move `shiny` to `Suggests:` instead of `Imports:`
+ * Dose metrics names standardized by AAPM TG263
+ * `getDMEAN()` trapezoidal rule
+ * check against `ggplot2`-devel
+ * move `shiny`, `markdown` to `Suggests:` instead of `Imports:`
+ * replace `reshape2::dcast()` and `reshape2::melt()` to remove dependency?
  * `readDVH()`: use `tryCatch()` to diagnose problems with input files containing umlauts / accents that are not in UTF-8 encoding
 
 ## Medium term

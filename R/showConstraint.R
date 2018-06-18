@@ -38,11 +38,11 @@ function(x, constr, byPat=TRUE, rel=TRUE, guessX=TRUE, guessY=TRUE,
 
     ## restrict x and constr to the same IDs/structures
     xConstrSub <- harmoConstrDVH(x, constr=constr, byPat=byPat)
-    
+
     ## determine dose and volume units in x
     xDoseUnits <- vapply(xConstrSub$x, function(y) y$doseUnit,   character(1))
     xVolUnits  <- vapply(xConstrSub$x, function(y) y$volumeUnit, character(1))
-    
+
     ## parse constraint and convert dose/volume units if necessary
     constrParse <- Map(parseConstraint, xConstrSub$constr,
                        doseUnit=xDoseUnits,
@@ -70,8 +70,8 @@ function(x, constr, byPat=TRUE, rel=TRUE, guessX=TRUE, guessY=TRUE,
                    ((cnstr$DV == "V") & (cnstr$unitCmp == "%"))
         doseRel <- ((cnstr$DV == "D") & (cnstr$unitCmp == "%")) |
                    ((cnstr$DV == "V") & (cnstr$unitRef == "%"))
-        
-        dstL <- dvhDistance(dvh, 
+
+        dstL <- dvhDistance(dvh,
                             DV=data.frame(D=Dcoord, V=Vcoord,
                                           volRel=volRel, doseRel=doseRel,
                                           unitRef=cnstr$unitRef, unitCmp=cnstr$unitCmp))
@@ -81,6 +81,8 @@ function(x, constr, byPat=TRUE, rel=TRUE, guessX=TRUE, guessY=TRUE,
     minDst   <- Map(getMinDstPt, xConstrSub$x, constrParse)
     minDstL  <- melt(minDst)
     minDstDF <- dcast(minDstL, L1 + L2 ~ L3, value.var="value")
+    ## reshape(minDstL, direction="wide", v.names="value", timevar="L3",
+    ##         idvar=c("L1", "L2"))
     names(minDstDF)[names(minDstDF) == "L1"] <- if(byPat) {
         "structure"
     } else {
@@ -88,7 +90,7 @@ function(x, constr, byPat=TRUE, rel=TRUE, guessX=TRUE, guessY=TRUE,
     }
 
     names(minDstDF)[names(minDstDF) == "L2"] <- "constraint"
-    
+
     ## merge distance to DVH with remaining data
     allDF <- merge(cDF, minDstDF)
 

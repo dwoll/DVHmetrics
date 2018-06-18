@@ -20,7 +20,7 @@ getEQD2(D=NULL, fd=NULL, fn=NULL, ab=NULL)
 \method{getEQD2}{DVHLstLst}(D=NULL, fd=NULL, fn=NULL, ab=NULL)
 }
 \arguments{
-  \item{D}{Default: Total dose. If \code{NULL}, \code{fn} must be given. Alternative: One cumulative DVH (object of class \code{DVHs}, multiple cumulative DVHs from one patient with multiple structures (object of class \code{DVHLst}), or multiple cumulative DVHs from many patients, each with multiple structures (object of class \code{DVHLstLst}). See \code{\link[DVHmetrics]{readDVH}}.}
+  \item{D}{Default: Total dose. If \code{NULL}, \code{fn} must be given. Alternative: One cumulative DVH (object of class \code{DVHs}), multiple cumulative DVHs from one patient with multiple structures (object of class \code{DVHLst}), or multiple cumulative DVHs from many patients, each with multiple structures (object of class \code{DVHLstLst}). See \code{\link[DVHmetrics]{readDVH}}.}
   \item{fd}{Fractional dose. If \code{D} is some kind of \code{DVH} object, only the first element will be used.}
   \item{fn}{Number of fractions. If \code{NULL}, \code{D} must be given. Ignored if \code{D} is some kind of \code{DVH} object.}
   \item{ab}{alpha/beta ratio for the relevant tissue.  If \code{D} is some kind of \code{DVH} object, only the first element will be used.}

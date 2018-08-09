@@ -34,23 +34,23 @@ Uses functionality provided by the R packages [ggplot2](http://cran.r-project.or
 
 #### References
 
-R Core Team (2017). R: A language and environment for statistical computing.  
+Chang W, Cheng J, Allaire JJ, Xie Y, McPherson J (2018). shiny: Web Application Framework for R.  
+R package version 1.1.0.  
+[http://CRAN.R-project.org/package=shiny](http://CRAN.R-project.org/package=shiny)
+
+R Core Team (2018). R: A language and environment for statistical computing.  
 R Foundation for Statistical Computing, Vienna, Austria.  
 [http://www.R-project.org/](http://www.R-project.org/)
 
-RStudio Inc. (2017). shiny: Web Application Framework for R.  
-R package version 1.0.5.  
-[http://CRAN.R-project.org/package=shiny](http://CRAN.R-project.org/package=shiny)
-
-Wand, M (2015). KernSmooth: Functions for Kernel Smoothing Supporting Wand & Jones (1995).  
+Wand M (2015). KernSmooth: Functions for Kernel Smoothing Supporting Wand & Jones (1995).  
 R package version 2.23-15.  
 [http://CRAN.R-project.org/package=KernSmooth](http://CRAN.R-project.org/package=KernSmooth)
 
-Wickham, H (2007). Reshaping Data with the reshape Package.  
+Wickham H (2007). Reshaping Data with the reshape Package.  
 Journal of Statistical Software, 21(12), 1-20.  
 [http://www.jstatsoft.org/v21/i12/](http://www.jstatsoft.org/v21/i12/)  
 [http://cran.r-project.org/package=reshape2](http://cran.r-project.org/package=reshape2)
 
-Wickham, H (2016). ggplot2: elegant graphics for data analysis. 2nd ed.  
+Wickham H (2016). ggplot2: elegant graphics for data analysis. 2nd ed.  
 New York: Springer.  
 [http://cran.r-project.org/package=ggplot2](http://cran.r-project.org/package=ggplot2)

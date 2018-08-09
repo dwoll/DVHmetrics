@@ -85,6 +85,9 @@ function(x, interp=c("linear", "spline", "ksmooth", "smoothSpl"), nodes=5001L) {
 
     doseMin <- min(xDiff$dvhDiff[volume > 0, "dose"])
     doseMax <- max(xDiff$dvhDiff[volume > 0, "dose"])
+
+    ## validate with area under cumulative DVH
+    # pracma::trapz(x$dvh[ , "dose"], x$dvh[ , "volumeRel"] / 100)
     doseAvg <- sum(doseMidPt*volRel/100)
     doseSD  <- sqrt(sum(doseMidPt^2*volRel/100) - doseAvg^2)
 

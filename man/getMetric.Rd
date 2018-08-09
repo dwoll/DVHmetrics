@@ -53,7 +53,7 @@ A \emph{pre-specified} DVH metric is one of the following character strings:
 \item \code{"DNTCP"}: The normal tissue complication probability (NTCP). See \code{\link[DVHmetrics]{getNTCP}} for mandatory and optional parameters.
 \item \code{"DTCP"}: The tumor control probability (TCP). See \code{\link[DVHmetrics]{getNTCP}} for mandatory and optional parameters.
 }
-A \emph{free} DVH metric is a character string which has three mandatory elements and one optional element in the following order:
+A \emph{free} DVH metric is a character string which has three mandatory elements and one optional element in the following order (AAPM TG263 2018, section 9.2, note that complementary / cold metrics are not yet implemented):
 \itemize{
 \item 1st letter \code{"D"} or \code{"V"}: \code{"D"} If the requested value is a dose, \code{"V"} if it is a volume.
 \item 2nd element \code{<number>}: If the first letter is \code{"D"}, this gives the volume for which the dose value of the cumulative DVH should be reported. If the first letter is \code{"V"}, this gives the dose for which the volume value of the cumulative DVH should be reported.
@@ -80,6 +80,8 @@ A data frame or a list with details on the calculated metrics.
 \item{observed}{The observed value for the DVH metric}
 }
 \references{
+American Association of Physicists in Medicine (AAPM) Task Group TG263 (2018). Standardizing Nomenclatures in Radiation Oncology. \url{https://www.aapm.org/pubs/reports/RPT_263.pdf} (section 9.2 "Guidelines for DVH metrics")
+
 Rancati et al. (2004). Fitting late rectal bleeding data using different NTCP models: results from an Italian multi-centric study (AIROPROS0101). Radiotherapy Oncology, 73, 21-32.
 
 Wu et al. (2002). Optimization of intensity modulated radiotherapy plans based on the equivalent uniform dose. International Journal of Radiation Oncology Biology Physics, 52, 224-235.

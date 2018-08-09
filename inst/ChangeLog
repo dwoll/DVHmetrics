@@ -1,6 +1,12 @@
-$Date: 2017-11-22 15:45:29 +0000 (Wed, 22 Nov 2017) $
+$Date: 2017-11-22 15:45:29 +0000 (Thu, 08 Aug 2018) $
 
 DVHMETRICS RELEASE VERSIONS at https://cran.r-project.org/
+
+Version 0.3.8 (August 09, 2018)
+    * removed dependency on package markdown
+    * getMetric()
+      - document AAPM TG263 (2018) recommendations for specifying
+        DVH metrics
 
 Version 0.3.7 (November 22, 2017)
     * readDVH()

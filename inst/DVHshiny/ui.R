@@ -266,7 +266,7 @@ shinyUI(fluidPage(
                     verbatimTextOutput("BED")
                 ),
                 tabPanel("About",
-                    includeMarkdown("ABOUT.md")
+                    includeHTML("ABOUT.html")
                 ),
 
                 id="task"

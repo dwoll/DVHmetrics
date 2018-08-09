@@ -8,7 +8,6 @@ importFrom(ggplot2, scale_y_continuous, scale_color_grey, scale_fill_grey)
 importFrom(grid, gpar, segmentsGrob, arrow, unit, grobTree)
 importFrom(reshape2, melt, dcast)
 importFrom(KernSmooth, dpill, locpoly)
-importFrom(markdown, markdownToHTML)
 import(shiny)
 
 export(readDVH,

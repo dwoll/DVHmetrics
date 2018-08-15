@@ -6,7 +6,6 @@ importFrom(ggplot2, coord_cartesian, annotation_custom, theme, theme_bw, xlab, y
 importFrom(ggplot2, facet_grid, scale_shape_manual, guides, guide_legend, expand_limits)
 importFrom(ggplot2, scale_y_continuous, scale_color_grey, scale_fill_grey)
 importFrom(grid, gpar, segmentsGrob, arrow, unit, grobTree)
-importFrom(reshape2, melt, dcast)
 importFrom(KernSmooth, dpill, locpoly)
 import(shiny)
 

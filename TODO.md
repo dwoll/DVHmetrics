@@ -1,6 +1,5 @@
 # TODO
 
- * replace `reshape2::dcast()` (used in `checkConstraint.DVHLst()`, `checkConstraint.DVHLstLst`, `showConstraint.DVHLst`) and `reshape2::melt()` (used in `checkConstraint.DVHLst()`, `checkConstraint.DVHLstLst()`, `getMetric.DVHLst()`, `getMetric.DVHLstLst()`, `showConstraint.DVHLst()`) to remove dependency?
  * `readDVH()`: use `tryCatch()` to diagnose problems with input files containing umlauts / accents that are not in UTF-8 encoding
 
 ## Medium term

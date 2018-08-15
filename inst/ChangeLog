@@ -4,6 +4,7 @@ DVHMETRICS RELEASE VERSIONS at https://cran.r-project.org/
 
 Version 0.3.8 (August 09, 2018)
     * removed dependency on package markdown
+    * removed dependency on package reshape2
     * getMetric()
       - document AAPM TG263 (2018) recommendations for specifying
         DVH metrics

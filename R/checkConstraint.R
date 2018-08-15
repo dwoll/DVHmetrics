@@ -124,12 +124,14 @@ function(x, constr, byPat=TRUE, semSign=FALSE,
     }
 
     compL <- Map(cmpFun, metrics)
-    metrL <- melt(metrics, value.name="observed")
+    metrL <- melt_dw(metrics, valname="observed")
 
     ## transform into data frame
-    compDF <- melt(compL, value.name="compliance")
-    metrDF <- dcast(metrL, L1 + L2 ~ L3, value.var="observed")
-    ## reshape(metrL, direction="wide", v.names="observed", timevar="L3", idvar=c("L1", "L2"))
+    compDF <- melt_dw(compL, valname="compliance")
+    ## metrDF <- dcast(metrL, L1 + L2 ~ L3, value.var="observed")
+    metrDF <- reshape(metrL, direction="wide", v.names="observed",
+                      timevar="L3", idvar=c("L1", "L2"))
+    metrDF <- setNames(metrDF, gsub("^observed\\.(.+)$", "\\1", names(metrDF)))
     resDF  <- merge(compDF, metrDF)
     names(resDF)[names(resDF) == "L1"] <- if(byPat) {
         "structure"
@@ -230,28 +232,23 @@ function(x, constr, byPat=TRUE, semSign=FALSE,
     res <- do.call("Map", c(args, dots))
 
     ## transform into data frame
-    resL    <- melt(res, id.vars=c("patID", "structure", "constraint", "compliance"))
-    resL$L1 <- NULL   # redundant with patID (bPat=TRUE) or structure (byPat=FALSE)
-    resDF   <- dcast(resL, patID + structure + constraint + compliance ~ variable,
-                     value.var="value")
-    ## reshape(resL, direction="wide", v.names="value", timevar="variable",
-    ##         idvar=c("patID", "structure", "constraint", "compliance"))
+    ## resL    <- melt(res, id.vars=c("patID", "structure", "constraint", "compliance"))
+    ## resL$L1 <- NULL   # redundant with patID (bPat=TRUE) or structure (byPat=FALSE)
+    ## resDF   <- dcast(resL, patID + structure + constraint + compliance ~ variable,
+    ##                 value.var="value")
+
+    resL   <- plyr::rbind.fill(lapply(res, reshape_dfL,
+                                      idvar=c("patID", "structure", "constraint", "compliance")))
+    resDF <- reshape(resL, direction="wide", v.names="value", timevar="variable",
+                     idvar=c("patID", "structure", "constraint", "compliance"))
+    resDF <- setNames(resDF, gsub("^value\\.(.+)$", "\\1", names(resDF)))
 
     ## reorder variables to return
-    finDF <- data.frame(patID=resDF$patID,
-                        structure=resDF$structure,
-                        constraint=resDF$constraint,
-                        observed=resDF$observed,
-                        compliance=resDF$compliance,
-                        deltaV=resDF$deltaV,
-                        deltaVpc=resDF$deltaVpc,
-                        deltaD=resDF$deltaD,
-                        deltaDpc=resDF$deltaDpc,
-                        dstMin=resDF$dstMin,
-                        dstMinRel=resDF$dstMinRel,
-                        ptMinD=resDF$ptMinD,
-                        ptMinV=resDF$ptMinV,
-                        stringsAsFactors=FALSE)
+    finDF <- resDF[ , c("patID", "structure", "constraint", "observed",
+                        "compliance", "deltaV", "deltaVpc", "deltaD", "deltaDpc",
+                        "dstMin", "dstMinRel", "ptMinD", "ptMinV")]
+
+    rownames(finDF) <- NULL
 
     ## sort
     if(!("none" %in% sortBy)) {

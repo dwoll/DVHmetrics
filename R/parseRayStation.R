@@ -1,6 +1,6 @@
 #####---------------------------------------------------------------------------
 ## parse character vector from RayStation DVH file
-parseRayStation <- function(x, planInfo=FALSE, courseAsID=FALSE) {
+parseRayStation <- function(x, planInfo=FALSE, courseAsID=FALSE, ...) {
     planInfo <- as.character(planInfo)
 
     ## function to extract one information element from a number of lines
@@ -94,7 +94,7 @@ parseRayStation <- function(x, planInfo=FALSE, courseAsID=FALSE) {
             warning("Could not determine dose measurement unit")
             doseUnit <- NA_character_
         }
-        
+
         ## check if we have dose Rx
         ## if so, does it have the same unit as doseUnit -> convert
         if(!is.na(doseUnit) && !is.na(doseRxUnit)) {
@@ -121,7 +121,7 @@ parseRayStation <- function(x, planInfo=FALSE, courseAsID=FALSE) {
         if(all(!nzchar(strct[dvhStart:length(strct)]))) {
             return(NULL)
         }
-        
+
         dvh <- data.matrix(read.table(text=strct[dvhStart:length(strct)],
                                       header=FALSE, stringsAsFactors=FALSE,
                                       colClasses=rep("numeric", 2),
@@ -136,7 +136,7 @@ parseRayStation <- function(x, planInfo=FALSE, courseAsID=FALSE) {
         ## add information we don't have yet: relative dose
         ## considering isoDoseRx
         dvh <- cbind(dvh, doseRel=dvh[ , "dose"]*isoDoseRx / doseRx)
-        
+
         ## check if dose is increasing
         stopifnot(isIncreasing(dvh))
 

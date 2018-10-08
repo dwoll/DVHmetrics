@@ -17,7 +17,7 @@ readDVH(x,
   \item{planInfo}{Experimental: Either \code{FALSE} or \code{character} string. In the latter case, \code{readDVH} tries to extract additional information from the \code{Plan} field in the DVH file, e.g., the prescription dose for a sum plan or the boost quadrant. Undocumented, see source.}
   \item{courseAsID}{\code{logical}. If \code{TRUE}, the \code{Course} entry in the header section of a DVH file is appended to the regular patient ID. Currently supported only for \code{type="Eclipse"}.}
   \item{add}{\code{DVHLstLst} object. Existing object that should be merged with the new data from the files.}
-  \item{...}{Additional arguments passed on to \code{\link[base:connections]{file}}. Specify UTF-8 file encoding with \code{encoding="UTF-8"} or \code{encoding="UTF-8-BOM"} (when a byte-order-mark is used). Passing additional arguments is currently not supported when reading Pinnacle files.}
+  \item{...}{Additional arguments passed on to \code{\link[base:connections]{file}}. Specify UTF-8 file encoding with \code{encoding="UTF-8"} or \code{encoding="UTF-8-BOM"} (when a byte-order-mark is used). Passing additional arguments is currently not supported when reading Pinnacle files. Additional arguments are also used for \code{type="HiArt"} where a list \code{hiart} may be supplied that specifies patient IDs, absolute structure volumes, and prescription dose (see Details).}
 }
 \details{
 Absolute dose values need to be given in Gy, cGy, or eV/g for uncalibrated dose in DVHs exported by PRIMO. Absolute volume values need to be given in in cm^3.
@@ -30,9 +30,16 @@ For Eclipse starting with version 13, the date format is locale dependent as it 
 
 For RayStation, only cumulative DVHs with absolute volume are currently supported. Volume is assumed to be measured in cm^3.
 
-To export data from Tomo HiArt, copy to clipboard and then save to file from a text editor. Support for Tomo HiArt files is currently limited to those with absolute dose and relative volume. Please send an anonymized sample file if you need this functionality.
-
 Since files from HiArt, ProSoma and PRIMO do not contain info on patient ID, the current workaround is to generate a random ID.
+
+To export data from Tomo HiArt, copy to clipboard and then save to file from a text editor. Support for Tomo HiArt files is currently limited to those with absolute dose and relative volume. Please send an anonymized sample file if you need this functionality. Alternatively, provide a list \code{hiart} with one component for each file you import. Each component itself has to be a named list with optional components
+\itemize{
+\item{\code{patName} - a character string for patient name}
+\item{\code{patID} - a character string for patient ID}
+\item{\code{doseRx} - a numeric value like \code{50.4} for prescription dose in the same dose unit as used in the DVHs}
+\item{\code{structVol} - a named list like \code{list("PTV 52Gy"=750, "LUNG"=1250)} giving the absolute structure volumes with names equal to structure names and numeric components of length 1}
+\item{\code{volumeUnit} - a character string like \code{"CC"} for the structure volume unit)}
+}
 
 Pinnacle3 files have to be exported using its own scripting facility such that information from one patient is contained in one directory. A suitable export script is available on request from the package authors. The directory layout for one patient has to be as follows (experimental, likely to change in future versions):
 \itemize{

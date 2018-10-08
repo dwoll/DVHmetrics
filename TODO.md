@@ -1,5 +1,6 @@
 # TODO
 
+ * `readDVH(..., type="HiArt")` -> remove all non-numbers as these may creep in during copying from the clipboard, add option to externally supply absolute volumes / prescription dose
  * `readDVH()`: use `tryCatch()` to diagnose problems with input files containing umlauts / accents that are not in UTF-8 encoding
 
 ## Medium term

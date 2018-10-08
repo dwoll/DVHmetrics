@@ -1,6 +1,6 @@
 #####---------------------------------------------------------------------------
 ## parse character vector from Elekta Monaco file
-parseMonaco <- function(x, planInfo=FALSE, courseAsID=FALSE) {
+parseMonaco <- function(x, planInfo=FALSE, courseAsID=FALSE, ...) {
     planInfo <- as.character(planInfo)
 
     ## extract file header and header info
@@ -33,7 +33,7 @@ parseMonaco <- function(x, planInfo=FALSE, courseAsID=FALSE) {
         warning("Could not determine volume measurement unit")
         NA_character_
     }
-    
+
     ## check if sum plan
     isoDoseRx  <- if(tolower(planInfo) == "doserx") {
         warning("Iso-dose-Rx is assumed to be 100")
@@ -51,7 +51,7 @@ parseMonaco <- function(x, planInfo=FALSE, courseAsID=FALSE) {
         warning("No info on prescribed dose")
         NA_real_
     }
-    
+
     DVHdate <- x[length(x)]
 #     footer <- x[length(x)]
 #     lct <- Sys.getlocale("LC_TIME")
@@ -70,7 +70,7 @@ parseMonaco <- function(x, planInfo=FALSE, courseAsID=FALSE) {
     doses   <- as.numeric(sub(pat, "\\2", DVHspan)[-DVHlen])
     volumes <- as.numeric(sub(pat, "\\3", DVHspan)[-DVHlen])
     DVHall  <- data.frame(structure=structs, dose=doses, volume=volumes,
-                          stringsAsFactors=FALSE)   
+                          stringsAsFactors=FALSE)
 
     names(DVHall) <- if(isDoseRel) {
         if(isVolRel) {
@@ -122,7 +122,7 @@ parseMonaco <- function(x, planInfo=FALSE, courseAsID=FALSE) {
             doseRel <- if(!is.null(info$doseRx) && !is.na(info$doseRx)) {
                 100*(dvh[ , "dose"] / info$doseRx)
             } else { NA_real_ }
-            
+
             dvh <- cbind(dvh, doseRel=doseRel)
         }
 

@@ -4,8 +4,10 @@ parseDVH <- function(x, type=c("Eclipse", "Cadplan", "Masterplan",
                                "Pinnacle", "Monaco", "HiArt", "RayStation",
                                "ProSoma", "PRIMO"), ...) {
     type <- match.arg(type)
-    dots <- list(...)
-    
+    if(hasName(dots, "hiart")) {
+        dots[["hiart"]] <- NULL
+    }
+
     ## name them using patient IDs
     getPatID <- function(txt) {
         if(type == "Monaco") {
@@ -39,7 +41,11 @@ parseDVH <- function(x, type=c("Eclipse", "Cadplan", "Masterplan",
     }
 
     readFile <- function(f) {
-        con <- file(f, "r", ...)
+        # con <- file(f, "r", ...)
+        argl <- c(list(description=f,
+                       open="r"),
+                  dots)
+        con <- do.call("file", argl)
         on.exit(close(con))
         readLines(con=con)
     }
@@ -66,7 +72,7 @@ parseDVH <- function(x, type=c("Eclipse", "Cadplan", "Masterplan",
             ## random sub-directory
             tmpf <- gsub("^[^0-9](.+)$", "\\1", tempfile(pattern="", tmpdir=""))
             tmpd <- normalizePath(paste0(tempdir(), "/pinnacle_", tmpf), mustWork=FALSE)
-                
+
             ## check the hierarchy in the zip file
             zipFD <- unzip(x, list=TRUE)
             dirs  <- if(all(dirname(zipFD$Name) %in% c("Data", "."))) {

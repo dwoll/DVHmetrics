@@ -1,6 +1,6 @@
 #####---------------------------------------------------------------------------
 ## parse character vector from PRIMO DVH file
-parsePRIMO <- function(x, planInfo=FALSE, courseAsID=FALSE) {
+parsePRIMO <- function(x, planInfo=FALSE, courseAsID=FALSE, ...) {
     planInfo <- as.character(planInfo)
 
     ## function to extract one information element from a number of lines
@@ -30,7 +30,7 @@ parsePRIMO <- function(x, planInfo=FALSE, courseAsID=FALSE) {
         if(is.na(num)) {
             warning("No dose found")
         }
-        
+
         if(grepl("\\[%\\]", line)) {
             ## relative dose
             if(!missing(doseRx)) {
@@ -48,7 +48,7 @@ parsePRIMO <- function(x, planInfo=FALSE, courseAsID=FALSE) {
         elem <- sub("^.+\\[(GY|CGY|EV/G)\\][[:blank:]]*:.+", "\\1", line, perl=TRUE, ignore.case=TRUE)
         toupper(trimWS(elem))
     }
-    
+
     getVolUnit <- function(ll) {
         line <- ll[grep("^# Volume.+:", ll)]
         elem <- sub("^.+\\[(CM.+)\\][[:blank:]]*:.+", "\\1", line, perl=TRUE, ignore.case=TRUE)
@@ -101,7 +101,7 @@ parsePRIMO <- function(x, planInfo=FALSE, courseAsID=FALSE) {
         doseMed   <- NA_real_
         doseMode  <- NA_real_
         doseSD    <- NA_real_
-        
+
         volumeUnit <- getVolUnit(strct)
         volumeUnit <- if(grepl("^CM.+", volumeUnit)) {
             "CC"
@@ -111,7 +111,7 @@ parsePRIMO <- function(x, planInfo=FALSE, courseAsID=FALSE) {
             warning("Could not determine volume measurement unit")
             NA_character_
         }
-        
+
         ## find DVH
         ## DVH column headers
         colHead  <- grep("^# \\.+$", strct)[1] - 1  # column header
@@ -121,14 +121,14 @@ parsePRIMO <- function(x, planInfo=FALSE, courseAsID=FALSE) {
         if((length(dvhLen) < 1L) || dvhLen < 1L) {
             stop("No DVH data found")
         }
-        
+
         ## column headers
         vars1 <- unlist(strsplit(sub("^# (.+)$", "\\1", strct[colHead]),
                                  split="\t"))
-        
+
         ## remove leading and trailing white space
         vars2 <- tolower(trimWS(vars1))
-        
+
         ## make sure we recognize all columns in the DVH
         patDose    <- "^dose"
         patDoseRel <- "^rel\\. dose"
@@ -142,7 +142,7 @@ parsePRIMO <- function(x, planInfo=FALSE, courseAsID=FALSE) {
             stop(c("Could not identify all DVH columns"),
                  paste(vars2, collapse=", "))
         }
-        
+
         ## replace column headers
         vars3 <- vars2
         vars3[grep(patDose,    vars2)] <- "dose"
@@ -156,15 +156,15 @@ parsePRIMO <- function(x, planInfo=FALSE, courseAsID=FALSE) {
         if(all(!nzchar(strct[dvhStart:dvhEnd]))) {
             return(NULL)
         }
-        
+
         dvh <- data.matrix(read.table(text=strct[dvhStart:dvhEnd],
                                       header=FALSE, stringsAsFactors=FALSE,
                                       colClasses=rep("numeric", length(vars3)),
                                       comment.char="", nrows=dvhLen))
-        
+
         ## rename
         colnames(dvh) <- vars3
-        
+
         ## catch special case: structVol is 0.0 due to limited precision
         if("volume" %in% vars3) {
             structVol <- if(info$DVHtype == "cumulative") {
@@ -174,7 +174,7 @@ parsePRIMO <- function(x, planInfo=FALSE, courseAsID=FALSE) {
                 max(c(structVol, sum(dvh[ , "volume"])))
             }
         }
-        
+
         ## if we have relative and absolute dose: add doseRx
         if(("doseRel" %in% vars3) && ("dose" %in% vars3)) {
             doseRx <- round(mean(dvh[ , "dose"] * 100 / dvh[ , "doseRel"],
@@ -187,7 +187,7 @@ parsePRIMO <- function(x, planInfo=FALSE, courseAsID=FALSE) {
         } else if(("volume"    %in% vars3) && !("volumeRel" %in% vars3)) {
             dvh <- cbind(dvh, volumeRel=100*(dvh[ , "volume"]/structVol))
         }
-        
+
         ## add information we don't have yet: relative/absolute dose
         ## considering isoDoseRx
         if((    "doseRel" %in% vars3) && !("dose"    %in% vars3)) {
@@ -210,7 +210,7 @@ parsePRIMO <- function(x, planInfo=FALSE, courseAsID=FALSE) {
 
         ## check if dose is increasing
         stopifnot(isIncreasing(dvh))
-        
+
         DVH <- list(dvh=dvh,
                     patName=info$patName,
                     patID=info$patID,
@@ -232,7 +232,7 @@ parsePRIMO <- function(x, planInfo=FALSE, courseAsID=FALSE) {
                     doseMed=doseMed,
                     doseMode=doseMode,
                     doseSD=doseSD)
-        
+
         ## convert differential DVH to cumulative
         ## and add differential DVH separately
         if(info$DVHtype == "differential") {
@@ -240,7 +240,7 @@ parsePRIMO <- function(x, planInfo=FALSE, courseAsID=FALSE) {
                                       toDoseUnit="asis", perDose=FALSE)
             DVH$dvhDiff <- dvh
         }
-        
+
         ## set class
         class(DVH) <- "DVHs"
         return(DVH)

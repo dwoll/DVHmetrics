@@ -1,6 +1,6 @@
 #####---------------------------------------------------------------------------
 ## parse character vector from Masterplan DVH file
-parseMasterplan <- function(x, planInfo=FALSE, courseAsID=FALSE) {
+parseMasterplan <- function(x, planInfo=FALSE, courseAsID=FALSE, ...) {
     planInfo <- as.character(planInfo)
 
     ## function to extract one information element from a number of lines
@@ -142,7 +142,7 @@ parseMasterplan <- function(x, planInfo=FALSE, courseAsID=FALSE) {
         if(all(!nzchar(strct[dvhStart:length(strct)]))) {
             return(NULL)
         }
-        
+
         dvh <- data.matrix(read.table(text=strct[dvhStart:length(strct)],
                                       header=FALSE, stringsAsFactors=FALSE,
                                       colClasses=rep("numeric", length(vars3)),

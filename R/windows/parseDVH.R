@@ -3,6 +3,9 @@ parseDVH <- function(x, type=c("Eclipse", "Cadplan", "Masterplan",
                                "ProSoma", "PRIMO"), ...) {
     type <- match.arg(type)
     dots <- list(...)
+    if(hasName(dots, "hiart")) {
+        dots[["hiart"]] <- NULL
+    }
 
     ## name them using patient IDs
     getPatID <- function(txt) {
@@ -37,7 +40,11 @@ parseDVH <- function(x, type=c("Eclipse", "Cadplan", "Masterplan",
     }
 
     readFile <- function(f) {
-        con <- file(f, "r", ...)
+        # con <- file(f, "r", ...)
+        argl <- c(list(description=f,
+                       open="r"),
+                  dots)
+        con <- do.call("file", argl)
         on.exit(close(con))
         readLines(con=con)
     }
@@ -55,7 +62,7 @@ parseDVH <- function(x, type=c("Eclipse", "Cadplan", "Masterplan",
         } else {
             character(0)
         }
-    
+
         files <- Filter(function(y) file_test(op="-f", y), files)
         if(length(files) >= 1L) {
             ## read in files into a list of character vectors
@@ -77,7 +84,7 @@ parseDVH <- function(x, type=c("Eclipse", "Cadplan", "Masterplan",
                 ## random sub-directory
                 tmpf <- gsub("^[^0-9](.+)$", "\\1", tempfile(pattern="", tmpdir=""))
                 tmpd <- normalizePath(paste0(tempdir(), "/pinnacle_", tmpf), mustWork=FALSE)
-                
+
                 ## check the hierarchy in the zip file
                 zipFD <- unzip(x, list=TRUE)
                 dirs  <- if(all(dirname(zipFD$Name) %in% c("Data", "."))) {
@@ -118,7 +125,7 @@ parseDVH <- function(x, type=c("Eclipse", "Cadplan", "Masterplan",
             character(0)
         }
     }
-    
+
     ## patient id's as names for list components
     names(DVHraw) <- vapply(DVHraw, getPatID, character(1))
     DVHraw

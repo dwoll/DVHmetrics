@@ -1,6 +1,6 @@
 #####---------------------------------------------------------------------------
 ## parse character vector from ProSoma DVH file
-parseProSoma <- function(x, planInfo=FALSE, courseAsID=FALSE) {
+parseProSoma <- function(x, planInfo=FALSE, courseAsID=FALSE, ...) {
     planInfo <- as.character(planInfo)
 
     ## function to extract patient name from first line
@@ -187,7 +187,7 @@ parseProSoma <- function(x, planInfo=FALSE, courseAsID=FALSE) {
         if(all(!nzchar(strct[dvhStart:length(strct)]))) {
             return(NULL)
         }
-        
+
         dvh <- data.matrix(read.table(text=strct[dvhStart:length(strct)],
                                       header=FALSE, stringsAsFactors=FALSE,
                                       colClasses=rep("numeric", length(vars3)),

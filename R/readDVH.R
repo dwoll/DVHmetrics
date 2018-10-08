@@ -10,7 +10,7 @@ readDVH <- function(x, type=c("Eclipse", "Cadplan", "Masterplan", "Pinnacle",
     } else {
         parseDVH(x, type=type, ...)
     }
-    
+
     parseFun <- switch(type,
                        Eclipse=parseEclipse,
                        Cadplan=parseCadplan,
@@ -21,15 +21,15 @@ readDVH <- function(x, type=c("Eclipse", "Cadplan", "Masterplan", "Pinnacle",
                        RayStation=parseRayStation,
                        ProSoma=parseProSoma,
                        PRIMO=parsePRIMO)
-    
+
     dvhLL <- if(length(dvhRawL) >= 1L) {
-        res <- Map(parseFun, dvhRawL, planInfo=planInfo, courseAsID=courseAsID)
+        res <- Map(parseFun, dvhRawL, planInfo=planInfo, courseAsID=courseAsID, ...)
         Filter(Negate(is.null), res)
     } else {
         warning("No files selected")
         NULL
     }
-    
+
     ## for HiArt, ProSoma and PRIMO files, no patient ID is given
     ## -> copy the random ID generated in parseDVH() to all DVHs
     if(type %in% c("HiArt", "ProSoma", "PRIMO")) {
@@ -38,12 +38,12 @@ readDVH <- function(x, type=c("Eclipse", "Cadplan", "Masterplan", "Pinnacle",
                 y$patID <- id
                 y
             })
-            
+
             class(dvhLOut) <- "DVHLst"
             attr(dvhLOut, which="byPat") <- TRUE
             dvhLOut
         }
-        
+
         dvhLL <- Map(setID, dvhLL, id=names(dvhLL))
     }
 
@@ -96,7 +96,7 @@ readDVH <- function(x, type=c("Eclipse", "Cadplan", "Masterplan", "Pinnacle",
 mergeDVH <- function(...)  {
     dots <- list(...)
     stopifnot(all(vapply(dots, function(x) inherits(x, "DVHLstLst"), logical(1))))
-    
+
     ## make sure all DVHs are organized either by patient or by structure
     orgs <- vapply(dots, function(x) attributes(x)$byPat, logical(1))
     org1 <- orgs[1]    # organization of the first DVH

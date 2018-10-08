@@ -1,10 +1,13 @@
-$Date: 2017-11-22 15:45:29 +0000 (Thu, 08 Aug 2018) $
+$Date: 2018-10-08 15:45:29 +0000 (Mon, 08 Oct 2018) $
 
 DVHMETRICS RELEASE VERSIONS at https://cran.r-project.org/
 
-Version 0.3.8 (August 09, 2018)
+Version 0.3.7.0.999 (October 08, 2018)
     * removed dependency on package markdown
     * removed dependency on package reshape2
+    * readDVH(..., type="HiArt")
+      - additional information on patID, prescription dose,
+        structure volumes, etc. can be passed via option hiart
     * getMetric()
       - document AAPM TG263 (2018) recommendations for specifying
         DVH metrics

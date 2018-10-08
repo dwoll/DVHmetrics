@@ -1,6 +1,6 @@
 #####---------------------------------------------------------------------------
 ## parse character vector from Tomo HiArt DVH file
-parseHiArt <- function(x, planInfo=FALSE, courseAsID=FALSE) {
+parseHiArt <- function(x, planInfo=FALSE, courseAsID=FALSE, ...) {
     planInfo <- as.character(planInfo)
 
     ## find columns for structure, dose, volume
@@ -11,14 +11,6 @@ parseHiArt <- function(x, planInfo=FALSE, courseAsID=FALSE) {
     doseIdx   <- seq(2, length(vars), by=3)
     volumeIdx <- seq(3, length(vars), by=3)
 
-    ## Tomo HiArt has no patient name or id in file
-    patName   <- gsub("[^a-z0-9]", "\\1", tempfile(pattern="", tmpdir=""))
-    patID     <- gsub("[^a-z0-9]", "\\1", tempfile(pattern="", tmpdir="")) # as.character(trunc(runif(1, 0, 10000001)))
-    plan      <- NA_character_
-    doseRx    <- NA_real_
-    isoDoseRx <- NA_real_
-    DVHdate   <- NA_character_
-    
     ## get dose and volume units
     varDose  <- vars[grepl("Dose",   vars)][1]
     varVol   <- vars[grepl("Volume", vars)][1]
@@ -42,13 +34,64 @@ parseHiArt <- function(x, planInfo=FALSE, courseAsID=FALSE) {
         volumeUnit <- NA_character_
     }
 
+    ## Tomo HiArt has no patient name or id in file
+    ## check if additional information is given via option hiart
+    dots <- list(...)
+    if(hasName(dots, "hiart")) {
+        info <- dots[["hiart"]]
+        patName <- if(hasName(info, "patName")) {
+            info[["patName"]]
+        } else {
+            gsub("[^a-z0-9]", "\\1", tempfile(pattern="", tmpdir=""))
+        }
+
+        patID <- if(hasName(info, "patID")) {
+            info[["patID"]]
+        } else {
+            gsub("[^a-z0-9]", "\\1", tempfile(pattern="", tmpdir=""))
+        }
+
+        doseRx <- if(hasName(info, "doseRx")) {
+            info[["doseRx"]]
+        } else {
+            NA_real_
+        }
+
+        structVol <- if(hasName(info, "structVol")) {
+            vols <- info[["structVol"]]
+            ## expand to all structures
+            structures <- sub("(.+)\\(STANDARD\\)$", "\\1", vars[structIdx])
+            structVols <- setNames(rep(NA_real_, length(structures)),
+                                   structures)
+            structVols[names(vols)] <- unlist(vols)
+            structVols
+        } else {
+            NULL
+        }
+
+        if(hasName(info, "volumeUnit")) {
+            volumeUnit <- info[["volumeUnit"]]
+        }
+    } else {
+        patName   <- gsub("[^a-z0-9]", "\\1", tempfile(pattern="", tmpdir=""))
+        patID     <- gsub("[^a-z0-9]", "\\1", tempfile(pattern="", tmpdir="")) # as.character(trunc(runif(1, 0, 10000001)))
+        doseRx    <- NA_real_
+        structVol <- NA_real_
+    }
+
+    plan      <- NA_character_
+    isoDoseRx <- NA_real_
+    DVHdate   <- NA_character_
+
     ## read all data
+    ## remove all non numbers / delimiters first
+    x[-1] <- gsub("[^[:digit:],.]", "", x[-1])
     datAll <- data.matrix(read.csv(text=x[-1], header=FALSE,
                                    stringsAsFactors=FALSE, comment.char=""))
 
     ## extract DVH from one structure section and store in a list
     ## with DVH itself as a matrix
-    getDVH <- function(strIdx, dIdx, vIdx, info) {
+    getDVH <- function(strIdx, dIdx, vIdx, info, structVol, doseRx) {
         structure <- sub("(.+)\\(STANDARD\\)$", "\\1", vars[strIdx])
 
         ## extract DVH as a matrix and set variable names
@@ -66,25 +109,26 @@ parseHiArt <- function(x, planInfo=FALSE, courseAsID=FALSE) {
                 c("dose",    "volume")
             }
         }
-        
+
         colnames(dvh) <- haveVars
 
         ## add information we don't have yet
         ## relative/absolute volume/dose
-        if(!("volume" %in% haveVars)) {
-            dvh <- cbind(dvh, volume=NA_real_)
+        if((       "volumeRel" %in% haveVars) && !("volume"    %in% haveVars)) {
+            dvh <- cbind(dvh, volume=structVol*(dvh[ , "volumeRel"]/100))
+        } else if(("volume"    %in% haveVars) && !("volumeRel" %in% haveVars)) {
+            dvh <- cbind(dvh, volumeRel=100*(dvh[ , "volume"]/structVol))
         }
 
-        if(!("volumeRel" %in% haveVars)) {
-            dvh <- cbind(dvh, volumeRel=NA_real_)
-        }
-
-        if(!("dose" %in% haveVars)) {
-            dvh <- cbind(dvh, dose=NA_real_)
-        }
-
-        if(!("doseRel" %in% haveVars)) {
-            dvh <- cbind(dvh, doseRel=NA_real_)
+        ## add information we don't have yet: relative/absolute dose
+        ## without considering isoDoseRx
+        isoDoseRxTmp <- 100
+        if((    "doseRel" %in% haveVars) && !("dose"    %in% haveVars)) {
+            dvh <- cbind(dvh, dose=dvh[ , "doseRel"]*doseRx / isoDoseRxTmp)
+            # (doseRx/(isoDoseRxTmp/100))*(dvh$doseRel/100)
+        } else if(("dose" %in% haveVars) && !("doseRel" %in% haveVars)) {
+            dvh <- cbind(dvh, doseRel=dvh[ , "dose"]*isoDoseRxTmp / doseRx)
+            # 100*(dvh$dose/(doseRx/(isoDoseRxTmp/100)))
         }
 
         ## check if dose is increasing
@@ -100,7 +144,7 @@ parseHiArt <- function(x, planInfo=FALSE, courseAsID=FALSE) {
                     DVHtype=DVHtype,
                     plan=info$plan,
                     structure=structure,
-                    structVol=NA_real_,
+                    structVol=structVol,
                     doseUnit=info$doseUnit,
                     volumeUnit=info$volumeUnit,
                     doseRx=doseRx,
@@ -130,7 +174,8 @@ parseHiArt <- function(x, planInfo=FALSE, courseAsID=FALSE) {
     info <- list(patID=patID, patName=patName, date=DVHdate,
                  plan=plan, doseRx=doseRx, isoDoseRx=isoDoseRx,
                  doseUnit=doseUnit, volumeUnit=volumeUnit)
-    dvhL <- Map(getDVH, structIdx, doseIdx, volumeIdx, info=list(info))
+    dvhL <- Map(getDVH, structIdx, doseIdx, volumeIdx, info=list(info),
+                structVol, doseRx)
     dvhL <- Filter(Negate(is.null), dvhL)
     names(dvhL) <- sapply(dvhL, function(y) y$structure)
     if(length(unique(names(dvhL))) < length(dvhL)) {

@@ -1,8 +1,8 @@
 #####---------------------------------------------------------------------------
 ## combine info from one Pinnacle patient directory = DVHLst
-mergePinnaclePat  <- function(x, planInfo=FALSE, courseAsID=FALSE) {
+mergePinnaclePat  <- function(x, planInfo=FALSE, courseAsID=FALSE, ...) {
     planInfo  <- as.character(planInfo)
-    
+
     ## we need these files
     infoFiles <- c("DoseInfo.csv", "PatInfo.csv", "PlanInfo.csv", "Data/Info.csv")
     reqFiles  <- paste0(x, "/", infoFiles)
@@ -14,15 +14,15 @@ mergePinnaclePat  <- function(x, planInfo=FALSE, courseAsID=FALSE) {
             read.csv(y, header=TRUE, stringsAsFactors=FALSE, comment.char="")
         }, reqFiles)
     }
-    
+
     if(!is.null(fRead)) {
         names(fRead) <- basename(names(fRead))
         doseElem <- grep("PrescriptionDose", names(fRead$DoseInfo.csv), ignore.case=TRUE)
         doseUnit <- sub("^[[:alpha:]]+[.](cGy|Gy)$", "\\1", names(fRead$DoseInfo.csv)[doseElem], ignore.case=TRUE)
-        
+
         doseRxIdx   <- grep("Dosis.+(cGy|Gy)",   names(fRead$DoseInfo.csv), ignore.case=TRUE)
         fracDoseIdx <- grep("PrescriptionDose",  names(fRead$DoseInfo.csv), ignore.case=TRUE)
-        
+
         info <- list(patID=removeWS(fRead$PatInfo.csv$MedicalRecordNumber),
                      patName=collWS(trimWS(paste(fRead$PatInfo.csv$FirstName, fRead$PatInfo.csv$LastName))),
                      plan=collWS(trimWS(fRead$PlanInfo.csv$PlanName)),
@@ -30,7 +30,7 @@ mergePinnaclePat  <- function(x, planInfo=FALSE, courseAsID=FALSE) {
                      fractionN=fRead$DoseInfo$NumberOfFractions,
                      doseRx=fRead$DoseInfo[[doseRxIdx]],
                      doseUnit=toupper(doseUnit))
-        
+
         ## read structures
         structs <- split(fRead$Info.csv, f=fRead$Info.csv$RegionOfInterestName)
         DVHraw  <- Map(readLines, paste0(x, "/Data/", fRead$Info.csv$Filename, ".csv"))
@@ -83,7 +83,7 @@ parsePinnacleDVH <- function(x, structInfo, info) {
     if((length(dvhStart) < 1L) || length(dvhStop) < 1L) {
         stop("No DVH data found")
     }
-    
+
     if(dvhLenAdv != dvhLen) {
         warning("Advertised DVH length differs from actual length")
     }
@@ -93,10 +93,10 @@ parsePinnacleDVH <- function(x, structInfo, info) {
     if(all(!nzchar(x[dvhStart:dvhStop]))) {
         return(NULL)
     }
-    
+
     ## strip trailing ,
     x[dvhStart:dvhStop] <- gsub("(^.+),$", "\\1", x[dvhStart:dvhStop])
-    
+
     dvh <- data.matrix(read.csv(text=x[dvhStart:dvhStop],
                                 header=FALSE, stringsAsFactors=FALSE,
                                 colClasses=rep("numeric", dvhCols),
@@ -175,7 +175,7 @@ parsePinnacleDVH <- function(x, structInfo, info) {
                               toDoseUnit="asis", perDose=FALSE)
         DVH$dvhDiff <- dvh
     }
-    
+
     ## set class
     class(DVH) <- "DVHs"
     return(DVH)

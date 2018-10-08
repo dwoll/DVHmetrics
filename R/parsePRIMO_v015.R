@@ -1,6 +1,6 @@
 #####---------------------------------------------------------------------------
 ## parse character vector from PRIMO DVH file
-parsePRIMO_v015 <- function(x, planInfo=FALSE, courseAsID=FALSE) {
+parsePRIMO_v015 <- function(x, planInfo=FALSE, courseAsID=FALSE, ...) {
     planInfo <- as.character(planInfo)
 
     ## function to extract one information element from a number of lines
@@ -104,7 +104,7 @@ parsePRIMO_v015 <- function(x, planInfo=FALSE, courseAsID=FALSE) {
                 c("dose",    "volume")
             }
         }
-        
+
         colnames(dvh) <- haveVars
 
         ## add information we don't have yet

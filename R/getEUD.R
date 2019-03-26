@@ -27,7 +27,7 @@ function(x, EUDa, EUDfd=NULL, EUDab=NULL, ...) {
 	} else {
         ## get differential DVH
         xD <- convertDVH(x, toType="differential", toDoseUnit="asis", perDose=FALSE)
-    
+
         ## convert dose to EQD2 if possible
         volume <- xD$dvhDiff[ , "volume"]
         dose   <- if(!is.null(EUDfd) && !is.null(EUDab)) {
@@ -35,7 +35,7 @@ function(x, EUDa, EUDfd=NULL, EUDab=NULL, ...) {
         } else {
             xD$dvhDiff[ , "dose"]
         }
-    
+
         volume <- volume[volume >= 0]
         dose   <- dose[volume >= 0]
 
@@ -46,7 +46,12 @@ function(x, EUDa, EUDfd=NULL, EUDab=NULL, ...) {
         # geud    <- wtMean^(1/EUDa)
         ## rescale dose first, then scale back weighted mean
         ## https://stackoverflow.com/a/47296640/484139
-        maxVal    <- max((volume/xD$structVol)^(1/EUDa) * dose)
+        maxVal <- if(EUDa > 0) {
+            max((volume/xD$structVol)^(1/EUDa) * dose)
+        } else if(EUDa < 0) { # avoid 1 / 0^EUDa problem
+            max(dose)
+        }
+
         doseScale <- dose / maxVal
         wtMean    <- weighted.mean(doseScale^EUDa, w=volume, na.rm=TRUE)
         geud      <- maxVal * wtMean^(1/EUDa)
@@ -54,7 +59,7 @@ function(x, EUDa, EUDfd=NULL, EUDab=NULL, ...) {
     		warning("Numerical problems encountered, NA returned")
     		geud <- NA_real_
     	}
-        
+
         geud
 	}
 

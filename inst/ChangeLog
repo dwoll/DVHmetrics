@@ -1,8 +1,8 @@
-$Date: 2018-10-08 15:45:29 +0000 (Mon, 08 Oct 2018) $
+$Date: 2019-03-26 14:45:29 +0000 (Tue, 26 Mar 2019) $
 
 DVHMETRICS RELEASE VERSIONS at https://cran.r-project.org/
 
-Version 0.3.7.0.999 (October 08, 2018)
+Version 0.3.8 (March 26, 2019)
     * removed dependency on package markdown
     * removed dependency on package reshape2
     * readDVH(..., type="HiArt")
@@ -11,6 +11,10 @@ Version 0.3.7.0.999 (October 08, 2018)
     * getMetric()
       - document AAPM TG263 (2018) recommendations for specifying
         DVH metrics
+    * getEUD() (and hence getNTCP())
+      - attempt to make more numerically stable for large dose
+        values caused an error for negative EUDa values (fixed)
+        (thanks: Jahan Mohiuddin)
 
 Version 0.3.7 (November 22, 2017)
     * readDVH()

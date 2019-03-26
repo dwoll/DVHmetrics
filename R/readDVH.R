@@ -78,7 +78,7 @@ readDVH <- function(x, type=c("Eclipse", "Cadplan", "Masterplan", "Pinnacle",
     }
 
     if(length(unique(names(dvhLL))) < length(dvhLL)) {
-        warning(c("Some DVHs are for the same patient ID -",
+        warning(c("Some DVHs are for the same patient ID - ",
                   "this will lead to problems in constraint checking"))
     }
 

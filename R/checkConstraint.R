@@ -237,8 +237,8 @@ function(x, constr, byPat=TRUE, semSign=FALSE,
     ## resDF   <- dcast(resL, patID + structure + constraint + compliance ~ variable,
     ##                 value.var="value")
 
-    resL   <- plyr::rbind.fill(lapply(res, reshape_dfL,
-                                      idvar=c("patID", "structure", "constraint", "compliance")))
+    resL  <- do.call(rbind, lapply(res, reshape_dfL,
+                                   idvar=c("patID", "structure", "constraint", "compliance")))
     resDF <- reshape(resL, direction="wide", v.names="value", timevar="variable",
                      idvar=c("patID", "structure", "constraint", "compliance"))
     resDF <- setNames(resDF, gsub("^value\\.(.+)$", "\\1", names(resDF)))

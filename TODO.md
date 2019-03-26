@@ -27,6 +27,8 @@
  * harmonize structures by reading equivalence file, possibly with regex
 
 # build
+Sys.setenv(R_GSCMD="C:\\Program Files\\gs\\gs9.26\\bin\\gswin32c.exe")
+
  * "c:\program files\r\r-3.5.2\bin\x64\Rcmd.exe" INSTALL --build DVHmetrics_0.3.8.tar.gz
  * "c:\program files\r\r-3.5.2\bin\x64\Rcmd.exe" build DVHmetrics --resave-data --compact-vignettes="both"
  * "c:\program files\r\r-3.5.2\bin\x64\Rcmd.exe" check DVHmetrics_0.3.8.tar.gz --as-cran

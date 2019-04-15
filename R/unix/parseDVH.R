@@ -4,6 +4,7 @@ parseDVH <- function(x, type=c("Eclipse", "Cadplan", "Masterplan",
                                "Pinnacle", "Monaco", "HiArt", "RayStation",
                                "ProSoma", "PRIMO"), ...) {
     type <- match.arg(type)
+    dots <- list(...)
     if(hasName(dots, "hiart")) {
         dots[["hiart"]] <- NULL
     }

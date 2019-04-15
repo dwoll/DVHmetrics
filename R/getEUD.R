@@ -50,6 +50,8 @@ function(x, EUDa, EUDfd=NULL, EUDab=NULL, ...) {
             max((volume/xD$structVol)^(1/EUDa) * dose)
         } else if(EUDa < 0) { # avoid 1 / 0^EUDa problem
             max(dose)
+        } else {
+        	stop("EUDa must not be 0")
         }
 
         doseScale <- dose / maxVal

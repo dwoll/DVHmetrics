@@ -1,6 +1,11 @@
-$Date: 2019-03-26 14:45:29 +0000 (Tue, 26 Mar 2019) $
+$Date: 2019-04-15 14:45:29 +0000 (Mon, 15 Apr 2019) $
 
 DVHMETRICS RELEASE VERSIONS at https://cran.r-project.org/
+
+Version 0.3.8.0.999 (April 15, 2019)
+    * parseDVH()
+      - fix Unix/Linux-specific bug preventing reading of files
+        (thanks: Santam Chakraborty)
 
 Version 0.3.8 (March 26, 2019)
     * removed dependency on package markdown

@@ -306,7 +306,7 @@ function(x, metric, patID, structure,
                    metric=list(metric),
                    interp=list(interp))
     res    <- do.call("Map", c(args, dots))
-    resDFL <- melt_dw(res, valname="observed")
+    resDFL <- reshape2::melt(res, value.name="observed")
     names(resDFL)[names(resDFL) == "L1"] <- "structure"
     names(resDFL)[names(resDFL) == "L2"] <- "metric"
 
@@ -399,7 +399,7 @@ function(x, metric, patID, structure,
                  more=list(dots))
     res <- do.call("Map", args)
     # res    <- Map(collectMetrics, x, metric=list(metric), structure=list(struct))
-    resDFL <- melt_dw(res, valname="observed")
+    resDFL <- reshape2::melt(res, value.name="observed")
     names(resDFL)[names(resDFL) == "L1"] <- "patID"
     names(resDFL)[names(resDFL) == "L2"] <- "structure"
     names(resDFL)[names(resDFL) == "L3"] <- "metric"

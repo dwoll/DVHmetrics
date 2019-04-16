@@ -4,7 +4,7 @@ source("helper.R")
 ## max number of IDs (=DVH files) we can make plots for
 maxNID <- 100
 
-shinyServer(function(input, output) {
+shinyServer(function(input, output, session) {
     ## directory where current DVH data is saved
     DVHdir <- tempdir()
 
@@ -85,6 +85,26 @@ shinyServer(function(input, output) {
         }
     })
 
+    observeEvent(
+        eventExpr=input$metrSelStructAll,
+        handlerExpr= {
+            if(input$metrSelStructAll == 0) { return(NULL) }
+            dvh <- DVH()$DVH
+            if(!is.null(dvh)) {
+                # browser()
+                choices <- getStrIDs(dvh, what="structure", choices=TRUE)
+                if((input$metrSelStructAll %% 2) == 0) {
+                    updateCheckboxGroupInput(session, "metrSelStruct", "Select structures",
+                                             choices=choices)
+                } else {
+                    updateCheckboxGroupInput(session, "metrSelStruct", "Select structures",
+                                             choices=choices,
+                                             selected=choices)
+                }
+            }
+        }
+    )
+
     output$metrSelPat <- renderUI({
         dvh <- DVH()$DVH
         if(!is.null(dvh)) {
@@ -96,6 +116,27 @@ shinyServer(function(input, output) {
             NULL
         }
     })
+
+    ## https://stackoverflow.com/a/35044158
+    observeEvent(
+        eventExpr=input$metrSelPatAll,
+        handlerExpr= {
+            if(input$metrSelPatAll == 0) { return(NULL) }
+            dvh <- DVH()$DVH
+            if(!is.null(dvh)) {
+                # browser()
+                choices <- getStrIDs(dvh, what="patient", choices=TRUE)
+                if((input$metrSelPatAll %% 2) == 0) {
+                    updateCheckboxGroupInput(session, "metrSelPat", "Select patients",
+                                             choices=choices)
+                } else {
+                    updateCheckboxGroupInput(session, "metrSelPat", "Select patients",
+                                             choices=choices,
+                                             selected=choices)
+                }
+            }
+        }
+    )
 
     output$plotSelStruct <- renderUI({
         dvh <- DVH()$DVH
@@ -109,6 +150,26 @@ shinyServer(function(input, output) {
         }
     })
 
+    observeEvent(
+        eventExpr=input$plotSelStructAll,
+        handlerExpr= {
+            if(input$plotSelStructAll == 0) { return(NULL) }
+            dvh <- DVH()$DVH
+            if(!is.null(dvh)) {
+                # browser()
+                choices <- getStrIDs(dvh, what="structure", choices=TRUE)
+                if((input$plotSelStructAll %% 2) == 0) {
+                    updateCheckboxGroupInput(session, "plotSelStruct", "Select structures",
+                                             choices=choices)
+                } else {
+                    updateCheckboxGroupInput(session, "plotSelStruct", "Select structures",
+                                             choices=choices,
+                                             selected=choices)
+                }
+            }
+        }
+    )
+
     output$plotSelPat <- renderUI({
         dvh <- DVH()$DVH
         if(!is.null(dvh)) {
@@ -120,6 +181,26 @@ shinyServer(function(input, output) {
             NULL
         }
     })
+
+    observeEvent(
+        eventExpr=input$plotSelPatAll,
+        handlerExpr= {
+            if(input$plotSelPatAll == 0) { return(NULL) }
+            dvh <- DVH()$DVH
+            if(!is.null(dvh)) {
+                # browser()
+                choices <- getStrIDs(dvh, what="patient", choices=TRUE)
+                if((input$plotSelPatAll %% 2) == 0) {
+                    updateCheckboxGroupInput(session, "plotSelPat", "Select patients",
+                                             choices=choices)
+                } else {
+                    updateCheckboxGroupInput(session, "plotSelPat", "Select patients",
+                                             choices=choices,
+                                             selected=choices)
+                }
+            }
+        }
+    )
 
     output$metrics <- renderDataTable({
         dvh        <- DVH()$DVH

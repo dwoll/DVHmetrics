@@ -124,10 +124,10 @@ function(x, constr, byPat=TRUE, semSign=FALSE,
     }
 
     compL <- Map(cmpFun, metrics)
-    metrL <- melt_dw(metrics, valname="observed")
+    metrL <- reshape2::melt(metrics, value.name="observed")
 
     ## transform into data frame
-    compDF <- melt_dw(compL, valname="compliance")
+    compDF <- reshape2::melt(compL, value.name="compliance")
     ## metrDF <- dcast(metrL, L1 + L2 ~ L3, value.var="observed")
     metrDF <- reshape(metrL, direction="wide", v.names="observed",
                       timevar="L3", idvar=c("L1", "L2"))

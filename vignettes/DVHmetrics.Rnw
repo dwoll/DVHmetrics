@@ -95,7 +95,7 @@ options(replace.assign=TRUE, useFancyQuotes=FALSE, show.signif.stars=FALSE, digi
 
 \texttt{DVHmetrics} is an add-on package for the free statistical environment \textsf{R}\footnote{A free short introduction to \textsf{R} can be found at \url{http://www.statmethods.net/}.} \cite{RDevelopmentCoreTeam2008c} with applications in radiation oncology. It provides functionality to read dose-volume-histogram (DVH) text files, to calculate DVH metrics, and to plot DVHs. In addition, it checks and visualizes quality assurance constraints for the DVH.\footnote{For a solution that also reads files in DICOM-RT format, see the \texttt{RadOnc} package for \textsf{R} \cite{Thompson2014}.}
 
-To install \texttt{DVHmetrics}, you need a current version of \textsf{R} and be online. Preferably, a free development environment like \textsf{R}Studio \cite{Allaire2011} or Architect \cite{OpenAnalytics2013} should be used.
+To install \texttt{DVHmetrics}, you need a current version of \textsf{R} and be online. Preferably, a free development environment like \textsf{R}Studio \cite{Allaire2011} should be used.
 
 <<cIntro, eval=FALSE>>=
 # install DVHmetrics from the CRAN online package repository

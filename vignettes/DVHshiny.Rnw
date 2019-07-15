@@ -108,7 +108,7 @@ vignette("DVHmetrics")
 %%%%---------------------------------------------------------------------------
 %%%%---------------------------------------------------------------------------
 
-For users who are unfamiliar with \textsf{R}, \texttt{DVHmetrics} includes a \texttt{shiny}-based web application \cite{RStudioShiny2014} running locally that eliminates the need to use \textsf{R} syntax.\footnote{This app is also available online in a public install: \url{http://dwoll.shinyapps.io/DVHshiny/}} This web application can also be centrally deployed in an intranet by local IT services.\footnote{To install separately, use function \texttt{install\_github("dwoll/DVHshiny")} from package \texttt{devtools} \cite{Wickham2014b}.} After installing \texttt{DVHmetrics}, you can start the web application in an external web browser from the command line:
+For users who are unfamiliar with \textsf{R}, \texttt{DVHmetrics} includes a \texttt{shiny}-based web application \cite{RStudioShiny2014} running locally that eliminates the need to use \textsf{R} syntax.\footnote{This app is also available online in a public install: \url{http://dwoll.shinyapps.io/DVHshiny/}} This web application can also be centrally deployed in an intranet by local IT services.\footnote{To install separately, use function \texttt{install\_github("dwoll/DVHshiny")} from package \texttt{remotes} \cite{Wickham2014b}.} After installing \texttt{DVHmetrics}, you can start the web application in an external web browser from the command line:
 
 <<cWebApp, eval=FALSE>>=
 runGUI()    # opens web browser with DVHmetrics web application

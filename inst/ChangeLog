@@ -1,13 +1,17 @@
-$Date: 2019-04-15 14:45:29 +0000 (Mon, 15 Apr 2019) $
+$Date: 2019-07-15 14:45:29 +0000 (Mon, 15 Jul 2019) $
 
 DVHMETRICS RELEASE VERSIONS at https://cran.r-project.org/
 
-Version 0.3.8.0.999 (April 15, 2019)
+Version 0.3.9 (July 15, 2019)
+    * re-added dependency on package reshape2
+    * readDVH()
+      - improve importing MasterPlan files
+        (thanks: Belen Cambre)
+    * runGUI()
+      - add button to select/deselect all patients/structures
+        (thanks: Santam Chakraborty)
     * getMetric(), checkConstraint()
       - fix bug turning numeric into character
-    * runGUI()
-      - add option to select/deselect all patients/structures
-        (thanks: Santam Chakraborty)
     * parseDVH()
       - fix Unix/Linux-specific bug preventing reading of files
         (thanks: Santam Chakraborty)

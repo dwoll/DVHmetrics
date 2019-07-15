@@ -29,12 +29,12 @@
 # build
 Sys.setenv(R_GSCMD="C:\\Program Files\\gs\\gs9.26\\bin\\gswin32c.exe")
 
- * "c:\program files\r\r-3.5.2\bin\x64\Rcmd.exe" INSTALL --build DVHmetrics_0.3.8.tar.gz
- * "c:\program files\r\r-3.5.2\bin\x64\Rcmd.exe" build DVHmetrics --resave-data --compact-vignettes="both"
- * "c:\program files\r\r-3.5.2\bin\x64\Rcmd.exe" check DVHmetrics_0.3.8.tar.gz --as-cran
- * `install.packages("d:/daniel_work/workspace/DVHmetrics_0.3.8.tar.gz", repos=NULL, type="source")`
+ * "c:\program files\r\r-3.6.0patched\bin\x64\Rcmd.exe" INSTALL --build DVHmetrics_0.3.8.tar.gz
+ * "c:\program files\r\r-3.6.0patched\bin\x64\Rcmd.exe" build DVHmetrics --resave-data --compact-vignettes="both"
+ * "c:\program files\r\r-3.6.0patched\bin\x64\Rcmd.exe" check DVHmetrics_0.3.9.tar.gz --as-cran
+ * `install.packages("d:/daniel_work/workspace/DVHmetrics_0.3.9.tar.gz", repos=NULL, type="source")`
 
- * "c:\program files\r\r-devel\bin\x64\Rcmd.exe" INSTALL --build DVHmetrics_0.3.8.tar.gz
+ * "c:\program files\r\r-devel\bin\x64\Rcmd.exe" INSTALL --build DVHmetrics_0.3.9.tar.gz
  * "c:\program files\r\r-devel\bin\x64\Rcmd.exe" build DVHmetrics --resave-data --compact-vignettes="both"
- * "c:\program files\r\r-devel\bin\x64\Rcmd.exe" check DVHmetrics_0.3.8.tar.gz --as-cran
- * `install.packages("h:/workspace/DVHmetrics_0.3.8.tar.gz", repos=NULL, type="source")`
+ * "c:\program files\r\r-devel\bin\x64\Rcmd.exe" check DVHmetrics_0.3.9.tar.gz --as-cran
+ * `install.packages("h:/workspace/DVHmetrics_0.3.9.tar.gz", repos=NULL, type="source")`

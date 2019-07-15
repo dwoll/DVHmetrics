@@ -56,8 +56,12 @@ parseMasterplan <- function(x, planInfo=FALSE, courseAsID=FALSE, ...) {
         tolower(trimWS(elem))
     }
 
-    sStart <- grep("^Dose: [[:alnum:]]", x)   # start of sections
-    sLen   <- diff(c(sStart, length(x)+1))         # length of sections
+    sStart <- grep("^ROI: .+$", x)          # start of sections
+    ## there may be preceding Dose: ... line
+    idx_preceding <- nzchar(x[sStart-1])
+    sStart[idx_preceding] <- (sStart-1)[idx_preceding]
+
+    sLen <- diff(c(sStart, length(x)+1))  # length of sections
     if((length(sLen) < 1L) || all(sLen < 1L)) {
         stop("No structures found")
     }
@@ -65,10 +69,17 @@ parseMasterplan <- function(x, planInfo=FALSE, courseAsID=FALSE, ...) {
     structList <- Map(function(start, len) x[start:(start+len-1)], sStart, sLen)
 
     ## extract file header and header info
-    header    <- x[seq_len(sStart[1]-1)]      # header
-    patName   <- NA_character_
-    patID     <- getElem("^Case:",  header)   # patient id
-    plan      <- getElem("^Plan:",  header)   # treatment plan
+    header  <- x[seq_len(sStart[1]-1)]       # header
+    patName <- getElem("Patient:", header)   # patient name
+    if(length(patName) == 0L) {
+        patName <- gsub("[^a-z0-9]", "\\1", tempfile(pattern="", tmpdir=""))
+    }
+    patID <- getElem("^Patient Id:", header) # patient id
+    if(length(patID) == 0L) {
+        patID <- gsub("[^a-z0-9]", "\\1", tempfile(pattern="", tmpdir=""))
+    }
+
+    plan      <- getElem("^Plan:", header)   # treatment plan
     quadrant  <- NA_character_
     DVHdate   <- NA_character_
     DVHtype   <- getDVHtype(header)
@@ -143,7 +154,8 @@ parseMasterplan <- function(x, planInfo=FALSE, courseAsID=FALSE, ...) {
             return(NULL)
         }
 
-        dvh <- data.matrix(read.table(text=strct[dvhStart:length(strct)],
+        dvh_text <- strct[dvhStart:length(strct)]
+        dvh <- data.matrix(read.table(text=dvh_text,
                                       header=FALSE, stringsAsFactors=FALSE,
                                       colClasses=rep("numeric", length(vars3)),
                                       comment.char="", nrows=dvhLen))

@@ -14,8 +14,8 @@ for the DVH. Includes web-based graphical user interface.
 \tabular{ll}{
 Package: \tab DVHmetrics\cr
 Type: \tab Package\cr
-Version: \tab 0.3.8.0.999\cr
-Date: \tab 2019-04-15\cr
+Version: \tab 0.3.9\cr
+Date: \tab 2019-07-15\cr
 License: \tab GPL (>= 2)\cr
 }
 }

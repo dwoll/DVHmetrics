@@ -24,26 +24,27 @@ For documentation on how to use the package and this web application, see:
 [DVHmetrics vignette](http://cran.rstudio.com/web/packages/DVHmetrics/vignettes/DVHmetrics.pdf)  
 [Web application vignette](http://cran.rstudio.com/web/packages/DVHmetrics/vignettes/DVHshiny.pdf)
 
-Source code at: [github.com/dwoll/DVHshiny/](https://github.com/dwoll/DVHshiny/)
+Source code at: [github.com/dwoll/DVHshiny/](https://github.com/dwoll/DVHmetrics/tree/master/inst/DVHshiny)
 
 #### Acknowledgements
 
 Thanks to Marcus Stockinger and Michael R. Young for testing and feedback, to Sandra Bührdel, Hannes Rennau, Ulrich Wolf, Bjorne Riis, Nico Banz, and Michael R. Young for sample DVH files.
 Created with the [Shiny](http://shiny.rstudio.com/) web application framework powered by [RStudio](http://www.rstudio.com/).
+
 Uses functionality provided by the R packages [ggplot2](http://cran.r-project.org/package=ggplot2), [reshape2](http://cran.r-project.org/package=reshape2), [grid](http://cran.r-project.org/package=grid), and [KernSmooth](http://cran.r-project.org/package=KernSmooth).
 
 #### References
 
-Chang W, Cheng J, Allaire JJ, Xie Y, McPherson J (2018). shiny: Web Application Framework for R.  
-R package version 1.1.0.  
+Chang W, Cheng J, Allaire JJ, Xie Y, McPherson J (2019). shiny: Web Application Framework for R.  
+R package version 1.4.0.    
 [http://CRAN.R-project.org/package=shiny](http://CRAN.R-project.org/package=shiny)
 
 R Core Team (2018). R: A language and environment for statistical computing.  
 R Foundation for Statistical Computing, Vienna, Austria.  
 [http://www.R-project.org/](http://www.R-project.org/)
 
-Wand M (2015). KernSmooth: Functions for Kernel Smoothing Supporting Wand & Jones (1995).  
-R package version 2.23-15.  
+Wand M (2019). KernSmooth: Functions for Kernel Smoothing Supporting Wand & Jones (1995).  
+R package version 2.23-16.  
 [http://CRAN.R-project.org/package=KernSmooth](http://CRAN.R-project.org/package=KernSmooth)
 
 Wickham H (2007). Reshaping Data with the reshape Package.  

@@ -5,5 +5,9 @@ function(...) {
         stop("Could not find Shiny directory. Try re-installing 'DVHmetrics'.", call.=FALSE)
     }
 
-    shiny::runApp(appDir, ...)    
+    if(requireNamespace("DT", quietly=TRUE)) {
+        shiny::runApp(appDir, ...)
+    } else {
+        stop("Could not find package 'DT'. Please install first.", call.=FALSE)
+    }
 }

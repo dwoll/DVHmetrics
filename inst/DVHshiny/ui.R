@@ -217,7 +217,7 @@ shinyUI(fluidPage(
                 ),
                 tabPanel("Metrics",
                     h6("Calculate metrics"),
-                    dataTableOutput("metrics"),
+                    DT::dataTableOutput("metrics"),
                     downloadButton("saveMetrics", "Save as text file"),
                     inputPanel(
                     radioButtons("saveMetrDec", "Decimal separator:",
@@ -240,7 +240,7 @@ shinyUI(fluidPage(
                 ),
                 tabPanel("Check constraints",
                     h6("Check constraints"),
-                    dataTableOutput("constraints"),
+                    DT::dataTableOutput("constraints"),
                     downloadButton("saveConstrTxt", "Save as text file"),
                     inputPanel(
                     radioButtons("saveConstrDec", "Decimal separator:",

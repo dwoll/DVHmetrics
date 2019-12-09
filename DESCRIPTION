@@ -6,7 +6,7 @@ Date: 2019-07-15
 Authors@R: c(person("Daniel", "Wollschlaeger", role = c("aut", "cre"), email = "wollschlaeger@uni-mainz.de"),
     person("Heiko", "Karle", role="aut"), person("Heinz", "Schmidberger", role="ctb"))
 Depends: R (>= 3.2)
-Imports: ggplot2, grid, shiny, KernSmooth, stats, utils, reshape2
+Imports: ggplot2, grid, shiny, DT, KernSmooth, stats, utils, reshape2
 Suggests: knitr
 VignetteBuilder: knitr
 LazyData: yes

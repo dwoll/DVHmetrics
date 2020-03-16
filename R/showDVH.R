@@ -33,7 +33,7 @@ function(x, cumul=TRUE, interp=FALSE, rangeD=NULL) {
                        stringsAsFactors=FALSE)
         })
     }
-    
+
     do.call("rbind", dvhDFL)
 }
 
@@ -84,7 +84,7 @@ function(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL, rel=TRUE,
     ## if patIDs are selected, filter them here -> strips DVHLst class
     if(!is.null(patID)) {
         p <- trimWS(patID, side="both")
-        x <- Filter(function(y) { 
+        x <- Filter(function(y) {
             if(fixed) {
                 any(y$patID %in% p)
             } else {
@@ -114,7 +114,7 @@ function(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL, rel=TRUE,
     if(addMSD) {
         rangeD  <- c(0, max(vapply(x, function(z) {    max(z$dvh[ , "dose"]) }, numeric(1))))
         doseLen <-      max(vapply(x, function(z) { length(z$dvh[ , "dose"]) }, numeric(1)))
-        
+
         ## coarser dose grid for M+SD but with at least 100 nodes
         doseLen <- max(100, ceiling(doseLen/3))
     } else {
@@ -124,23 +124,28 @@ function(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL, rel=TRUE,
 
     dvhDF <- combineDVHs(x, cumul=cumul, interp=doseLen, rangeD=rangeD)
 
-    ## choose x-axis limits (dose) - add 10% to upper limit
+    ## choose x-axis limits (dose) - add 5% to upper limit
     ## TODO: up to first dose for which all structures reach threshold
     if(length(guessX) == 2L) {
         xMin <- guessX[1]
         xMax <- guessX[2]
     } else {
         xMin <- 0
-        xMax <- if((guessX == 1) && !all(is.na(x[[1]]$dvh[ , "volumeRel"]))) {
-            ## guessX = TRUE
-            volGEQ <- lapply(x, function(y) {
-                y$dvh[ , "dose"][y$dvh[ , "volumeRel"] >= thresh] })
-            1.05*max(unlist(volGEQ), na.rm=TRUE)
+        xMax <- if(guessX == 1L) {    ## guessX = TRUE
+                if(!all(is.na(x[[1]]$dvh[ , "volumeRel"]))) {
+                    ## we have relative volume
+                    volGEQ <- lapply(x, function(y) {
+                        y$dvh[ , "dose"][y$dvh[ , "volumeRel"] >= thresh] })
+                    1.05*max(unlist(volGEQ), na.rm=TRUE)
+                } else {
+                    ## we have absolute volume -> don't apply threshold
+                    1.05*max(dvhDF$dose)
+                }
         } else if(guessX == 0L) {
             ## guessX = FALSE
             1.05*max(dvhDF$dose)
         } else {
-            ## guessX = maximum
+            ## guessX = maximum, but not lower than 0.1
             max(0.1, guessX)
         }
     }
@@ -290,7 +295,7 @@ function(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL, rel=TRUE,
     } else {
         diag
     }
- 
+
     ## actual DVHs
     diag <- if(byPat) {
         diag + geom_line(data=dvhDF,

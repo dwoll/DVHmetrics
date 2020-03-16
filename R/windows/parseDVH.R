@@ -7,6 +7,10 @@ parseDVH <- function(x, type=c("Eclipse", "Cadplan", "Masterplan",
         dots[["hiart"]] <- NULL
     }
 
+    if(hasName(dots, "volume_from_dvh")) {
+        dots[["volume_from_dvh"]] <- NULL
+    }
+
     ## name them using patient IDs
     getPatID <- function(txt) {
         if(type == "Monaco") {

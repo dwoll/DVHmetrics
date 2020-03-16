@@ -1,8 +1,14 @@
-$Date: 2019-12-09 15:45:29 +0000 (Mon, 09 Dec 2019) $
+$Date: 2020-03-16 13:32:29 +0000 (Mon, 13 Mar 2020) $
 
 DVHMETRICS RELEASE VERSIONS at https://cran.r-project.org/
 
-Version 0.3.9.0.9999 (December 09, 2019)
+Version 0.3.10 (March 16, 2020)
+    * readDVH()
+      - Enable reading absolute volume files from HiArt
+        (thanks: Meriam Kebdani)
+      - add possible option volume_from_dvh if structure volume
+        should be determined from maximum volume in a DVH, relevant
+        for files with absolute volume from HiArt and Monaco
     * runGUI()
       - fix DataTables output by adding DT to Imports,
         and prefixing calls with DT::

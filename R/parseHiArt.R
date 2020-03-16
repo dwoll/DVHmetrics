@@ -18,7 +18,7 @@ parseHiArt <- function(x, planInfo=FALSE, courseAsID=FALSE, ...) {
         ## TODO: need example file for this
         warning("HiArt files with relative dose are not implemented")
         isDoseRel <- TRUE
-        doseUnit  <- "PERCENT"
+        doseUnit  <- NA_character_
     } else {
         isDoseRel <- FALSE
         doseUnit  <- toupper(sub("Dose \\((.+)\\)", "\\1", varDose))
@@ -28,10 +28,12 @@ parseHiArt <- function(x, planInfo=FALSE, courseAsID=FALSE, ...) {
         isVolRel   <- TRUE
         volumeUnit <- "PERCENT"
     } else {
-        warning("HiArt files with absolute volume are not implemented")
-        ## TODO: need example file for this
         isVolRel   <- FALSE
-        volumeUnit <- NA_character_
+        volumeUnit <- toupper(sub("Absolute Volume \\((.+)\\)", "\\1", varVol))
+        if(volumeUnit != "CC") {
+            warning("Absolute volume units other than CC not implemented")
+            volumeUnite <- NA_character_
+        }
     }
 
     ## Tomo HiArt has no patient name or id in file
@@ -39,6 +41,7 @@ parseHiArt <- function(x, planInfo=FALSE, courseAsID=FALSE, ...) {
     dots <- list(...)
     if(hasName(dots, "hiart")) {
         info <- dots[["hiart"]]
+
         patName <- if(hasName(info, "patName")) {
             info[["patName"]]
         } else {
@@ -111,6 +114,14 @@ parseHiArt <- function(x, planInfo=FALSE, courseAsID=FALSE, ...) {
         }
 
         colnames(dvh) <- haveVars
+
+        ## check if structure volume should be assumed
+        ## to be equal to max given volume in DVH
+        if(hasName(dots, "volume_from_dvh")) {
+            if((dots[["volume_from_dvh"]] == TRUE) && ("volume" %in% haveVars)) {
+                structVol <- max(dvh[ , "volume"])
+            }
+        }
 
         ## add information we don't have yet
         ## relative/absolute volume/dose

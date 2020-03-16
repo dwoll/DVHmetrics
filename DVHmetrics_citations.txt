@@ -1,10 +1,12 @@
 DVHmetrics cited/mentioned
 
 https://doi.org/10.1002/mp.12980
+https://doi.org/10.1016/j.ejca.2019.11.008
 https://doi.org/10.1016/j.ejmp.2019.05.003
 https://doi.org/10.1016/j.hrthm.2019.04.030
 https://doi.org/10.1016/j.phro.2018.06.002
 https://doi.org/10.1016/j.radonc.2016.01.020
+https://doi.org/10.1016/j.radonc.2019.09.017
 https://doi.org/10.1080/0284186X.2017.1317107
 https://doi.org/10.1080/0284186X.2017.1350286
 https://doi.org/10.1080/0284186X.2017.1373198
@@ -15,3 +17,5 @@ https://doi.org/10.1177/1179554918783990
 https://doi.org/10.1186/s13014-019-1328-7
 https://doi.org/10.1371/journal.pone.0190098
 https://doi.org/10.3390/cancers11030294
+
+https://search.proquest.com/docview/2287496008

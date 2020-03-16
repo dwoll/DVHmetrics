@@ -30,9 +30,11 @@ For Eclipse starting with version 13, the date format is locale dependent as it 
 
 For RayStation, only cumulative DVHs with absolute volume are currently supported. Volume is assumed to be measured in cm^3.
 
+For files with absolute volume exported from Masterplan and Tomo HiArt, you can specify \code{volume_from_dvh=TRUE} if the structure volume should be guessed from the maximal volume given in the DVH for each structure.
+
 Since files from HiArt, ProSoma and PRIMO do not contain info on patient ID, the current workaround is to generate a random ID.
 
-To export data from Tomo HiArt, copy to clipboard and then save to file from a text editor. Support for Tomo HiArt files is currently limited to those with absolute dose and relative volume. Please send an anonymized sample file if you need this functionality. Alternatively, provide a list \code{hiart} with one component for each file you import. Each component itself has to be a named list with optional components
+To export data from Tomo HiArt, copy to clipboard and then save to file from a text editor. Support for Tomo HiArt files is currently limited to those with absolute dose. Please send an anonymized sample file if you need to read files with relative dose. You can provide a list \code{hiart} with more information about patients and structures. The list should have one component for each file you import. Each component itself has to be a named list with optional components
 \itemize{
 \item{\code{patName} - a character string for patient name}
 \item{\code{patID} - a character string for patient ID}

@@ -2,6 +2,7 @@
 ## parse character vector from Elekta Monaco file
 parseMonaco <- function(x, planInfo=FALSE, courseAsID=FALSE, ...) {
     planInfo <- as.character(planInfo)
+    dots     <- list(...)
 
     ## extract file header and header info
     header   <- unlist(strsplit(x[1], " [|] "))

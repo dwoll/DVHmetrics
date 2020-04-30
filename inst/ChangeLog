@@ -1,6 +1,11 @@
-$Date: 2020-03-16 13:32:29 +0000 (Mon, 16 Mar 2020) $
+$Date: 2020-04-30 08:46:29 +0000 (Thu, 30 Apr 2020) $
 
 DVHMETRICS RELEASE VERSIONS at https://cran.r-project.org/
+
+Version 0.3.11 (April 30, 2020)
+    * runGUI()
+      - fix upload of Eclipse files
+        (thanks: Li-Wen Huang)
 
 Version 0.3.10 (March 16, 2020)
     * readDVH()

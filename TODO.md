@@ -1,6 +1,9 @@
 # TODO
 
- * `readDVH()`: use `tryCatch()` to diagnose problems with input files containing umlauts / accents that are not in UTF-8 encoding
+ * x <- readDVH("c:/Users/Daniel/Downloads/DVH poumon volume absolute.txt", type="HiArt", volume_from_dvh=TRUE, hiart=list(doseRx=50))
+ Fehler in mapply(FUN = f, ..., SIMPLIFY = FALSE) : 
+  Eingaben mit Länge 0 können nicht mit Eingaben anderer Länge gemischt werden
+ * `readDVH()`: use `tryCatch()` to diagnose problems with input files containing umlauts / accents that are not in UTF-8 encoding / use con <- file(..., encoding="UTF8"), then readLines(con, encoding="")
 
 ## Medium term
 

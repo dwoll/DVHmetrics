@@ -35,13 +35,11 @@ Uses functionality provided by the R packages [ggplot2](http://cran.r-project.or
 
 #### References
 
-Chang W, Cheng J, Allaire JJ, Xie Y, McPherson J (2020). shiny: Web Application Framework for R.  
-R package version 1.5.0.    
+Chang W, Cheng J, Allaire JJ, Xie Y, McPherson J (2019). shiny: Web Application Framework for R.  
+R package version 1.4.0.    
 [http://CRAN.R-project.org/package=shiny](http://CRAN.R-project.org/package=shiny)
 
-David Granjon (2019). bs4Dash: A 'Bootstrap 4' Version of 'shinydashboard'. R package version 0.5.0. [https://CRAN.R-project.org/package=bs4Dash](https://CRAN.R-project.org/package=bs4Dash)
-
-R Core Team (2020). R: A language and environment for statistical computing.  
+R Core Team (2018). R: A language and environment for statistical computing.  
 R Foundation for Statistical Computing, Vienna, Austria.  
 [http://www.R-project.org/](http://www.R-project.org/)
 

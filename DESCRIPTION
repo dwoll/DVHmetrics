@@ -1,13 +1,13 @@
 Package: DVHmetrics
 Type: Package
 Title: Analyze Dose-Volume Histograms and Check Constraints
-Version: 0.3.10
-Date: 2020-03-16
+Version: 0.4
+Date: 2020-11-30
 Authors@R: c(person("Daniel", "Wollschlaeger", role = c("aut", "cre"), email = "wollschlaeger@uni-mainz.de"),
     person("Heiko", "Karle", role="aut"), person("Heinz", "Schmidberger", role="ctb"))
 Depends: R (>= 3.2)
 Imports: ggplot2, grid, shiny, DT, KernSmooth, stats, utils, reshape2
-Suggests: knitr
+Suggests: knitr, DT, bs4Dash
 VignetteBuilder: knitr
 LazyData: yes
 Description: Functionality for analyzing dose-volume histograms (DVH)

@@ -140,7 +140,17 @@ function(x, constr, byPat=TRUE, semSign=FALSE,
     }
 
     names(resDF)[names(resDF) == "L2"] <- "constraint"
-
+    resDF$observed  <- as.numeric(resDF$observed)
+    resDF$deltaV    <- as.numeric(resDF$deltaV)
+    resDF$deltaVpc  <- as.numeric(resDF$deltaVpc)
+    resDF$deltaD    <- as.numeric(resDF$deltaD)
+    resDF$deltaDpc  <- as.numeric(resDF$deltaDpc)
+    resDF$valCmp    <- as.numeric(resDF$valCmp)
+    resDF$dstMin    <- as.numeric(resDF$dstMin)
+    resDF$dstMinRel <- as.numeric(resDF$dstMinRel)
+    resDF$ptMinD    <- as.numeric(resDF$ptMinD)
+    resDF$ptMinV    <- as.numeric(resDF$ptMinV)
+    
     ## make sign of deltaD/deltaV semantically indicate compliance
     ## negative -> compliance, positive -> no compliance
     ## compliance may be NA -> catch first to leave sign unchanged

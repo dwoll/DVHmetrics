@@ -23,3 +23,12 @@ https://doi.org/10.3390/cancers11030294
 https://doi.org/10.3389/fonc.2020.00568
 
 https://search.proquest.com/docview/2287496008
+
+shotGroups
+https://doi.org/10.5194/nhess-16-2021-2016 (Geosciences)
+https://doi.org/10.1016/j.csda.2016.05.015 (Statistics)
+https://doi.org/10.1080/23737484.2017.1406317 (Statistics)
+https://doi.org/10.1111/mmi.14417 (Molekularbiologie)
+https://doi.org/10.1111/2041-210X.13347 (Ökologie)
+https://doi.org/10.3389/feart.2019.00264 (Geosciences)
+https://doi.org/10.1101/406439 (Psychologie) (preprint)

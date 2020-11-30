@@ -1,10 +1,19 @@
-$Date: 2020-03-16 13:32:29 +0000 (Mon, 16 Mar 2020) $
+$Date: 2020-11-30 08:46:29 +0000 (Mon, 30 Nov 2020) $
 
 DVHMETRICS RELEASE VERSIONS at https://cran.r-project.org/
 
+Version 0.4 (November 30, 2020)
+    * runGUI()
+      - the shiny GUI is now a dashboard based on package bs4Dash
+
+Version 0.3.11 (April 30, 2020)
+    * runGUI()
+      - fix upload of Eclipse files
+        (thanks: Li-Wen Huang)
+
 Version 0.3.10 (March 16, 2020)
     * readDVH()
-      - Enable reading absolute volume files from HiArt
+      - enable reading absolute volume files from HiArt
         (thanks: Meriam Kebdani)
       - add possible option volume_from_dvh if structure volume
         should be determined from maximum volume in a DVH, relevant

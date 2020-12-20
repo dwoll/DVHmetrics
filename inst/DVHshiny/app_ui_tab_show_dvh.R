@@ -1,7 +1,6 @@
 fluidPage(
     fluidRow(
-        bs4Box(
-            title="Plot options",
+        box(title="Plot options",
             width=4,
             radioButtons("plotByPat", label=h5("Plot by patient or by structure"),
                          list("By patient"=1,
@@ -20,8 +19,7 @@ fluidPage(
             sliderInput("plotThreshVol", label=h5("Threshold volume"),
                         min=0, max=100, value=1)
         ),
-        bs4Box(
-            title="Show DVH diagrams",
+        box(title="Show DVH diagrams",
             width=8,
             downloadButton("saveDVHPDF", "Save as PDF"),
             downloadButton("saveDVHJPG", "Save as JPEGs (zipped to one file)"),

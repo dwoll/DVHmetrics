@@ -1,44 +1,48 @@
-bs4DashSidebar(
+dashboardSidebar(
+    id="sidebar",
     skin="light",
+    fixed=TRUE,
+    minified=TRUE,
+    collapsed=FALSE,
     status="primary",
-    brandColor="primary",
-    # elevation=1,
-    bs4SidebarMenu(
-        id="sidebar",
-        bs4SidebarMenuItem(
+    sidebarMenu(
+        flat = FALSE,
+        compact = FALSE,
+        childIndent = TRUE,
+        menuItem(
             "DVH data",
             tabName="tab_data",
-            icon="file-upload"
+            icon=icon("file-upload", lib="font-awesome")
         ),
-        bs4SidebarMenuItem(
+        menuItem(
             "Metrics",
             tabName="tab_metrics",
-            icon="table"
+            icon=icon("table", lib="font-awesome")
         ),
-        bs4SidebarMenuItem(
+        menuItem(
             "Show DVH",
             tabName="tab_show_dvh",
-            icon = "chart-line"
+            icon = icon("chart-line", lib="font-awesome")
         ),
-        bs4SidebarMenuItem(
+        menuItem(
             "Check constraints",
             tabName="tab_check_constraints",
-            icon="table"
+            icon=icon("table", lib="font-awesome")
         ),
-        bs4SidebarMenuItem(
+        menuItem(
             "Show constraints",
             tabName="tab_show_constraints",
-            icon = "chart-line"
+            icon = icon("chart-line", lib="font-awesome")
         ),
-        bs4SidebarMenuItem(
+        menuItem(
             "BED/EQD2",
             tabName="tab_bed_eqd2",
-            icon="table"
+            icon=icon("table", lib="font-awesome")
         ),
-        bs4SidebarMenuItem(
+        menuItem(
             "About",
             tabName="tab_about",
-            icon="lightbulb"
+            icon=icon("lightbulb", lib="font-awesome")
         )
     )
 )

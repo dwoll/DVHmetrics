@@ -1,7 +1,6 @@
 fluidPage(
     fluidRow(
-        bs4Box(
-            title="Define metrics",
+        box(title="Define metrics",
             width=4,
             textInput("metrInput", "Metric(s):", value=c("DMEAN, D1cc, V10%")),
             #tags$textarea(id="defMetricsMult", rows=2, cols=10, ""),
@@ -43,8 +42,7 @@ fluidPage(
                            multiple=TRUE)#,
             #options=c(placeholder='Click to select variables'))
         ),
-        bs4Box(
-            title="DVH metrics",
+        box(title="DVH metrics",
             width=8,
             DT::dataTableOutput("metrics"),
             downloadButton("saveMetrics", "Save as text file"),

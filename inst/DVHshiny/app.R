@@ -18,52 +18,46 @@ maxNID <- 100
 ## app code
 #####---------------------------------------------------------------------------
 
-shiny::shinyApp(
+shinyApp(
     #####-----------------------------------------------------------------------
     ## UI
     #####-----------------------------------------------------------------------
-    ui=bs4DashPage(
+    ui=dashboardPage(
         # theme = "custom.css",
         title="Analyze dose-volume histograms using DVHmetrics",
-        sidebar_mini=TRUE,
-        sidebar_collapsed=FALSE,
+        dark=FALSE,
+        help=FALSE,
         sidebar=source("app_ui_sidebar.R", encoding="UTF8")$value,
-        navbar=bs4DashNavbar(skin="light",
-                             border=FALSE,
-                             fixed=TRUE,
-                             sidebarIcon="bars",
-                             # controlbarIcon="th",
-                             leftUi=tagList(
-                                 tags$code(tags$h3("Analyze dose-volume histograms using 'DVHmetrics'"))
-                             )
+        header=dashboardHeader(
+            tags$code(tags$h3("Analyze dose-volume histograms using 'DVHmetrics'"))
         ),
-        body=bs4DashBody(
-            bs4TabItems(
-                bs4TabItem(
+        body=dashboardBody(
+            tabItems(
+                tabItem(
                     tabName="tab_data",
                     source("app_ui_tab_data.R", local=TRUE, encoding="UTF8")$value
                 ),
-                bs4TabItem(
+                tabItem(
                     tabName="tab_metrics",
                     source("app_ui_tab_metrics.R", local=TRUE, encoding="UTF8")$value
                 ),
-                bs4TabItem(
+                tabItem(
                     tabName="tab_show_dvh",
                     source("app_ui_tab_show_dvh.R", local=TRUE, encoding="UTF8")$value
                 ),
-                bs4TabItem(
+                tabItem(
                     tabName="tab_check_constraints",
                     source("app_ui_tab_check_constraints.R", local=TRUE, encoding="UTF8")$value
                 ),
-                bs4TabItem(
+                tabItem(
                     tabName="tab_show_constraints",
                     source("app_ui_tab_show_constraints.R", local=TRUE, encoding="UTF8")$value
                 ),
-                bs4TabItem(
+                tabItem(
                     tabName="tab_bed_eqd2",
                     source("app_ui_tab_bed_eqd2.R", local=TRUE, encoding="UTF8")$value
                 ),
-                bs4TabItem(
+                tabItem(
                     tabName="tab_about",
                     source("app_ui_tab_about.R", local=TRUE, encoding="UTF8")$value
                 )

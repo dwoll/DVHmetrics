@@ -1,7 +1,6 @@
 fluidPage(
     fluidRow(
-        bs4Box(
-            title="Enter data",
+        box(title="Enter data",
             width=4,
             radioButtons("DVHin", label=h4("Enter data"),
                          list("Use built-in data"=1,
@@ -26,8 +25,7 @@ fluidPage(
                          list("Short info on DVHs"=1,
                               "Detailed info on DVHs"=2))
         ),
-        bs4Box(
-            title="Information from imported DVH file(s)",
+        box(title="Information from imported DVH file(s)",
             width=8,
             verbatimTextOutput("DVHinfo")
         )

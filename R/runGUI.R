@@ -11,7 +11,7 @@ function(...) {
             ## breaking changes introduced in bs4Dash 2.0.0
             ## check which version is available
             bs4Dash_version <- packageVersion("bs4Dash")
-            if(compareVersion("2.0.0", as.character(bs4Dash_version)) == -1) {
+            if(compareVersion("2.0.0", as.character(bs4Dash_version)) <= 0) {
                 shiny::runApp(appDir, ...)
             } else {
                 appDir_bs4Dash_old <- paste0(appDir, "_bs4Dash_05")

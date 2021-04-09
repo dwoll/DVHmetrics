@@ -1,7 +1,9 @@
 #####---------------------------------------------------------------------------
 ## parse character vector from Eclipse DVH file
 parseEclipse <- function(x, planInfo=FALSE, courseAsID=FALSE, ...) {
-    planInfo <- as.character(planInfo)
+    planInfo    <- as.character(planInfo)
+    dots        <- list(...)
+    uncertainty <- hasName(dots, "uncertainty") && dots$uncertainty
 
     ## function to extract one information element from a number of lines
     ## make sure only first : is matched -> not greedy
@@ -26,19 +28,25 @@ parseEclipse <- function(x, planInfo=FALSE, courseAsID=FALSE, ...) {
         line <- trimws(ll[grep(pattern, ll)], which="both")
         pat  <- "^.+?:[^[:digit:]]*([[:digit:][:punct:]]+)(Gy|cGy|%)*([[:alnum:][:punct:][:blank:]]*)$"
         elem <- gsub(pat, "\\1", line, perl=TRUE, ignore.case=TRUE)
-        grp2 <- gsub(pat, "\\2", line, perl=TRUE, ignore.case=TRUE)
-        grp3 <- gsub(pat, "\\3", line, perl=TRUE, ignore.case=TRUE)
-        if(nzchar(grp2) || nzchar(grp3)) {
-            header  <- x[seq_len(sStart[1]-1)]                        # header
-            patID   <- getElem("^Patient ID[[:blank:]]*:",  header)   # patient id
-            warning(paste(patID, ": Non-standard dose line found"))
+        num  <- if(length(elem) == 1L) {
+            grp2 <- gsub(pat, "\\2", line, perl=TRUE, ignore.case=TRUE)
+            grp3 <- gsub(pat, "\\3", line, perl=TRUE, ignore.case=TRUE)
+            if(nzchar(grp2) || nzchar(grp3)) {
+                header  <- x[seq_len(sStart[1]-1)]                        # header
+                patID   <- getElem("^Patient ID[[:blank:]]*:",  header)   # patient id
+                warning(paste(patID, ": Non-standard dose line found"))
+            }
+            
+            as.numeric(trimws(elem))
+        } else {
+            NA_real_
         }
-
-        num <- as.numeric(trimws(elem))
+        
         if(is.na(num)) {
             header  <- x[seq_len(sStart[1]-1)]                        # header
             patID   <- getElem("^Patient ID[[:blank:]]*:",  header)   # patient id
             warning(paste(patID, ": No dose found"))
+            return(num)
         }
 
         if(grepl("\\[%\\]", line)) {
@@ -61,8 +69,12 @@ parseEclipse <- function(x, planInfo=FALSE, courseAsID=FALSE, ...) {
 
     getVolUnit <- function(ll) {
         line <- ll[grep("^Volume.+:", ll)]
-        elem <- sub("^.+\\[(CM.+)\\][[:blank:]]*:.+", "\\1", line, perl=TRUE, ignore.case=TRUE)
-        toupper(trimws(elem))
+        if(length(line) >= 1L) {
+            elem <- sub("^.+\\[(CM.+)\\][[:blank:]]*:.+", "\\1", line, perl=TRUE, ignore.case=TRUE)
+            toupper(trimws(elem))
+        } else {
+            NA_character_
+        }
     }
 
     getDVHtype <- function(ll) {
@@ -92,8 +104,24 @@ parseEclipse <- function(x, planInfo=FALSE, courseAsID=FALSE, ...) {
         }
     }
 
-    sStart <- grep("^Structure: [[:alnum:][:punct:]]", x) # start of sections
-    sLen   <- diff(c(sStart, length(x)+1))                # length of sections
+    if(uncertainty) {
+        sec_indicator_string <- "(^Uncertainty plan: )|(^Structure: )"
+        ## not quite start of sections because for uncertainty plans,
+        ## both - "uncertainty plan" and "structure" appear in one block
+        ## -> remove hits without preceding blank line
+        sStart_tmp      <- grep(sec_indicator_string, x)
+        sStart_tmp_prev <- sStart_tmp-1
+        idx_uncertainty <- nzchar(x[sStart_tmp_prev])
+        sStart          <- sStart_tmp[!idx_uncertainty]
+        ## identify the uncertainty structures
+        str_uncertainty <- which(idx_uncertainty)  - seq_len(sum(idx_uncertainty))
+        str_regular     <- setdiff(seq_along(sStart), str_uncertainty)
+    } else {
+        sec_indicator_string <- "^Structure: [[:alnum:][:punct:]]"
+        sStart <- grep(sec_indicator_string, x)     # start of sections
+    }
+
+    sLen <- diff(c(sStart, length(x)+1))      # length of sections
     if((length(sLen) < 1L) || all(sLen < 1L)) {
         stop("No structures found")
     }
@@ -199,7 +227,7 @@ parseEclipse <- function(x, planInfo=FALSE, courseAsID=FALSE, ...) {
 
     ## extract DVH from one structure section and store in a list
     ## with DVH itself as a matrix
-    getDVH <- function(strct, info) {
+    getDVH <- function(strct, info, is_uncertainty) {
         ## extract information from info list
         doseUnit   <- info$doseUnit
         doseRx     <- info$doseRx
@@ -217,23 +245,39 @@ parseEclipse <- function(x, planInfo=FALSE, courseAsID=FALSE, ...) {
         }
 
         ## extract structure, volume, dose min, max, mean, median and sd
-        structure <- getElem("^Structure.*:", strct)
-        structVol <- as.numeric(getElem("^Volume.*:", strct))
-        doseMin   <- getDose("^Min Dose.*:",    strct, doseRx)
-        doseMax   <- getDose("^Max Dose.*:",    strct, doseRx)
-        doseAvg   <- getDose("^Mean Dose.*:",   strct, doseRx)
-        doseMed   <- getDose("^Median Dose.*:", strct, doseRx)
-        doseMode  <- getDose("^Modal Dose.*:",  strct, doseRx)
-        doseSD    <- getDose("^STD.*:",         strct, doseRx)
-
-        volumeUnit <- getVolUnit(strct)
-        volumeUnit <- if(grepl("^CM.+", volumeUnit)) {
-            "CC"
-        } else if(grepl("^%", volumeUnit)) {
-            "PERCENT"
+        if(is_uncertainty) {
+            struct_org <- getElem("^Structure.*:", strct)
+            structVol  <- info$str_volumes[[struct_org]]
+            volumeUnit <- info$str_volUnits[[struct_org]]
+            plan_uncertainty <- gsub("^Uncertainty plan: (.+) \\(variation .+\\)$", "\\1", strct[1])
+            structure  <- paste(struct_org, trimws(plan_uncertainty), sep="_")
+            
+            doseMin   <- NULL
+            doseMax   <- NULL
+            doseAvg   <- NULL
+            doseMed   <- NULL
+            doseMode  <- NULL
+            doseSD    <- NULL
         } else {
-            warning("Could not determine volume measurement unit")
-            NA_character_
+            structure <- getElem("^Structure.*:", strct)
+            structVol <- as.numeric(getElem("^Volume.*:", strct))
+            
+            doseMin   <- getDose("^Min Dose.*:",    strct, doseRx)
+            doseMax   <- getDose("^Max Dose.*:",    strct, doseRx)
+            doseAvg   <- getDose("^Mean Dose.*:",   strct, doseRx)
+            doseMed   <- getDose("^Median Dose.*:", strct, doseRx)
+            doseMode  <- getDose("^Modal Dose.*:",  strct, doseRx)
+            doseSD    <- getDose("^STD.*:",         strct, doseRx)
+            
+            volumeUnit <- getVolUnit(strct)
+            volumeUnit <- if(grepl("^CM.+", volumeUnit)) {
+                "CC"
+            } else if(grepl("^%", volumeUnit)) {
+                "PERCENT"
+            } else {
+                warning("Could not determine volume measurement unit")
+                NA_character_
+            }
         }
 
         ## find DVH
@@ -358,11 +402,41 @@ parseEclipse <- function(x, planInfo=FALSE, courseAsID=FALSE, ...) {
     }
 
     ## list of DVH data frames with component name = structure
-    info <- list(patID=patID, patName=patName, date=DVHdate,
-                 DVHtype=DVHtype, plan=plan, course=course, quadrant=quadrant,
-                 doseRx=doseRx, doseRxUnit=doseRxUnit,
-                 isoDoseRx=isoDoseRx, doseUnit=doseUnit)
-    dvhL <- lapply(structList, getDVH, info=info)
+    info <- list(patID=patID,
+                 patName=patName,
+                 date=DVHdate,
+                 DVHtype=DVHtype,
+                 plan=plan,
+                 course=course,
+                 quadrant=quadrant,
+                 doseRx=doseRx,
+                 doseRxUnit=doseRxUnit,
+                 isoDoseRx=isoDoseRx,
+                 doseUnit=doseUnit)
+
+    ## if there are uncertainty structures, read corresponding normal
+    ## structures first, extract volume, then read uncertainty structures
+    dvhL <- if(uncertainty && (length(str_uncertainty) >= 1L)) {
+        structList_regular     <- structList[str_regular]
+        structList_uncertainty <- structList[str_uncertainty]
+        
+        dvhL_regular <- lapply(structList_regular,  getDVH, info=info,
+                               is_uncertainty=FALSE)
+        
+        info$str_volumes <- setNames(Map(function(x) { x$structVol }, dvhL_regular),
+                                     Map(function(x) { x$structure }, dvhL_regular))
+        
+        info$str_volUnits <- setNames(Map(function(x) { x$volumeUnit }, dvhL_regular),
+                                      Map(function(x) { x$structure },  dvhL_regular))
+        
+        dvhL_uncertainty <- lapply(structList_uncertainty, getDVH, info=info,
+                                   is_uncertainty=TRUE)
+        
+        c(dvhL_regular, dvhL_uncertainty)
+        
+    } else {
+        lapply(structList, getDVH, info=info, is_uncertainty=FALSE)
+    }
     dvhL <- Filter(Negate(is.null), dvhL)
     names(dvhL) <- sapply(dvhL, function(y) y$structure)
     if(length(unique(names(dvhL))) < length(dvhL)) {

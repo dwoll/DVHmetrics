@@ -15,7 +15,7 @@ function(...) {
                 shiny::runApp(appDir, ...)
             } else {
                 appDir_bs4Dash_old <- paste0(appDir, "_bs4Dash_05")
-                shiny::runApp(appDir, ...)
+                shiny::runApp(appDir_bs4Dash_old, ...)
             }
         } else {
             warning("Package 'bs4Dash' not found - running legacy version")

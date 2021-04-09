@@ -1,8 +1,8 @@
 Package: DVHmetrics
 Type: Package
 Title: Analyze Dose-Volume Histograms and Check Constraints
-Version: 0.4
-Date: 2020-11-30
+Version: 0.4.1
+Date: 2021-04-09
 Authors@R: c(person("Daniel", "Wollschlaeger", role = c("aut", "cre"), email = "wollschlaeger@uni-mainz.de"),
     person("Heiko", "Karle", role="aut"), person("Heinz", "Schmidberger", role="ctb"))
 Depends: R (>= 3.2)

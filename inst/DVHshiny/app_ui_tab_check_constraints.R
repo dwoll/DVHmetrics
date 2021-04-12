@@ -1,7 +1,6 @@
 fluidPage(
     fluidRow(
-        bs4Box(
-            title="Constraint settings",
+        box(title="Constraint settings",
             width=4,
             radioButtons("constrIn", label=h4("Define constraints"),
                          list("Use built-in constraints"=1,
@@ -67,8 +66,7 @@ fluidPage(
                            multiple=TRUE)#,
             #options=c(placeholder='Click to select variables'))
         ),
-        bs4Box(
-            title="Check constraints",
+        box(title="Check constraints",
             width=8,
             DT::dataTableOutput("constraints"),
             downloadButton("saveConstrTxt", "Save as text file"),

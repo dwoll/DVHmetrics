@@ -1,7 +1,6 @@
 fluidPage(
     fluidRow(
-        bs4Box(
-            title="Enter data",
+        box(title="Enter data",
             width=4,
             radioButtons("DVHin", label=h4("Enter data"),
                          list("Use built-in data"=1,
@@ -19,16 +18,15 @@ fluidPage(
                                           list("None"=1, "Prescribed dose"=2)),
                              checkboxGroupInput("DVHreadOpts", label=NULL,
                                                 choices=c("Add to existing data"="DVHadd",
-                                                          "Use Course for ID"="DVHcourse"#,
-                                                          # "Struct volume from DVH"="volume_from_dvh"
-                                                          ))),
+                                                          "Use Course for ID"="DVHcourse",
+                                                          "Struct volume from DVH"="volume_from_dvh",
+                                                          "Uncertainty plans"="uncertainty"))),
             actionButton("applyData", "Apply"),
             radioButtons("DVHverbose", "",
                          list("Short info on DVHs"=1,
                               "Detailed info on DVHs"=2))
         ),
-        bs4Box(
-            title="Information from imported DVH file(s)",
+        box(title="Information from imported DVH file(s)",
             width=8,
             verbatimTextOutput("DVHinfo")
         )

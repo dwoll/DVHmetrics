@@ -1,7 +1,6 @@
 fluidPage(
     fluidRow(
-        bs4Box(
-            title="Constraint plot settings",
+        box(title="Constraint plot settings",
             width=4,
             radioButtons("constrByPat", label=h5("Plot by patient or by structure"),
                          list("By patient"=1,
@@ -12,8 +11,7 @@ fluidPage(
             sliderInput("constrThreshVol", label=h5("Threshold volume"),
                         min=0, max=100, value=1)
         ),
-        bs4Box(
-            title="Constraint plot",
+        box(title="Constraint plot",
             width=8,
             downloadButton("saveConstrPDF", "Save as PDF"),
             downloadButton("saveConstrJPG", "Save as JPEGs (zipped to one file)"),

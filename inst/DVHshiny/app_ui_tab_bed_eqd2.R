@@ -1,7 +1,6 @@
 fluidPage(
     fluidRow(
-        bs4Box(
-            title="BED/EQD2 settings",
+        box(title="BED/EQD2 settings",
             width=4,
             h4("Conversion type"),
             selectInput("BEDtype", label=NULL,
@@ -38,8 +37,7 @@ fluidPage(
                                        value="2")
             )
         ),
-        bs4Box(
-            title="BED / EQD2 / Isoeffective dose calculation",
+        box(title="BED / EQD2 / Isoeffective dose calculation",
             width=8,
             conditionalPanel(condition="input.BEDtype == '1'",
                              h5("BED")

@@ -30,7 +30,8 @@ shinyServer(function(input, output, session) {
                              type=types[input$DVHtype],
                              # encoding=enc,
                              courseAsID=("DVHcourse" %in% input$DVHreadOpts),
-                             # volume_from_dvh=("volume_from_dvh" %in% input$DVHreadOpts),
+                             volume_from_dvh=("volume_from_dvh" %in% input$DVHreadOpts),
+                             uncertainty=("uncertainty" %in% input$DVHreadOpts),
                              planInfo=plans[input$DVHplanInfo],
                              add=add)
                     } else {
@@ -38,7 +39,8 @@ shinyServer(function(input, output, session) {
                              type=types[input$DVHtype],
                              # encoding=enc,
                              courseAsID=("DVHcourse" %in% input$DVHreadOpts),
-                             # volume_from_dvh=("volume_from_dvh" %in% input$DVHreadOpts),
+                             volume_from_dvh=("volume_from_dvh" %in% input$DVHreadOpts),
+                             uncertainty=("uncertainty" %in% input$DVHreadOpts),
                              planInfo=plans[input$DVHplanInfo])
                     }
                     # argL <- Filter(Negate(is.null), argL)

@@ -19,7 +19,7 @@ fluidPage(
                              checkboxGroupInput("DVHreadOpts", label=NULL,
                                                 choices=c("Add to existing data"="DVHadd",
                                                           "Use Course for ID"="DVHcourse",
-                                                          "Struct volume from DVH"="volume_from_dvh",
+                                                          # "Struct volume from DVH"="volume_from_dvh",
                                                           "Uncertainty plans"="uncertainty"))),
             actionButton("applyData", "Apply"),
             radioButtons("DVHverbose", "",

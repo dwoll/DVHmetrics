@@ -75,10 +75,10 @@ shiny::shinyApp(
     #####-----------------------------------------------------------------------
     server=function(input, output, session) {
         session$onSessionEnded(stopApp)
-        
+
         ## directory where current DVH data is saved
         DVHdir <- tempdir()
-        
+
         ## reactive conductor
         DVH <- reactive({
             input$applyData
@@ -101,7 +101,7 @@ shiny::shinyApp(
                                  type=types[input$DVHtype],
                                  # encoding=enc,
                                  courseAsID=("DVHcourse" %in% input$DVHreadOpts),
-                                 volume_from_dvh=("volume_from_dvh" %in% input$DVHreadOpts),
+                                 # volume_from_dvh=("volume_from_dvh" %in% input$DVHreadOpts),
                                  planInfo=plans[input$DVHplanInfo],
                                  add=add)
                         } else {
@@ -109,7 +109,7 @@ shiny::shinyApp(
                                  type=types[input$DVHtype],
                                  # encoding=enc,
                                  courseAsID=("DVHcourse" %in% input$DVHreadOpts),
-                                 volume_from_dvh=("volume_from_dvh" %in% input$DVHreadOpts),
+                                 # volume_from_dvh=("volume_from_dvh" %in% input$DVHreadOpts),
                                  planInfo=plans[input$DVHplanInfo])
                         }
                         # argL <- Filter(Negate(is.null), argL)
@@ -118,21 +118,21 @@ shiny::shinyApp(
                         NULL
                     }
                 }
-                
+
                 ## add representation by structure
                 DVHdataByStruct <- if(!is.null(DVHdata)) {
                     DVHmetrics:::reorgByPat(DVHdata, byPat=FALSE)
                 } else {
                     NULL
                 }
-                
+
                 DvHcurr <- list(DVH=DVHdata, DVHbyStruct=DVHdataByStruct)
                 setwd(DVHdir)
                 saveRDS(DvHcurr$DVH, file="DVHprev.rds")
                 return(DvHcurr)
             })
         })
-        
+
         output$DVHinfo <- renderPrint({
             dvh <- DVH()$DVH
             if(!is.null(dvh)) {
@@ -145,7 +145,7 @@ shiny::shinyApp(
                 invisible(NULL)
             }
         })
-        
+
         output$metrSelStruct <- renderUI({
             dvh <- DVH()$DVH
             if(!is.null(dvh)) {
@@ -157,7 +157,7 @@ shiny::shinyApp(
                 NULL
             }
         })
-        
+
         observeEvent(
             eventExpr=input$metrSelStructAll,
             handlerExpr= {
@@ -177,7 +177,7 @@ shiny::shinyApp(
                 }
             }
         )
-        
+
         output$metrSelPat <- renderUI({
             dvh <- DVH()$DVH
             if(!is.null(dvh)) {
@@ -189,7 +189,7 @@ shiny::shinyApp(
                 NULL
             }
         })
-        
+
         ## https://stackoverflow.com/a/35044158
         observeEvent(
             eventExpr=input$metrSelPatAll,
@@ -210,7 +210,7 @@ shiny::shinyApp(
                 }
             }
         )
-        
+
         output$plotSelStruct <- renderUI({
             dvh <- DVH()$DVH
             if(!is.null(dvh)) {
@@ -222,7 +222,7 @@ shiny::shinyApp(
                 NULL
             }
         })
-        
+
         observeEvent(
             eventExpr=input$plotSelStructAll,
             handlerExpr= {
@@ -242,7 +242,7 @@ shiny::shinyApp(
                 }
             }
         )
-        
+
         output$plotSelPat <- renderUI({
             dvh <- DVH()$DVH
             if(!is.null(dvh)) {
@@ -254,7 +254,7 @@ shiny::shinyApp(
                 NULL
             }
         })
-        
+
         observeEvent(
             eventExpr=input$plotSelPatAll,
             handlerExpr= {
@@ -274,7 +274,7 @@ shiny::shinyApp(
                 }
             }
         )
-        
+
         output$metrics <- DT::renderDataTable({
             dvh        <- DVH()$DVH
             sortOpts   <- c('1'="observed", '2'="structure", '3'="metric", '4'="patID")
@@ -307,13 +307,13 @@ shiny::shinyApp(
             EUDa    <- if(input$metrEUDa  != "") { as.numeric(input$metrEUDa)  } else { NULL }
             EUDfd   <- if(input$metrEUDfd != "") { as.numeric(input$metrEUDfd) } else { NULL }
             EUDab   <- if(input$metrEUDab != "") { as.numeric(input$metrEUDab) } else { NULL }
-            
+
             NTCPtype    <- c("probit", "logit", "poisson")[as.numeric(input$metrNTCPtype)]
             NTCPtd50    <- if(input$metrNTCPtd50    != "") { as.numeric(input$metrNTCPtd50)    } else { NULL }
             NTCPn       <- if(input$metrNTCPn       != "") { as.numeric(input$metrNTCPn)       } else { NULL }
             NTCPm       <- if(input$metrNTCPm       != "") { as.numeric(input$metrNTCPm)       } else { NULL }
             NTCPgamma50 <- if(input$metrNTCPgamma50 != "") { as.numeric(input$metrNTCPgamma50) } else { NULL }
-            
+
             sortSel <- input$metrSortBy
             sortBy <- if(length(sortSel) > 0) {
                 sortOpts[sortSel]
@@ -338,7 +338,7 @@ shiny::shinyApp(
                 NULL
             }
         })#, options=list(pageLength=25))
-        
+
         output$saveMetrics <- downloadHandler(
             filename=function() { "metrics.txt" },
             content=function(file) {
@@ -369,18 +369,18 @@ shiny::shinyApp(
                 } else {
                     NULL
                 }
-                
+
                 interp  <- "linear"
                 EUDa    <- if(input$metrEUDa  != "") { as.numeric(input$metrEUDa)  } else { NULL }
                 EUDfd   <- if(input$metrEUDfd != "") { as.numeric(input$metrEUDfd) } else { NULL }
                 EUDab   <- if(input$metrEUDab != "") { as.numeric(input$metrEUDab) } else { NULL }
-                
+
                 NTCPtype    <- c("probit", "logit", "poisson")[as.numeric(input$metrNTCPtype)]
                 NTCPtd50    <- if(input$metrNTCPtd50    != "") { as.numeric(input$metrNTCPtd50)    } else { NULL }
                 NTCPn       <- if(input$metrNTCPn       != "") { as.numeric(input$metrNTCPn)       } else { NULL }
                 NTCPm       <- if(input$metrNTCPm       != "") { as.numeric(input$metrNTCPm)       } else { NULL }
                 NTCPgamma50 <- if(input$metrNTCPgamma50 != "") { as.numeric(input$metrNTCPgamma50) } else { NULL }
-                
+
                 sortSel <- input$metrSortBy
                 sortBy <- if(length(sortSel) > 0) {
                     sortOpts[sortSel]
@@ -404,7 +404,7 @@ shiny::shinyApp(
             },
             contentType='text/plain' # MIME type
         )
-        
+
         #     output$DVHplotOrg <- renderPlot({
         #         dvh <- DVH()$DVH
         #         if(!is.null(dvh)) {
@@ -418,7 +418,7 @@ shiny::shinyApp(
         #             NULL
         #         }
         #     })
-        
+
         output$DVHplot <- renderUI({
             dvh       <- DVH()
             byPat     <- input$plotByPat == '1'
@@ -455,12 +455,12 @@ shiny::shinyApp(
                     }
                 })
             }
-            
+
             ## weed out NULL components, convert the list to a tagList and return
             plotOutputL <- Filter(Negate(is.null), plotOutputL)
             do.call(tagList, plotOutputL)
         })
-        
+
         ## adapted from Winston Chang: https://gist.github.com/wch/5436415
         ## call renderPlot maxNID times and discard those not required (return NULL)
         ## problem: number of plots should be dynamic -> reactive context required
@@ -490,7 +490,7 @@ shiny::shinyApp(
                             sharedNames <- intersect(selStruct, names(dvh$DVHbyStruct))
                             dvh$DVHbyStruct[sharedNames][[localI]]
                         }
-                        
+
                         brush <- input[[paste0("DVHplot", localI, "_brush")]]
                         if(!is.null(brush)) {
                             showDVH(x=x,
@@ -519,7 +519,7 @@ shiny::shinyApp(
                         }
                     }
                 })
-                
+
                 ## constraint plot
                 output[[paste0("constraintPlot", localI)]] <- renderPlot({
                     dvh    <- DVH()
@@ -533,7 +533,7 @@ shiny::shinyApp(
                     } else {
                         DVHmetrics:::harmoConstrDVH.DVHLstLst(dvh$DVHbyStruct, constr=constr, byPat=byPat)
                     }
-                    
+
                     if(is.null(constr) || (length(xConstrSub$x) < localI)) {
                         NULL
                     } else {
@@ -561,7 +561,7 @@ shiny::shinyApp(
                 })
             })
         }
-        
+
         output$saveDVHPDF <- downloadHandler(
             filename=function() { "DVH.pdf" },
             content=function(file) {
@@ -576,7 +576,7 @@ shiny::shinyApp(
                 } else {
                     dvh$DVHbyStruct
                 }
-                
+
                 argL <- list(x=x,
                              cumul=cumul,
                              byPat=byPat,
@@ -591,7 +591,7 @@ shiny::shinyApp(
             },
             contentType='application/pdf' # MIME type
         )
-        
+
         makeDVHJPG <- function(fName, dvh, byPat, rel, cumul, selPat, selStruct, thresh) {
             argL <- list(x=dvh,
                          cumul=cumul,
@@ -604,7 +604,7 @@ shiny::shinyApp(
             do.call(showDVH, argL)
             dev.off()
         }
-        
+
         output$saveDVHJPG <- downloadHandler(
             filename=function() { "DVH_JPGs.zip" },
             content=function(file) {
@@ -619,7 +619,7 @@ shiny::shinyApp(
                 } else {
                     dvh$DVHbyStruct
                 }
-                
+
                 selPat    <- getStrIDs(dvh$DVH, what="patient")[  as.numeric(input$plotSelPat)]
                 selStruct <- getStrIDs(dvh$DVH, what="structure")[as.numeric(input$plotSelStruct)]
                 nFiles <- if(byPat) {
@@ -627,12 +627,12 @@ shiny::shinyApp(
                 } else {
                     sum(selStruct %in% names(x))
                 }
-                
+
                 ## write all JPEGs into temporary directory and zip them
                 fNames <- paste0("DVH_", sprintf("%02d", seq_len(nFiles)), ".jpg")
                 tmpdir <- tempdir()
                 setwd(tmpdir)
-                
+
                 for(i in seq_along(fNames)) {
                     fN         <- fNames[i]
                     selPatI    <- if(byPat) { selPat[i] } else { selPat }
@@ -641,7 +641,7 @@ shiny::shinyApp(
                                selPat=selPatI, selStruct=selStructI,
                                addMSD=addMSD, thresh=thresh)
                 }
-                
+
                 zip(zipfile=file, files=fNames)
                 if(file.exists(paste0(file, ".zip"))) {
                     file.rename(paste0(file, ".zip"), file)
@@ -649,7 +649,7 @@ shiny::shinyApp(
             },
             contentType = "application/zip"
         )
-        
+
         output$saveDVHMSD <- downloadHandler(
             filename=function() { "DVH_M_SD.txt" },
             content=function(file) {
@@ -661,10 +661,10 @@ shiny::shinyApp(
                 } else {
                     dvh$DVHbyStruct
                 }
-                
+
                 selPat    <- getStrIDs(dvh$DVH, what="patient")[  as.numeric(input$plotSelPat)]
                 selStruct <- getStrIDs(dvh$DVH, what="structure")[as.numeric(input$plotSelStruct)]
-                
+
                 argL <- list(x=x,
                              fun=list(mean=mean, median=median, min=min, max=max, sd=sd),
                              byPat=byPat,
@@ -681,7 +681,7 @@ shiny::shinyApp(
             },
             contentType='text/plain' # MIME type
         )
-        
+
         ## reactive conductor
         DVHconstr <- reactive({
             input$applyConstraints
@@ -719,17 +719,17 @@ shiny::shinyApp(
                 } else {
                     NULL
                 }
-                
+
                 if(!is.null(constr)) {
                     cNames <- tolower(names(constr))
                     cNames[cNames == "patid"] <- "patID"
                     constr <- setNames(constr, cNames)
                 }
-                
+
                 return(constr)
             })
         })
-        
+
         output$constraints <- DT::renderDataTable({
             constr <- DVHconstr()
             dvh    <- DVH()$DVH
@@ -738,13 +738,13 @@ shiny::shinyApp(
             EUDa   <- if(input$constrEUDa  != "") { as.numeric(input$constrEUDa)  } else { NULL }
             EUDfd  <- if(input$constrEUDfd != "") { as.numeric(input$constrEUDfd) } else { NULL }
             EUDab  <- if(input$constrEUDab != "") { as.numeric(input$constrEUDab) } else { NULL }
-            
+
             NTCPtype    <- c("probit", "logit", "poisson")[as.numeric(input$constrNTCPtype)]
             NTCPtd50    <- if(input$constrNTCPtd50    != "") { as.numeric(input$constrNTCPtd50)    } else { NULL }
             NTCPn       <- if(input$constrNTCPn       != "") { as.numeric(input$constrNTCPn)       } else { NULL }
             NTCPm       <- if(input$constrNTCPm       != "") { as.numeric(input$constrNTCPm)       } else { NULL }
             NTCPgamma50 <- if(input$constrNTCPgamma50 != "") { as.numeric(input$constrNTCPgamma50) } else { NULL }
-            
+
             sortOpts <- c('1'="compliance", '2'="dstMin", '3'="deltaV", '4'="deltaD",
                           '5'="observed", '6'="patID", '7'="structure", '8'="constraint")
             sortSel  <- input$constrSortBy
@@ -753,7 +753,7 @@ shiny::shinyApp(
             } else {
                 "none"
             }
-            
+
             if(!is.null(constr) && !is.null(dvh)) {
                 argL <- list(x=dvh,
                              constr=constr, byPat=TRUE, interp=interp,
@@ -773,9 +773,9 @@ shiny::shinyApp(
             } else {
                 NULL
             }
-            
+
         })#, options=list(pageLength=25))
-        
+
         #     output$constraintPlotOrg <- renderPlot({
         #         constr <- DVHconstr()
         #         dvh    <- DVH()$DVH
@@ -789,7 +789,7 @@ shiny::shinyApp(
         #             NULL
         #         }
         #     })
-        
+
         output$constraintPlot <- renderUI({
             dvh    <- DVH()
             constr <- DVHconstr()
@@ -799,7 +799,7 @@ shiny::shinyApp(
             } else {
                 DVHmetrics:::harmoConstrDVH.DVHLstLst(dvh$DVHbyStruct, constr=constr, byPat=byPat)
             }
-            
+
             plotOutputL <- lapply(seq_along(xConstrSub$x), function(i) {
                 plotName <- paste0("constraintPlot", i)
                 plotOutput(plotName,
@@ -808,11 +808,11 @@ shiny::shinyApp(
                                            clip=TRUE,
                                            resetOnNew=FALSE))
             })
-            
+
             ## convert the list to a tagList and return
             do.call(tagList, plotOutputL)
         })
-        
+
         output$saveConstrTxt <- downloadHandler(
             filename=function() { "constraints.txt" },
             content=function(file) {
@@ -820,13 +820,13 @@ shiny::shinyApp(
                 EUDa   <- if(input$constrEUDa  != "") { as.numeric(input$constrEUDa)  } else { NULL }
                 EUDfd  <- if(input$constrEUDfd != "") { as.numeric(input$constrEUDfd) } else { NULL }
                 EUDab  <- if(input$constrEUDab != "") { as.numeric(input$constrEUDab) } else { NULL }
-                
+
                 NTCPtype    <- c("probit", "logit", "poisson")[as.numeric(input$constrNTCPtype)]
                 NTCPtd50    <- if(input$constrNTCPtd50    != "") { as.numeric(input$constrNTCPtd50)    } else { NULL }
                 NTCPn       <- if(input$constrNTCPn       != "") { as.numeric(input$constrNTCPn)       } else { NULL }
                 NTCPm       <- if(input$constrNTCPm       != "") { as.numeric(input$constrNTCPm)       } else { NULL }
                 NTCPgamma50 <- if(input$constrNTCPgamma50 != "") { as.numeric(input$constrNTCPgamma50) } else { NULL }
-                
+
                 argL <- list(x=DVH()$DVH,
                              constr=DVHconstr(), interp=interp,
                              EUDa=EUDa, EUDfd=EUDfd, EUDab=EUDab,
@@ -840,7 +840,7 @@ shiny::shinyApp(
             },
             contentType='text/plain' # MIME type
         )
-        
+
         output$saveConstrPDF <- downloadHandler(
             filename=function() { "constraints.pdf" },
             content=function(file) {
@@ -856,7 +856,7 @@ shiny::shinyApp(
             },
             contentType='application/pdf' # MIME type
         )
-        
+
         makeConstrJPG <- function(fName, dvh, constr, byPat, thresh, rel) {
             argL <- list(x=dvh,
                          constr=constr,
@@ -867,7 +867,7 @@ shiny::shinyApp(
             do.call(showConstraint, argL)
             dev.off()
         }
-        
+
         output$saveConstrJPG <- downloadHandler(
             filename=function() { "constraints.zip" },
             content=function(file) {
@@ -881,21 +881,21 @@ shiny::shinyApp(
                 } else {
                     dvh$DVHbyStruct
                 }
-                
+
                 xConstrSub <- DVHmetrics:::harmoConstrDVH.DVHLstLst(x, constr=constr, byPat=byPat)
                 nFiles     <- length(xConstrSub$x)
-                
+
                 ## write all JPEGs into temporary directory and zip them
                 fNames <- paste0("DVH_", sprintf("%02d", seq_len(nFiles)), ".jpg")
                 tmpdir <- tempdir()
                 setwd(tmpdir)
-                
+
                 for(i in seq_along(fNames)) {
                     fN <- fNames[i]
                     makeConstrJPG(fN, dvh=xConstrSub$x, constr=xConstrSub$constr,
                                   byPat=byPat, rel=rel, thresh=thresh)
                 }
-                
+
                 zip(zipfile=file, files=fNames)
                 if(file.exists(paste0(file, ".zip"))) {
                     file.rename(paste0(file, ".zip"), file)
@@ -903,7 +903,7 @@ shiny::shinyApp(
             },
             contentType = "application/zip"
         )
-        
+
         output$BED <- renderPrint({
             if(input$BEDtype %in% c('1', '2')) {
                 D <- if(input$BED_BED_D  != "") {
@@ -963,7 +963,7 @@ shiny::shinyApp(
                     NULL
                 }
             }
-            
+
             if(input$BEDtype == '1') {
                 getBED(D=D, fd=fd, fn=fn, ab=ab)
             } else if(input$BEDtype == '2') {

@@ -10,6 +10,7 @@ https://doi.org/10.1016/j.phro.2018.06.002
 https://doi.org/10.1016/j.radonc.2016.01.020
 https://doi.org/10.1016/j.radonc.2019.09.017
 https://doi.org/10.1016/j.radonc.2020.07.009
+https://doi.org/10.1055/s-0040-1722428
 https://doi.org/10.1080/0284186X.2017.1317107
 https://doi.org/10.1080/0284186X.2017.1350286
 https://doi.org/10.1080/0284186X.2017.1373198
@@ -18,6 +19,7 @@ https://doi.org/10.1097/HP.0000000000000577
 https://doi.org/10.1158/1078-0432.CCR-17-1
 https://doi.org/10.1177/1179554918783990
 https://doi.org/10.1186/s13014-019-1328-7
+https://doi.org/10.1308/rcsfdj.2020.113
 https://doi.org/10.1371/journal.pone.0190098
 https://doi.org/10.3390/cancers11030294
 https://doi.org/10.3389/fonc.2020.00568
@@ -25,10 +27,14 @@ https://doi.org/10.3389/fonc.2020.00568
 https://search.proquest.com/docview/2287496008
 
 shotGroups
-https://doi.org/10.5194/nhess-16-2021-2016 (Geosciences)
+
+https://doi.org/10.1016/j.comnet.2020.107285
 https://doi.org/10.1016/j.csda.2016.05.015 (Statistics)
 https://doi.org/10.1080/23737484.2017.1406317 (Statistics)
+https://doi.org/10.1101/406439 (Psychologie) (preprint)
 https://doi.org/10.1111/mmi.14417 (Molekularbiologie)
 https://doi.org/10.1111/2041-210X.13347 (Ökologie)
 https://doi.org/10.3389/feart.2019.00264 (Geosciences)
-https://doi.org/10.1101/406439 (Psychologie) (preprint)
+https://doi.org/10.5194/nhess-2016-44 (Geosciences)
+https://doi.org/10.5194/nhess-16-2021-2016 (Geosciences)
+https://arxiv.org/abs/2002.03490

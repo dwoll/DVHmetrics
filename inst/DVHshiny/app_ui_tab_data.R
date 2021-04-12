@@ -19,8 +19,9 @@ fluidPage(
                                           list("None"=1, "Prescribed dose"=2)),
                              checkboxGroupInput("DVHreadOpts", label=NULL,
                                                 choices=c("Add to existing data"="DVHadd",
-                                                          "Use Course for ID"="DVHcourse",
-                                                          "Struct volume from DVH"="volume_from_dvh"))),
+                                                          "Use Course for ID"="DVHcourse"#,
+                                                          # "Struct volume from DVH"="volume_from_dvh"
+                                                          ))),
             actionButton("applyData", "Apply"),
             radioButtons("DVHverbose", "",
                          list("Short info on DVHs"=1,

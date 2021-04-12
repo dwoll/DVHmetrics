@@ -79,7 +79,7 @@ pdfauthor={Daniel Wollschlaeger, Heiko Karle}]{hyperref}
 <<setup, echo=FALSE, include=FALSE, cache=FALSE>>=
 # set global chunk options
 knitr::opts_chunk$set(fig.align='center', fig.show='hold')
-knitr::opts_chunk$set(tidy=FALSE, message=FALSE, warning=FALSE, comment=NA)
+knitr::opts_chunk$set(tidy=FALSE, message=FALSE, warning=FALSE)
 options(replace.assign=TRUE, useFancyQuotes=FALSE, show.signif.stars=FALSE, digits=4, width=70)
 @
 
@@ -93,7 +93,7 @@ options(replace.assign=TRUE, useFancyQuotes=FALSE, show.signif.stars=FALSE, digi
 %%%%---------------------------------------------------------------------------
 %%%%---------------------------------------------------------------------------
 
-\texttt{DVHmetrics} is an add-on package for the free statistical environment \textsf{R}\footnote{A free short introduction to \textsf{R} can be found at \url{http://www.statmethods.net/}.} \cite{RDevelopmentCoreTeam2008c} with applications in radiation oncology. It provides functionality to read dose-volume-histogram (DVH) text files, to calculate DVH metrics, and to plot DVHs. In addition, it checks and visualizes quality assurance constraints for the DVH.\footnote{For a solution that also reads files in DICOM-RT format, see the \texttt{RadOnc} package for \textsf{R} \cite{Thompson2014}.}
+\texttt{DVHmetrics} is an add-on package for the free statistical environment \textsf{R}\footnote{A free short introduction to \textsf{R} can be found at \url{https://www.statmethods.net/}.} \cite{RDevelopmentCoreTeam2008c} with applications in radiation oncology. It provides functionality to read dose-volume-histogram (DVH) text files, to calculate DVH metrics, and to plot DVHs. In addition, it checks and visualizes quality assurance constraints for the DVH.\footnote{For a solution that also reads files in DICOM-RT format, see the \texttt{RadOnc} package for \textsf{R} \cite{Thompson2014}.}
 
 To install \texttt{DVHmetrics}, you need a current version of \textsf{R} and be online. Preferably, a free development environment like \textsf{R}Studio \cite{Allaire2011} should be used.
 
@@ -148,7 +148,7 @@ vignette("DVHshiny")
 %%%%---------------------------------------------------------------------------
 %%%%---------------------------------------------------------------------------
 
-To import DVH data into \textsf{R}, it should be exported as a plain text file from Varian Eclipse$^{\mathrm{TM}}$ (Versions 10--15), CadPlan$^{\mathrm{TM}}$, Pinnacle$^{3\,\mathrm{TM}}$ (version 9\footnote{Pinnacle$^{3}$ files have to be exported such that information from one patient is contained in one directory. The directory layout and required files are explained in \texttt{help(readDVH)}.}), Oncentra MasterPlan$^{\mathrm{TM}}$ (version 4.3), Elekta Monaco$^{\mathrm{TM}}$ (version 5), TomoTheray HiArt$^{\mathrm{TM}}$, RaySearch Labs RayStation$^{\mathrm{TM}}$, Medcom ProSoma$^{\mathrm{TM}}$, or from PRIMO (version 0.3.1.1558). DVH files from different TPSs can be combined into one set of DVHs. Cumulative and differential DVHs are supported, as are sum plans. The measurement unit for absolute dose can be Gy, cGy, or eV/G for uncalibrated PRIMO files. The measurement unit for volume has to be cm$^{3}$. Multiple DVH text files can be read with \texttt{readDVH()} in one step.
+To import DVH data into \textsf{R}, it should be exported as a plain text file from Varian Eclipse$^{\mathrm{TM}}$ (Versions 10--15), CadPlan$^{\mathrm{TM}}$, Pinnacle$^{3\,\mathrm{TM}}$ (version 9\footnote{Pinnacle$^{3}$ files have to be exported such that information from one patient is contained in one directory. The directory layout and required files are explained in \texttt{help(readDVH)}.}), Oncentra MasterPlan$^{\mathrm{TM}}$ (version 4.3), Elekta Monaco$^{\mathrm{TM}}$ (version 5), TomoTheray HiArt$^{\mathrm{TM}}$, RaySearch Labs RayStation$^{\mathrm{TM}}$, Medcom ProSoma$^{\mathrm{TM}}$, or from PRIMO (version 0.3.1.1558). DVH files from different TPSs can be combined into one set of DVHs. Cumulative and differential DVHs are supported, as are sum plans. Eclipse uncertainty plans are supported. The measurement unit for absolute dose can be Gy, cGy, or eV/G for uncalibrated PRIMO files. The measurement unit for volume has to be cm$^{3}$. Multiple DVH text files can be read with \texttt{readDVH()} in one step.
 
 Example: Read one Eclipse file \texttt{dvhFile.txt} from folder \texttt{"c:/folder"} and save the result in object \texttt{res}.\footnote{Note that the way to indicate the path to these files is different from the usual Windows style path: Instead of writing the backslash \texttt{"\textbackslash"} as folder separator, the forward slash \texttt{"/"} must be used.}
 
@@ -184,6 +184,8 @@ For DVH files from a sum plan, prescribed dose can be encoded in the plan name l
 <<cReadData5, eval=FALSE>>=
 res <- readDVH("c:/folder/*", type="Eclipse", planInfo="doseRx")
 @
+
+If files contain special characters, it may be necessary to specify the file encoding using options \texttt{encoding="UTF-8"} or \texttt{encoding="UTF-8-BOM"} (when a byte-order-mark is used). If Eclipse uncertainty plans are present, option \texttt{uncertainty=TRUE} is necessary. Structures with uncertainty plans get separate structure names by appending the actual structure name with a suffix derived from the uncertainty plan name.
 
 %%%%---------------------------------------------------------------------------
 %%%%---------------------------------------------------------------------------

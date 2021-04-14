@@ -28,7 +28,8 @@
  * `showConstraint()` -> draw constraint arrows as custom geoms (`ggplot2` 2.1.0 https://github.com/hadley/ggplot2/blob/master/vignettes/extending-ggplot2.Rmd)
  * harmonize structures by reading equivalence file, possibly with regex
 
-# build
+# Build
+
 Sys.setenv(R_GSCMD="C:\\Program Files\\gs\\gs9.26\\bin\\gswin32c.exe")
 
  * "c:\program files\r\r-4.0.2\bin\x64\Rcmd.exe" INSTALL --build DVHmetrics_0.3.8.tar.gz

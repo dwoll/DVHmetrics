@@ -7,7 +7,7 @@ Authors@R: c(person("Daniel", "Wollschlaeger", role = c("aut", "cre"), email = "
     person("Heiko", "Karle", role="aut"), person("Heinz", "Schmidberger", role="ctb"))
 Depends: R (>= 3.2)
 Imports: ggplot2, grid, shiny, DT, KernSmooth, stats, utils, reshape2
-Suggests: knitr, DT, bs4Dash
+Suggests: knitr, bs4Dash
 VignetteBuilder: knitr
 LazyData: yes
 Description: Functionality for analyzing dose-volume histograms (DVH)

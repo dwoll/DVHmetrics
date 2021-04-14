@@ -252,12 +252,12 @@ parseEclipse <- function(x, planInfo=FALSE, courseAsID=FALSE, ...) {
             plan_uncertainty <- gsub("^Uncertainty plan: (.+) \\(variation .+\\)$", "\\1", strct[1])
             structure  <- paste(struct_org, trimws(plan_uncertainty), sep="_")
             
-            doseMin   <- NULL
-            doseMax   <- NULL
-            doseAvg   <- NULL
-            doseMed   <- NULL
-            doseMode  <- NULL
-            doseSD    <- NULL
+            doseMin   <- NA_real_
+            doseMax   <- NA_real_
+            doseAvg   <- NA_real_
+            doseMed   <- NA_real_
+            doseMode  <- NA_real_
+            doseSD    <- NA_real_
         } else {
             structure <- getElem("^Structure.*:", strct)
             structVol <- as.numeric(getElem("^Volume.*:", strct))

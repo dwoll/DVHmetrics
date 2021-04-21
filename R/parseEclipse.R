@@ -270,7 +270,7 @@ parseEclipse <- function(x, planInfo=FALSE, courseAsID=FALSE, ...) {
             doseSD    <- getDose("^STD.*:",         strct, doseRx)
             
             volumeUnit <- getVolUnit(strct)
-            volumeUnit <- if(grepl("^CM.+", volumeUnit)) {
+            volumeUnit <- if(grepl("^CM.+", volumeUnit, useBytes=TRUE)) {
                 "CC"
             } else if(grepl("^%", volumeUnit)) {
                 "PERCENT"

@@ -23,7 +23,7 @@ parseMonaco <- function(x, planInfo=FALSE, courseAsID=FALSE, ...) {
     }
 
     volumeUnit <- toupper(trimWS(sub("^Volume Units: (.+)$", "\\1", header[6])))
-    volumeUnit <- if(grepl("^CM.+", volumeUnit)) {
+    volumeUnit <- if(grepl("^CM.+", volumeUnit, useBytes=TRUE)) {
         isVolRel <- FALSE
         "CC"
     } else if(grepl("^%", volumeUnit)) {

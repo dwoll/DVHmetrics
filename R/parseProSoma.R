@@ -128,7 +128,7 @@ parseProSoma <- function(x, planInfo=FALSE, courseAsID=FALSE, ...) {
         doseSD    <- NA_real_
 
         volumeUnit <- getVolUnit(strct)
-        volumeUnit <- if(grepl("^CM.+", volumeUnit)) {
+        volumeUnit <- if(grepl("^CM.+", volumeUnit, useBytes=TRUE)) {
             "CC"
         } else if(grepl("^ML", volumeUnit)) {
             ## ml = cm^3

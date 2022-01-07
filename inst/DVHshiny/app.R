@@ -339,6 +339,7 @@ shinyApp(
             filename=function() { "metrics.txt" },
             content=function(file) {
                 dvh       <- DVH()$DVH
+                browser()
                 sortOpts  <- c('1'="observed", '2'="structure", '3'="metric", '4'="patID")
                 splitOpts <- c('1'="metric", '2'="structure", '3'="patID")
                 selMetrics <- if(length(input$metrInput) > 0) {
@@ -390,8 +391,8 @@ shinyApp(
                              sortBy=sortBy,
                              interp=interp,
                              EUDa=EUDa, EUDfd=EUDfd, EUDab=EUDab,
-                             NTCPtype=NTCPtype, NTCPtd50=NTCPtd50, NTCPn=NTCPn, NTCPgamma50=NTCPgamma50,
-                             TCPtype=NTCPtype, TCPtcd50=NTCPtd50,  TCPn=NTCPn,  TCPgamma50=NTCPgamma50)
+                             NTCPtype=NTCPtype, NTCPtd50=NTCPtd50, NTCPn=NTCPn, NTCPm=NTCPm, NTCPgamma50=NTCPgamma50,
+                             TCPtype=NTCPtype, TCPtcd50=NTCPtd50,  TCPn=NTCPn,  TCPm=NTCPm,  TCPgamma50=NTCPgamma50)
                 argL <- Filter(Negate(is.null), argL)
                 metr <- do.call(getMetric, argL)
                 dec <- c('1'=".",  '2'=",")[input$saveMetrDec]

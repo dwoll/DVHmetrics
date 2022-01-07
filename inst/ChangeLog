@@ -3,6 +3,10 @@ $Date: 2021-04-09 08:46:29 +0000 (Fri, 09 Apr 2021) $
 DVHMETRICS RELEASE VERSIONS at https://cran.r-project.org/
 
 Version 0.4.1.0.999 (August 23, 2021)
+    * readDVH(..., type="RayStation")
+      - additional information on date, prescription dose,
+        structure volumes, can be passed via option raystation
+        (thanks: Ryan Hughes)
     * runGUI()
       - fix saving NTCP metrics
 

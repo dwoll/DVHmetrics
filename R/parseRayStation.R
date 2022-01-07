@@ -37,56 +37,80 @@ parseRayStation <- function(x, planInfo=FALSE, courseAsID=FALSE, ...) {
     structList <- Map(function(start, len) x[start:(start+len-1)], sStart, sLen)
 
     ## extract file header and header info
-    header  <- x[seq_len(sStart[1]-1)]            # header
-    patName <- getElem("#PatientName:", header)   # patient name
-    patID   <- getElem("^#PatientId:",  header)   # patient id
-    plan    <- getElem("^#Dosename:",   header)   # treatment plan
-    DVHdate <- NA_character_
-
-    doseRx <- if(tolower(planInfo) == "doserx") {
-        doseRxUnit <- toupper(sub("^.+[[:blank:]][.[:digit:]]+(c?Gy).*$", "\\1",
-                                  plan, perl=TRUE, ignore.case=TRUE))
-
-        if(!grepl("^(GY|CGY)$", doseRxUnit)) {
-            warning("Could not determine dose Rx unit")
-            doseRxUnit <- NA_character_
+    header     <- x[seq_len(sStart[1]-1)]            # header
+    patName    <- getElem("#PatientName:", header)   # patient name
+    patID      <- getElem("^#PatientId:",  header)   # patient id
+    plan       <- getElem("^#Dosename:",   header)   # treatment plan
+    DVHdate    <- NA_character_
+    doseRxUnit <- NA_character_
+    doseRx     <- NA_real_
+    structVol  <- NA_real_
+    volumeUnit <- NA_character_
+    isoDoseRx  <- 100
+    warning("Iso-dose-Rx is assumed to be 100")
+    
+    ## RayStation has no structure volume in file
+    ## check if additional information is given via option raystation
+    dots <- list(...)
+    if(hasName(dots, "raystation")) {
+        info <- dots[["raystation"]]
+        
+        if(hasName(info, "date")) {
+            DVHdate <- as.Date(info[["date"]], format="%Y-%m-%d")
+        }
+        
+        if(hasName(info, "doseRx")) {
+            drxu <- info[["doseRx"]]
+            doseRxUnit <- toupper(sub("^[.[:digit:][:blank:]]+(c?Gy).*$", "\\1",
+                                      drxu, perl=TRUE, ignore.case=TRUE))
+            
+            if(!grepl("^(GY|CGY)$", doseRxUnit)) {
+                warning("Could not determine dose Rx unit")
+                doseRxUnit <- NA_character_
+            }
+            
+            drx <- sub("^([.[:digit:]]+)[[:blank:]]*c?Gy.*$", "\\1",
+                       drxu, perl=TRUE, ignore.case=TRUE)
+            doseRx <- as.numeric(drx)
         }
 
-        drx <- sub("^.+[[:blank:]]([.[:digit:]]+)c?Gy.*$", "\\1",
-                   plan, perl=TRUE, ignore.case=TRUE)
-        as.numeric(drx)
-    } else {
-        doseRxUnit <- NA_character_
-        warning("No info on prescribed dose")
-        NA_real_
-    }
+        if(hasName(info, "structVol")) {
+            structVols0 <- info[["structVol"]]
 
-    isoDoseRx <- if(tolower(planInfo) == "doserx") {
-        warning("Iso-dose-Rx is assumed to be 100")
-        100
-    } else {
-        warning("No info on % for dose")
-        NA_real_
+            ## make sure order is correct and all structures get a volume
+            roi_names <- unlist(Map(function(x) { getElem("^#RoiName:", x) },
+                                    structList))
+            
+            structVols <- structVols0[roi_names]
+        }
+        
+        if(hasName(info, "volumeUnit")) {
+            volumeUnit <- unname(c(CC="CC", CM3="CC")[toupper(info[["volumeUnit"]])])
+            
+            if(volumeUnit != "CC") {
+                warning("Absolute volume units other than CC not implemented")
+                volumeUnit <- NA_character_
+            }
+        }
     }
 
     ## extract DVH from one structure section and store in a list
     ## with DVH itself as a matrix
-    getDVH <- function(strct, info) {
+    getDVH <- function(strct, structVol, info) {
         ## extract information from info list
         doseRx     <- info$doseRx
         doseRxUnit <- info$doseRxUnit
         isoDoseRx  <- info$isoDoseRx
+        volumeUnit <- info$volumeUnit
 
         ## extract structure, volume, dose min, max, mean, median and sd
         structure  <- getElem("^#RoiName:", strct)
-        structVol  <- NA_real_
         doseMin    <- NA_real_
         doseMax    <- NA_real_
         doseAvg    <- NA_real_
         doseMed    <- NA_real_
         doseMode   <- NA_real_
         doseSD     <- NA_real_
-        volumeUnit <- "CC"
 
         ## set dose unit
         doseUnit <- getDoseUnit(strct)
@@ -180,9 +204,15 @@ parseRayStation <- function(x, planInfo=FALSE, courseAsID=FALSE, ...) {
     }
 
     ## list of DVH data frames with component name = structure
-    info <- list(patID=patID, patName=patName, date=DVHdate, plan=plan,
-                 doseRx=doseRx, doseRxUnit=doseRxUnit, isoDoseRx=isoDoseRx)
-    dvhL <- lapply(structList, getDVH, info=info)
+    info <- list(patID=patID,
+                 patName=patName,
+                 date=DVHdate,
+                 plan=plan,
+                 doseRx=doseRx,
+                 doseRxUnit=doseRxUnit,
+                 isoDoseRx=isoDoseRx,
+                 volumeUnit=volumeUnit)
+    dvhL <- Map(getDVH, structList, structVols, info=list(info))
     dvhL <- Filter(Negate(is.null), dvhL)
     names(dvhL) <- sapply(dvhL, function(y) y$structure)
     if(length(unique(names(dvhL))) < length(dvhL)) {

@@ -1,8 +1,7 @@
 #####---------------------------------------------------------------------------
 ## parse character vector from RayStation DVH file
+## planInfo and courseAsID ignored
 parseRayStation <- function(x, planInfo=FALSE, courseAsID=FALSE, ...) {
-    planInfo <- as.character(planInfo)
-
     ## function to extract one information element from a number of lines
     ## make sure only first : is matched -> not greedy
     getElem <- function(pattern, ll, trim=TRUE, iCase=FALSE, collWS=TRUE) {
@@ -46,9 +45,7 @@ parseRayStation <- function(x, planInfo=FALSE, courseAsID=FALSE, ...) {
     doseRx     <- NA_real_
     structVol  <- NA_real_
     volumeUnit <- NA_character_
-    isoDoseRx  <- 100
-    warning("Iso-dose-Rx is assumed to be 100")
-    
+
     ## RayStation has no structure volume in file
     ## check if additional information is given via option raystation
     dots <- list(...)
@@ -100,9 +97,7 @@ parseRayStation <- function(x, planInfo=FALSE, courseAsID=FALSE, ...) {
         ## extract information from info list
         doseRx     <- info$doseRx
         doseRxUnit <- info$doseRxUnit
-        isoDoseRx  <- info$isoDoseRx
-        volumeUnit <- info$volumeUnit
-
+        
         ## extract structure, volume, dose min, max, mean, median and sd
         structure  <- getElem("^#RoiName:", strct)
         doseMin    <- NA_real_
@@ -158,8 +153,9 @@ parseRayStation <- function(x, planInfo=FALSE, courseAsID=FALSE, ...) {
         dvh <- cbind(dvh, volume=structVol*(dvh[ , "volumeRel"]/100))
 
         ## add information we don't have yet: relative dose
-        ## considering isoDoseRx
-        dvh <- cbind(dvh, doseRel=dvh[ , "dose"]*isoDoseRx / doseRx)
+        ## without considering isoDoseRx
+        isoDoseRxTmp <- 100
+        dvh <- cbind(dvh, doseRel=dvh[ , "dose"]*isoDoseRxTmp / doseRx)
 
         ## check if dose is increasing
         stopifnot(isIncreasing(dvh))
@@ -173,17 +169,14 @@ parseRayStation <- function(x, planInfo=FALSE, courseAsID=FALSE, ...) {
                     date=info$date,
                     DVHtype=DVHtype,
                     plan=info$plan,
-                    course=info$course,
-                    quadrant=info$quadrant,
                     structure=structure,
                     structVol=structVol,
+                    volumeUnit=info$volumeUnit,
                     doseUnit=doseUnit,
-                    volumeUnit=volumeUnit,
-                    doseMin=doseMin,
-                    doseMax=doseMax,
                     doseRx=doseRx,
                     doseRxUnit=doseRxUnit,
-                    isoDoseRx=isoDoseRx,
+                    doseMin=doseMin,
+                    doseMax=doseMax,
                     doseAvg=doseAvg,
                     doseMed=doseMed,
                     doseMode=doseMode,
@@ -210,7 +203,6 @@ parseRayStation <- function(x, planInfo=FALSE, courseAsID=FALSE, ...) {
                  plan=plan,
                  doseRx=doseRx,
                  doseRxUnit=doseRxUnit,
-                 isoDoseRx=isoDoseRx,
                  volumeUnit=volumeUnit)
     dvhL <- Map(getDVH, structList, structVols, info=list(info))
     dvhL <- Filter(Negate(is.null), dvhL)

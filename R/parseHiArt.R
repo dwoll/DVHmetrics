@@ -1,8 +1,7 @@
 #####---------------------------------------------------------------------------
 ## parse character vector from Tomo HiArt DVH file
+## planInfo and courseAsID ignored
 parseHiArt <- function(x, planInfo=FALSE, courseAsID=FALSE, ...) {
-    planInfo <- as.character(planInfo)
-
     ## find columns for structure, dose, volume
     vars <- as.matrix(read.csv(text=x[1], header=FALSE,
                                stringsAsFactors=FALSE, comment.char="")[1, ])
@@ -12,8 +11,8 @@ parseHiArt <- function(x, planInfo=FALSE, courseAsID=FALSE, ...) {
     volumeIdx <- seq(3, length(vars), by=3)
 
     ## get dose and volume units
-    varDose  <- vars[grepl("Dose",   vars)][1]
-    varVol   <- vars[grepl("Volume", vars)][1]
+    varDose <- vars[grepl("Dose",   vars)][1]
+    varVol  <- vars[grepl("Volume", vars)][1]
     if(grepl("Relative", varDose, ignore.case=TRUE)) {
         ## TODO: need example file for this
         warning("HiArt files with relative dose are not implemented")
@@ -22,6 +21,10 @@ parseHiArt <- function(x, planInfo=FALSE, courseAsID=FALSE, ...) {
     } else {
         isDoseRel <- FALSE
         doseUnit  <- toupper(sub("Dose \\((.+)\\)", "\\1", varDose))
+        if(!grepl("^(GY|CGY)$", doseUnit)) {
+            warning("Could not determine dose measurement unit")
+            doseUnit <- NA_character_
+        }
     }
 
     if(grepl("Relative", varVol, ignore.case=TRUE)) {
@@ -37,7 +40,6 @@ parseHiArt <- function(x, planInfo=FALSE, courseAsID=FALSE, ...) {
     }
 
     plan       <- NA_character_
-    isoDoseRx  <- NA_real_
     DVHdate    <- NA_character_
     doseRx     <- NA_real_
     doseRxUnit <- NA_character_
@@ -107,7 +109,7 @@ parseHiArt <- function(x, planInfo=FALSE, courseAsID=FALSE, ...) {
 
     ## read all data
     ## remove all non numbers / delimiters first
-    x[-1] <- gsub("[^[:digit:],.]", "", x[-1])
+    x[-1]  <- gsub("[^[:digit:],.]", "", x[-1])
     datAll <- data.matrix(read.csv(text=x[-1], header=FALSE,
                                    stringsAsFactors=FALSE, comment.char=""))
 
@@ -179,7 +181,6 @@ parseHiArt <- function(x, planInfo=FALSE, courseAsID=FALSE, ...) {
                     volumeUnit=info$volumeUnit,
                     doseRx=doseRx,
                     doseRxUnit=info$doseRxUnit,
-                    isoDoseRx=isoDoseRx,
                     doseMin=NA_real_,
                     doseMax=NA_real_,
                     doseAvg=NA_real_,
@@ -202,10 +203,15 @@ parseHiArt <- function(x, planInfo=FALSE, courseAsID=FALSE, ...) {
     }
 
     ## list of DVH data frames with component name = structure
-    info <- list(patID=patID, patName=patName, date=DVHdate,
-                 plan=plan, doseRx=doseRx, doseRxUnit=doseRxUnit,
-                 isoDoseRx=isoDoseRx,
-                 doseUnit=doseUnit, volumeUnit=volumeUnit)
+    info <- list(patID=patID,
+                 patName=patName,
+                 date=DVHdate,
+                 plan=plan,
+                 doseRx=doseRx,
+                 doseRxUnit=doseRxUnit,
+                 doseUnit=doseUnit,
+                 volumeUnit=volumeUnit)
+    
     dvhL <- Map(getDVH, structIdx, doseIdx, volumeIdx, info=list(info),
                 structVol, doseRx)
     dvhL <- Filter(Negate(is.null), dvhL)

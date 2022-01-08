@@ -1,8 +1,7 @@
 #####---------------------------------------------------------------------------
 ## parse character vector from PRIMO DVH file
+## planInfo and courseAsID ignored
 parsePRIMO_v015 <- function(x, planInfo=FALSE, courseAsID=FALSE, ...) {
-    planInfo <- as.character(planInfo)
-
     ## function to extract one information element from a number of lines
     ## make sure only first : is matched -> not greedy
     getElem <- function(pattern, ll, trim=TRUE, iCase=FALSE, collWS=TRUE) {
@@ -38,7 +37,6 @@ parsePRIMO_v015 <- function(x, planInfo=FALSE, courseAsID=FALSE, ...) {
     patID      <- getElem("^# Project:",  header)   # patient id
     plan       <- NA_character_
     doseRx     <- NA_real_
-    isoDoseRx  <- NA_real_
     DVHdate    <- NA_character_
     DVHtype    <- getDVHtype(header)
     doseRx     <- NA_real_
@@ -142,7 +140,6 @@ parsePRIMO_v015 <- function(x, planInfo=FALSE, courseAsID=FALSE, ...) {
                     doseUnit=info$doseUnit,
                     volumeUnit=info$volumeUnit,
                     doseRx=doseRx,
-                    isoDoseRx=isoDoseRx,
                     doseMin=NA_real_,
                     doseMax=NA_real_,
                     doseAvg=NA_real_,
@@ -165,9 +162,14 @@ parsePRIMO_v015 <- function(x, planInfo=FALSE, courseAsID=FALSE, ...) {
     }
 
     ## list of DVH data frames with component name = structure
-    info <- list(patID=patID, patName=patName, date=DVHdate,
-                 plan=plan, doseRx=doseRx, isoDoseRx=isoDoseRx,
-                 doseUnit=doseUnit, volumeUnit=volumeUnit)
+    info <- list(patID=patID,
+                 patName=patName,
+                 date=DVHdate,
+                 plan=plan,
+                 doseRx=doseRx,
+                 doseUnit=doseUnit,
+                 volumeUnit=volumeUnit)
+    
     dvhL <- Map(getDVH, structIdx, doseIdx, volumeIdx, info=list(info))
     dvhL <- Filter(Negate(is.null), dvhL)
     names(dvhL) <- sapply(dvhL, function(y) y$structure)

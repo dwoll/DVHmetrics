@@ -5,24 +5,28 @@
 \alias{getNTCP.DVHLstLst}
 \title{Normal tissue complication probability (NTCP)}
 \description{
-Calculate normal tissue complication probability (NTCP) from Lyman's probit model, Niemierko's logit model, or the Poisson model. May be based on EQD2.
+Calculate normal tissue complication probability (NTCP) from Lyman's probit model, Niemierko's logit model, the Poisson model, or the Kaellman relative seriality model. May be based on EQD2.
 }
 \usage{
-getNTCP(x, NTCPtd50=NULL, NTCPm=NULL, NTCPn=NULL, NTCPgamma50=NULL,
+getNTCP(x,
+        NTCPtd50=NULL, NTCPm=NULL, NTCPn=NULL, NTCPgamma50=NULL, NTCPs=NULL,
         EUDa=NULL, EUDfn=NULL, EUDab=NULL,
-        NTCPtype=c("probit", "logit", "poisson"), ...)
+        NTCPtype=c("probit", "logit", "poisson", "relative_seriality"), ...)
 
-\method{getNTCP}{DVHs}(x, NTCPtd50=NULL, NTCPm=NULL, NTCPn=NULL, NTCPgamma50=NULL,
+\method{getNTCP}{DVHs}(x,
+        NTCPtd50=NULL, NTCPm=NULL, NTCPn=NULL, NTCPgamma50=NULL, NTCPs=NULL,
         EUDa=NULL, EUDfn=NULL, EUDab=NULL,
-        NTCPtype=c("probit", "logit", "poisson"), ...)
+        NTCPtype=c("probit", "logit", "poisson", "relative_seriality"), ...)
 
-\method{getNTCP}{DVHLst}(x, NTCPtd50=NULL, NTCPm=NULL, NTCPn=NULL, NTCPgamma50=NULL,
+\method{getNTCP}{DVHLst}(x,
+        NTCPtd50=NULL, NTCPm=NULL, NTCPn=NULL, NTCPgamma50=NULL, NTCPs=NULL,
         EUDa=NULL, EUDfn=NULL, EUDab=NULL,
-        NTCPtype=c("probit", "logit", "poisson"), ...)
+        NTCPtype=c("probit", "logit", "poisson", "relative_seriality"), ...)
 
-\method{getNTCP}{DVHLstLst}(x, NTCPtd50=NULL, NTCPm=NULL, NTCPn=NULL, NTCPgamma50=NULL,
+\method{getNTCP}{DVHLstLst}(x,
+        NTCPtd50=NULL, NTCPm=NULL, NTCPn=NULL, NTCPgamma50=NULL, NTCPs=NULL,
         EUDa=NULL, EUDfn=NULL, EUDab=NULL,
-        NTCPtype=c("probit", "logit", "poisson"), ...)
+        NTCPtype=c("probit", "logit", "poisson", "relative_seriality"), ...)
 }
 \arguments{
   \item{x}{One cumulative DVH (object of class \code{DVHs}, multiple cumulative DVHs from one patient with multiple structures (object of class \code{DVHLst}), or multiple cumulative DVHs from many patients, each with multiple structures (object of class \code{DVHLstLst}). See \code{\link[DVHmetrics]{readDVH}}.}
@@ -33,11 +37,11 @@ getNTCP(x, NTCPtd50=NULL, NTCPm=NULL, NTCPn=NULL, NTCPgamma50=NULL,
   \item{EUDa}{If gEUD should be based on EQD2: Exponential parameter a.}
   \item{EUDfn}{If gEUD should be based on EQD2: Number of fractions.}
   \item{EUDab}{If gEUD should be based on EQD2: alpha/beta ratio for the relevant tissue.}
-  \item{NTCPtype}{\code{"probit"} - Lyman probit model, \code{"logit"} - Niemierko logit model, \code{"poisson"} - Poisson model.}
+  \item{NTCPtype}{\code{"probit"} - Lyman probit model, \code{"logit"} - Niemierko logit model, \code{"poisson"} - Poisson model, \code{"relative_seriality"} - Kaellmann relative seriality model.}
   \item{...}{Ignored. Used to catch additional arguments passed from \code{\link[DVHmetrics]{getMetric}}.}
 }
 \details{
-For DVH reduction, gEUD is used. This is equivalent to the Kutcher-Burman DVH reduction scheme. The probit model is given in equation (1), the logit model in eqation (2), and the Poisson model in equation (3) in Kaellman (1992), with gEUD plugged in for D.
+For the logit, probit, and Poisson method, gEUD is used for DVH reduction. This is equivalent to the Kutcher-Burman DVH reduction scheme. The probit model is given in equation (1), the logit model in eqation (2), and the Poisson model in equation (3) in Kaellman (1992), with gEUD plugged in for D. The relative seriality model is given in equation (18).
 }
 \value{
 A data frame with variables \code{NTCP}, \code{patID}, and \code{structure}.
@@ -59,6 +63,10 @@ Rancati et al. (2004). Fitting late rectal bleeding data using different NTCP mo
 \code{\link[DVHmetrics]{getMetric}}
 }
 \examples{
-getNTCP(dataMZ[[1]],
-        NTCPtd50=40, NTCPm=0.6, NTCPn=0.5, NTCPtype="probit")
+## treatment was in 2 Gy fractions
+getNTCP(dataMZ[[1]][["HEART"]],
+        NTCPtd50=48, NTCPm=0.6, NTCPn=0.5, NTCPtype="probit")
+
+getNTCP(dataMZ[[1]][["HEART"]],
+        NTCPtd50=52.3, NTCPgamma=1.28, NTCPs=1, NTCPtype="relative_seriality")
 }

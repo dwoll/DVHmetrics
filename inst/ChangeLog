@@ -9,6 +9,8 @@ Version 0.4.1.0.999 (August 23, 2021)
         (thanks: Ryan Hughes)
     * runGUI()
       - fix saving NTCP metrics
+    * getNTCP()
+      - implement Kaellman 1992 relative seriality model
 
 Version 0.4.1 (April 09, 2021)
     * readDVH()

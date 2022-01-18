@@ -339,7 +339,7 @@ shinyApp(
             filename=function() { "metrics.txt" },
             content=function(file) {
                 dvh       <- DVH()$DVH
-                browser()
+                # browser()
                 sortOpts  <- c('1'="observed", '2'="structure", '3'="metric", '4'="patID")
                 splitOpts <- c('1'="metric", '2'="structure", '3'="patID")
                 selMetrics <- if(length(input$metrInput) > 0) {

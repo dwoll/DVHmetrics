@@ -1,5 +1,8 @@
 # TODO
 
+ * getMeanDVH() option to return proper DVH object
+ * getMetric(dvh_m, metric="D5cc") works even though volumeUnit is NA
+ * invalid option "error" -> use paste() first inside stop() first
  * x <- readDVH("c:/Users/Daniel/Downloads/DVH poumon volume absolute.txt", type="HiArt", volume_from_dvh=TRUE, hiart=list(doseRx=50))
  Fehler in mapply(FUN = f, ..., SIMPLIFY = FALSE) : 
   Eingaben mit Länge 0 können nicht mit Eingaben anderer Länge gemischt werden

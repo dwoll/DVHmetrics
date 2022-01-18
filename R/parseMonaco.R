@@ -1,5 +1,6 @@
 #####---------------------------------------------------------------------------
 ## parse character vector from Elekta Monaco file
+## courseAsID ignored
 parseMonaco <- function(x, planInfo=FALSE, courseAsID=FALSE, ...) {
     planInfo <- as.character(planInfo)
     dots     <- list(...)
@@ -35,15 +36,6 @@ parseMonaco <- function(x, planInfo=FALSE, courseAsID=FALSE, ...) {
         NA_character_
     }
 
-    ## check if sum plan
-    isoDoseRx  <- if(tolower(planInfo) == "doserx") {
-        warning("Iso-dose-Rx is assumed to be 100")
-        100
-    } else {
-        warning("No info on % for dose")
-        NA_real_
-    }
-
     doseRx <- if(tolower(planInfo) == "doserx") {
         drx <- sub("^[[:alnum:]]+_([.[:digit:]]+)(GY|CGY)_[[:alnum:]]*", "\\1",
                    plan, perl=TRUE, ignore.case=TRUE)
@@ -54,19 +46,19 @@ parseMonaco <- function(x, planInfo=FALSE, courseAsID=FALSE, ...) {
     }
 
     DVHdate <- x[length(x)]
-#     footer <- x[length(x)]
-#     lct <- Sys.getlocale("LC_TIME")
-#     Sys.setlocale("LC_TIME", "C")
-#     DVHdate <- tryCatch(as.Date(strptime(y, "%Y-%m-%d-%a %H:%M:%S")),
-#                         error=function(e) { NA_character_ })
-#     Sys.setlocale("LC_TIME", lct)
+    # footer <- x[length(x)]
+    # lct <- Sys.getlocale("LC_TIME")
+    # Sys.setlocale("LC_TIME", "C")
+    # DVHdate <- tryCatch(as.Date(strptime(y, "%Y-%m-%d-%a %H:%M:%S")),
+    #                     error=function(e) { NA_character_ })
+    # Sys.setlocale("LC_TIME", lct)
 
     DVHspan <- x[4:(length(x)-2)]
     DVHlen  <- length(DVHspan)    # last element is blank
     ## problem: spaces in structure names -> parse manually
     # DVHall <- read.table(text=, header=FALSE,
     #                      stringsAsFactors=FALSE, comment.char="")
-    pat <- "^(.+?)[[:blank:]]+([.[:digit:]]+)[[:blank:]]+([.[:digit:]]+)$"
+    pat     <- "^(.+?)[[:blank:]]+([.[:digit:]]+)[[:blank:]]+([.[:digit:]]+)$"
     structs <- sub(pat, "\\1", DVHspan)[-DVHlen]
     doses   <- as.numeric(sub(pat, "\\2", DVHspan)[-DVHlen])
     volumes <- as.numeric(sub(pat, "\\3", DVHspan)[-DVHlen])
@@ -117,9 +109,9 @@ parseMonaco <- function(x, planInfo=FALSE, courseAsID=FALSE, ...) {
 
         if(!("volumeRel" %in% haveVars)) {
             isVolRel <- FALSE
-            volRel <- 100*(dvh[ , "volume"] / structVol)
-            dvh    <- cbind(dvh, volumeRel=volRel)
-            ## dvh <- cbind(dvh, volumeRel=NA_real_)
+            volRel   <- 100*(dvh[ , "volume"] / structVol)
+            dvh      <- cbind(dvh, volumeRel=volRel)
+            # dvh   <- cbind(dvh, volumeRel=NA_real_)
         }
 
         if(!("dose" %in% haveVars)) {
@@ -151,7 +143,6 @@ parseMonaco <- function(x, planInfo=FALSE, courseAsID=FALSE, ...) {
                     doseUnit=info$doseUnit,
                     volumeUnit=info$volumeUnit,
                     doseRx=info$doseRx,
-                    isoDoseRx=info$isoDoseRx,
                     doseMin=NA_real_,
                     doseMax=NA_real_,
                     doseAvg=NA_real_,
@@ -173,9 +164,13 @@ parseMonaco <- function(x, planInfo=FALSE, courseAsID=FALSE, ...) {
     }
 
     ## list of DVH data frames with component name = structure
-    info <- list(patID=patID, patName=patName, date=DVHdate,
-                 plan=plan, doseRx=doseRx, isoDoseRx=isoDoseRx,
-                 doseUnit=doseUnit, volumeUnit=volumeUnit)
+    info <- list(patID=patID,
+                 patName=patName,
+                 date=DVHdate,
+                 plan=plan,
+                 doseRx=doseRx,
+                 doseUnit=doseUnit,
+                 volumeUnit=volumeUnit)
     dvhL <- lapply(structList, getDVH, info=info)
     dvhL <- Filter(Negate(is.null), dvhL)
     names(dvhL) <- sapply(dvhL, function(y) y$structure)

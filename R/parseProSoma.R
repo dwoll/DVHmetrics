@@ -1,8 +1,7 @@
 #####---------------------------------------------------------------------------
 ## parse character vector from ProSoma DVH file
+## planInfo and courseAsID ignored
 parseProSoma <- function(x, planInfo=FALSE, courseAsID=FALSE, ...) {
-    planInfo <- as.character(planInfo)
-
     ## function to extract patient name from first line
     getPatName <- function(ll) {
         paste(trimWS(rev(strsplit(ll, ",")[[1]])), collapse=" ")
@@ -87,7 +86,6 @@ parseProSoma <- function(x, planInfo=FALSE, courseAsID=FALSE, ...) {
     patID      <- gsub("[^a-z0-9]", "\\1", tempfile(pattern="", tmpdir="")) # as.character(trunc(runif(1, 0, 10000001)))
     plan       <- NA_character_
     doseRx     <- NA_real_
-    isoDoseRx  <- NA_real_
     DVHdate    <- NA_character_
     DVHtype    <- getDVHtype(header)
     doseRxUnit <- NA_character_
@@ -99,8 +97,7 @@ parseProSoma <- function(x, planInfo=FALSE, courseAsID=FALSE, ...) {
         ## extract information from info list
         doseRx     <- info$doseRx
         doseRxUnit <- info$doseRxUnit
-        isoDoseRx  <- info$isoDoseRx
-
+        
         doseUnit <- getDoseUnit(strct)
         if(!grepl("^(GY|CGY)$", doseUnit)) {
             warning("Could not determine dose measurement unit")
@@ -204,13 +201,14 @@ parseProSoma <- function(x, planInfo=FALSE, courseAsID=FALSE, ...) {
         }
 
         ## add information we don't have yet: relative/absolute dose
-        ## considering isoDoseRx
+        ## without considering isoDoseRx
+        isoDoseRxTmp <- 100
         if((    "doseRel" %in% vars3) && !("dose"    %in% vars3)) {
-            dvh <- cbind(dvh, dose=dvh[ , "doseRel"]*doseRx / isoDoseRx)
-            # (doseRx/(isoDoseRx/100))*(dvh$doseRel/100)
+            dvh <- cbind(dvh, dose=dvh[ , "doseRel"]*doseRx / isoDoseRxTmp)
+            # (doseRx/(isoDoseRxTmp/100))*(dvh$doseRel/100)
         } else if(("dose" %in% vars3) && !("doseRel" %in% vars3)) {
-            dvh <- cbind(dvh, doseRel=dvh[ , "dose"]*isoDoseRx / doseRx)
-            # 100*(dvh$dose/(doseRx/(isoDoseRx/100)))
+            dvh <- cbind(dvh, doseRel=dvh[ , "dose"]*isoDoseRxTmp / doseRx)
+            # 100*(dvh$dose/(doseRx/(isoDoseRxTmp/100)))
         }
 
         ## check if dose is increasing
@@ -222,7 +220,6 @@ parseProSoma <- function(x, planInfo=FALSE, courseAsID=FALSE, ...) {
                     date=info$date,
                     DVHtype=DVHtype,
                     plan=info$plan,
-                    course=NA_character_,
                     structure=structure,
                     structVol=structVol,
                     doseUnit=doseUnit,
@@ -231,7 +228,6 @@ parseProSoma <- function(x, planInfo=FALSE, courseAsID=FALSE, ...) {
                     doseMax=doseMax,
                     doseRx=doseRx,
                     doseRxUnit=doseRxUnit,
-                    isoDoseRx=isoDoseRx,
                     doseAvg=doseAvg,
                     doseMed=doseMed,
                     doseMode=doseMode,
@@ -254,10 +250,14 @@ parseProSoma <- function(x, planInfo=FALSE, courseAsID=FALSE, ...) {
     }
 
     ## list of DVH data frames with component name = structure
-    info <- list(patID=patID, patName=patName, date=DVHdate,
-                 DVHtype=DVHtype, plan=plan, course=NA_character_,
-                 doseRx=doseRx, doseRxUnit=doseRxUnit,
-                 isoDoseRx=isoDoseRx)
+    info <- list(patID=patID,
+                 patName=patName,
+                 date=DVHdate,
+                 DVHtype=DVHtype,
+                 plan=plan,
+                 doseRx=doseRx,
+                 doseRxUnit=doseRxUnit)
+    
     dvhL <- lapply(structList, getDVH, info=info)
     dvhL <- Filter(Negate(is.null), dvhL)
     names(dvhL) <- sapply(dvhL, function(y) y$structure)

@@ -11,6 +11,7 @@ https://doi.org/10.1016/j.phro.2021.09.002
 https://doi.org/10.1016/j.radonc.2016.01.020
 https://doi.org/10.1016/j.radonc.2019.09.017
 https://doi.org/10.1016/j.radonc.2020.07.009
+https://doi.org/10.1017/S1460396921000327
 https://doi.org/10.1016/10.1017/S1460396921000327
 https://doi.org/10.1017/S1460396921000327
 https://doi.org/10.1055/s-0040-1722428
@@ -26,6 +27,8 @@ https://doi.org/10.1308/rcsfdj.2020.113
 https://doi.org/10.1371/journal.pone.0190098
 https://doi.org/10.3390/cancers11030294
 https://doi.org/10.3389/fonc.2020.00568
+
+https://arxiv.org/abs/2112.11503
 
 https://search.proquest.com/docview/2287496008
 

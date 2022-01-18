@@ -184,13 +184,8 @@ parseEclipse <- function(x, planInfo=FALSE, courseAsID=FALSE, ...) {
     isoDoseRx  <- if((length(isoDoseRx0) > 0) && (isoDoseRx0 != "not defined")) {
         as.numeric(isoDoseRx0)
     } else {                                        # sum plan -> use plan info?
-        if(tolower(planInfo) == "doserx") {
-            warning("Iso-dose-Rx is assumed to be 100")
-            100
-        } else {
-            warning("No info on % for dose")
-            NA_real_
-        }
+        warning("Iso-dose-Rx is assumed to be 100")
+        100
     }
 
     doseUnit <- getDoseUnit(header)
@@ -201,7 +196,7 @@ parseEclipse <- function(x, planInfo=FALSE, courseAsID=FALSE, ...) {
 
     doseRx0 <- getElem("^(Prescribed|Total) dose.*:", header)
     ## check if sum plan
-    doseRx  <- if((length(doseRx0) > 0) && (doseRx0 != "not defined")) {
+    doseRx <- if((length(doseRx0) > 0) && (doseRx0 != "not defined")) {
         doseRxUnit <- doseUnit
         getDose("^(Prescribed|Total) dose.*:", header)
     } else {                                        # sum plan
@@ -437,6 +432,7 @@ parseEclipse <- function(x, planInfo=FALSE, courseAsID=FALSE, ...) {
     } else {
         lapply(structList, getDVH, info=info, is_uncertainty=FALSE)
     }
+    
     dvhL <- Filter(Negate(is.null), dvhL)
     names(dvhL) <- sapply(dvhL, function(y) y$structure)
     if(length(unique(names(dvhL))) < length(dvhL)) {

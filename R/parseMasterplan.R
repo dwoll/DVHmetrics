@@ -1,8 +1,7 @@
 #####---------------------------------------------------------------------------
 ## parse character vector from Masterplan DVH file
+## planInfo and courseAsID ignored
 parseMasterplan <- function(x, planInfo=FALSE, courseAsID=FALSE, ...) {
-    planInfo <- as.character(planInfo)
-
     ## function to extract one information element from a number of lines
     ## make sure only first : is matched -> not greedy
     getElem <- function(pattern, ll, trim=TRUE, iCase=FALSE, collWS=TRUE) {
@@ -19,22 +18,6 @@ parseMasterplan <- function(x, planInfo=FALSE, courseAsID=FALSE, ...) {
             collWS(elem)
         } else {
             elem
-        }
-    }
-
-    getDose <- function(pattern, ll, doseRx) {
-        line <- ll[grep(pattern, ll)]
-        elem <- sub("^.+?:[[:blank:]]+([[:alnum:][:punct:]]+[[:blank:]]*$)", "\\1", line, perl=TRUE)
-        num  <- trimWS(elem)
-        if(grepl("\\[%\\]", line)) {
-            ## relative dose
-            if(!missing(doseRx)) {
-                doseRx * as.numeric(num)/100
-            } else {
-                NA_real_
-            }
-        } else {
-            as.numeric(num)
         }
     }
 
@@ -74,16 +57,15 @@ parseMasterplan <- function(x, planInfo=FALSE, courseAsID=FALSE, ...) {
     if(length(patName) == 0L) {
         patName <- gsub("[^a-z0-9]", "\\1", tempfile(pattern="", tmpdir=""))
     }
+    
     patID <- getElem("^Patient Id:", header) # patient id
     if(length(patID) == 0L) {
         patID <- gsub("[^a-z0-9]", "\\1", tempfile(pattern="", tmpdir=""))
     }
 
     plan      <- getElem("^Plan:", header)   # treatment plan
-    quadrant  <- NA_character_
     DVHdate   <- NA_character_
     DVHtype   <- getDVHtype(header)
-    isoDoseRx <- 100
     doseRx    <- NA_real_
     doseUnit  <- getDoseUnit(header)
     if(!grepl("^(GY|CGY)$", doseUnit)) {
@@ -105,12 +87,10 @@ parseMasterplan <- function(x, planInfo=FALSE, courseAsID=FALSE, ...) {
     ## with DVH itself as a matrix
     getDVH <- function(strct, info) {
         ## extract information from info list
-        doseRx    <- info$doseRx
-        isoDoseRx <- info$isoDoseRx
+        doseRx <- info$doseRx
 
         ## extract structure, volume, dose min, max, mean, median and sd
         structure <- getElem("^ROI*:", strct)
-        structVol <- NA_real_
 
         ## find DVH
         ## DVH column headers
@@ -134,6 +114,7 @@ parseMasterplan <- function(x, planInfo=FALSE, courseAsID=FALSE, ...) {
         hits <- sum(c(grepl(patDose, vars2),
                       grepl(patVol,  vars2),
                       grepl(patBin,  vars2)))
+        
         if(length(vars2) != hits) {
             stop(c("Could not identify all DVH columns"),
         		 paste(vars2, collapse=", "))
@@ -186,13 +167,14 @@ parseMasterplan <- function(x, planInfo=FALSE, courseAsID=FALSE, ...) {
         }
 
         ## add information we don't have yet: relative/absolute dose
-        ## considering isoDoseRx
+        ## without considering isoDoseRx
+        isoDoseRxTmp <- 100
         if((    "doseRel" %in% vars3) && !("dose"    %in% vars3)) {
-            dvh <- cbind(dvh, dose=dvh[ , "doseRel"]*doseRx / isoDoseRx)
-            # (doseRx/(isoDoseRx/100))*(dvh$doseRel/100)
+            dvh <- cbind(dvh, dose=dvh[ , "doseRel"]*doseRx / isoDoseRxTmp)
+            # (doseRx/(isoDoseRxTmp/100))*(dvh$doseRel/100)
         } else if(("dose" %in% vars3) && !("doseRel" %in% vars3)) {
-            dvh <- cbind(dvh, doseRel=dvh[ , "dose"]*isoDoseRx / doseRx)
-            # 100*(dvh$dose/(doseRx/(isoDoseRx/100)))
+            dvh <- cbind(dvh, doseRel=dvh[ , "dose"]*isoDoseRxTmp / doseRx)
+            # 100*(dvh$dose/(doseRx/(isoDoseRxTmp/100)))
         }
 
         ## check if dose is increasing
@@ -204,13 +186,11 @@ parseMasterplan <- function(x, planInfo=FALSE, courseAsID=FALSE, ...) {
                     date=info$date,
                     DVHtype=info$DVHtype,
                     plan=info$plan,
-                    quadrant=info$quadrant,
                     structure=structure,
                     structVol=structVol,
                     doseUnit=info$doseUnit,
                     volumeUnit=info$volumeUnit,
-                    doseRx=doseRx,
-                    isoDoseRx=isoDoseRx)
+                    doseRx=doseRx)
 
         ## convert differential DVH (per unit dose) to cumulative
         ## and add differential DVH separately
@@ -234,10 +214,15 @@ parseMasterplan <- function(x, planInfo=FALSE, courseAsID=FALSE, ...) {
     }
 
     ## list of DVH data frames with component name = structure
-    info <- list(patID=patID, patName=patName, date=DVHdate,
-                 DVHtype=DVHtype, plan=plan, quadrant=quadrant,
-                 doseRx=doseRx, isoDoseRx=isoDoseRx, doseUnit=doseUnit,
+    info <- list(patID=patID,
+                 patName=patName,
+                 date=DVHdate,
+                 DVHtype=DVHtype,
+                 plan=plan,
+                 doseRx=doseRx,
+                 doseUnit=doseUnit,
                  volumeUnit=volumeUnit)
+    
     dvhL <- lapply(structList, getDVH, info=info)
     dvhL <- Filter(Negate(is.null), dvhL)
     names(dvhL) <- sapply(dvhL, function(y) y$structure)

@@ -1,4 +1,5 @@
 ## parse character vector from Cadplan DVH file
+## courseAsID ignored
 parseCadplan <- function(x, planInfo=FALSE, courseAsID=FALSE) {
     ## function to extract one information element from a number of lines
     getElem <- function(pattern, ll, trim=TRUE, iCase=FALSE, collWS=TRUE) {
@@ -117,13 +118,8 @@ parseCadplan <- function(x, planInfo=FALSE, courseAsID=FALSE) {
         isoDoseRx <- if((length(isoDoseRx0) > 0) && (isoDoseRx0 != "not defined")) {
             as.numeric(isoDoseRx0)
         } else {                                        # sum plan -> use plan info?
-            if(tolower(planInfo) == "doserx") {
-                warning("Iso-dose-Rx is assumed to be 100")
-                100
-            } else {
-                warning("No info on % for dose")
-                NA_real_
-            }
+            warning("Iso-dose-Rx is assumed to be 100")
+            100
         }
 
         doseUnit <- getDoseUnit(strct)
@@ -134,18 +130,18 @@ parseCadplan <- function(x, planInfo=FALSE, courseAsID=FALSE) {
 
         doseRx0 <- getElem("^Prescr\\. dose.*:", strct)
         ## check if sum plan
-        doseRx <- if((length(doseRx0) > 0) && (doseRx0 != "not defined")) {
+        if((length(doseRx0) > 0) && (doseRx0 != "not defined")) {
             doseRxUnit <- doseUnit
-            getDose("^Prescr\\. dose.*:", strct)
+            doseRx     <- getDose("^Prescr\\. dose.*:", strct)
         } else {                                        # sum plan
             ## doseRx may be encoded in plan name
             if(tolower(planInfo) == "doserx") {
                 doseRxUnit <- info$doseRxUnit
-                info$doseRx
+                doseRx     <- info$doseRx
             } else {
                 warning("No info on prescribed dose")
                 doseRxUnit <- NA_character_
-                NA_real_
+                doseRx     <- NA_real_
             }
         }
 

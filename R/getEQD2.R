@@ -2,6 +2,16 @@
 ## EQD2 linear quadratic model
 #####---------------------------------------------------------------------------
 
+## R     = alpha/beta
+## d_ref = reference dose, typically 2 Gy
+## d     = actual dose
+# lq_alpha_beta <- function(R, TD50, GAMMA, d, d_ref=2 {
+#     TD50     <- TD50*(1 + d_ref/R) / (1 + d/R)
+#     lq_alpha <- (exp(1)*GAMMA - log(log(2))) / (TD50*(1 + d/R))
+#     lq_beta  <- (exp(1)*GAMMA - log(log(2))) / (TD50*(R + d))
+#     return(c(alpha=lq_alpha, beta=lq_beta))
+# }
+
 getEQD2 <-
 function(D=NULL, fd=NULL, fn=NULL, ab=NULL) {
     UseMethod("getEQD2")

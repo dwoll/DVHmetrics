@@ -1,8 +1,7 @@
 #####---------------------------------------------------------------------------
 ## parse character vector from Tomo HiArt DVH file
+## planInfo and courseAsID ignored
 parseHiArt <- function(x, planInfo=FALSE, courseAsID=FALSE, ...) {
-    planInfo <- as.character(planInfo)
-
     ## find columns for structure, dose, volume
     vars <- as.matrix(read.csv(text=x[1], header=FALSE,
                                stringsAsFactors=FALSE, comment.char="")[1, ])
@@ -12,8 +11,8 @@ parseHiArt <- function(x, planInfo=FALSE, courseAsID=FALSE, ...) {
     volumeIdx <- seq(3, length(vars), by=3)
 
     ## get dose and volume units
-    varDose  <- vars[grepl("Dose",   vars)][1]
-    varVol   <- vars[grepl("Volume", vars)][1]
+    varDose <- vars[grepl("Dose",   vars)][1]
+    varVol  <- vars[grepl("Volume", vars)][1]
     if(grepl("Relative", varDose, ignore.case=TRUE)) {
         ## TODO: need example file for this
         warning("HiArt files with relative dose are not implemented")
@@ -22,6 +21,10 @@ parseHiArt <- function(x, planInfo=FALSE, courseAsID=FALSE, ...) {
     } else {
         isDoseRel <- FALSE
         doseUnit  <- toupper(sub("Dose \\((.+)\\)", "\\1", varDose))
+        if(!grepl("^(GY|CGY)$", doseUnit)) {
+            warning("Could not determine dose measurement unit")
+            doseUnit <- NA_character_
+        }
     }
 
     if(grepl("Relative", varVol, ignore.case=TRUE)) {
@@ -32,15 +35,25 @@ parseHiArt <- function(x, planInfo=FALSE, courseAsID=FALSE, ...) {
         volumeUnit <- toupper(sub("Absolute Volume \\((.+)\\)", "\\1", varVol))
         if(volumeUnit != "CC") {
             warning("Absolute volume units other than CC not implemented")
-            volumeUnite <- NA_character_
+            volumeUnit <- NA_character_
         }
     }
 
+    plan       <- NA_character_
+    DVHdate    <- NA_character_
+    doseRx     <- NA_real_
+    doseRxUnit <- NA_character_
+    structVol  <- NA_real_
+    
     ## Tomo HiArt has no patient name or id in file
     ## check if additional information is given via option hiart
     dots <- list(...)
     if(hasName(dots, "hiart")) {
         info <- dots[["hiart"]]
+
+        if(hasName(info, "date")) {
+            DVHdate <- as.Date(info[["date"]], format="%Y-%m-%d")
+        }
 
         patName <- if(hasName(info, "patName")) {
             info[["patName"]]
@@ -54,12 +67,21 @@ parseHiArt <- function(x, planInfo=FALSE, courseAsID=FALSE, ...) {
             gsub("[^a-z0-9]", "\\1", tempfile(pattern="", tmpdir=""))
         }
 
-        doseRx <- if(hasName(info, "doseRx")) {
-            info[["doseRx"]]
-        } else {
-            NA_real_
+        if(hasName(info, "doseRx")) {
+            drxu <- info[["doseRx"]]
+            doseRxUnit <- toupper(sub("^[.[:digit:][:blank:]]+(c?Gy).*$", "\\1",
+                                      drxu, perl=TRUE, ignore.case=TRUE))
+            
+            if(!grepl("^(GY|CGY)$", doseRxUnit)) {
+                warning("Could not determine dose Rx unit")
+                doseRxUnit <- NA_character_
+            }
+            
+            drx <- sub("^([.[:digit:]]+)[[:blank:]]*c?Gy.*$", "\\1",
+                       drxu, perl=TRUE, ignore.case=TRUE)
+            doseRx <- as.numeric(drx)
         }
-
+        
         structVol <- if(hasName(info, "structVol")) {
             vols <- info[["structVol"]]
             ## expand to all structures
@@ -73,22 +95,21 @@ parseHiArt <- function(x, planInfo=FALSE, courseAsID=FALSE, ...) {
         }
 
         if(hasName(info, "volumeUnit")) {
-            volumeUnit <- info[["volumeUnit"]]
+            volumeUnit <- unname(c(CC="CC", CM3="CC")[toupper(info[["volumeUnit"]])])
+            
+            if(volumeUnit != "CC") {
+                warning("Absolute volume units other than CC not implemented")
+                volumeUnit <- NA_character_
+            }
         }
     } else {
         patName   <- gsub("[^a-z0-9]", "\\1", tempfile(pattern="", tmpdir=""))
         patID     <- gsub("[^a-z0-9]", "\\1", tempfile(pattern="", tmpdir="")) # as.character(trunc(runif(1, 0, 10000001)))
-        doseRx    <- NA_real_
-        structVol <- NA_real_
     }
-
-    plan      <- NA_character_
-    isoDoseRx <- NA_real_
-    DVHdate   <- NA_character_
 
     ## read all data
     ## remove all non numbers / delimiters first
-    x[-1] <- gsub("[^[:digit:],.]", "", x[-1])
+    x[-1]  <- gsub("[^[:digit:],.]", "", x[-1])
     datAll <- data.matrix(read.csv(text=x[-1], header=FALSE,
                                    stringsAsFactors=FALSE, comment.char=""))
 
@@ -159,7 +180,7 @@ parseHiArt <- function(x, planInfo=FALSE, courseAsID=FALSE, ...) {
                     doseUnit=info$doseUnit,
                     volumeUnit=info$volumeUnit,
                     doseRx=doseRx,
-                    isoDoseRx=isoDoseRx,
+                    doseRxUnit=info$doseRxUnit,
                     doseMin=NA_real_,
                     doseMax=NA_real_,
                     doseAvg=NA_real_,
@@ -182,9 +203,15 @@ parseHiArt <- function(x, planInfo=FALSE, courseAsID=FALSE, ...) {
     }
 
     ## list of DVH data frames with component name = structure
-    info <- list(patID=patID, patName=patName, date=DVHdate,
-                 plan=plan, doseRx=doseRx, isoDoseRx=isoDoseRx,
-                 doseUnit=doseUnit, volumeUnit=volumeUnit)
+    info <- list(patID=patID,
+                 patName=patName,
+                 date=DVHdate,
+                 plan=plan,
+                 doseRx=doseRx,
+                 doseRxUnit=doseRxUnit,
+                 doseUnit=doseUnit,
+                 volumeUnit=volumeUnit)
+    
     dvhL <- Map(getDVH, structIdx, doseIdx, volumeIdx, info=list(info),
                 structVol, doseRx)
     dvhL <- Filter(Negate(is.null), dvhL)

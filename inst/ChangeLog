@@ -14,6 +14,11 @@ Version 0.4.1.0.999 (February 8, 2022)
       - fix saving NTCP metrics
     * getNTCP()
       - implement Kaellman 1992 relative seriality model
+    * getMeanDVH()
+      - add option returnObj to indicate whether returned object
+        should be a regular DVH object that can be used in functions
+        such as getMetric() or showDVH()
+        (thanks: Jose Mesquita)
 
 Version 0.4.1 (April 09, 2021)
     * readDVH()

@@ -1,16 +1,24 @@
-$Date: 2021-04-14 08:46:29 +0000 (Fri, 09 Apr 2021) $
+$Date: 2022-02-08 15:46:29 +0000 (Tue, 08 Feb 2022) $
 
 DVHMETRICS RELEASE VERSIONS at https://cran.r-project.org/
 
-Version 0.4.1.0.999 (August 23, 2021)
+Version 0.4.1.0.999 (February 8, 2022)
     * readDVH(..., type="RayStation")
       - additional information on date, prescription dose,
         structure volumes can be passed via option raystation
+        (thanks: Ryan Hughes)
+      - imports structure volume and prescribed dose from output
+        if present
         (thanks: Ryan Hughes)
     * runGUI()
       - fix saving NTCP metrics
     * getNTCP()
       - implement Kaellman 1992 relative seriality model
+    * getMeanDVH()
+      - add option returnObj to indicate whether returned object
+        should be a regular DVH object that can be used in functions
+        such as getMetric() or showDVH()
+        (thanks: Jose Mesquita)
 
 Version 0.4.1 (April 09, 2021)
     * readDVH()

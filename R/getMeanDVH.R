@@ -40,7 +40,7 @@ function(x, fun=list(mean=mean, median=median, sd=sd),
     ## if patIDs are selected, filter them here -> strips DVHLst class
     if(!is.null(patID)) {
         p <- trimWS(patID, side="both")
-        x <- Filter(function(y) { 
+        x <- Filter(function(y) {
             if(fixed) {
                 any(y$patID %in% p)
             } else {
@@ -97,7 +97,7 @@ function(x, fun=list(mean=mean, median=median, sd=sd),
                        stringsAsFactors=FALSE)
         })
     }
-    
+
     ## combine list to data frame
     dvhDF <- do.call("rbind", dvhDFL)
 
@@ -116,26 +116,77 @@ function(x, fun=list(mean=mean, median=median, sd=sd),
         namesDat[namesDat == "volume"]    <- paste0("volume",    symbol)
         namesDat[namesDat == "volumeRel"] <- paste0("volumeRel", symbol)
         names(dat) <- namesDat
-        dat
+        cbind(dat, doseRel=(dat$dose / max(dat$dose)))
     }
 
     ## get all point-wise estimates
-    dfL <- Map(getAggr, fun, toupper(names(fun)))
+    if(!returnDVHObj) {
+        dfL <- Map(getAggr, fun, toupper(names(fun)))
+        ## combine point-wise estimates
 
-    ## combine point-wise estimates
-    dfMSD <- Reduce(merge, dfL)
-    rownames(dfMSD) <- NULL
+        dfMSD <- Reduce(merge, dfL)
+        rownames(dfMSD) <- NULL
 
-    ## add information about original patIDs / structures
-    if(byPat) {
-        dfMSD$structure <- abbreviate(paste(sort(unique(dvhDF$structure)), collapse="_"),
-                                      minlength=20)
+        ## add information about original patIDs / structures
+        if(byPat) {
+            dfMSD$structure <- abbreviate(paste(sort(unique(dvhDF$structure)), collapse="_"),
+                                          minlength=20)
+        } else {
+            dfMSD$patID     <- abbreviate(paste(sort(unique(dvhDF$patID)),     collapse="_"),
+                                          minlength=20)
+        }
+
+        dfMSD
     } else {
-        dfMSD$patID     <- abbreviate(paste(sort(unique(dvhDF$patID)),     collapse="_"),
-                                      minlength=20)
+        dvh  <- getAggr(fun[[1]], "")
+        DVHs <- if(byPat) {
+            list(dvh       =data.matrix(dvh[ , c("dose", "doseRel", "volume", "volumeRel")]),
+                 patName   =extract_info("patName"),
+                 patID     =extract_info("patID"),
+                 date      =extract_info("date"),
+                 DVHtype   =extract_info("DVHtype"),
+                 plan      =extract_info("plan"),
+                 structure =abbreviate(paste(sort(unique(dvhDF$structure)), collapse="_"),
+                                       minlength=20),
+                 structVol =as.numeric(extract_info("structVol")),
+                 doseUnit  =extract_info("doseUnit"),
+                 volumeUnit=extract_info("volumeUnit"),
+                 doseMin   =NA_real_,
+                 doseMax   =NA_real_,
+                 doseRx    =NA_real_,
+                 isoDoseRx =NA_real_,
+                 doseAvg   =NA_real_,
+                 doseMed   =NA_real_,
+                 doseMode  =NA_real_,
+                 doseSD    =NA_real_)
+        } else {
+            list(dvh       =data.matrix(dvh[ , c("dose", "doseRel", "volume", "volumeRel")]),
+                 patName   =extract_info("patName"),
+                 patID     =abbreviate(paste(sort(unique(dvhDF$patID)),     collapse="_"),
+                                       minlength=20),
+                 date      =extract_info("date"),
+                 DVHtype   =extract_info("DVHtype"),
+                 plan      =extract_info("plan"),
+                 structure =extract_info("structure"),
+                 structVol =as.numeric(extract_info("structVol")),
+                 doseUnit  =extract_info("doseUnit"),
+                 volumeUnit=extract_info("volumeUnit"),
+                 doseMin   =NA_real_,
+                 doseMax   =NA_real_,
+                 doseRx    =NA_real_,
+                 isoDoseRx =NA_real_,
+                 doseAvg   =NA_real_,
+                 doseMed   =NA_real_,
+                 doseMode  =NA_real_,
+                 doseSD    =NA_real_)
+        }
+
+        rownames(DVHs$dvh) <- NULL
+        ## set class
+        class(DVHs) <- "DVHs"
+        DVHs
     }
 
-    dfMSD
 }
 
 ## x is a DVH list (1 per id or 1 per structure) of lists
@@ -187,8 +238,19 @@ function(x, fun=list(mean=mean, median=median, sd=sd),
                   byPat=byPat, patID=list(patID), structure=list(structure),
                   fixed=fixed, returnDVHObj=returnDVHObj)
 
-    resDF <- do.call("rbind", resDFL)
-    rownames(resDF) <- NULL
-    resDF
+    if(!returnDVHObj) {
+        resDF <- do.call("rbind", resDFL)
+        rownames(resDF) <- NULL
+        resDF
+    } else {
+        class(resDFL) <- "DVHLst"
+        attr(resDFL, which="byPat") <- !byPat
+        #if(byPat) {
+        #
+        #} else {
+        #
+        #}
+        resDFL
+    }
 }
 

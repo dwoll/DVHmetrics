@@ -21,13 +21,47 @@ parseRayStation <- function(x, planInfo=FALSE, courseAsID=FALSE, ...) {
         }
     }
 
-    getDoseUnit <- function(ll) {
-        line <- ll[grep("^#Dose unit:", ll)]
-        elem <- sub("^.+:[[:blank:]]+(GY|CGY)$", "\\1", line, perl=TRUE, ignore.case=TRUE)
-        toupper(trimWS(elem))
+    getDoseRx <- function(ll) {
+        if(!any(grepl("^#Rx dose:", ll))) {
+            NA_real_
+        } else {
+            line <- ll[grep("^#Rx dose:", ll)]
+            elem <- sub("^.+:[[:blank:]]+([[:digit:].]+).+$", "\\1", line, perl=TRUE, ignore.case=TRUE)
+            as.numeric(trimWS(elem))
+        }
     }
 
-    sStart <- grep("^#RoiName:[[:alnum:][:punct:]]", x) # start of sections
+    getDoseRxUnit <- function(ll) {
+        if(!any(grepl("^#Rx dose:", ll))) {
+            NA_character_
+        } else {
+            line <- ll[grep("^#Rx dose:", ll)]
+            elem <- sub("^.+:[[:blank:]]+[[:digit:].]+ (GY|CGY)$", "\\1", line, perl=TRUE, ignore.case=TRUE)
+            toupper(trimWS(elem))
+        }
+    }
+
+    getDoseUnit <- function(ll) {
+        if(!any(grepl("^#Dose unit:", ll))) {
+            NA_character_
+        } else {
+            line <- ll[grep("^#Dose unit:", ll)]
+            elem <- sub("^.+:[[:blank:]]+(GY|CGY)$", "\\1", line, perl=TRUE, ignore.case=TRUE)
+            toupper(trimWS(elem))
+        }
+    }
+
+    getVolume <- function(ll) {
+        if(!any(grepl("^#RoiVolume:", ll))) {
+            NA_real_
+        } else {
+            line <- ll[grep("^#RoiVolume:", ll)]
+            elem <- sub("^.+:[[:blank:]]?([[:digit:].]+)$", "\\1", line, perl=TRUE, ignore.case=TRUE)
+            as.numeric(trimWS(elem))
+        }
+    }
+
+    sStart <- grep("^#RoiName:[[:blank:][:alnum:][:punct:]]+", x) # start of sections
     sLen   <- diff(c(sStart, length(x)+1))              # length of sections
     if((length(sLen) < 1L) || all(sLen < 1L)) {
         stop("No structures found")
@@ -41,9 +75,9 @@ parseRayStation <- function(x, planInfo=FALSE, courseAsID=FALSE, ...) {
     patID      <- getElem("^#PatientId:",  header)   # patient id
     plan       <- getElem("^#Dosename:",   header)   # treatment plan
     DVHdate    <- NA_character_
-    doseRxUnit <- NA_character_
-    doseRx     <- NA_real_
-    structVol  <- NA_real_
+    doseRxUnit <- getDoseRxUnit(header)
+    doseRx     <- getDoseRx(header)
+    structVols <- NA_real_
     volumeUnit <- NA_character_
 
     ## RayStation has no structure volume in file
@@ -51,21 +85,21 @@ parseRayStation <- function(x, planInfo=FALSE, courseAsID=FALSE, ...) {
     dots <- list(...)
     if(hasName(dots, "raystation")) {
         info <- dots[["raystation"]]
-        
+
         if(hasName(info, "date")) {
             DVHdate <- as.Date(info[["date"]], format="%Y-%m-%d")
         }
-        
+
         if(hasName(info, "doseRx")) {
             drxu <- info[["doseRx"]]
             doseRxUnit <- toupper(sub("^[.[:digit:][:blank:]]+(c?Gy).*$", "\\1",
                                       drxu, perl=TRUE, ignore.case=TRUE))
-            
+
             if(!grepl("^(GY|CGY)$", doseRxUnit)) {
                 warning("Could not determine dose Rx unit")
                 doseRxUnit <- NA_character_
             }
-            
+
             drx <- sub("^([.[:digit:]]+)[[:blank:]]*c?Gy.*$", "\\1",
                        drxu, perl=TRUE, ignore.case=TRUE)
             doseRx <- as.numeric(drx)
@@ -77,13 +111,13 @@ parseRayStation <- function(x, planInfo=FALSE, courseAsID=FALSE, ...) {
             ## make sure order is correct and all structures get a volume
             roi_names <- unlist(Map(function(x) { getElem("^#RoiName:", x) },
                                     structList))
-            
+
             structVols <- structVols0[roi_names]
         }
-        
+
         if(hasName(info, "volumeUnit")) {
             volumeUnit <- unname(c(CC="CC", CM3="CC")[toupper(info[["volumeUnit"]])])
-            
+
             if(volumeUnit != "CC") {
                 warning("Absolute volume units other than CC not implemented")
                 volumeUnit <- NA_character_
@@ -97,8 +131,8 @@ parseRayStation <- function(x, planInfo=FALSE, courseAsID=FALSE, ...) {
         ## extract information from info list
         doseRx     <- info$doseRx
         doseRxUnit <- info$doseRxUnit
-        
-        ## extract structure, volume, dose min, max, mean, median and sd
+
+        ## extract structure, dose min, max, mean, median and sd
         structure  <- getElem("^#RoiName:", strct)
         doseMin    <- NA_real_
         doseMax    <- NA_real_
@@ -106,6 +140,14 @@ parseRayStation <- function(x, planInfo=FALSE, courseAsID=FALSE, ...) {
         doseMed    <- NA_real_
         doseMode   <- NA_real_
         doseSD     <- NA_real_
+
+        ## check if structure volume is given - if not, try to find it
+        if(is.na(structVol)) {
+            structVol  <- getVolume(strct)
+            volumeUnit <- "CC"
+        } else {
+            volumeUnit <- info$volumeUnit
+        }
 
         ## set dose unit
         doseUnit <- getDoseUnit(strct)
@@ -171,7 +213,7 @@ parseRayStation <- function(x, planInfo=FALSE, courseAsID=FALSE, ...) {
                     plan=info$plan,
                     structure=structure,
                     structVol=structVol,
-                    volumeUnit=info$volumeUnit,
+                    volumeUnit=volumeUnit,
                     doseUnit=doseUnit,
                     doseRx=doseRx,
                     doseRxUnit=doseRxUnit,

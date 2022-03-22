@@ -122,8 +122,8 @@ function(x, fun=list(mean=mean, median=median, sd=sd),
     ## get all point-wise estimates
     if(!returnDVHObj) {
         dfL <- Map(getAggr, fun, toupper(names(fun)))
-        ## combine point-wise estimates
 
+        ## combine point-wise estimates
         dfMSD <- Reduce(merge, dfL)
         rownames(dfMSD) <- NULL
 
@@ -141,16 +141,16 @@ function(x, fun=list(mean=mean, median=median, sd=sd),
         dvh  <- getAggr(fun[[1]], "")
         DVHs <- if(byPat) {
             list(dvh       =data.matrix(dvh[ , c("dose", "doseRel", "volume", "volumeRel")]),
-                 patName   =extract_info("patName"),
-                 patID     =extract_info("patID"),
-                 date      =extract_info("date"),
-                 DVHtype   =extract_info("DVHtype"),
-                 plan      =extract_info("plan"),
+                 patName   =x[[1]][["patName"]],
+                 patID     =x[[1]][["patID"]],
+                 date      =x[[1]][["date"]],
+                 DVHtype   =x[[1]][["DVHtype"]],
+                 plan      =x[[1]][["plan"]],
                  structure =abbreviate(paste(sort(unique(dvhDF$structure)), collapse="_"),
                                        minlength=20),
-                 structVol =as.numeric(extract_info("structVol")),
-                 doseUnit  =extract_info("doseUnit"),
-                 volumeUnit=extract_info("volumeUnit"),
+                 structVol =as.numeric(x[[1]][["structVol"]]),
+                 doseUnit  =x[[1]][["doseUnit"]],
+                 volumeUnit=x[[1]][["volumeUnit"]],
                  doseMin   =NA_real_,
                  doseMax   =NA_real_,
                  doseRx    =NA_real_,
@@ -161,16 +161,16 @@ function(x, fun=list(mean=mean, median=median, sd=sd),
                  doseSD    =NA_real_)
         } else {
             list(dvh       =data.matrix(dvh[ , c("dose", "doseRel", "volume", "volumeRel")]),
-                 patName   =extract_info("patName"),
+                 patName   =x[[1]][["patName"]],
                  patID     =abbreviate(paste(sort(unique(dvhDF$patID)),     collapse="_"),
                                        minlength=20),
-                 date      =extract_info("date"),
-                 DVHtype   =extract_info("DVHtype"),
-                 plan      =extract_info("plan"),
-                 structure =extract_info("structure"),
-                 structVol =as.numeric(extract_info("structVol")),
-                 doseUnit  =extract_info("doseUnit"),
-                 volumeUnit=extract_info("volumeUnit"),
+                 date      =x[[1]][["date"]],
+                 DVHtype   =x[[1]][["DVHtype"]],
+                 plan      =x[[1]][["plan"]],
+                 structure =x[[1]][["structure"]],
+                 structVol =as.numeric(x[[1]][["structVol"]]),
+                 doseUnit  =x[[1]][["doseUnit"]],
+                 volumeUnit=x[[1]][["volumeUnit"]],
                  doseMin   =NA_real_,
                  doseMax   =NA_real_,
                  doseRx    =NA_real_,

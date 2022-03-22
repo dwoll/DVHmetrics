@@ -34,6 +34,7 @@ getNTCP(x,
   \item{NTCPm}{Probit/logit Parameter m. Equal to 1 / (NTCPgamma50*sqrt(2*pi)).}
   \item{NTCPn}{Parameter n. Equal to 1/a with exponential gEUD paramter a.}
   \item{NTCPgamma50}{Poisson parameter gamma50. Equal to 1 / (NTCPm*sqrt(2*pi))}
+  \item{NTCPs}{Relative seriality parameter s.}
   \item{EUDa}{If gEUD should be based on EQD2: Exponential parameter a.}
   \item{EUDfn}{If gEUD should be based on EQD2: Number of fractions.}
   \item{EUDab}{If gEUD should be based on EQD2: alpha/beta ratio for the relevant tissue.}

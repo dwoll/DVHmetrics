@@ -20,7 +20,8 @@ fluidPage(
                              radioButtons("metrNTCPtype", h5("(N)TCP Model"),
                                           list("Probit (Lyman KB)"=1,
                                                "Logit (Niemierko)"=2,
-                                               "Probit (Kaellman)"=3)),
+                                               "Poisson (Kaellman)"=3,
+                                               "Relative Seriality"=4)),
                              textInput("metrNTCPtd50", h5("T(C)D50"), value=""),
                              textInput("metrNTCPn", h5("n (=1 / EUD-a)"), value=""),
                              conditionalPanel(condition="input.metrNTCPtype == '1'",
@@ -28,6 +29,9 @@ fluidPage(
                              ),
                              conditionalPanel(condition="input.metrNTCPtype != '1'",
                                               textInput("metrNTCPgamma50", h5("Logit/Poisson gamma50"), value="")
+                             ),
+                             conditionalPanel(condition="input.metrNTCPtype == '4'",
+                                              textInput("metrNTCPs", h5("Relative Seriality s"), value="")
                              )
             ),
             uiOutput("metrSelPat"),

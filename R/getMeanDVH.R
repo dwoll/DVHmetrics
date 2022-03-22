@@ -2,7 +2,7 @@
 getMeanDVH <-
 function(x, fun=list(mean=mean, median=median, sd=sd),
          cumul=TRUE, thin=1, byPat=TRUE, patID=NULL, structure=NULL,
-         fixed=TRUE) {
+         fixed=TRUE, returnDVHObj=FALSE) {
     UseMethod("getMeanDVH")
 }
 
@@ -10,7 +10,7 @@ function(x, fun=list(mean=mean, median=median, sd=sd),
 getMeanDVH.DVHs <-
 function(x, fun=list(mean=mean, median=median, sd=sd),
          cumul=TRUE, thin=1, byPat=TRUE, patID=NULL, structure=NULL,
-         fixed=TRUE) {
+         fixed=TRUE, returnDVHObj=FALSE) {
 
     x <- if(byPat) {
         setNames(list(x), x$structure)
@@ -22,13 +22,14 @@ function(x, fun=list(mean=mean, median=median, sd=sd),
     attr(x, which="byPat") <- byPat
 
     getMeanDVH.DVHLst(x, fun=fun, cumul=cumul, thin, byPat=byPat,
-                      patID=patID, structure=structure, fixed=fixed)
+                      patID=patID, structure=structure, fixed=fixed,
+                      returnDVHObj=returnDVHObj)
 }
 
 getMeanDVH.DVHLst <-
 function(x, fun=list(mean=mean, median=median, sd=sd),
          cumul=TRUE, thin=1, byPat=TRUE, patID=NULL, structure=NULL,
-         fixed=TRUE) {
+         fixed=TRUE, returnDVHObj=FALSE) {
 
     ## make sure DVH list is organized as required for byPat
     if(is.null(attributes(x)$byPat) || attributes(x)$byPat != byPat) {
@@ -67,7 +68,7 @@ function(x, fun=list(mean=mean, median=median, sd=sd),
     ## get dose range and number of dose nodes
     rangeD <- c(0, max(vapply(x, function(z) {    max(z$dvh[ , "dose"]) }, numeric(1))))
     nodes  <-      max(vapply(x, function(z) { length(z$dvh[ , "dose"]) }, numeric(1)))
-        
+
     ## coarser dose grid for M+SD but with at least 100 nodes
     nodes <- max(100, ceiling(nodes/thin))
 
@@ -144,7 +145,7 @@ function(x, fun=list(mean=mean, median=median, sd=sd),
 getMeanDVH.DVHLstLst <-
 function(x, fun=list(mean=mean, median=median, sd=sd),
          cumul=TRUE, thin=1, byPat=TRUE, patID=NULL, structure=NULL,
-         fixed=TRUE) {
+         fixed=TRUE, returnDVHObj=FALSE) {
 
     ## re-organize x into by-patient or by-structure form if necessary
     isByPat <- attributes(x)$byPat
@@ -184,7 +185,7 @@ function(x, fun=list(mean=mean, median=median, sd=sd),
 
     resDFL <- Map(getMeanDVH, x, fun=list(fun), cumul=cumul, thin,
                   byPat=byPat, patID=list(patID), structure=list(structure),
-                  fixed=fixed)
+                  fixed=fixed, returnDVHObj=returnDVHObj)
 
     resDF <- do.call("rbind", resDFL)
     rownames(resDF) <- NULL

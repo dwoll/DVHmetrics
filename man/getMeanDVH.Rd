@@ -10,19 +10,19 @@ Returns the point-wise mean and median DVH with the point-wise standard deviatio
 \usage{
 getMeanDVH(x, fun=list(mean=mean, median=median, sd=sd),
            cumul=TRUE, thin=1, byPat=TRUE, patID=NULL, structure=NULL,
-           fixed=TRUE)
+           fixed=TRUE, returnDVHObj=FALSE)
 
 \method{getMeanDVH}{DVHs}(x, fun=list(mean=mean, median=median, sd=sd),
            cumul=TRUE, thin=1, byPat=TRUE, patID=NULL, structure=NULL,
-           fixed=TRUE)
+           fixed=TRUE, returnDVHObj=FALSE)
 
 \method{getMeanDVH}{DVHLst}(x, fun=list(mean=mean, median=median, sd=sd),
            cumul=TRUE, thin=1, byPat=TRUE, patID=NULL, structure=NULL,
-           fixed=TRUE)
+           fixed=TRUE, returnDVHObj=FALSE)
 
 \method{getMeanDVH}{DVHLstLst}(x, fun=list(mean=mean, median=median, sd=sd),
            cumul=TRUE, thin=1, byPat=TRUE, patID=NULL, structure=NULL,
-           fixed=TRUE)
+           fixed=TRUE, returnDVHObj=FALSE)
 }
 \arguments{
   \item{x}{A single DVH (object of class \code{DVHs}), multiple DVHs from one patient/structure (object of class \code{DVHLst}), or multiple DVHs from many patients/structures (object of class \code{DVHLstLst}). See \code{\link[DVHmetrics]{readDVH}}.}
@@ -33,12 +33,13 @@ getMeanDVH(x, fun=list(mean=mean, median=median, sd=sd),
   \item{patID}{\code{character} vector. Include DVHs for these patients only when calculating mean/SD. If missing, all patients are used. Can be a regular expression with \code{fixed=FALSE}, see \code{\link[base]{regex}}.}
   \item{structure}{\code{character} vector. Include DVHs for these structures only when calculating mean/SD. If missing, all structures are used. Can be a regular expression with \code{fixed=FALSE}, see \code{\link[base]{regex}}.}
   \item{fixed}{\code{logical}. Use \code{fixed=FALSE} for regular expression matching of \code{patID} and \code{structure}.}
+  \item{returnDVHObj}{\code{logical}. With \code{returnDVHObj=TRUE}, a regular DVH object is returned. In that case, \code{fun} may only have one component for calculating either the point-wise \code{mean} or \code{median}.}
 }
 \details{
 Before calculating the point-wise mean and SD, DVHs in \code{x} are first linearly interpolated with \code{\link[DVHmetrics]{convertDVH}} using the same set of nodes.
 }
 \value{
-Returns a data frame with point-wise mean DVH averaged over structures (\code{byPat=TRUE}) or over patients (\code{byPat=FALSE}) including the point-wise standard deviation or other measures as controlled by \code{fun}.
+By default (\code{returnDVHObj=FALSE}) returns a data frame with point-wise mean DVH averaged over structures (\code{byPat=TRUE}) or over patients (\code{byPat=FALSE}) including the point-wise standard deviation or other measures as controlled by \code{fun}. With \code{returnDVHObj=TRUE}, a DVH object is returned that is equivalent to a DVH as imported from a file. In particular, functions like \code{\link[DVHmetrics]{showDVH}} or \code{\link[DVHmetrics]{getMetric}} can be used on such an object.
 }
 \seealso{
 \code{\link[DVHmetrics]{showDVH}},

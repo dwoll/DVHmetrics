@@ -216,7 +216,7 @@ Function \texttt{getMetric()} calculates freely-defined DVH metrics based on dat
 \item \texttt{"DRX"}: The prescription dose.
 \item \texttt{"DHI"}: The Homogeneity Index according to ICRU 83: (D2\%-D98\%)/D50\%.
 \item \texttt{"DEUD"}: The generalized equivalent uniform dose (gEUD, \citeNP{Niemierko1999,Wu2002}). This can be based on EQD$_{2}$ values if information on the fractionation is provided as well \cite{IAEA2008}.
-\item \texttt{"DNTCP"}: The normal tissue complication probability (NTCP) according to the Lyman \citeyear{Lyman1985} probit model, the Niemierko \citeyear{Niemierko1999} logit model, or the Poisson model (equation (3) in \citeNP{Kallman1992} with gEUD plugged in for $D$). This can be based on EQD$_{2}$ values if information on the fractionation is provided as well.
+\item \texttt{"DNTCP"}: The normal tissue complication probability (NTCP) according to the Lyman \citeyear{Lyman1985} probit model, the Niemierko \citeyear{Niemierko1999} logit model, the Poisson model (equations (1) to (3) in \citeNP{Kallman1992} with gEUD plugged in for $D$), or the relative seriality model (equation (18)). This can be based on EQD$_{2}$ values if information on the fractionation is provided as well.
 \item \texttt{"DTCP"}: The tumor control probability (TCP) according to the same models as NTCP.
 \end{itemize}
 \item A \emph{free} DVH metric is a character string which has three mandatory elements and one optional element in the following order:

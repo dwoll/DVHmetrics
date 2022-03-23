@@ -31,6 +31,11 @@ function(x, fun=list(mean=mean, median=median, sd=sd),
          cumul=TRUE, thin=1, byPat=TRUE, patID=NULL, structure=NULL,
          fixed=TRUE, returnDVHObj=FALSE) {
 
+    extract_info <- function(comp) {
+        vals <- sapply(x, function(z) { z[[comp]] })
+        paste(unique(unname(vals)), collapse="_")
+    }
+
     ## make sure DVH list is organized as required for byPat
     if(is.null(attributes(x)$byPat) || attributes(x)$byPat != byPat) {
         stop(c("DVH list organization by-patient / by-structure ",
@@ -122,8 +127,8 @@ function(x, fun=list(mean=mean, median=median, sd=sd),
     ## get all point-wise estimates
     if(!returnDVHObj) {
         dfL <- Map(getAggr, fun, toupper(names(fun)))
-
         ## combine point-wise estimates
+
         dfMSD <- Reduce(merge, dfL)
         rownames(dfMSD) <- NULL
 
@@ -141,16 +146,16 @@ function(x, fun=list(mean=mean, median=median, sd=sd),
         dvh  <- getAggr(fun[[1]], "")
         DVHs <- if(byPat) {
             list(dvh       =data.matrix(dvh[ , c("dose", "doseRel", "volume", "volumeRel")]),
-                 patName   =x[[1]][["patName"]],
-                 patID     =x[[1]][["patID"]],
-                 date      =x[[1]][["date"]],
-                 DVHtype   =x[[1]][["DVHtype"]],
-                 plan      =x[[1]][["plan"]],
+                 patName   =extract_info("patName"),
+                 patID     =extract_info("patID"),
+                 date      =extract_info("date"),
+                 DVHtype   =extract_info("DVHtype"),
+                 plan      =extract_info("plan"),
                  structure =abbreviate(paste(sort(unique(dvhDF$structure)), collapse="_"),
                                        minlength=20),
-                 structVol =as.numeric(x[[1]][["structVol"]]),
-                 doseUnit  =x[[1]][["doseUnit"]],
-                 volumeUnit=x[[1]][["volumeUnit"]],
+                 structVol =as.numeric(extract_info("structVol")),
+                 doseUnit  =extract_info("doseUnit"),
+                 volumeUnit=extract_info("volumeUnit"),
                  doseMin   =NA_real_,
                  doseMax   =NA_real_,
                  doseRx    =NA_real_,
@@ -161,16 +166,16 @@ function(x, fun=list(mean=mean, median=median, sd=sd),
                  doseSD    =NA_real_)
         } else {
             list(dvh       =data.matrix(dvh[ , c("dose", "doseRel", "volume", "volumeRel")]),
-                 patName   =x[[1]][["patName"]],
+                 patName   =extract_info("patName"),
                  patID     =abbreviate(paste(sort(unique(dvhDF$patID)),     collapse="_"),
                                        minlength=20),
-                 date      =x[[1]][["date"]],
-                 DVHtype   =x[[1]][["DVHtype"]],
-                 plan      =x[[1]][["plan"]],
-                 structure =x[[1]][["structure"]],
-                 structVol =as.numeric(x[[1]][["structVol"]]),
-                 doseUnit  =x[[1]][["doseUnit"]],
-                 volumeUnit=x[[1]][["volumeUnit"]],
+                 date      =extract_info("date"),
+                 DVHtype   =extract_info("DVHtype"),
+                 plan      =extract_info("plan"),
+                 structure =extract_info("structure"),
+                 structVol =as.numeric(extract_info("structVol")),
+                 doseUnit  =extract_info("doseUnit"),
+                 volumeUnit=extract_info("volumeUnit"),
                  doseMin   =NA_real_,
                  doseMax   =NA_real_,
                  doseRx    =NA_real_,
@@ -197,6 +202,11 @@ getMeanDVH.DVHLstLst <-
 function(x, fun=list(mean=mean, median=median, sd=sd),
          cumul=TRUE, thin=1, byPat=TRUE, patID=NULL, structure=NULL,
          fixed=TRUE, returnDVHObj=FALSE) {
+
+    extract_info <- function(comp) {
+        vals <- sapply(x, function(z) { z[[comp]] })
+        paste(unique(unname(vals)), collapse="_")
+    }
 
     ## re-organize x into by-patient or by-structure form if necessary
     isByPat <- attributes(x)$byPat

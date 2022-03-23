@@ -2,12 +2,12 @@
 \alias{getTCP}
 \title{Tumor control probability (TCP)}
 \description{
-Calculate tumor control probability (TCP) from Lyman's probit model, Niemierko's logit model, or Kaellman's Poisson model. May be based on EQD2.
+Calculate tumor control probability (TCP) from Lyman's probit model, Niemierko's logit model, the Poisson model, or the Kaellman relative seriality model. May be based on EQD2.
 }
 \usage{
-getTCP(x, TCPtcd50=NULL, TCPm=NULL, TCPn=NULL, TCPgamma50=NULL,
+getTCP(x, TCPtcd50=NULL, TCPm=NULL, TCPn=NULL, TCPgamma50=NULL, NTCPs=NULL,
        EUDa=NULL, EUDfn=NULL, EUDab=NULL,
-       TCPtype=c("probit", "logit", "poisson"), ...)
+       TCPtype=c("probit", "logit", "poisson", "relative_seriality"), ...)
 }
 \arguments{
   \item{x}{One cumulative DVH (object of class \code{DVHs}, multiple cumulative DVHs from one patient with multiple structures (object of class \code{DVHLst}), or multiple cumulative DVHs from many patients, each with multiple structures (object of class \code{DVHLstLst}). See \code{\link[DVHmetrics]{readDVH}}.}
@@ -15,14 +15,15 @@ getTCP(x, TCPtcd50=NULL, TCPm=NULL, TCPn=NULL, TCPgamma50=NULL,
   \item{TCPm}{Probit/logit Parameter m. Equal to 1 / (NTCPgamma50*sqrt(2*pi)).}
   \item{TCPn}{Parameter n. Equal to 1/a with exponential gEUD paramter a.}
   \item{TCPgamma50}{Poisson parameter gamma50. Equal to 1 / (NTCPm*sqrt(2*pi))}
+  \item{NTCPs}{Relative seriality parameter s.}
   \item{EUDa}{If gEUD should be based on EQD2: Exponential parameter a.}
   \item{EUDfn}{If gEUD should be based on EQD2: Number of fractions.}
   \item{EUDab}{If gEUD should be based on EQD2: alpha/beta ratio for the relevant tissue.}
-  \item{TCPtype}{\code{"probit"} - Lyman probit model, \code{"logit"} - Niemierko logit model, \code{"poisson"} - Kaellman Poisson (relative seriality) model.}
+  \item{TCPtype}{\code{"probit"} - Lyman probit model, \code{"logit"} - Niemierko logit model, \code{"poisson"} - Poisson model, \code{"relative_seriality"} - Kaellmann relative seriality model..}
   \item{...}{Ignored. Used to catch additional arguments passed from \code{\link[DVHmetrics]{getMetric}}.}
 }
 \details{
-For DVH reduction, gEUD is used. This is equivalent to the Kutcher-Burman DVH reduction scheme.
+For the logit, probit, and Poisson method, gEUD is used for DVH reduction. This is equivalent to the Kutcher-Burman DVH reduction scheme. The probit model is given in equation (1), the logit model in eqation (2), and the Poisson model in equation (3) in Kaellman (1992), with gEUD plugged in for D. The relative seriality model is given in equation (18).
 }
 \value{
 A data frame with variables \code{TCP}, \code{patID}, and \code{structure}.

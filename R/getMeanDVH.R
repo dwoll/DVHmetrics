@@ -2,7 +2,7 @@
 getMeanDVH <-
 function(x, fun=list(mean=mean, median=median, sd=sd),
          cumul=TRUE, thin=1, byPat=TRUE, patID=NULL, structure=NULL,
-         fixed=TRUE, returnObj=FALSE) {
+         fixed=TRUE, returnDVHObj=FALSE) {
     UseMethod("getMeanDVH")
 }
 
@@ -10,7 +10,7 @@ function(x, fun=list(mean=mean, median=median, sd=sd),
 getMeanDVH.DVHs <-
 function(x, fun=list(mean=mean, median=median, sd=sd),
          cumul=TRUE, thin=1, byPat=TRUE, patID=NULL, structure=NULL,
-         fixed=TRUE, returnObj=FALSE) {
+         fixed=TRUE, returnDVHObj=FALSE) {
 
     x <- if(byPat) {
         setNames(list(x), x$structure)
@@ -23,13 +23,13 @@ function(x, fun=list(mean=mean, median=median, sd=sd),
 
     getMeanDVH.DVHLst(x, fun=fun, cumul=cumul, thin, byPat=byPat,
                       patID=patID, structure=structure, fixed=fixed,
-                      returnObj=returnObj)
+                      returnDVHObj=returnDVHObj)
 }
 
 getMeanDVH.DVHLst <-
 function(x, fun=list(mean=mean, median=median, sd=sd),
          cumul=TRUE, thin=1, byPat=TRUE, patID=NULL, structure=NULL,
-         fixed=TRUE, returnObj=FALSE) {
+         fixed=TRUE, returnDVHObj=FALSE) {
 
     extract_info <- function(comp) {
         vals <- sapply(x, function(z) { z[[comp]] })
@@ -125,7 +125,7 @@ function(x, fun=list(mean=mean, median=median, sd=sd),
     }
 
     ## get all point-wise estimates
-    if(!returnObj) {
+    if(!returnDVHObj) {
         dfL <- Map(getAggr, fun, toupper(names(fun)))
         ## combine point-wise estimates
 
@@ -201,7 +201,7 @@ function(x, fun=list(mean=mean, median=median, sd=sd),
 getMeanDVH.DVHLstLst <-
 function(x, fun=list(mean=mean, median=median, sd=sd),
          cumul=TRUE, thin=1, byPat=TRUE, patID=NULL, structure=NULL,
-         fixed=TRUE, returnObj=FALSE) {
+         fixed=TRUE, returnDVHObj=FALSE) {
 
     extract_info <- function(comp) {
         vals <- sapply(x, function(z) { z[[comp]] })
@@ -246,9 +246,9 @@ function(x, fun=list(mean=mean, median=median, sd=sd),
 
     resDFL <- Map(getMeanDVH, x, fun=list(fun), cumul=cumul, thin,
                   byPat=byPat, patID=list(patID), structure=list(structure),
-                  fixed=fixed, returnObj=returnObj)
+                  fixed=fixed, returnDVHObj=returnDVHObj)
 
-    if(!returnObj) {
+    if(!returnDVHObj) {
         resDF <- do.call("rbind", resDFL)
         rownames(resDF) <- NULL
         resDF

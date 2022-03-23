@@ -304,12 +304,13 @@ shinyApp(
             EUDfd   <- if(input$metrEUDfd != "") { as.numeric(input$metrEUDfd) } else { NULL }
             EUDab   <- if(input$metrEUDab != "") { as.numeric(input$metrEUDab) } else { NULL }
 
-            NTCPtype    <- c("probit", "logit", "poisson")[as.numeric(input$metrNTCPtype)]
+            NTCPtype    <- c("probit", "logit", "poisson", "relative_seriality")[as.numeric(input$metrNTCPtype)]
             NTCPtd50    <- if(input$metrNTCPtd50    != "") { as.numeric(input$metrNTCPtd50)    } else { NULL }
             NTCPn       <- if(input$metrNTCPn       != "") { as.numeric(input$metrNTCPn)       } else { NULL }
             NTCPm       <- if(input$metrNTCPm       != "") { as.numeric(input$metrNTCPm)       } else { NULL }
             NTCPgamma50 <- if(input$metrNTCPgamma50 != "") { as.numeric(input$metrNTCPgamma50) } else { NULL }
-
+            NTCPs       <- if(input$metrNTCPs       != "") { as.numeric(input$metrNTCPs)       } else { NULL }
+            
             sortSel <- input$metrSortBy
             sortBy <- if(length(sortSel) > 0) {
                 sortOpts[sortSel]
@@ -324,8 +325,8 @@ shinyApp(
                              sortBy=sortBy,
                              interp=interp,
                              EUDa=EUDa, EUDfd=EUDfd, EUDab=EUDab,
-                             NTCPtype=NTCPtype, NTCPtd50=NTCPtd50, NTCPn=NTCPn, NTCPm=NTCPm, NTCPgamma50=NTCPgamma50,
-                             TCPtype=NTCPtype, TCPtcd50=NTCPtd50,  TCPn=NTCPn,  TCPm=NTCPm,  TCPgamma50=NTCPgamma50)
+                             NTCPtype=NTCPtype, NTCPtd50=NTCPtd50, NTCPn=NTCPn, NTCPm=NTCPm, NTCPgamma50=NTCPgamma50, NTCPs=NTCPs,
+                             TCPtype=NTCPtype,  TCPtcd50=NTCPtd50,  TCPn=NTCPn,  TCPm=NTCPm,  TCPgamma50=NTCPgamma50,  TCPs=NTCPs)
                 argL <- Filter(Negate(is.null), argL)
                 metr <- do.call(getMetric, argL)
                 metr$observed <- round(metr$observed, 2)
@@ -372,12 +373,13 @@ shinyApp(
                 EUDfd   <- if(input$metrEUDfd != "") { as.numeric(input$metrEUDfd) } else { NULL }
                 EUDab   <- if(input$metrEUDab != "") { as.numeric(input$metrEUDab) } else { NULL }
 
-                NTCPtype    <- c("probit", "logit", "poisson")[as.numeric(input$metrNTCPtype)]
+                NTCPtype    <- c("probit", "logit", "poisson", "relative_seriality")[as.numeric(input$metrNTCPtype)]
                 NTCPtd50    <- if(input$metrNTCPtd50    != "") { as.numeric(input$metrNTCPtd50)    } else { NULL }
                 NTCPn       <- if(input$metrNTCPn       != "") { as.numeric(input$metrNTCPn)       } else { NULL }
                 NTCPm       <- if(input$metrNTCPm       != "") { as.numeric(input$metrNTCPm)       } else { NULL }
                 NTCPgamma50 <- if(input$metrNTCPgamma50 != "") { as.numeric(input$metrNTCPgamma50) } else { NULL }
-
+                NTCPs       <- if(input$metrNTCPs       != "") { as.numeric(input$metrNTCPs)       } else { NULL }
+                
                 sortSel <- input$metrSortBy
                 sortBy <- if(length(sortSel) > 0) {
                     sortOpts[sortSel]
@@ -391,8 +393,8 @@ shinyApp(
                              sortBy=sortBy,
                              interp=interp,
                              EUDa=EUDa, EUDfd=EUDfd, EUDab=EUDab,
-                             NTCPtype=NTCPtype, NTCPtd50=NTCPtd50, NTCPn=NTCPn, NTCPm=NTCPm, NTCPgamma50=NTCPgamma50,
-                             TCPtype=NTCPtype, TCPtcd50=NTCPtd50,  TCPn=NTCPn,  TCPm=NTCPm,  TCPgamma50=NTCPgamma50)
+                             NTCPtype=NTCPtype, NTCPtd50=NTCPtd50, NTCPn=NTCPn, NTCPm=NTCPm, NTCPgamma50=NTCPgamma50, NTCPs=NTCPs,
+                             TCPtype=NTCPtype,  TCPtcd50=NTCPtd50,  TCPn=NTCPn,  TCPm=NTCPm,  TCPgamma50=NTCPgamma50, TCPs=NTCPs)
                 argL <- Filter(Negate(is.null), argL)
                 metr <- do.call(getMetric, argL)
                 dec <- c('1'=".",  '2'=",")[input$saveMetrDec]

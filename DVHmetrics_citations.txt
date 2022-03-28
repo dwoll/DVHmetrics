@@ -45,6 +45,7 @@ https://doi.org/10.1111/mmi.14417 (Molekularbiologie)
 https://doi.org/10.1111/2041-210X.13347 (Ökologie)
 https://doi.org/10.1145/3468264.3468601
 https://doi.org/10.2172/1777092
+https://doi.org/10.33612/diss.127742005
 https://doi.org/10.3389/feart.2019.00264 (Geosciences)
 https://doi.org/10.5194/nhess-2016-44 (Geosciences)
 https://doi.org/10.5194/nhess-16-2021-2016 (Geosciences)

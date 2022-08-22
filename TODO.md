@@ -1,8 +1,8 @@
 # TODO
 
- * getMeanDVH() option to return proper DVH object
+ * Vignette: The radiation effect (E) or cell kill can be defined as follows: E = n*(alpha*d + beta*d^2), divide both sides by alpha
  * getMetric(dvh_m, metric="D5cc") works even though volumeUnit is NA
- * invalid option "error" -> use paste() first inside stop() first
+ * invalid option "error" -> use paste() first inside stop()
  * x <- readDVH("c:/Users/Daniel/Downloads/DVH poumon volume absolute.txt", type="HiArt", volume_from_dvh=TRUE, hiart=list(doseRx=50))
  Fehler in mapply(FUN = f, ..., SIMPLIFY = FALSE) : # list(list(doseRx=50)) ?
   Eingaben mit Länge 0 können nicht mit Eingaben anderer Länge gemischt werden

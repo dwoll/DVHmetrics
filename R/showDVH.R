@@ -41,7 +41,8 @@ function(x, cumul=TRUE, interp=FALSE, rangeD=NULL) {
 showDVH <-
 function(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL, rel=TRUE,
          guessX=TRUE, guessY=TRUE, thresh=1, addMSD=FALSE,
-         show=TRUE, visible=FALSE, fixed=TRUE) {
+         show=TRUE, visible=FALSE, fixed=TRUE,
+         fun=list(location=mean, uncertainty=sd)) {
     UseMethod("showDVH")
 }
 
@@ -49,7 +50,8 @@ function(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL, rel=TRUE,
 showDVH.DVHs <-
 function(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL, rel=TRUE,
          guessX=TRUE, guessY=TRUE, thresh=1, addMSD=FALSE,
-         show=TRUE, visible=FALSE, fixed=TRUE) {
+         show=TRUE, visible=FALSE, fixed=TRUE,
+         fun=list(location=mean, uncertainty=sd)) {
     x <- if(byPat) {
         setNames(list(x), x$structure)
     } else {
@@ -61,7 +63,8 @@ function(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL, rel=TRUE,
 
     showDVH.DVHLst(x, cumul=cumul, byPat=byPat, patID=patID, structure=structure,
                    rel=rel, guessX=guessX, guessY=guessY, thresh=thresh,
-                   addMSD=addMSD, show=show, visible=visible)
+                   addMSD=addMSD, show=show, visible=visible, fixed=fixed,
+                   fun=fun)
 }
 
 ## plots 1 list of DVH objects
@@ -70,12 +73,17 @@ function(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL, rel=TRUE,
 showDVH.DVHLst <-
 function(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL, rel=TRUE,
          guessX=TRUE, guessY=TRUE, thresh=1, addMSD=FALSE,
-         show=TRUE, visible=FALSE, fixed=TRUE) {
+         show=TRUE, visible=FALSE, fixed=TRUE,
+         fun=list(location=mean, uncertainty=sd)) {
 
     ## make sure DVH list is organized as required for byPat
     if(is.null(attributes(x)$byPat) || attributes(x)$byPat != byPat) {
         stop(c("DVH list organization by-patient / by-structure ",
                "either could not be determined or is different from byPat"))
+    }
+
+    if(addMSD) {
+        stopifnot(length(fun) == 2L)
     }
 
     guessX <- as.numeric(guessX)
@@ -214,13 +222,15 @@ function(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL, rel=TRUE,
 
     ## check if point-wise volume mean and sd should be plotted
     if(addMSD) {
+        fun_loc <- fun[["location"]]
+        fun_sd  <- fun[["uncertainty"]]
         ## generate point-wise mean/sd for dose -> aggregate over dose
         if(byPat) {
-            dfM  <- aggregate(volPlot ~ patID + dose,     data=dvhDF, FUN=mean, na.rm=TRUE)
-            dfSD <- aggregate(volPlot ~ patID + dose,     data=dvhDF, FUN=sd,   na.rm=TRUE)
+            dfM  <- aggregate(volPlot ~ patID + dose,     data=dvhDF, FUN=fun_loc, na.rm=TRUE)
+            dfSD <- aggregate(volPlot ~ patID + dose,     data=dvhDF, FUN=fun_sd,  na.rm=TRUE)
         } else {
-            dfM  <- aggregate(volPlot ~ structure + dose, data=dvhDF, FUN=mean, na.rm=TRUE)
-            dfSD <- aggregate(volPlot ~ structure + dose, data=dvhDF, FUN=sd,   na.rm=TRUE)
+            dfM  <- aggregate(volPlot ~ structure + dose, data=dvhDF, FUN=fun_loc, na.rm=TRUE)
+            dfSD <- aggregate(volPlot ~ structure + dose, data=dvhDF, FUN=fun_sd,  na.rm=TRUE)
         }
 
         ## rename columns in aggregated data frames
@@ -344,7 +354,8 @@ function(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL, rel=TRUE,
 showDVH.DVHLstLst <-
 function(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL, rel=TRUE,
          guessX=TRUE, guessY=TRUE, thresh=1, addMSD=FALSE,
-         show=TRUE, visible=FALSE, fixed=TRUE) {
+         show=TRUE, visible=FALSE, fixed=TRUE,
+         fun=list(location=mean, uncertainty=sd)) {
 
     ## re-organize x into by-patient or by-structure form if necessary
     isByPat <- attributes(x)$byPat
@@ -385,7 +396,8 @@ function(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL, rel=TRUE,
     diagL <- Map(showDVH, x, cumul=cumul, byPat=byPat, rel=rel,
                  patID=list(patID), structure=list(structure),
                  guessX=guessX, guessY=guessY, thresh=thresh,
-                 addMSD=addMSD, show=show, visible=visible, fixed=fixed)
+                 addMSD=addMSD, show=show, visible=visible,
+                 fixed=fixed, fun=list(fun))
 
     if(visible) {
         diagL

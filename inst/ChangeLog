@@ -1,6 +1,12 @@
-$Date: 2022-03-22 14:40:29 +0000 (Tue, 22 Mar 2022) $
+$Date: 2022-08-22 14:40:29 +0000 (Mon, 22 Aug 2022) $
 
 DVHMETRICS RELEASE VERSIONS at https://cran.r-project.org/
+
+Version 0.4.2.0.99999 (August 22, 2022)
+    * showDVH()
+      - add option 'fun' to pass list for point-wise aggregation of
+        DVHs when using 'addMSD=TRUE'
+        (thanks: Daniella Elisabet Ostergaard)
 
 Version 0.4.2 (March 22, 2022)
     * readDVH(..., type="RayStation")

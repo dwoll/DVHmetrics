@@ -143,7 +143,11 @@ function(x, fun=list(mean=mean, median=median, sd=sd),
 
         dfMSD
     } else {
-        dvh  <- getAggr(fun[[1]], "")
+        if(length(fun) > 1L) {
+            warning("Only first element of 'fun' will be used")
+        }
+
+        dvh  <- getAggr(fun[[1L]], "")
         DVHs <- if(byPat) {
             list(dvh       =data.matrix(dvh[ , c("dose", "doseRel", "volume", "volumeRel")]),
                  patName   =extract_info("patName"),
@@ -219,9 +223,9 @@ function(x, fun=list(mean=mean, median=median, sd=sd),
         p <- trimWS(patID, side="both")
         x <- Filter(function(y) {
             if(fixed) {
-                any(y[[1]]$patID %in% p)
+                any(y[[1L]]$patID %in% p)
             } else {
-                any(grepl(paste(p, collapse="|"), y[[1]]$patID))
+                any(grepl(paste(p, collapse="|"), y[[1L]]$patID))
             }
         }, x)
 
@@ -234,9 +238,9 @@ function(x, fun=list(mean=mean, median=median, sd=sd),
         s <- trimWS(structure, side="both")
         x <- Filter(function(y) {
             if(fixed) {
-                any(y[[1]]$structure %in% s)
+                any(y[[1L]]$structure %in% s)
             } else {
-                any(grepl(paste(s, collapse="|"), y[[1]]$structure))
+                any(grepl(paste(s, collapse="|"), y[[1L]]$structure))
             }
         }, x)
 
@@ -255,11 +259,6 @@ function(x, fun=list(mean=mean, median=median, sd=sd),
     } else {
         class(resDFL) <- "DVHLst"
         attr(resDFL, which="byPat") <- !byPat
-        #if(byPat) {
-        #
-        #} else {
-        #
-        #}
         resDFL
     }
 }

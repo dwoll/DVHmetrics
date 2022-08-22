@@ -10,7 +10,6 @@
 
 ## Medium term
 
- * `getNTCP()` relative seriality model (equation 18 in Kaellman et al.), from differential DVH with density / per unit dose
  * check that expensive calculations (e.g., conversion to differential DVH) are done only once, and then stored
  * conformity index CI?
  * allow `checkConstraint(x, "DNTCP < 50%")` instead of `0.5Gy`

@@ -41,11 +41,14 @@ parseRayStation <- function(x, planInfo=FALSE, courseAsID=FALSE, ...) {
         }
     }
 
+    ## regex matching pattern for finding dose unit line
+    ## depends on RayStation version -> needs to be flexible
+    pattern_dose_unit <- "^#[[:alpha:]]*[[:blank:]]*unit:[[:blank:]]+(GY|CGY)$"
     getDoseUnit <- function(ll) {
-        if(!any(grepl("^#Dose unit:", ll))) {
+        if(!any(grepl(pattern_dose_unit, ll, ignore.case=TRUE))) {
             NA_character_
         } else {
-            line <- ll[grep("^#Dose unit:", ll)]
+            line <- ll[grep(pattern_dose_unit, ll, ignore.case=TRUE)]
             elem <- sub("^.+:[[:blank:]]+(GY|CGY)$", "\\1", line, perl=TRUE, ignore.case=TRUE)
             toupper(trimWS(elem))
         }
@@ -167,8 +170,14 @@ parseRayStation <- function(x, planInfo=FALSE, courseAsID=FALSE, ...) {
         }
 
         ## find DVH
+        ## additional "#Dosename:..." lines need to be removed first
+        idx_dosename <- grepl("^#Dosename:", strct)
+        if(any(idx_dosename)) {
+            strct <- strct[!idx_dosename]
+        }
+
         ## DVH column headers
-        colHead  <- grep("^#Dose unit:", strct, ignore.case=TRUE, perl=TRUE)
+        colHead  <- grep(pattern_dose_unit, strct, ignore.case=TRUE, perl=TRUE)
         dvhStart <- colHead+1                 # first numeric line of DVH
         dvhLen   <- length(strct) - dvhStart + 1
         if((length(dvhLen) < 1L) || dvhLen < 1L) {

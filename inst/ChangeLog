@@ -7,6 +7,9 @@ Version 0.4.2.0.99999 (August 22, 2022)
       - add option 'fun' to pass list for point-wise aggregation of
         DVHs when using 'addMSD=TRUE'
         (thanks: Daniella Elisabet Ostergaard)
+    * readDVH(..., type="RayStation")
+      - relax parsing of dose unit line for newer versions
+        (thanks: H53-OOF)
 
 Version 0.4.2 (March 22, 2022)
     * readDVH(..., type="RayStation")

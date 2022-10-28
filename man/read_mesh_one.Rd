@@ -1,17 +1,19 @@
 \name{read_mesh_one}
 \alias{read_mesh_one}
-\title{asdf}
-\description{asdf.}
-\usage{read_mesh_one(x), name, reconstruct=TRUE}
+\title{Read one mesh file}
+\description{Read one mesh object from a file name.}
+\usage{read_mesh(x), name, reconstruct=TRUE}
 \arguments{
-  \item{x}{asdf.}
-  \item{name}{asdf.}
-  \item{reconstruct}{asdf.}
+  \item{x}{\code{character}. File name.}
+  \item{name}{\code{character}. Name that should be assigned to the mesh object. If missing, the name is taken from the file name.}
+  \item{reconstruct}{Use \code{\link[SurfaceReconstruction]{AFSreconstruction}} to re-build the triangles from the vertices. Useful for meshes with defects.}
 }
-\details{asdf.}
+\details{Supported file formats: STL, PLY, OBJ, OFF.}
+\value{\code{\link[rgl]{mesh3d}} object. Use \code{\link[MeshAgreement]{read_mesh}} to read a list of mesh objects.}
 \seealso{
+\code{\link[rgl]{mesh3d}},
 \code{\link[MeshAgreement]{read_mesh}},
-\code{\link[MeshAgreement]{print_mesh}}
+\code{\link[SurfaceReconstruction]{AFSreconstruction}}
 }
 \examples{
 1

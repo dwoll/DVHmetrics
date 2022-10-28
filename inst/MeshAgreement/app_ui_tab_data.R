@@ -9,8 +9,11 @@ fluidPage(
                 closable=FALSE,
                 maximizable=FALSE,
                 collapsible=FALSE,
-                fileInput("file_sel", "Select files: (supported file formats: STL, PLY, OBJ, OFF)",
-                          width="100%", multiple=TRUE),
+                radioButtons("meshes_in",
+                             label=NULL,
+                             list("Use built-in data"=1,
+                                  "Upload mesh files"=2)),
+                uiOutput("ui_select_files"),
                 actionButton("apply_file_sel", "Apply")
             )
         )

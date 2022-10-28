@@ -106,11 +106,15 @@ shiny::shinyApp(
             input$apply_file_sel
             ## isolate against non-applied changes in data input UI elements
             isolate({
-                if(!is.null(input$file_sel)) {
-                    read_mesh(input$file_sel$datapath,
-                              input$file_sel$name)
+                if(input$meshes_in == 1) {
+                    data_heart_meshL
                 } else {
-                    NULL
+                    if(!is.null(input$file_sel)) {
+                        read_mesh(input$file_sel$datapath,
+                                  input$file_sel$name)
+                    } else {
+                        NULL
+                    }
                 }
             })
         })
@@ -156,6 +160,14 @@ shiny::shinyApp(
                                    n_samples=n_samples)
                 
                 bind_rows(agree_pairL)
+            } else {
+                NULL
+            }
+        })
+        output$ui_select_files <- renderUI({
+            if(input$meshes_in == 2) {
+                fileInput("file_sel", "Select files: (supported file formats: STL, PLY, OBJ, OFF)",
+                          width="100%", multiple=TRUE)
             } else {
                 NULL
             }

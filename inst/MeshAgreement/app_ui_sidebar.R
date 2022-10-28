@@ -34,7 +34,7 @@ dashboardSidebar(
         menuItem(
             "About",
             # icon=icon("info-circle", lib="font-awesome"),
-            icon=icon("circle-info", lib="font-awesome"),
+            icon=icon("info", lib="font-awesome"),
             tabName="tab_about"
         )
     ),

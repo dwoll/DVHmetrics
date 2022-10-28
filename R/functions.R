@@ -1,9 +1,3 @@
-# library(Rvcg)
-# library(Boov)
-# library(PolygonSoup)
-# library(SurfaceReconstruction)
-# library(MeshesTools)
-
 get_name_pair <- function(x, y, sep=" <-> ") {
     paste0(x, sep, y) 
 }
@@ -63,7 +57,7 @@ read_mesh <- function(x, name, reconstruct=TRUE) {
         reconstruct=TRUE)
 }
 
-print_mesh_one <- function(x, html=TRUE) {
+print_mesh_one <- function(x, html=FALSE) {
     vol_fmt_str <- if(is.na(x$volume))        { "%s" }           else { "%.2f" }
     ctr_fmt_str <- if(any(is.na(x$centroid))) { "[%s, %s, %s]" } else { "[%.2f, %.2f, %.2f]" }
     if(html) {
@@ -95,7 +89,7 @@ print_mesh_one <- function(x, html=TRUE) {
     }
 }
 
-print_mesh <- function(x, html=TRUE) {
+print_mesh <- function(x, html=FALSE) {
     if(!html) {
         invisible(Map(print_mesh_one, x, html=html))
     } else {

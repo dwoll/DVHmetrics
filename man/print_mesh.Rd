@@ -1,0 +1,19 @@
+\name{print_mesh}
+\alias{print_mesh}
+\title{asdf}
+\description{asdf.}
+\usage{
+print_mesh(x)
+}
+\arguments{
+  \item{x}{asdf.}
+}
+\details{asdf.}
+\value{asdf.}
+\seealso{
+\code{\link[MeshAgreement]{read_mesh}},
+\code{\link[MeshAgreement]{print_mesh_one}}
+}
+\examples{
+1
+}

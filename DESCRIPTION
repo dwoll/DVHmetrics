@@ -1,0 +1,19 @@
+Package: MeshAgreement
+Type: Package
+Title: Agreement measures for 3D meshes
+Version: 0.1.0.999
+Date: 2022-10-28
+Authors@R: c(person("Daniel", "Wollschlaeger", role = c("aut", "cre"), email = "wollschlaeger@uni-mainz.de"),
+    person("Heiko", "Karle", role="aut"))
+Depends: R (>= 3.2)
+Imports: stats, dplyr, Rvcg, SurfaceReconstruction, PolygonSoup, MeshesTools, Boov, shiny, DT, bs4Dash, shinyWidgets, rgl
+Suggests: knitr, markdown
+VignetteBuilder: knitr
+LazyData: yes
+Description: Calculates distance-based and volume-overlap-based
+        agreement measures for 3D meshes. Overall agreement for
+        a set of meshes is calculated as the aggregate agreement
+        for all pairwise comparisons.
+        Includes web-based graphical user interface.
+License: GPL (>= 2)
+URL: https://github.com/dwoll/MeshAgreement/

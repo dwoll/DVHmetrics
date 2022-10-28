@@ -1,0 +1,23 @@
+\name{get_mesh_agree_pair}
+\alias{get_mesh_agree_pair}
+\title{asdf}
+\description{asdf.}
+\usage{
+get_mesh_agree_pair(x, metro, ui, n_samples=1000L, chop=TRUE)
+}
+\arguments{
+  \item{x}{asdf.}
+  \item{metro}{asdf.}
+  \item{ui}{asdf.}
+  \item{n_samples}{asdf.}
+  \item{chop}{asdf.}
+}
+\details{asdf.}
+\value{asdf.}
+\seealso{
+\code{\link[MeshAgreement]{read_mesh}},
+\code{\link[MeshAgreement]{print_mesh}}
+}
+\examples{
+1
+}

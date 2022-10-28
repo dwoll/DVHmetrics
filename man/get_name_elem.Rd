@@ -1,0 +1,19 @@
+\name{get_name_elem}
+\alias{get_name_elem}
+\title{asdf}
+\description{asdf.}
+\usage{
+get_name_elem(x)
+}
+\arguments{
+  \item{x}{asdf.}
+}
+\details{asdf.}
+\value{asdf.}
+\seealso{
+\code{\link[MeshAgreement]{read_mesh}},
+\code{\link[MeshAgreement]{print_mesh}}
+}
+\examples{
+1
+}

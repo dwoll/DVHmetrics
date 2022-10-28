@@ -1,0 +1,166 @@
+\documentclass[11pt,%
+parskip=half,%
+paper=a4,%
+headings=small,%
+DIV15]{scrartcl}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage[latin1]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[final,babel,activate=TRUE]{microtype}
+%%\usepackage[sc]{mathpazo}
+\usepackage{lmodern}
+\usepackage{upquote}
+%\usepackage{geometry}
+%\geometry{verbose,tmargin=2.2cm,bmargin=2.2cm,lmargin=2.2cm,rmargin=2.2cm}
+\usepackage{url}
+%\usepackage{amsmath}
+%\usepackage{bm}
+%\usepackage{authblk}
+\usepackage{graphicx}
+\usepackage[pdftex,%
+unicode=true,%
+pdfusetitle,%
+bookmarks=true,%
+plainpages=false,%
+colorlinks=true,%
+linkcolor=blue,%
+citecolor=blue,%
+filecolor=blue,%
+urlcolor=blue,%
+%bookmarksopen=true,%
+%bookmarksopenlevel=2,%
+breaklinks=false,%
+%pdfborder={0 0 1},%
+pdfpagelabels=true,%
+backref=false,%
+pdftitle={Assessing the agreement between 3D meshes using MeshAgreement for R},%
+pdfauthor={Daniel Wollschlaeger, Heiko Karle}]{hyperref}
+\usepackage{breakurl}
+\usepackage{apacite}                     % after hyperref
+
+%%%%---------------------------------------------------------------------------
+%%%%---------------------------------------------------------------------------
+
+\ifdefined\hlstd
+\renewcommand{\hlstd}[1]{\textcolor[rgb]{0,0,0}{#1}}%
+\fi
+
+\ifdefined\hlcom
+\renewcommand{\hlcom}[1]{\textcolor[rgb]{0.5,0.4,0.5}{#1}}%
+\fi
+
+%%%%---------------------------------------------------------------------------
+%%%%---------------------------------------------------------------------------
+
+%\VignetteIndexEntry{Assessing the agreement between 3D meshes using MeshAgreement for R}
+%\VignetteDepends{DVHmetrics}
+%\VignetteKeywords{DVHmetrics}
+%\VignettePackage{DVHmetrics}
+%\VignetteEngine{knitr::knitr}
+%%%\VignetteEngine{knitr::rmarkdown}
+%%%%\SweaveOpts{engine=R}
+
+\begin{document}
+
+\title{Assessing the agreement between 3D meshes using \texttt{MeshAgreement} for \textsf{R}}
+\author{Daniel Wollschlaeger\\
+        \url{wollschlaeger@uni-mainz.de}
+        \and
+        Heiko Karle\\
+        \url{karle@uni-mainz.de}}
+\date{University Medical Center Mainz, Germany\\\today}
+
+%%%%---------------------------------------------------------------------------
+%%%%---------------------------------------------------------------------------
+
+<<setup, echo=FALSE, include=FALSE, cache=FALSE>>=
+# set global chunk options
+knitr::opts_chunk$set(fig.align='center', fig.show='hold')
+knitr::opts_chunk$set(tidy=FALSE, message=FALSE, warning=FALSE)
+options(replace.assign=TRUE, useFancyQuotes=FALSE, show.signif.stars=FALSE, digits=4, width=70)
+@
+
+\maketitle
+\tableofcontents
+
+%%%%---------------------------------------------------------------------------
+%%%%---------------------------------------------------------------------------
+\section{Introduction}
+\label{sec:introduction}
+%%%%---------------------------------------------------------------------------
+%%%%---------------------------------------------------------------------------
+
+\texttt{MeshAgreement} is an add-on package for the free statistical environment \textsf{R}\footnote{A free short introduction to \textsf{R} can be found at \url{https://www.statmethods.net/}.} \cite{RDevelopmentCoreTeam2008c}. It provides functionality to read 3D mesh files, to calculate agreement measures for 3D structures, and to plot the meshes. In addition.
+
+To install \texttt{DVHmetrics}, you need a current version of \textsf{R} and be online. Preferably, a free development environment like \textsf{R}Studio \cite{Allaire2011} should be used.
+
+<<cIntro, eval=FALSE>>=
+# install MeshAgreement from the CRAN online package repository
+install.packages("MeshAgreement")
+@
+
+%%%%---------------------------------------------------------------------------
+%%%%---------------------------------------------------------------------------
+\section{Interfaces}
+\label{sec:interfaces}
+%%%%---------------------------------------------------------------------------
+%%%%---------------------------------------------------------------------------
+
+\texttt{MeshAgreement} provides two interfaces geared towards users with different levels of familiarity with \textsf{R}: The regular command line functions and a built-in web application.
+
+%%%%---------------------------------------------------------------------------
+%%%%---------------------------------------------------------------------------
+\subsection{\textsf{R} command line interface}
+\label{sec:Rinter}
+%%%%---------------------------------------------------------------------------
+%%%%---------------------------------------------------------------------------
+
+Users familiar with \textsf{R} can use the \texttt{MeshAgreement} package functions from the \textsf{R} command line. This facilitates statistical post-processing of results with the full capabilities of \textsf{R}. After installing \texttt{MeshAgreement}, you should be able to run (function \texttt{___()} is explained in section \ref{sec:abc}):
+
+<<cCmdline>>=
+## load MeshAgreement package - required for all following tasks
+library(MeshAgreement, verbose=FALSE)
+
+## do ___
+___()
+@
+
+%%%%---------------------------------------------------------------------------
+%%%%---------------------------------------------------------------------------
+\subsection{Web-based graphical user interface}
+\label{sec:webApp}
+%%%%---------------------------------------------------------------------------
+%%%%---------------------------------------------------------------------------
+
+For users who are unfamiliar with \textsf{R}, \texttt{MeshAgreement} includes a \texttt{shiny}-based web application \cite{RStudioShiny2014} running locally that eliminates the need to use \textsf{R} syntax.
+
+%%%%---------------------------------------------------------------------------
+%%%%---------------------------------------------------------------------------
+\section{Read mesh files}
+\label{sec:abc}
+%%%%---------------------------------------------------------------------------
+%%%%---------------------------------------------------------------------------
+
+%%%%---------------------------------------------------------------------------
+%%%%---------------------------------------------------------------------------
+\section*{Acknowledgements}
+%%%%---------------------------------------------------------------------------
+%%%%---------------------------------------------------------------------------
+
+The authors thank St\'{e}phane Laurent for creating the necessary packages for handling 3D meshes with methods from the CGAL library.
+
+%%%%---------------------------------------------------------------------------
+%%%%---------------------------------------------------------------------------
+
+\bibliographystyle{apacite}
+\renewcommand{\BAvailFrom}{URL\ }
+\renewcommand{\APACrefURL}{URL\ }
+\bibliography{lit}
+
+%%%%---------------------------------------------------------------------------
+%%%%---------------------------------------------------------------------------
+
+\end{document}

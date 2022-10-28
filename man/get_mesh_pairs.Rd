@@ -1,0 +1,19 @@
+\name{get_mesh_pairs}
+\alias{get_mesh_pairs}
+\title{asdf}
+\description{asdf.}
+\usage{
+get_mesh_pairs(x)
+}
+\arguments{
+  \item{x}{asdf.}
+}
+\details{asdf.}
+\value{asdf.}
+\seealso{
+\code{\link[MeshAgreement]{read_mesh}},
+\code{\link[MeshAgreement]{print_mesh}}
+}
+\examples{
+1
+}

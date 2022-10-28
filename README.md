@@ -1,4 +1,4 @@
-# mesh_agreement
+# MeshAgreement
 
 Agreement measures for 3D structures saved as mesh files. R package containing an interactive [R](https://www.r-project.org/) [Shiny](https://shiny.rstudio.com/) app. You can upload mesh files (STL, PLY, OBJ, OFF) to generate agreement measures for all pairwise comparisons, as well as the corresponding aggregated agreement. The intended application is to compare delineated structures for radiotherapy treatment planning.
 
@@ -18,7 +18,7 @@ Agreement measures for 3D structures saved as mesh files. R package containing a
 
 # Required packages
 
-`mesh_agreement` heavily relies on packages developed by Stéphane Laurent, currently only available from GitHub:
+`MeshAgreement` heavily relies on packages developed by Stéphane Laurent, currently only available from GitHub:
 
   * [PolygonSoup](https://github.com/stla/PolygonSoup)
   * [SurfaceReconstruction](https://github.com/stla/SurfaceReconstruction)

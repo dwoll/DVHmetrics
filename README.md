@@ -27,10 +27,13 @@ Required packages on CRAN:
 
   * [shiny](https://CRAN.R-project.org/package=shiny)
   * [bs4Dash](https://CRAN.R-project.org/package=bs4Dash)
-  * [dplyr](https://CRAN.R-project.org/package=dplyr)
   * [Rvcg](https://CRAN.R-project.org/package=Rvcg)
   * [PolygonSoup](https://CRAN.R-project.org/package=PolygonSoup)
   * [MeshesTools](https://CRAN.R-project.org/package=MeshesTools)
+
+# TODO
+
+  * Enable setting a mesh as gold standard for comparison instead of doing all pairwise comparisons
 
 # Literature (selection)
 

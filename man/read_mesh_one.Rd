@@ -2,7 +2,7 @@
 \alias{read_mesh_one}
 \title{Read one mesh file}
 \description{Read one mesh object from a file name.}
-\usage{read_mesh(x), name, reconstruct=TRUE}
+\usage{read_mesh_one(x, name, reconstruct=TRUE)}
 \arguments{
   \item{x}{\code{character}. File name.}
   \item{name}{\code{character}. Name that should be assigned to the mesh object. If missing, the name is taken from the file name.}
@@ -16,5 +16,8 @@
 \code{\link[SurfaceReconstruction]{AFSreconstruction}}
 }
 \examples{
-1
+\dontrun{
+f <- list.files("c:/meshes/", pattern="\\.PLY", full.names=TRUE)
+meshL <- read_mesh_one(f[1])
+}
 }

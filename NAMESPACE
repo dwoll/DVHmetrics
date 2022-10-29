@@ -1,20 +1,18 @@
-import(stats)
-# import(utils)
-# importFrom(utils, read.table, read.csv, write.table, glob2rx, head, tail, file_test, unzip, choose.dir, choose.files, Filter)
+importFrom(stats, median, sd, var, aggregate, quantile, reshape, setNames)
+importFrom(utils, combn, capture.output)
+importFrom(tools, file_path_sans_ext)
 importFrom(Rvcg, vcgMetro)
 importFrom(MeshesTools, meshVolume, meshCentroid)
 importFrom(PolygonSoup, readMeshFile, toRGL)
 importFrom(SurfaceReconstruction, AFSreconstruction)
 importFrom(Boov, MeshesUnion, MeshesIntersection)
-importFrom(tools, file_path_sans_ext)
-# import(shiny)
 
 export(get_mesh_agree, get_mesh_agree_pair,
        get_mesh_metro, get_mesh_metro_pair,
        get_mesh_ui, get_mesh_ui_pair,
        get_name_elem,
        get_mesh_pairs,
-       get_mesh_agree_pair_long, get_mesh_agree_aggr,
+       get_mesh_agree_aggr,
        print_mesh, print_mesh_one,
        read_mesh, read_mesh_one,
        run_gui)

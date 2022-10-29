@@ -18,21 +18,20 @@ Agreement measures for 3D structures saved as mesh files. R package containing a
 
 # Required packages
 
-`MeshAgreement` heavily relies on packages developed by Stéphane Laurent, currently only available from GitHub:
+`MeshAgreement` heavily relies on packages developed by Stéphane Laurent, some of which are currently only available from GitHub:
 
-  * [PolygonSoup](https://github.com/stla/PolygonSoup)
   * [SurfaceReconstruction](https://github.com/stla/SurfaceReconstruction)
-  * [MeshesTools](https://github.com/stla/MeshesTools)
   * [Boov](https://github.com/stla/Boov)
 
 Required packages on CRAN:
 
   * [shiny](https://CRAN.R-project.org/package=shiny)
   * [bs4Dash](https://CRAN.R-project.org/package=bs4Dash)
-  * [shinyWidgets](https://CRAN.R-project.org/package=shinyWidgets)
   * [dplyr](https://CRAN.R-project.org/package=dplyr)
   * [Rvcg](https://CRAN.R-project.org/package=Rvcg)
   * [RcppCGAL](https://CRAN.R-project.org/package=RcppCGAL)
+  * [PolygonSoup](https://CRAN.R-project.org/package=PolygonSoup)
+  * [MeshesTools](https://CRAN.R-project.org/package=MeshesTools)
 
 # Literature (selection)
 

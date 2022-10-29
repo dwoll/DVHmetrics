@@ -49,15 +49,8 @@ fluidPage(
             box(title="Calculated agreement measures",
                 width=12,
                 p("See section",
-                  actionBttn(
-                      inputId="btn_home_go_about2",
-                      label="About",
-                      size="sm",
-                      no_outline=TRUE,
-                      style = "minimal",
-                      color = "primary"#,
-                      #icon = icon("info-circle", lib="font-awesome") #, class="fa-lg")
-                  ),
+                  actionButton(inputId="bttn_home_go_about2",
+                               label="About"),
                   "for a definition of calculated measures")
             )
         )

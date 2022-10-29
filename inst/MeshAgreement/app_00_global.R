@@ -7,6 +7,33 @@
 library(shiny)
 
 #####---------------------------------------------------------------------------
+## print mesh info in html
+#####---------------------------------------------------------------------------
+
+print_mesh_html_one <- function(x) {
+    vol_fmt_str <- if(is.na(x$volume))        { "%s" }           else { "%.2f" }
+    ctr_fmt_str <- if(any(is.na(x$centroid))) { "[%s, %s, %s]" } else { "[%.2f, %.2f, %.2f]" }
+    tags$p(
+        sprintf("Mesh: %s", x$name),
+        tags$br(),
+        capture.output(print(x$mesh)),
+        tags$br(),
+        sprintf(paste0("Volume: ", vol_fmt_str), x$volume),
+        tags$br(),
+        sprintf(paste0("Centroid: ", ctr_fmt_str),
+                x$centroid[1],
+                x$centroid[2],
+                x$centroid[3]),
+        tags$br(),
+        tags$br()
+    )
+}
+
+print_mesh_html <- function(x) {
+    Map(print_mesh_html_one, x)
+}
+
+#####---------------------------------------------------------------------------
 ## popup
 #####---------------------------------------------------------------------------
 

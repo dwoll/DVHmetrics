@@ -1,7 +1,7 @@
 \name{get_mesh_ui_pair}
 \alias{get_mesh_ui_pair}
-\title{Union and intersection for a single pair of meshes}
-\description{Calculates the union and intersection of a single pair of mesh objects.}
+\title{Union and intersection for a single pair of 3D meshes}
+\description{Calculates the union and intersection of a single pair of 3D mesh objects.}
 \usage{
 get_mesh_ui_pair(x)
 }

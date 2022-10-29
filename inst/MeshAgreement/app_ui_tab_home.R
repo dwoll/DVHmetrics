@@ -20,15 +20,8 @@ fluidPage(
               tags$a(href="https://www.uni-mainz.de/", 
                      "Johannes Gutenberg-University Mainz"),
               ". The section",
-              actionBttn(
-                  inputId="btn_home_go_about1",
-                  label="About",
-                  size="sm",
-                  no_outline=TRUE,
-                  style = "minimal",
-                  color = "primary"#,
-                  #icon = icon("info-circle", lib="font-awesome") #, class="fa-lg")
-              ),
+              actionButton(inputId="bttn_home_go_about1",
+                           label="About"),
               "gives more information on the calculated agreement measures, and lists contributors as well as software tools.")
         ),
         box(title="Usage",

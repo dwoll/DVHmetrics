@@ -16,15 +16,13 @@
 
 library(shiny)
 library(bs4Dash)
-library(shinyWidgets)
-library(dplyr)
 library(rgl)
 library(MeshAgreement)
 # library(Rvcg)
 # library(SurfaceReconstruction)
 # library(PolygonSoup)
 # library(MeshesTools)
-library(Boov)
+# library(Boov)
 
 source("app_00_global.R")
 
@@ -50,8 +48,8 @@ shiny::shinyApp(
         footer=dashboardFooter(
             fixed=FALSE,
             left=NULL,
-            right=tagList(p(actionBttn(
-                inputId="btn_footer_impressum",
+            right=tagList(p(actionButton(
+                inputId="bttn_footer_impressum",
                 label="Impressum / Haftung / Urheberrecht",
                 size="sm",
                 no_outline=TRUE,
@@ -92,13 +90,13 @@ shiny::shinyApp(
     ## server
     #####-----------------------------------------------------------------------
     server=function(input, output, session) {
-        observeEvent(input$btn_home_go_about1, {
+        observeEvent(input$bttn_home_go_about1, {
             updateTabItems(session, inputId="sidebar_tabs", selected="tab_about")
         })
-        observeEvent(input$btn_home_go_about2, {
+        observeEvent(input$bttn_home_go_about2, {
             updateTabItems(session, inputId="sidebar_tabs", selected="tab_about")
         })
-        observeEvent(input$btn_footer_impressum, {
+        observeEvent(input$bttn_footer_impressum, {
             showModal(popup_info_impressum)
         })
         react_file_sel <- reactive({
@@ -159,7 +157,9 @@ shiny::shinyApp(
                                    ui       =uiL,
                                    n_samples=n_samples)
                 
-                bind_rows(agree_pairL)
+                d <- do.call("rbind", agree_pairL)
+                rownames(d) <- NULL
+                d
             } else {
                 NULL
             }
@@ -175,7 +175,7 @@ shiny::shinyApp(
         output$print_mesh_info <- renderUI({
             meshL <- react_file_sel()
             if(!is.null(meshL)) {
-                Map(print_mesh_one, meshL, html=TRUE)
+                print_mesh_html(meshL)
             } else {
                 NULL
             }
@@ -211,8 +211,8 @@ shiny::shinyApp(
                 
                 if(!is.null(d_agree_pairW)) {
                     cols_numeric <- unname(which(vapply(d_agree_pairW, is.numeric, logical(1))))
-                    DT::datatable(d_agree_pairW) %>%
-                        DT::formatRound(columns=cols_numeric, digits=3)
+                    DT_out <- DT::datatable(d_agree_pairW)
+                    DT::formatRound(DT_out, columns=cols_numeric, digits=3)
                 } else {
                     NULL
                 }
@@ -223,11 +223,10 @@ shiny::shinyApp(
             # isolate({
                 d_agree_pairW <- react_mesh_agree()
                 if(!is.null(d_agree_pairW)) {
-                    d_agree_pairL <- get_mesh_agree_pair_long(d_agree_pairW)
-                    d_agree_aggr  <- get_mesh_agree_aggr(d_agree_pairL)                    
-                    cols_numeric  <- unname(which(vapply(d_agree_aggr, is.numeric, logical(1))))
-                    DT::datatable(d_agree_aggr) %>%
-                        DT::formatRound(columns=cols_numeric, digits=3)
+                    d_agree_aggr <- get_mesh_agree_aggr(d_agree_pairW)                    
+                    cols_numeric <- unname(which(vapply(d_agree_aggr, is.numeric, logical(1))))
+                    DT_out <- DT::datatable(d_agree_aggr)
+                    DT::formatRound(DT_out, columns=cols_numeric, digits=3)
                 } else {
                     NULL
                 }

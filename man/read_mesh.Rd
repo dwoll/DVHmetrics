@@ -2,7 +2,7 @@
 \alias{read_mesh}
 \title{Read mesh files}
 \description{Read a list of mesh objects from file names.}
-\usage{read_mesh(x), name, reconstruct=TRUE}
+\usage{read_mesh(x, name, reconstruct=TRUE)}
 \arguments{
   \item{x}{\code{character} vector of file names.}
   \item{name}{\code{character} vector of names that should be assigned to the mesh objects. If missing, names are taken from the file names.}
@@ -16,5 +16,8 @@
 \code{\link[SurfaceReconstruction]{AFSreconstruction}}
 }
 \examples{
-1
+\dontrun{
+f <- list.files("c:/meshes/", pattern="\\.PLY", full.names=TRUE)
+meshL <- read_mesh(f)
+}
 }

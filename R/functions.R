@@ -57,44 +57,25 @@ read_mesh <- function(x, name, reconstruct=TRUE) {
         reconstruct=TRUE)
 }
 
-print_mesh_one <- function(x, html=FALSE) {
+print_mesh_one <- function(x) {
     vol_fmt_str <- if(is.na(x$volume))        { "%s" }           else { "%.2f" }
     ctr_fmt_str <- if(any(is.na(x$centroid))) { "[%s, %s, %s]" } else { "[%.2f, %.2f, %.2f]" }
-    if(html) {
-        tags$p(sprintf("Mesh: %s", x$name),
-               tags$br(),
-               capture.output(print(x$mesh)),
-               tags$br(),
-               sprintf(paste0("Volume: ", vol_fmt_str), x$volume),
-               tags$br(),
-               sprintf(paste0("Centroid: ", ctr_fmt_str),
-                       x$centroid[1],
-                       x$centroid[2],
-                       x$centroid[3]),
-               tags$br(),
-               tags$br())
-    } else {
-        cat(sprintf("Mesh: %s", x$name),
-            "\n",
-            capture.output(print(x$mesh)),
-            "\n",
-            sprintf(paste0("Volume: ", vol_fmt_str), x$volume),
-            "\n",
-            sprintf(paste0("Centroid: ", ctr_fmt_str),
-                    x$centroid[1],
-                    x$centroid[2],
-                    x$centroid[3]),
-            "\n",
-            "\n", sep="")
-    }
+    cat(sprintf("Mesh: %s", x$name),
+        "\n",
+        capture.output(print(x$mesh)),
+        "\n",
+        sprintf(paste0("Volume: ", vol_fmt_str), x$volume),
+        "\n",
+        sprintf(paste0("Centroid: ", ctr_fmt_str),
+                x$centroid[1],
+                x$centroid[2],
+                x$centroid[3]),
+        "\n",
+        "\n", sep="")
 }
 
-print_mesh <- function(x, html=FALSE) {
-    if(!html) {
-        invisible(Map(print_mesh_one, x, html=html))
-    } else {
-        Map(print_mesh_one, x, html=html)
-    }
+print_mesh <- function(x) {
+    invisible(Map(print_mesh_one, x))
 }
 
 ## all pairs from list of meshes
@@ -225,39 +206,51 @@ get_mesh_agree <- function(x, n_samples=1000L, chop=TRUE) {
                   n_samples=n_samples,
                   chop=chop)
 
-    bind_rows(agreeL)
+    d <- do.call("rbind", agreeL)
+    rownames(d) <- NULL
+    d
 }
 
-get_mesh_agree_pair_long <- function(x) {
+get_mesh_agree_long <- function(x) {
     vars_varying <- c("DCOM",
                       "HD_max", "HD_avg", "HD_95", "ASD", "RMSD",
                       "JSC", "DSC")
-    vars_id      <- names(x)[!(names(x) %in% vars_varying)]
     
-    dL <- x %>%
-        reshape(direction="long",
-                idvar=vars_id,
-                varying=vars_varying,
-                v.names="observed",
-                timevar="metric") %>%
-        mutate(metric=factor(metric,
-                             levels=seq_along(vars_varying),
-                             labels=vars_varying))
+    vars_id <- names(x)[!(names(x) %in% vars_varying)]
+    
+    dL <- reshape(x,
+                  direction="long",
+                  idvar=vars_id,
+                  varying=vars_varying,
+                  v.names="observed",
+                  timevar="metric")
     
     rownames(dL) <- NULL
+    
+    dL[["metric"]] <- factor(dL[["metric"]],
+                             levels=seq_along(vars_varying),
+                             labels=vars_varying)
+    
+    dL[["observed_ln"]] <- log(dL[["observed"]])
     dL
 }
 
 get_mesh_agree_aggr <- function(x, na.rm=FALSE) {
-    d_agree_mean <- x %>%
-        group_by(metric) %>%
-        summarise(Mean=mean(observed, na.rm=na.rm),
-                  Median=median(observed, na.rm=na.rm),
-                  SD=sd(observed, na.rm=na.rm),
-                  VAR=var(observed, na.rm=na.rm),
-                  VAR_log=var(log(observed), na.rm=na.rm)) %>%
-        # coefficient of variation
-        mutate(CV=SD/Mean,
-               CV_ln=sqrt(exp(VAR_log) - 1)) %>% # assuming log-normal distribution
-        select(-VAR, -VAR_log)
+    d_agreeL <- get_mesh_agree_long(x)
+    d_mean   <- aggregate(observed    ~ metric, FUN=mean,   data=d_agreeL, na.rm=na.rm)
+    d_median <- aggregate(observed    ~ metric, FUN=median, data=d_agreeL, na.rm=na.rm)
+    d_sd     <- aggregate(observed    ~ metric, FUN=sd,     data=d_agreeL, na.rm=na.rm)
+    d_var    <- aggregate(observed    ~ metric, FUN=var,    data=d_agreeL, na.rm=na.rm)
+    d_varlog <- aggregate(observed_ln ~ metric, FUN=var,    data=d_agreeL, na.rm=na.rm)
+
+    d_aggr <- Reduce(function(x, y) { merge(x, y, by="metric") },
+                     list(d_mean, d_median, d_sd, d_var, d_varlog))
+
+    names(d_aggr)       <- c("metric", "Mean", "Median", "SD", "VAR", "VAR_log")
+    d_aggr[["CV"]]      <- d_aggr[["SD"]] / d_aggr[["Mean"]]
+    d_aggr[["CV_ln"]]   <- sqrt(exp(d_aggr[["VAR_log"]]) - 1)
+    d_aggr[["VAR"]]     <- NULL
+    d_aggr[["VAR_log"]] <- NULL
+    
+    d_aggr
 }

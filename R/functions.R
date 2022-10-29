@@ -2,7 +2,9 @@ get_name_pair <- function(x, y, sep=" <-> ") {
     paste0(x, sep, y) 
 }
 
-get_name_elem <- function(x, which=1, sep=" <-> ") {
+get_name_elem <- function(x, which=1L, sep=" <-> ") {
+    stopifnot(which %in% c(1L, 2L))
+    stopifnot(grepl(sep, x))
     if(which == 1) {
         gsub(paste0("^(.+)", sep, ".+$"), "\\1", x)
     } else {
@@ -80,6 +82,7 @@ print_mesh <- function(x) {
 
 ## all pairs from list of meshes
 get_mesh_pairs <- function(x, sep=" <-> ") {
+    stopifnot(length(x) >= 1L)
     l <- if(length(x) >= 2L) {
         pairs_idx <- t(combn(seq_along(x), 2))
         lapply(seq_len(nrow(pairs_idx)), function(i) {
@@ -243,7 +246,7 @@ get_mesh_agree_aggr <- function(x, na.rm=FALSE) {
     d_var    <- aggregate(observed    ~ metric, FUN=var,    data=d_agreeL, na.rm=na.rm)
     d_varlog <- aggregate(observed_ln ~ metric, FUN=var,    data=d_agreeL, na.rm=na.rm)
 
-    d_aggr <- Reduce(function(x, y) { merge(x, y, by="metric") },
+    d_aggr <- Reduce(function(x, y) { suppressWarnings(merge(x, y, by="metric")) },
                      list(d_mean, d_median, d_sd, d_var, d_varlog))
 
     names(d_aggr)       <- c("metric", "Mean", "Median", "SD", "VAR", "VAR_log")
@@ -253,4 +256,24 @@ get_mesh_agree_aggr <- function(x, na.rm=FALSE) {
     d_aggr[["VAR_log"]] <- NULL
     
     d_aggr
+}
+
+get_mesh_agree_aggr_long <- function(x) {
+    vars_varying <- c("Mean", "Median", "SD", "CV", "CV_ln")
+    vars_id      <- names(x)[!(names(x) %in% vars_varying)]
+    
+    dL <- reshape(x,
+                  direction="long",
+                  idvar=vars_id,
+                  varying=vars_varying,
+                  v.names="observed",
+                  timevar="statistic")
+    
+    rownames(dL) <- NULL
+    
+    dL[["statistic"]] <- factor(dL[["statistic"]],
+                                levels=seq_along(vars_varying),
+                                labels=vars_varying)
+
+    dL
 }

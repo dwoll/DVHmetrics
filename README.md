@@ -34,6 +34,7 @@ Required packages on CRAN:
 # TODO
 
   * Enable setting a mesh as gold standard for comparison instead of doing all pairwise comparisons
+  * Write vignette
 
 # Literature (selection)
 

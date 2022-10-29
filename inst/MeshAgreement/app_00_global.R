@@ -119,9 +119,9 @@ popup_info_impressum <- modalDialog(
                  "Universitätsmedizin Mainz"),
           ".")
     ),
-    title = NULL,
-    footer = modalButton("Ok"),
-    size = "l",
-    easyClose = TRUE,
-    fade = FALSE
+    title=NULL,
+    footer=modalButton("Ok"),
+    size="l",
+    easyClose=TRUE,
+    fade=FALSE
 )

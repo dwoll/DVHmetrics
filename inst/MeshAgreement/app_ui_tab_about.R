@@ -64,14 +64,14 @@ fluidPage(
                                     ", ", tags$a(href="https://CRAN.R-project.org/package=bs4Dash",     "bs4Dash"),
                                     ", ", tags$a(href="https://CRAN.R-project.org/package=rgl",         "rgl"),
                                     ", ", tags$a(href="https://CRAN.R-project.org/package=Rvcg",        "Rvcg"),
-                                    ", ", tags$a(href="https://CRAN.R-project.org/package=RcppCGAL",    "RcppCGAL"),
                                     ", ", tags$a(href="https://CRAN.R-project.org/package=PolygonSoup", "PolygonSoup"),
                                     ", ", tags$a(href="https://CRAN.R-project.org/package=MeshesTools", "MeshesTools")),
                             tags$li("On GitHub:",
                                           tags$a(href="https://github.com/stla/SurfaceReconstruction",  "SurfaceReconstruction"),
                                     ", ", tags$a(href="https://github.com/stla/Boov",                   "Boov"))),
                     tags$li(tags$a(href="https://www.cgal.org/", "CGAL"),
-                            " - used as a backend for all computational geometry calculations"))
+                            " - used as a backend for all computational geometry calculations via R package",
+                            tags$a(href="https://CRAN.R-project.org/package=RcppCGAL", "RcppCGAL")))
         )
     )
 )

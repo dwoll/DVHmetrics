@@ -107,6 +107,7 @@ shiny::shinyApp(
                 if(input$meshes_in == 1) {
                     data_heart_meshL
                 } else {
+                    ## TODO expose reconstruction method & parameters
                     if(!is.null(input$file_sel)) {
                         read_mesh(input$file_sel$datapath,
                                   input$file_sel$name)

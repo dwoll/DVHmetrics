@@ -4,7 +4,7 @@ importFrom(tools, file_path_sans_ext)
 importFrom(Rvcg, vcgMetro)
 importFrom(MeshesTools, meshVolume, meshCentroid)
 importFrom(PolygonSoup, readMeshFile, toRGL)
-importFrom(SurfaceReconstruction, AFSreconstruction)
+importFrom(SurfaceReconstruction, AFSreconstruction, PoissonReconstruction)
 importFrom(Boov, MeshesUnion, MeshesIntersection)
 
 export(get_mesh_agree, get_mesh_agree_pair, get_mesh_agree_long,

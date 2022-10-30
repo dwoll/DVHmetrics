@@ -35,7 +35,7 @@ Required packages on CRAN:
 
   * Enable setting a mesh as gold standard for comparison instead of doing all pairwise comparisons
   * Expose more options from `Rvcg::vcgMetro()`
-  * Create low resolution version of included meshes to shorten time spent on examples
+  * Add mesh reconstruction options to Shiny app
 
 # Literature (selection)
 

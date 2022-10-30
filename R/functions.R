@@ -12,7 +12,11 @@ get_name_elem <- function(x, which=1L, sep=" <-> ") {
     }
 }
 
-read_mesh_one <- function(x, name, reconstruct=TRUE) {
+read_mesh_one <- function(x, name,
+                          reconstruct=c("none", "AFS", "Poisson"),
+                          spacing) {
+    reconstruct <- match.arg(reconstruct)
+    
     mesh_name <- if(missing(name)) {
         basename(file_path_sans_ext(x))
     } else {
@@ -20,10 +24,12 @@ read_mesh_one <- function(x, name, reconstruct=TRUE) {
     }
     
     mesh_0 <- readMeshFile(x)
-    mesh_r <- if(reconstruct) {
-        AFSreconstruction(mesh_0$vertices)
-    } else {
+    mesh_r <- if(reconstruct == "none") {
         mesh_0
+    } else if(reconstruct == "AFS") {
+        AFSreconstruction(mesh_0$vertices)
+    } else if(reconstruct == "Poisson") {
+        PoissonReconstruction(mesh_0$vertices, spacing=spacing)
     }
     
     vol_0 <- try(meshVolume(mesh_r))
@@ -46,7 +52,11 @@ read_mesh_one <- function(x, name, reconstruct=TRUE) {
          centroid=ctr)
 }
 
-read_mesh <- function(x, name, reconstruct=TRUE) {
+read_mesh <- function(x, name,
+                      reconstruct=c("none", "AFS", "Poisson"),
+                      spacing) {
+    reconstruct <- match.arg(reconstruct)
+    
     mesh_names <- if(missing(name)) {
         basename(file_path_sans_ext(x))
     } else {
@@ -56,7 +66,8 @@ read_mesh <- function(x, name, reconstruct=TRUE) {
     Map(read_mesh_one,
         setNames(x, mesh_names),
         mesh_names,
-        reconstruct=TRUE)
+        reconstruct=reconstruct,
+        spacing=spacing)
 }
 
 print_mesh_one <- function(x) {

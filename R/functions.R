@@ -234,12 +234,14 @@ get_mesh_agree_long <- function(x) {
                              levels=seq_along(vars_varying),
                              labels=vars_varying)
     
-    dL[["observed_ln"]] <- log(dL[["observed"]])
     dL
 }
 
 get_mesh_agree_aggr <- function(x, na.rm=FALSE) {
+
     d_agreeL <- get_mesh_agree_long(x)
+    d_agreeL[["observed_ln"]] <- log(d_agreeL[["observed"]])
+    
     d_mean   <- aggregate(observed    ~ metric, FUN=mean,   data=d_agreeL, na.rm=na.rm)
     d_median <- aggregate(observed    ~ metric, FUN=median, data=d_agreeL, na.rm=na.rm)
     d_sd     <- aggregate(observed    ~ metric, FUN=sd,     data=d_agreeL, na.rm=na.rm)

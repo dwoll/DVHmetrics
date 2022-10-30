@@ -17,8 +17,8 @@ get_mesh_agree(x, n_samples=1000L, chop=TRUE)
 \item{mesh2}{Name of the second mesh of the pair.}
 \item{DCOM}{Euclidean distance between the respective center of mass of both meshes.}
 \item{HD_max}{Hausdorff distance - worst case, maximum of both directed Hausdorff distances.}
-\item{HD_avg}{Hausdorff distance - average, mean of both directed Hausdorff distancess.}
-\item{HD_95}{95th percentile Hausdorff distance - mean of both 0.95 quantiles of directed distances.}
+\item{HD_avg}{Hausdorff distance - average, arithmetic mean of both directed Hausdorff distancess.}
+\item{HD_95}{95th percentile Hausdorff distance - arithmetic mean of both 0.95 quantiles of directed distances.}
 \item{ASD}{Average symmetric surface distance.}
 \item{RMSD}{Root mean squared symmetric surface distance.}
 \item{JSC}{Jaccard similarity coefficient.}

@@ -10,7 +10,6 @@
 }
 \details{Supported file formats: STL, PLY, OBJ, OFF.}
 \value{Mesh object - a \code{list} with components \code{name}, \code{mesh}, \code{volume}, \code{centroid}, where \code{mesh} is a \code{\link[rgl]{mesh3d}} object. Use \code{\link[MeshAgreement]{read_mesh}} to read a list of mesh objects.}
-}
 \seealso{
 \code{\link[rgl]{mesh3d}},
 \code{\link[MeshAgreement]{read_mesh}},

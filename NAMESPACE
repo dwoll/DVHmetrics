@@ -7,12 +7,12 @@ importFrom(PolygonSoup, readMeshFile, toRGL)
 importFrom(SurfaceReconstruction, AFSreconstruction)
 importFrom(Boov, MeshesUnion, MeshesIntersection)
 
-export(get_mesh_agree, get_mesh_agree_pair,
+export(get_mesh_agree, get_mesh_agree_pair, get_mesh_agree_long,
        get_mesh_metro, get_mesh_metro_pair,
        get_mesh_ui, get_mesh_ui_pair,
        get_name_elem,
        get_mesh_pairs,
-       get_mesh_agree_aggr,
+       get_mesh_agree_aggr, get_mesh_agree_aggr_long,
        print_mesh, print_mesh_one,
        read_mesh, read_mesh_one,
        run_gui)

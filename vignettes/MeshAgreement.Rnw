@@ -87,7 +87,7 @@ options(replace.assign=TRUE,
 
 Computational geometry is carried out mainly using the \texttt{CGAL} library \cite{CGAL2022} via package \texttt{RcppCGAL} \cite{Dunipace2022} used in packages \texttt{MeshesTools} \cite{LaurentMT2022}, \texttt{SurfaceReconstruction} \cite{LaurentSR2022}, \texttt{PolygonSoup} \cite{LaurentPS2022}, and \texttt{Boov} \cite{LaurentBo2022}. Distance maps are calculated using the \texttt{VCG} library \cite{VCG2022} via package \texttt{Rvcg} \cite{Schlager2017}.
 
-To install \texttt{MeshAgreement}, you need a current version of \textsf{R} and be online. Preferably, a free development environment like \textsf{R}Studio \cite{Allaire2011} should be used.
+To install \texttt{MeshAgreement}, you need a current version of \textsf{R} and be online. Preferably, a free development environment like \textsf{R}Studio \cite{RStudio2022} should be used.
 
 Currently, some R packages are also required that are not available on CRAN. These packages need to be installed from GitHub via package \texttt{remotes} \cite{Csardi2021}. The same currently holds for \texttt{MeshAgreement} itself.
 
@@ -120,12 +120,15 @@ remotes::install_github("dwoll/MeshAgreement")
 
 Users familiar with \textsf{R} can use the \texttt{MeshAgreement} package functions from the \textsf{R} command line. This facilitates statistical post-processing of results with the full capabilities of \textsf{R}. After installing \texttt{MeshAgreement}, you should be able to run (function \texttt{get\_mesh\_agree()} is explained in section \ref{sec:meshagree}):
 
-<<cCmdlineA>>=
+<<cCmdlineA, results='hide'>>=
 ## load MeshAgreement package - required for all following tasks
 library(MeshAgreement, verbose=FALSE)
 
 ## get agreement measures for all pairs from list of meshes
 agreeW <- get_mesh_agree(data_heart_meshL)
+@
+
+<<cCmdlineB>>=
 agreeW
 @
 
@@ -136,7 +139,7 @@ agreeW
 %%%%---------------------------------------------------------------------------
 %%%%---------------------------------------------------------------------------
 
-For users who are unfamiliar with \textsf{R}, \texttt{MeshAgreement} includes a \texttt{Shiny}-based web application \cite{RStudioShiny2014} running locally that eliminates the need to use \textsf{R} syntax. Note that packages \texttt{shiny} \cite{RStudioShiny2014}, \texttt{bs4Dash} \cite{Granjon2022}, \texttt{DT} \cite{Xie2022}, and \texttt{rgl} \cite{Adler2011} need to be installed to run the GUI.
+For users who are unfamiliar with \textsf{R}, \texttt{MeshAgreement} includes a \texttt{Shiny}-based web application \cite{Chang2022} running locally that eliminates the need to use \textsf{R} syntax. Note that packages \texttt{shiny} \cite{Chang2022}, \texttt{bs4Dash} \cite{Granjon2022}, \texttt{DT} \cite{Xie2022}, and \texttt{rgl} \cite{Murdoch2022} need to be installed to run the GUI.
 
 <<cStartShiny, eval=FALSE>>=
 ## install required packages
@@ -228,8 +231,11 @@ You can calculate distance-based as well as volume-overlap-based agreement measu
 \end{itemize}
 \end{itemize}
 
-<<cMeshAgreement>>=
+<<cMeshAgreementA, results='hide'>>=
 agreeW <- get_mesh_agree(data_heart_meshL)
+@
+
+<<cMeshAgreementB>>=
 agreeW
 @
 
@@ -251,7 +257,7 @@ A utility function may be used to transform the returned data frame to long form
 
 <<cMeshAgreeAggrLong>>=
 agree_aggrL <- get_mesh_agree_aggr_long(agree_aggrW)
-agreeL
+agree_aggrL
 @
 
 %%%%---------------------------------------------------------------------------

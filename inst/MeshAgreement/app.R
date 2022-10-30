@@ -107,10 +107,11 @@ shiny::shinyApp(
                 if(input$meshes_in == 1) {
                     data_heart_meshL
                 } else {
-                    ## TODO expose reconstruction method & parameters
                     if(!is.null(input$file_sel)) {
                         read_mesh(input$file_sel$datapath,
-                                  input$file_sel$name)
+                                  input$file_sel$name,
+                                  reconstruct=input$read_mesh_reconstruct,
+                                  spacing=input$read_mesh_reconstruct_pois_spacing)
                     } else {
                         NULL
                     }
@@ -167,8 +168,17 @@ shiny::shinyApp(
         })
         output$ui_select_files <- renderUI({
             if(input$meshes_in == 2) {
-                fileInput("file_sel", "Select files: (supported file formats: STL, PLY, OBJ, OFF)",
-                          width="100%", multiple=TRUE)
+                tagList(fileInput("file_sel",
+                                  "Select files: (supported file formats: STL, PLY, OBJ, OFF)",
+                                  width="100%", multiple=TRUE),
+                        radioButtons("read_mesh_reconstruct",
+                                     "Surface reconstruction on import",
+                                     choices=c("none", "AFS", "Poisson"),
+                                     selected="none"),
+                        numericInput("read_mesh_reconstruct_pois_spacing",
+                                     "Spacing parameter for Poisson reconstruction",
+                                     value=0.05,
+                                     min=0))
             } else {
                 NULL
             }

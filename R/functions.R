@@ -25,7 +25,8 @@ read_mesh_one <- function(x, name,
     
     mesh_0 <- readMeshFile(x)
     mesh_r <- if(reconstruct == "none") {
-        mesh_0
+        toRGL(Mesh(vertices=mesh_0$vertices,
+                   faces=mesh_0$faces))
     } else if(reconstruct == "AFS") {
         AFSreconstruction(mesh_0$vertices)
     } else if(reconstruct == "Poisson") {

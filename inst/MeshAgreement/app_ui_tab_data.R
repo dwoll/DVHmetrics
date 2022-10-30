@@ -2,7 +2,7 @@ fluidPage(
     fluidRow(
         column(
             width=12,
-            box(title="Load meshes",
+            box(title="Load mesh data",
                 width=12,
                 # height="650px",
                 status=NULL,

@@ -3,7 +3,7 @@ importFrom(utils, combn, capture.output)
 importFrom(tools, file_path_sans_ext)
 importFrom(Rvcg, vcgMetro)
 importFrom(MeshesTools, meshVolume, meshCentroid)
-importFrom(PolygonSoup, readMeshFile, toRGL)
+importFrom(PolygonSoup, readMeshFile, toRGL, Mesh)
 importFrom(SurfaceReconstruction, AFSreconstruction, PoissonReconstruction)
 importFrom(Boov, MeshesUnion, MeshesIntersection)
 

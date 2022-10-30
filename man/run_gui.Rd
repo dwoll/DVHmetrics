@@ -2,7 +2,7 @@
 \alias{run_gui}
 \title{Open web-based GUI in browser}
 \description{
-Opens the web-based GUI in an external browser.
+Opens a web-based GUI in an external browser.
 }
 \usage{
 run_gui(...)

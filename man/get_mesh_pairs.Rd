@@ -10,11 +10,12 @@ get_mesh_pairs(x, sep=" <-> ")
   \item{sep}{\code{character}. The string that indicates the separator between the first and second element in naming each generated pair of meshes.}
 }
 \details{Preparation for postprocessing with pairwise agreement measures using \code{\link[MeshAgreement]{get_mesh_agree_pair}}.}
-\value{\code{list} of lists with two \code{mesh3d} objects each.}
+\value{\code{list} of lists with two mesh objects each.}
 \seealso{
 \code{\link[MeshAgreement]{read_mesh}},
-\code{\link[MeshAgreement]{print_mesh}}
+\code{\link[MeshAgreement]{get_mesh_agree_pair}}
 }
 \examples{
 pairL <- get_mesh_pairs(data_heart_meshL)
+pairL[[1]]
 }

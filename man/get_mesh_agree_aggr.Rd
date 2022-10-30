@@ -14,7 +14,7 @@ get_mesh_agree_aggr(x, na.rm=FALSE)
 \item{Mean}{The arithmetic mean over mesh pairs.}
 \item{Median}{The median over mesh pairs.}
 \item{SD}{The standard deviation over mesh pairs.}
-\item{CV}{The coefficient of variation calculated as SD/M.}
+\item{CV}{The coefficient of variation calculated as SD/Mean.}
 \item{CV_ln}{The coefficient of variation calculated assuming log-normality.}
 }
 \seealso{

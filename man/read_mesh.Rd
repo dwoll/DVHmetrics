@@ -6,10 +6,10 @@
 \arguments{
   \item{x}{\code{character} vector of file names.}
   \item{name}{\code{character} vector of names that should be assigned to the mesh objects. If missing, names are taken from the file names.}
-  \item{reconstruct}{Use \code{\link[SurfaceReconstruction]{AFSreconstruction}} to re-build the triangles from the vertices. Useful for meshes with defects.}
+  \item{reconstruct}{\code{logical}. Use \code{\link[SurfaceReconstruction]{AFSreconstruction}} to re-build the triangles from the vertices. Useful for meshes with defects.}
 }
 \details{Supported file formats: STL, PLY, OBJ, OFF.}
-\value{List of \code{\link[rgl]{mesh3d}} objects. Use \code{\link[MeshAgreement]{read_mesh_one}} to read a single mesh object.}
+\value{List of mesh objects. Each object is a \code{list} with components \code{name}, \code{mesh}, \code{volume}, \code{centroid}, where \code{mesh} is a \code{\link[rgl]{mesh3d}} object. Use \code{\link[MeshAgreement]{read_mesh_one}} to read a single mesh file.}
 \seealso{
 \code{\link[rgl]{mesh3d}},
 \code{\link[MeshAgreement]{read_mesh_one}},
@@ -17,7 +17,7 @@
 }
 \examples{
 \dontrun{
-f <- list.files("c:/meshes/", pattern="\\.PLY", full.names=TRUE)
+f <- list.files("c:/meshes/", pattern="PLY$", full.names=TRUE)
 meshL <- read_mesh(f)
 }
 }

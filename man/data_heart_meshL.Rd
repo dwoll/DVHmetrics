@@ -2,13 +2,13 @@
 \alias{data_heart_meshL}
 \docType{data}
 \title{Heart structure delineated by 3 observers}
-\description{3D meshes for the complete heart from one patient, delineated by 3 observers.}
+\description{3D meshes for the complete heart from one patient, as delineated by 3 observers. No gold standard.}
 \usage{data(data_heart_meshL)}
-\format{Object of class \code{list} with 3 components of class \code{\link[rgl]{mesh3d}}.
+\format{Object of class \code{list} with 3 components, each representing the complete heart as delineated by one observer.
   \describe{
-    \item{\code{HEART_OBS1}}{Object of class \code{\link[rgl]{mesh3d}} with a mesh of the complete heart, delineated by observer 1.}
-    \item{\code{HEART_OBS2}}{Object of class \code{\link[rgl]{mesh3d}} with a mesh of the complete heart, delineated by observer 2.}
-    \item{\code{HEART_OBS2}}{Object of class \code{\link[rgl]{mesh3d}} with a mesh of the complete heart, delineated by observer 3.}
+    \item{\code{HEART_OBS1}}{Mesh object - a \code{list} with components \code{name}, \code{mesh}, \code{volume}, \code{centroid}, where \code{mesh} is a \code{\link[rgl]{mesh3d}} object.}
+    \item{\code{HEART_OBS2}}{Mesh object with the same structure as \code{HEART_OBS1}.}
+    \item{\code{HEART_OBS2}}{Mesh object with the same structure as \code{HEART_OBS1}.}
   }
 }
 \details{Data courtesy of Department of Radiation Oncology, University Medical Center Mainz, Germany.}

@@ -35,6 +35,7 @@ Required packages on CRAN:
 
   * Enable setting a mesh as gold standard for comparison instead of doing all pairwise comparisons
   * Write vignette
+  * Expose more options from `Rvcg::vcgMetro()`
 
 # Literature (selection)
 

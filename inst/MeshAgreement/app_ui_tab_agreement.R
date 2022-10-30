@@ -2,16 +2,15 @@ fluidPage(
     fluidRow(
         column(
             width=12,
-            box(title="Settings",
+            box(title="Options for VCG metro distance calculations",
                 width=12,
                 # height="650px",
                 status=NULL,
                 closable=FALSE,
                 maximizable=FALSE,
-                collapsible=FALSE,
-                checkboxInput("compare_limit", "Limit samples to save time", TRUE),
-                numericInput("n_mesh_samples", "Number of samples", value=1000) #,
-                # actionButton("apply_compare", "Compare meshes - takes a while...")
+                collapsible=TRUE,
+                collapsed=TRUE,
+                uiOutput("ui_mesh_agree_metro_options")
             )
         )
     ),

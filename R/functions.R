@@ -141,11 +141,10 @@ get_mesh_ui <- function(x) {
     Map(get_mesh_ui_pair, pairL)
 }
 
-get_mesh_metro_pair <- function(x, n_samples=1000L, chop=TRUE) {
+get_mesh_metro_pair <- function(x, chop=TRUE, ...) {
     metro <- vcgMetro(x$mesh1$mesh,
                       x$mesh2$mesh,
-                      nSamples=n_samples,
-                      colormeshes=TRUE)
+                      ...)
     
     if(chop) {
         metro[["forward_hist"]]  <- NULL
@@ -156,29 +155,37 @@ get_mesh_metro_pair <- function(x, n_samples=1000L, chop=TRUE) {
     metro
 }
 
-get_mesh_metro <- function(x, n_samples=1000L, chop=TRUE) {
+get_mesh_metro <- function(x, chop=TRUE, ...) {
     pairL <- get_mesh_pairs(x)
-    Map(get_mesh_metro_pair, pairL, n_samples=n_samples, chop=chop)
+    Map(get_mesh_metro_pair, pairL, chop=chop, ...)
 }
 
 ## distance measures, union, intersection for each mesh pair
-get_mesh_agree_pair <- function(x, metro, ui, n_samples=1000L, chop=TRUE) {
+get_mesh_agree_pair <- function(x, metro, ui, chop=TRUE, ...) {
     ## distance-based measures
     if(missing(metro)) {
-        metro <- get_mesh_metro_pair(x, n_samples=n_samples, chop=chop)
+        metro <- get_mesh_metro_pair(x, chop=chop, ...)
     }
     
     DCOM   <- sqrt(sum((x$mesh2$centroid - x$mesh1$centroid)^2))
     HD_max <- max(c(metro$ForwardSampling$maxdist, metro$BackwardSampling$maxdist))
-    HD_avg <- (metro$ForwardSampling$maxdist          + metro$BackwardSampling$maxdist)         / 2
-    HD_95  <- (quantile(metro$distances1, probs=0.95) + quantile(metro$distances2, probs=0.95)) / 2
-    RMSD   <- sqrt(mean(c(metro$distances1^2, metro$distances2^2)))
-    ASD    <-      mean(c(metro$distances1,   metro$distances2))
-    # n1     <- metro$ForwardSampling$nvbsamples
-    # n2     <- metro$BackwardSampling$nvbsamples
+    HD_avg <- (metro$ForwardSampling$maxdist + metro$BackwardSampling$maxdist) / 2
+    if((sum(metro$distances1^2) > (.Machine$double.eps^0.5)) &&
+                 (sum(metro$distances2^2) > (.Machine$double.eps^0.5))) {
+        HD_95  <- (quantile(metro$distances1, probs=0.95) + quantile(metro$distances2, probs=0.95)) / 2
+        RMSD   <- sqrt(mean(c(metro$distances1^2, metro$distances2^2)))
+        ASD    <-      mean(c(metro$distances1,   metro$distances2))
+    } else {
+        HD_95  <- NA_real_
+        RMSD   <- NA_real_
+        ASD    <- NA_real_
+    }
+    # n1     <- length(metro$distances1) # metro$ForwardSampling$nsamples
+    # n2     <- length(metro$distances2) # metro$BackwardSampling$nsamples
     # w1     <- n1 / (n1+n2)
     # w2     <- n2 / (n1+n2)
     # ASD    <- w1*metro$ForwardSampling$meandist + w2*metro$BackwardSampling$meandist
+    # RMSD   <- sqrt(w1*metro$ForwardSampling$RMSdist^2 + w2*metro$BackwardSampling$RMSdist^2)
     
     ## volume-overlap-based measures
     ## check if union/intersection are supplied
@@ -211,14 +218,13 @@ get_mesh_agree_pair <- function(x, metro, ui, n_samples=1000L, chop=TRUE) {
                DSC=DSC)
 }
 
-get_mesh_agree <- function(x, n_samples=1000L, chop=TRUE) {
+get_mesh_agree <- function(x, chop=TRUE, ...) {
     pairL  <- get_mesh_pairs(x)
     uiL    <- Map(get_mesh_ui_pair,    pairL)
-    metroL <- Map(get_mesh_metro_pair, pairL, n_samples=n_samples, chop=chop)
+    metroL <- Map(get_mesh_metro_pair, pairL, chop=chop, ...)
     agreeL <- Map(get_mesh_agree_pair,
                   pairL,
                   metroL,
-                  n_samples=n_samples,
                   chop=chop)
 
     d <- do.call("rbind", agreeL)

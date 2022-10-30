@@ -129,13 +129,22 @@ shiny::shinyApp(
         react_mesh_metro <- reactive({
             meshL <- react_file_sel()
             if(!is.null(meshL)) {
-                n_samples <- if(input$compare_limit) {
-                    input$n_mesh_samples
-                } else {
-                    0
-                }
+                argL <- list(meshL,
+                             chop        =TRUE,
+                             silent      =TRUE,
+                             colormeshes =TRUE,
+                             nSamples    =input$vcgMetro_nSamples,
+                             nSamplesArea=input$vcgMetro_nSamplesArea,
+                             vertSamp    =input$vcgMetro_vertSamp,
+                             edgeSamp    =input$vcgMetro_edgeSamp,
+                             faceSamp    =input$vcgMetro_faceSamp,
+                             unrefVert   =input$vcgMetro_unrefVert,
+                             samplingTyp =input$vcgMetro_samplingTyp,
+                             searchStruct=input$vcgMetro_searchStruct,
+                             from        =input$vcgMetro_from,
+                             to          =input$vcgMetro_to)
                 
-                get_mesh_metro(meshL, n_samples=n_samples, chop=TRUE)
+                do.call("get_mesh_metro", Filter(Negate(is.null), argL))
             } else {
                 NULL
             }
@@ -146,18 +155,11 @@ shiny::shinyApp(
             uiL    <- react_mesh_ui()
             metroL <- react_mesh_metro()
             if(!is.null(meshL) && !is.null(uiL) && !is.null(metroL)) {
-                n_samples <- if(input$compare_limit) {
-                    input$n_mesh_samples
-                } else {
-                    0
-                }
-                
                 mesh_pairL  <- get_mesh_pairs(meshL)
                 agree_pairL <- Map(get_mesh_agree_pair,
                                    mesh_pairL,
-                                   metro    =metroL,
-                                   ui       =uiL,
-                                   n_samples=n_samples)
+                                   metro=metroL,
+                                   ui   =uiL)
                 
                 d <- do.call("rbind", agree_pairL)
                 rownames(d) <- NULL
@@ -190,6 +192,19 @@ shiny::shinyApp(
             } else {
                 NULL
             }
+        })
+        output$ui_mesh_agree_metro_options <- renderUI({
+            tagList( numericInput("vcgMetro_nSamples",     "Number of samples", value=0L),
+                     numericInput("vcgMetro_nSamplesArea", "Number of samples per area (overrides nSamples)", value=0L),
+                    checkboxInput("vcgMetro_vertSamp",     "Vertex sampling",            value=TRUE),
+                    checkboxInput("vcgMetro_edgeSamp",     "Edge sampling",              value=TRUE),
+                    checkboxInput("vcgMetro_faceSamp",     "Face sampling",              value=TRUE),
+                    checkboxInput("vcgMetro_unrefVert",    "Ignore unreferred vertices", value=FALSE),
+                     radioButtons("vcgMetro_samplingTyp",  "Face sampling mode", choices=c("SS", "MC", "SD"), selected="SS"),
+                     radioButtons("vcgMetro_searchStruct", "Search structure",   choices=c("SGRID", "AABB", "OCTREE", "HGRID"), selected="SGRID"),
+                     numericInput("vcgMetro_from",         "Color mapping: minimum", value=0L),
+                     numericInput("vcgMetro_to",           "Color mapping: maximum", value=0L)
+            )
         })
         output$rgl_view_selection <- renderUI({
             meshL <- react_file_sel()

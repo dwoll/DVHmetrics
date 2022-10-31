@@ -18,7 +18,7 @@ Agreement measures for 3D structures saved as mesh files. R package containing a
 
 # Required packages
 
-`MeshAgreement` heavily relies on packages developed by Stéphane Laurent, which build on package [RcppCGAL](https://CRAN.R-project.org/package=RcppCGAL) to enable the functionality from the [CGAL](https://www.cgal.org/) library for computational geometry. Some of these packages are currently only available from GitHub:
+`MeshAgreement` heavily relies on packages developed by Stéphane Laurent, which build on package [RcppCGAL](https://CRAN.R-project.org/package=RcppCGAL) to enable the functionality from the [CGAL](https://www.cgal.org/) library for computational geometry. The second back-end for geometry calculations is the [VCG Library](http://www.vcglib.net/). Some requried packages are currently only available from GitHub:
 
   * [SurfaceReconstruction](https://github.com/stla/SurfaceReconstruction)
   * [Boov](https://github.com/stla/Boov)

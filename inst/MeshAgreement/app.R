@@ -178,8 +178,7 @@ shiny::shinyApp(
                                      selected="none"),
                         numericInput("read_mesh_reconstruct_pois_spacing",
                                      "Spacing parameter for Poisson reconstruction",
-                                     value=0.05,
-                                     min=0))
+                                     value=1))
             } else {
                 NULL
             }
@@ -193,16 +192,16 @@ shiny::shinyApp(
             }
         })
         output$ui_mesh_agree_metro_options <- renderUI({
-            tagList( numericInput("vcgMetro_nSamples",     "Number of samples", value=0L),
-                     numericInput("vcgMetro_nSamplesArea", "Number of samples per area (overrides nSamples)", value=0L),
+            tagList( numericInput("vcgMetro_nSamples",     "Number of samples", value=0),
+                     numericInput("vcgMetro_nSamplesArea", "Number of samples per area (overrides nSamples)", value=0),
                     checkboxInput("vcgMetro_vertSamp",     "Vertex sampling",            value=TRUE),
                     checkboxInput("vcgMetro_edgeSamp",     "Edge sampling",              value=TRUE),
                     checkboxInput("vcgMetro_faceSamp",     "Face sampling",              value=TRUE),
                     checkboxInput("vcgMetro_unrefVert",    "Ignore unreferred vertices", value=FALSE),
                      radioButtons("vcgMetro_samplingTyp",  "Face sampling mode", choices=c("SS", "MC", "SD"), selected="SS"),
                      radioButtons("vcgMetro_searchStruct", "Search structure",   choices=c("SGRID", "AABB", "OCTREE", "HGRID"), selected="SGRID"),
-                     numericInput("vcgMetro_from",         "Color mapping: minimum", value=0L),
-                     numericInput("vcgMetro_to",           "Color mapping: maximum", value=0L)
+                     numericInput("vcgMetro_from",         "Color mapping: minimum", value=0),
+                     numericInput("vcgMetro_to",           "Color mapping: maximum", value=0)
             )
         })
         output$rgl_view_selection <- renderUI({

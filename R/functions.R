@@ -169,17 +169,31 @@ get_mesh_agree_pair <- function(x, metro, ui, chop=TRUE, ...) {
         metro <- get_mesh_metro_pair(x, chop=chop, ...)
     }
     
-    DCOM   <- sqrt(sum((x$mesh2$centroid - x$mesh1$centroid)^2))
-    HD_max <- max(c(metro$ForwardSampling$maxdist, metro$BackwardSampling$maxdist))
-    HD_avg <- (metro$ForwardSampling$maxdist + metro$BackwardSampling$maxdist) / 2
+    DCOM <- sqrt(sum((x$mesh2$centroid - x$mesh1$centroid)^2))
+    HD_forward  <- metro$ForwardSampling$maxdist
+    HD_backward <- metro$BackwardSampling$maxdist
+
+    if(is.finite(HD_forward) && is.finite(HD_backward)) {
+        HD_max <- max(c(HD_forward, HD_backward))
+        HD_avg <- (HD_forward + HD_backward) / 2
+    } else {
+        HD_max <- NA_real_
+        HD_avg <- NA_real_
+    }
+    
     ## average surface distance based on weighted average of sampled distances
     ## not on actual vertex distances as stored in distances1, distances2
-    n1     <- metro$ForwardSampling$nsamples
-    n2     <- metro$BackwardSampling$nsamples
-    w1     <- n1 / (n1+n2)
-    w2     <- n2 / (n1+n2)
-    ASD    <-      w1* metro$ForwardSampling$meandist   + w2* metro$BackwardSampling$meandist
-    RMSD   <- sqrt(w1*(metro$ForwardSampling$RMSdist^2) + w2*(metro$BackwardSampling$RMSdist^2))
+    n1 <- metro$ForwardSampling$nsamples
+    n2 <- metro$BackwardSampling$nsamples
+    if((n1 > 0L) && (n2 > 0L)) {
+        w1   <- n1 / (n1+n2)
+        w2   <- n2 / (n1+n2)
+        ASD  <-      w1* metro$ForwardSampling$meandist   + w2* metro$BackwardSampling$meandist
+        RMSD <- sqrt(w1*(metro$ForwardSampling$RMSdist^2) + w2*(metro$BackwardSampling$RMSdist^2))
+    } else {
+        ASD  <- NA_real_
+        RMSD <- NA_real_
+    }
     
     ## volume-overlap-based measures
     ## check if union/intersection are supplied

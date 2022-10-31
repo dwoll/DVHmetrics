@@ -10,6 +10,12 @@ fluidPage(
                 maximizable=FALSE,
                 collapsible=TRUE,
                 collapsed=TRUE,
+                p("For the definition of the following options, see the",
+                  tags$a(href="https://rdrr.io/github/zarquon42b/Rvcg/man/vcgMetro.html",
+                         "documentation of the Rvcg::vcgMetro() function"),
+                  "as well the",
+                  tags$a(href="http://vcg.isti.cnr.it/vcglib/metro.html",
+                         "VCG metro page")),
                 uiOutput("ui_mesh_agree_metro_options")
             )
         )

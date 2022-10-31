@@ -34,7 +34,6 @@ Required packages on CRAN:
 # TODO
 
   * Enable setting a mesh as gold standard for comparison instead of doing all pairwise comparisons
-  * Investigate `Rvcg::vcgMetro()` for relationship between `distances1` and `ForwardSampling$meandist` as well as `ForwardSampling$RMSdist`
 
 # Literature (selection)
 

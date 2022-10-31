@@ -147,6 +147,8 @@ get_mesh_metro_pair <- function(x, chop=TRUE, ...) {
                       ...)
     
     if(chop) {
+        metro[["distances1"]]    <- NULL
+        metro[["distances2"]]    <- NULL
         metro[["forward_hist"]]  <- NULL
         metro[["backward_hist"]] <- NULL
     }
@@ -170,22 +172,14 @@ get_mesh_agree_pair <- function(x, metro, ui, chop=TRUE, ...) {
     DCOM   <- sqrt(sum((x$mesh2$centroid - x$mesh1$centroid)^2))
     HD_max <- max(c(metro$ForwardSampling$maxdist, metro$BackwardSampling$maxdist))
     HD_avg <- (metro$ForwardSampling$maxdist + metro$BackwardSampling$maxdist) / 2
-    if((sum(metro$distances1^2) > (.Machine$double.eps^0.5)) &&
-                 (sum(metro$distances2^2) > (.Machine$double.eps^0.5))) {
-        HD_95  <- (quantile(metro$distances1, probs=0.95) + quantile(metro$distances2, probs=0.95)) / 2
-        RMSD   <- sqrt(mean(c(metro$distances1^2, metro$distances2^2)))
-        ASD    <-      mean(c(metro$distances1,   metro$distances2))
-    } else {
-        HD_95  <- NA_real_
-        RMSD   <- NA_real_
-        ASD    <- NA_real_
-    }
-    # n1     <- length(metro$distances1) # metro$ForwardSampling$nsamples
-    # n2     <- length(metro$distances2) # metro$BackwardSampling$nsamples
-    # w1     <- n1 / (n1+n2)
-    # w2     <- n2 / (n1+n2)
-    # ASD    <- w1*metro$ForwardSampling$meandist + w2*metro$BackwardSampling$meandist
-    # RMSD   <- sqrt(w1*metro$ForwardSampling$RMSdist^2 + w2*metro$BackwardSampling$RMSdist^2)
+    ## average surface distance based on weighted average of sampled distances
+    ## not on actual vertex distances as stored in distances1, distances2
+    n1     <- metro$ForwardSampling$nsamples
+    n2     <- metro$BackwardSampling$nsamples
+    w1     <- n1 / (n1+n2)
+    w2     <- n2 / (n1+n2)
+    ASD    <-      w1* metro$ForwardSampling$meandist   + w2* metro$BackwardSampling$meandist
+    RMSD   <- sqrt(w1*(metro$ForwardSampling$RMSdist^2) + w2*(metro$BackwardSampling$RMSdist^2))
     
     ## volume-overlap-based measures
     ## check if union/intersection are supplied
@@ -211,7 +205,6 @@ get_mesh_agree_pair <- function(x, metro, ui, chop=TRUE, ...) {
                DCOM=DCOM,
                HD_max=HD_max,
                HD_avg=HD_avg,
-               HD_95=unname(HD_95),
                ASD=ASD,
                RMSD=RMSD,
                JSC=JSC,
@@ -234,7 +227,7 @@ get_mesh_agree <- function(x, chop=TRUE, ...) {
 
 get_mesh_agree_long <- function(x) {
     vars_varying <- c("DCOM",
-                      "HD_max", "HD_avg", "HD_95", "ASD", "RMSD",
+                      "HD_max", "HD_avg", "ASD", "RMSD",
                       "JSC", "DSC")
     
     vars_id <- names(x)[!(names(x) %in% vars_varying)]

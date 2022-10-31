@@ -46,6 +46,7 @@ pdfauthor={Daniel Wollschlaeger, Heiko Karle}]{hyperref}
 %\VignetteEngine{knitr::knitr}
 
 \begin{document}
+\SweaveOpts{concordance=TRUE}
 
 \title{Assessing the agreement between 3D meshes using \texttt{MeshAgreement} for \textsf{R}}
 \author{Daniel Wollschlaeger\\
@@ -58,7 +59,7 @@ pdfauthor={Daniel Wollschlaeger, Heiko Karle}]{hyperref}
 %%%%---------------------------------------------------------------------------
 %%%%---------------------------------------------------------------------------
 
-<<setup, echo=FALSE, include=FALSE, cache=FALSE>>=
+<<setup, include=FALSE>>=
 # set global chunk options
 knitr::opts_chunk$set(fig.align='center',
                       fig.show='hold',
@@ -91,15 +92,15 @@ To install \texttt{MeshAgreement}, you need a current version of \textsf{R} and 
 
 Currently, some R packages are also required that are not available on CRAN. These packages need to be installed from GitHub via package \texttt{remotes} \cite{Csardi2021}. The same currently holds for \texttt{MeshAgreement} itself.
 
-<<cIntro, eval=FALSE>>=
-# install package 'remotes' to be able to install directly from GitHub
-install.packages("remotes")
+<<cIntro>>=
+## install package 'remotes' to be able to install directly from GitHub
+# install.packages("remotes")
 
-# install packages from GitHub
-remotes::install_github(c("stla/SurfaceReconstruction", "stla/Boov"))
+## install packages from GitHub
+# remotes::install_github(c("stla/SurfaceReconstruction", "stla/Boov"))
 
-# install 'MeshAgreement' from GitHub
-remotes::install_github("dwoll/MeshAgreement")
+## install 'MeshAgreement' from GitHub
+# remotes::install_github("dwoll/MeshAgreement")
 @
 
 %%%%---------------------------------------------------------------------------
@@ -120,15 +121,13 @@ remotes::install_github("dwoll/MeshAgreement")
 
 Users familiar with \textsf{R} can use the \texttt{MeshAgreement} package functions from the \textsf{R} command line. This facilitates statistical post-processing of results with the full capabilities of \textsf{R}. After installing \texttt{MeshAgreement}, you should be able to run (function \texttt{get\_mesh\_agree()} is explained in section \ref{sec:meshagree}):
 
-<<cCmdlineA, results='hide'>>=
+<<cCmdlineA>>=
 ## load MeshAgreement package - required for all following tasks
 library(MeshAgreement, verbose=FALSE)
 
 ## get agreement measures for all pairs from list of meshes
-agreeW <- get_mesh_agree(data_heart_meshL)
-@
-
-<<cCmdlineB>>=
+## data_heart_meshL: list of sample meshes included in MeshAgreement
+agreeW <- get_mesh_agree(data_heart_meshL, silent=TRUE)
 agreeW
 @
 
@@ -141,15 +140,15 @@ agreeW
 
 For users who are unfamiliar with \textsf{R}, \texttt{MeshAgreement} includes a \texttt{Shiny}-based web application \cite{Chang2022} running locally that eliminates the need to use \textsf{R} syntax. Note that packages \texttt{shiny} \cite{Chang2022}, \texttt{bs4Dash} \cite{Granjon2022}, \texttt{DT} \cite{Xie2022}, and \texttt{rgl} \cite{Murdoch2022} need to be installed to run the GUI.
 
-<<cStartShiny, eval=FALSE>>=
+<<cStartShiny>>=
 ## install required packages
-install.packages(c("shiny", "bs4Dash", "DT", "rgl"))
+# install.packages(c("shiny", "bs4Dash", "DT", "rgl"))
 
 ## load MeshAgreement package
-library(MeshAgreement, verbose=FALSE)
+# library(MeshAgreement, verbose=FALSE)
 
 ## start Shiny app
-run_gui()
+# run_gui()
 @
 
 \begin{figure}[ht]
@@ -194,14 +193,15 @@ run_gui()
 %%%%---------------------------------------------------------------------------
 %%%%---------------------------------------------------------------------------
 
-<<cReadMesh, eval=FALSE>>=
-ff <- list.files("c:/meshes/", pattern="PLY$", full.names=TRUE)
-meshL <- read_mesh(ff)
+<<cReadMesh>>=
+# ff <- list.files("c:/meshes/", pattern="PLY$", full.names=TRUE)
+# meshL <- read_mesh(ff)
 @
 
 Information on the imported meshes can be printed.
 
 <<cPrintMesh>>=
+## data_heart_meshL: list of sample meshes included in MeshAgreement
 print_mesh(data_heart_meshL)
 @
 
@@ -220,7 +220,6 @@ You can calculate distance-based as well as volume-overlap-based agreement measu
 \item DCOM: Euclidean distance between the respective center of mass of both meshes
 \item HDmax: Hausdorff distance - worst case, maximum of both directed Hausdorff distances
 \item HDavg: Hausdorff distance - average, arithmetic mean of both directed Hausdorff distancess
-\item HD95: 95th percentile Hausdorff distance - arithmetic mean of both 0.95 quantiles of directed distances
 \item ASD: Average symmetric surface distance
 \item RMSD: Root mean squared symmetric surface distance
 \end{itemize}
@@ -231,11 +230,9 @@ You can calculate distance-based as well as volume-overlap-based agreement measu
 \end{itemize}
 \end{itemize}
 
-<<cMeshAgreementA, results='hide'>>=
-agreeW <- get_mesh_agree(data_heart_meshL)
-@
-
-<<cMeshAgreementB>>=
+<<cMeshAgreementA>>=
+## already called above
+# agreeW <- get_mesh_agree(data_heart_meshL, silent=TRUE)
 agreeW
 @
 

@@ -8,7 +8,6 @@
 ## RMSD:   Root mean squared surface distance
 ## HD_max: Hausdorff distance - max of both directed HDs
 ## HD_avg: Hausdorff distance - average of both directed HDs
-## HD_95:  Hausdorff distance - average of both 95th percentiles of directed surface distances
 ## JSC:    Jaccard similarity coefficient
 ## DSC:    Dice similarity coefficient
 #####---------------------------------------------------------------------------

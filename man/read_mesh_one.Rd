@@ -3,12 +3,12 @@
 \title{Read one mesh file}
 \description{Read one mesh object from a file name.}
 \usage{read_mesh_one(x, name,
-              reconstruct=c("none", "AFS", "Poisson"),
-              spacing)}
+              reconstruct=c("No", "AFS", "Poisson"),
+              spacing=1)}
 \arguments{
   \item{x}{\code{character}. File name.}
   \item{name}{\code{character}. Name that should be assigned to the mesh object. If missing, the name is taken from the file name.}
-  \item{reconstruct}{\code{character}. Use \code{"none"} for no reconstruction. \code{"AFS"} uses \code{\link[SurfaceReconstruction]{AFSreconstruction}}, and\code{"Poisson"} uses \code{\link[SurfaceReconstruction]{PoissonReconstruction}} to re-build the triangles from the vertices. Useful for meshes with defects such as not being closed or having self-intersections.}
+  \item{reconstruct}{\code{character}. Use \code{"No"} for no reconstruction. \code{"AFS"} uses \code{\link[SurfaceReconstruction]{AFSreconstruction}}, and\code{"Poisson"} uses \code{\link[SurfaceReconstruction]{PoissonReconstruction}} to re-build the triangles from the vertices. Useful for meshes with defects such as not being closed or having self-intersections.}
   \item{spacing}{Controls vertex spacing for \code{reconstruct="Poisson"}, see \code{\link[SurfaceReconstruction]{PoissonReconstruction}}.}
 }
 \details{Supported file formats: STL, PLY, OBJ, OFF.}

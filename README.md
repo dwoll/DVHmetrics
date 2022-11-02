@@ -21,7 +21,6 @@ Agreement measures for 3D structures saved as mesh files. R package containing a
 `MeshAgreement` heavily relies on packages developed by Stéphane Laurent, which build on package [RcppCGAL](https://CRAN.R-project.org/package=RcppCGAL) to enable the functionality from the [CGAL](https://www.cgal.org/) library for computational geometry. The second back-end for geometry calculations is the [VCG Library](http://www.vcglib.net/). Some requried packages are currently only available from GitHub:
 
   * [SurfaceReconstruction](https://github.com/stla/SurfaceReconstruction)
-  * [Boov](https://github.com/stla/Boov)
 
 Required packages on CRAN:
 
@@ -30,10 +29,12 @@ Required packages on CRAN:
   * [Rvcg](https://CRAN.R-project.org/package=Rvcg)
   * [PolygonSoup](https://CRAN.R-project.org/package=PolygonSoup)
   * [MeshesTools](https://CRAN.R-project.org/package=MeshesTools)
+  * [Boov](https://CRAN.R-project.org/package=Boov)
 
 # TODO
 
   * Enable setting a mesh as gold standard for comparison instead of doing all pairwise comparisons
+  * Replace [PolygonSoup](https://CRAN.R-project.org/package=PolygonSoup) and [MeshesTools](https://CRAN.R-project.org/package=MeshesTools) with [cgalMeshes](https://github.com/stla/cgalMeshes) once stable
 
 # Literature (selection)
 

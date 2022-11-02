@@ -174,8 +174,8 @@ shiny::shinyApp(
                                   width="100%", multiple=TRUE),
                         radioButtons("read_mesh_reconstruct",
                                      "Surface reconstruction on import",
-                                     choices=c("none", "AFS", "Poisson"),
-                                     selected="none"),
+                                     choices=c("No", "AFS", "Poisson"),
+                                     selected="No"),
                         numericInput("read_mesh_reconstruct_pois_spacing",
                                      "Spacing parameter for Poisson reconstruction",
                                      value=1))

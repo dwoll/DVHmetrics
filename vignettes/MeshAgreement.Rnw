@@ -97,7 +97,7 @@ Currently, some R packages are also required that are not available on CRAN. The
 # install.packages("remotes")
 
 ## install packages from GitHub
-# remotes::install_github(c("stla/SurfaceReconstruction", "stla/Boov"))
+# remotes::install_github(c("stla/SurfaceReconstruction"))
 
 ## install 'MeshAgreement' from GitHub
 # remotes::install_github("dwoll/MeshAgreement")

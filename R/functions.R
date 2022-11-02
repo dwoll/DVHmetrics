@@ -13,9 +13,10 @@ get_name_elem <- function(x, which=1L, sep=" <-> ") {
 }
 
 read_mesh_one <- function(x, name,
-                          reconstruct=c("none", "AFS", "Poisson"),
-                          spacing) {
-    reconstruct <- match.arg(reconstruct)
+                          reconstruct=c("No", "AFS", "Poisson"),
+                          spacing=1) {
+    reconstruct <- match.arg(tolower(reconstruct),
+                             choices=c("no", "afs", "poisson"))
     
     mesh_name <- if(missing(name)) {
         basename(file_path_sans_ext(x))
@@ -24,12 +25,11 @@ read_mesh_one <- function(x, name,
     }
     
     mesh_0 <- readMeshFile(x)
-    mesh_r <- if(reconstruct == "none") {
-        toRGL(Mesh(vertices=mesh_0$vertices,
-                   faces=mesh_0$faces))
-    } else if(reconstruct == "AFS") {
+    mesh_r <- if(reconstruct == "no") {
+        toRGL(Mesh(vertices=mesh_0$vertices, faces=mesh_0$faces))
+    } else if(reconstruct == "afs") {
         AFSreconstruction(mesh_0$vertices)
-    } else if(reconstruct == "Poisson") {
+    } else if(reconstruct == "poisson") {
         PoissonReconstruction(mesh_0$vertices, spacing=spacing)
     }
     
@@ -54,9 +54,10 @@ read_mesh_one <- function(x, name,
 }
 
 read_mesh <- function(x, name,
-                      reconstruct=c("none", "AFS", "Poisson"),
-                      spacing) {
-    reconstruct <- match.arg(reconstruct)
+                      reconstruct=c("No", "AFS", "Poisson"),
+                      spacing=1) {
+    reconstruct <- match.arg(tolower(reconstruct),
+                             choices=c("no", "afs", "poisson"))
     
     mesh_names <- if(missing(name)) {
         basename(file_path_sans_ext(x))
@@ -263,7 +264,6 @@ get_mesh_agree_long <- function(x) {
 }
 
 get_mesh_agree_aggr <- function(x, na.rm=FALSE) {
-
     d_agreeL <- get_mesh_agree_long(x)
     d_agreeL[["observed_ln"]] <- log(d_agreeL[["observed"]])
     

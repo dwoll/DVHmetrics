@@ -10,6 +10,7 @@ get_mesh_agree_aggr_long(x)
 }
 \details{Front-end for \code{\link[stats]{reshape}}.}
 \value{\code{data.frame} with the following variables:
+\item{group}{The grouping variable indicating which pairs belong to the same structure.}
 \item{metric}{The calculated agreement measure.}
 \item{statistic}{The aggregate statistic over mesh pairs. This includes the mean, median, standard deviation, and coefficient of variation.}
 \item{observed}{The value observed for the statistic.}
@@ -19,7 +20,7 @@ get_mesh_agree_aggr_long(x)
 \code{\link[stats]{reshape}}
 }
 \examples{
-agreeW <- get_mesh_agree(data_heart_meshL)
+agreeW <- get_mesh_agree(data_heart_obsL)
 agree_aggrW <- get_mesh_agree_aggr(agreeW)
 get_mesh_agree_aggr_long(agree_aggrW)
 }

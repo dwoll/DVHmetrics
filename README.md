@@ -12,7 +12,6 @@ Agreement measures for 3D structures saved as mesh files. R package containing a
      * RMSD: Root mean squared surface distance
      * HD_max: Hausdorff distance - max of both directed HDs
      * HD_avg: Hausdorff distance - average of both directed HDs
-     * HD_95:  Hausdorff distance - average of both 95th percentiles of directed surface distances
  * JSC: Jaccard similarity coefficient
  * DSC: Dice similarity coefficient
 
@@ -26,6 +25,8 @@ Required packages on CRAN:
 
   * [shiny](https://CRAN.R-project.org/package=shiny)
   * [bs4Dash](https://CRAN.R-project.org/package=bs4Dash)
+  * [sortable](https://CRAN.R-project.org/package=sortable)
+  * [rgl](https://CRAN.R-project.org/package=rgl)
   * [Rvcg](https://CRAN.R-project.org/package=Rvcg)
   * [PolygonSoup](https://CRAN.R-project.org/package=PolygonSoup)
   * [MeshesTools](https://CRAN.R-project.org/package=MeshesTools)
@@ -34,7 +35,7 @@ Required packages on CRAN:
 # TODO
 
   * Enable setting a mesh as gold standard for comparison instead of doing all pairwise comparisons
-  * Replace [PolygonSoup](https://CRAN.R-project.org/package=PolygonSoup) and [MeshesTools](https://CRAN.R-project.org/package=MeshesTools) with [cgalMeshes](https://github.com/stla/cgalMeshes) once stable
+  * Replace [PolygonSoup](https://CRAN.R-project.org/package=PolygonSoup), [SurfaceReconstruction](https://github.com/stla/SurfaceReconstruction), [SurfaceReconstruction](https://github.com/stla/Boov), and [MeshesTools](https://CRAN.R-project.org/package=MeshesTools) with [cgalMeshes](https://github.com/stla/cgalMeshes) once stable
 
 # Literature (selection)
 

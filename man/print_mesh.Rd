@@ -6,7 +6,7 @@
 print_mesh(x)
 }
 \arguments{
-  \item{x}{A list of mesh objects as produced by \code{\link[MeshAgreement]{read_mesh}}.}
+  \item{x}{\code{list} of observer/mesh objects with a structure as \code{\link[MeshAgreement]{data_heart_obsL}}.}
 }
 \details{Use \code{\link[MeshAgreement]{print_mesh_one}} for printing information for a single mesh object.}
 \value{Text output on the console.}
@@ -15,5 +15,5 @@ print_mesh(x)
 \code{\link[MeshAgreement]{print_mesh_one}}
 }
 \examples{
-print_mesh(data_heart_meshL)
+print_mesh(data_heart_obsL)
 }

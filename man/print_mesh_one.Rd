@@ -15,5 +15,5 @@ print_mesh_one(x)
 \code{\link[MeshAgreement]{print_mesh}}
 }
 \examples{
-print_mesh_one(data_heart_meshL[[1]])
+print_mesh_one(data_heart_obsL[[1]][[1]])
 }

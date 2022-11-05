@@ -10,18 +10,18 @@
 ## HD_avg: Hausdorff distance - average of both directed HDs
 ## JSC:    Jaccard similarity coefficient
 ## DSC:    Dice similarity coefficient
+##
+## TODO check input numeric ranges, types
 #####---------------------------------------------------------------------------
 #####---------------------------------------------------------------------------
 
 library(shiny)
 library(bs4Dash)
+library(ggplot2)
+library(plotly)
+library(sortable)
 library(rgl)
 library(MeshAgreement)
-# library(Rvcg)
-# library(SurfaceReconstruction)
-# library(PolygonSoup)
-# library(MeshesTools)
-# library(Boov)
 
 source("app_00_global.R")
 
@@ -103,22 +103,67 @@ shiny::shinyApp(
             input$apply_file_sel
             ## isolate against non-applied changes in data input UI elements
             isolate({
-                if(input$meshes_in == 1) {
-                    data_heart_meshL
+                n_observers <- if(is.null(input$num_observers)) {
+                    2L
                 } else {
-                    if(!is.null(input$file_sel)) {
-                        read_mesh(input$file_sel$datapath,
-                                  input$file_sel$name,
-                                  reconstruct=input$read_mesh_reconstruct,
-                                  spacing=input$read_mesh_reconstruct_pois_spacing)
-                    } else {
-                        NULL
-                    }
+                    input$num_observers
                 }
+                
+                meshL <- if(input$meshes_input_source == "builtin") {
+                    ## use builtin data
+                    ll <- data_heart_obsL
+                    if(input$meshes_sel_mode == "indiv") {
+                        ll[seq_len(min(c(length(ll), n_observers)))]
+                    } else {
+                        ll
+                    }
+                } else {
+                    ## read data from file
+                    ## number of file selection elements = number of observers
+                    n_file_sel <- if(input$meshes_sel_mode == "all_pairwise") {
+                        1L
+                    } else {
+                        n_observers
+                    }
+                    
+                    ## for each file selection element -> read files
+                    ll <- lapply(seq_len(n_file_sel), function(i) {
+                        input_file_sel <- input[[sprintf("file_sel_%.2d", i)]]
+                        if(!is.null(input_file_sel)) {
+                            ## list of meshes
+                            read_mesh_obs(input_file_sel$datapath,
+                                          input_file_sel$name)
+                            
+                        } else {
+                            NULL
+                        }
+                    })
+                    
+                    ll <- Filter(Negate(is.null), ll)
+                    setNames(ll, sprintf("Observer_%.2d", seq_along(ll)))
+                }
+                
+                meshL
             })
         })
-        react_mesh_ui <- reactive({
+        react_file_sel_sorted <- reactive({
             meshL <- react_file_sel()
+            if(!is.null(meshL)) {
+                lapply(seq_along(meshL), function(i) {
+                    observer <- meshL[[i]]
+                    ranklist <- input[[sprintf("ranklist_obs%.2d", i)]]
+                    observer_sorted <- if(!is.null(ranklist)) {
+                        observer[ranklist]
+                    } else {
+                        observer
+                    }
+                })
+            } else {
+                NULL
+            }
+        })
+        react_mesh_ui <- reactive({
+            meshL <- react_file_sel_sorted()
             if(!is.null(meshL)) {
                 get_mesh_ui(meshL)
             } else {
@@ -126,7 +171,7 @@ shiny::shinyApp(
             }
         })
         react_mesh_metro <- reactive({
-            meshL <- react_file_sel()
+            meshL <- react_file_sel_sorted()
             if(!is.null(meshL)) {
                 argL <- list(meshL,
                              chop        =TRUE,
@@ -150,7 +195,7 @@ shiny::shinyApp(
         })
         ## list of pairwise meshes
         react_mesh_agree <- reactive({
-            meshL  <- react_file_sel()
+            meshL  <- react_file_sel_sorted()
             uiL    <- react_mesh_ui()
             metroL <- react_mesh_metro()
             if(!is.null(meshL) && !is.null(uiL) && !is.null(metroL)) {
@@ -167,24 +212,116 @@ shiny::shinyApp(
                 NULL
             }
         })
+        output$ui_select_comparisons <- renderUI({
+            if(input$meshes_sel_mode == "indiv") {
+                numericInput("num_observers", "Number of observers", value=2)
+            } else {
+                NULL
+            }
+        })
+        output$ui_surface_recon_method <- renderUI({
+            if(input$meshes_input_source == "file") {
+                radioButtons("read_mesh_reconstruct",
+                             "Surface reconstruction on import",
+                             choices=c("No", "AFS", "Poisson"),
+                             selected="No",
+                             inline=TRUE)
+            } else {
+                NULL
+            }
+        })
+        output$ui_surface_recon_spacing <- renderUI({
+            if(!is.null(input$meshes_input_source) &&
+               !is.null(input$read_mesh_reconstruct) &&
+               (input$meshes_input_source == "file") &&
+               (input$read_mesh_reconstruct == "Poisson")) {
+                numericInput("read_mesh_reconstruct_pois_spacing",
+                             "Spacing parameter for Poisson reconstruction",
+                             value=1)
+            } else {
+                NULL
+            }
+        })
         output$ui_select_files <- renderUI({
-            if(input$meshes_in == 2) {
-                tagList(fileInput("file_sel",
-                                  "Select files: (supported file formats: STL, PLY, OBJ, OFF)",
-                                  width="100%", multiple=TRUE),
-                        radioButtons("read_mesh_reconstruct",
-                                     "Surface reconstruction on import",
-                                     choices=c("No", "AFS", "Poisson"),
-                                     selected="No"),
-                        numericInput("read_mesh_reconstruct_pois_spacing",
-                                     "Spacing parameter for Poisson reconstruction",
-                                     value=1))
+            if(input$meshes_input_source == "file") {
+                if(input$meshes_sel_mode == "all_pairwise") {
+                    n_observers <- 1L
+                    sel_label   <- ""
+                } else {
+                    n_observers <- if(is.null(input$num_observers)) {
+                        2L
+                    } else {
+                        input$num_observers
+                    }
+                    
+                    sel_label <- paste0(" (Observer ", sprintf("%.2d", seq_len(n_observers)), ")")
+                }
+                
+                file_selL <- lapply(seq_len(n_observers), function(i) {
+                    finput_id    <- sprintf("file_sel_%.2d", i)
+                    finput_label <- paste0("Select files", sel_label[i], ":")
+                    column(width=12/n_observers,
+                           fileInput(finput_id,
+                                     finput_label,
+                                     width="100%",
+                                     multiple=TRUE))
+                })
+                
+                ## weed out NULL components, convert the list to a tagList and return
+                # "Supported file formats: STL, PLY, OBJ, OFF")
+                file_selL <- Filter(Negate(is.null), file_selL)
+                fluidRow(do.call(tagList, file_selL))
+            } else {
+                NULL
+            }
+        })
+        output$ui_ranklist_files <- renderUI({
+            input$apply_file_sel
+            isolate({
+                if((input$meshes_sel_mode == "indiv")) {
+                    n_observers <- if(is.null(input$num_observers)) {
+                        2L
+                    } else {
+                        input$num_observers
+                    }
+                    
+                    meshL <- react_file_sel()
+                    if(!is.null(meshL)) {
+                        n_obs_max <- min(c(length(meshL), n_observers))
+                        ranklistL <- lapply(seq_len(n_obs_max), function(i) {
+                            ranklist_ui_name <- sprintf("ui_ranklist_obs%.2d", i)
+                            ranklist_inputid <- sprintf("ranklist_obs%.2d",    i)
+                            meshL_obs <- meshL[[i]]
+                            ranklist_labels <- vapply(meshL_obs, function(x) { x$name }, character(1))
+                            column(width=12/n_obs_max,
+                                   rank_list(sprintf("Files Observer %.2d", i),
+                                             labels=ranklist_labels,
+                                             input_id=ranklist_inputid))
+                        })
+                        
+                        ## weed out NULL components, convert the list to a tagList and return
+                        # "Supported file formats: STL, PLY, OBJ, OFF")
+                        ranklistL <- Filter(Negate(is.null), ranklistL)
+                        fluidRow(do.call(tagList, ranklistL))
+                    } else {
+                        NULL
+                    }
+                } else {
+                    NULL
+                }
+            })
+        })
+        output$ui_compare_table <- DT::renderDataTable({
+            meshL <- react_file_sel_sorted()
+            if(!is.null(meshL)) {
+                pairL <- get_mesh_pairs(meshL, names_only=TRUE)
+                DT::datatable(data.frame(Comparison=names(pairL)))
             } else {
                 NULL
             }
         })
         output$print_mesh_info <- renderUI({
-            meshL <- react_file_sel()
+            meshL <- react_file_sel_sorted()
             if(!is.null(meshL)) {
                 print_mesh_html(meshL)
             } else {
@@ -198,16 +335,16 @@ shiny::shinyApp(
                     checkboxInput("vcgMetro_edgeSamp",     "Edge sampling",              value=TRUE),
                     checkboxInput("vcgMetro_faceSamp",     "Face sampling",              value=TRUE),
                     checkboxInput("vcgMetro_unrefVert",    "Ignore unreferred vertices", value=FALSE),
-                     radioButtons("vcgMetro_samplingTyp",  "Face sampling mode", choices=c("SS", "MC", "SD"), selected="SS"),
-                     radioButtons("vcgMetro_searchStruct", "Search structure",   choices=c("SGRID", "AABB", "OCTREE", "HGRID"), selected="SGRID"),
+                     radioButtons("vcgMetro_samplingTyp",  "Face sampling mode", choices=c("SS", "MC", "SD"), selected="SS", inline=TRUE),
+                     radioButtons("vcgMetro_searchStruct", "Search structure",   choices=c("SGRID", "AABB", "OCTREE", "HGRID"), selected="SGRID", inline=TRUE),
                      numericInput("vcgMetro_from",         "Color mapping: minimum", value=0),
                      numericInput("vcgMetro_to",           "Color mapping: maximum", value=0)
             )
         })
         output$rgl_view_selection <- renderUI({
-            meshL <- react_file_sel()
+            meshL <- react_file_sel_sorted()
             if(!is.null(meshL)) {
-                pairL <- get_mesh_pairs(meshL)
+                pairL <- get_mesh_pairs(meshL, names_only=TRUE)
                 selectInput("rgl_view_select",
                             "Select mesh pair",
                             choices=names(pairL),
@@ -235,7 +372,10 @@ shiny::shinyApp(
                 
                 if(!is.null(d_agree_pairW)) {
                     cols_numeric <- unname(which(vapply(d_agree_pairW, is.numeric, logical(1))))
-                    DT_out <- DT::datatable(d_agree_pairW)
+                    DT_out <- DT::datatable(d_agree_pairW,
+                                            extensions="Buttons",
+                                            options=list(dom='Bfrtip',
+                                                         buttons=c("csv", "excel")))
                     DT::formatRound(DT_out, columns=cols_numeric, digits=3)
                 } else {
                     NULL
@@ -249,19 +389,65 @@ shiny::shinyApp(
                 if(!is.null(d_agree_pairW)) {
                     d_agree_aggr <- get_mesh_agree_aggr(d_agree_pairW)                    
                     cols_numeric <- unname(which(vapply(d_agree_aggr, is.numeric, logical(1))))
-                    DT_out <- DT::datatable(d_agree_aggr)
+                    DT_out <- DT::datatable(d_agree_aggr,
+                                            extensions="Buttons",
+                                            options=list(dom='Bfrtip',
+                                                         buttons=c("csv", "excel")))
                     DT::formatRound(DT_out, columns=cols_numeric, digits=3)
                 } else {
                     NULL
                 }
             # })
         })
+        output$diag_agree_pairwise <- renderPlotly({
+            d_agree_pairW <- react_mesh_agree()
+            
+            if(!is.null(d_agree_pairW)) {
+                d_agree_pairL <- get_mesh_agree_long(d_agree_pairW)
+                d_agree_pairL[["pair"]] <- paste(d_agree_pairL[["mesh1"]],
+                                                 d_agree_pairL[["mesh2"]],
+                                                 sep=" <-> ")
+                p <- ggplot(d_agree_pairL, aes(x=pair, y=observed)) +
+                    geom_point() +
+                    facet_grid(metric ~ ., scales="free_y") +
+                    xlab(NULL) +
+                    ylab(NULL) +
+                    theme_bw()
+                
+                ggplotly(p, height=600)
+            } else {
+                NULL
+            }
+            # })
+        })
+        output$diag_agree_aggr <- renderPlotly({
+            d_agree_pairW <- react_mesh_agree()
+            
+            if(!is.null(d_agree_pairW)) {
+                d_agree_aggrW <- get_mesh_agree_aggr(d_agree_pairW)
+                d_agree_aggrL <- get_mesh_agree_aggr_long(d_agree_aggrW)
+                # metric, statistic, observed
+                p <- ggplot(d_agree_aggrL,
+                            aes(x=statistic, y=observed,
+                                group=group, color=group)) +
+                    geom_point(position=position_dodge(w=0.2)) +
+                    facet_grid(metric ~ ., scales="free_y") +
+                    xlab(NULL) +
+                    ylab(NULL) +
+                    theme_bw()
+                
+                ggplotly(p, height=600)
+            } else {
+                NULL
+            }
+            # })
+        })
         output$rgl_mesh1 <- renderRglwidget({
-            meshL <- react_file_sel()
+            meshL       <- react_file_sel_sorted()
             view_select <- input$rgl_view_select
-            if(!is.null(view_select)) {
-                mesh_sel <- get_name_elem(view_select, 1)
-                mesh     <- meshL[[mesh_sel]]
+            if(!is.null(meshL) && !is.null(view_select)) {
+                pairL <- get_mesh_pairs(meshL, names_only=FALSE)
+                mesh  <- pairL[[view_select]]$mesh1
                 if(!is.null(mesh)) {
                     try(rgl.close())
                     wire3d(mesh$mesh)
@@ -274,11 +460,11 @@ shiny::shinyApp(
             }
         })
         output$rgl_mesh2 <- renderRglwidget({
-            meshL <- react_file_sel()
+            meshL       <- react_file_sel_sorted()
             view_select <- input$rgl_view_select
-            if(!is.null(view_select)) {
-                mesh_sel <- get_name_elem(view_select, 2)
-                mesh     <- meshL[[mesh_sel]]
+            if(!is.null(meshL) && !is.null(view_select)) {
+                pairL <- get_mesh_pairs(meshL, names_only=FALSE)
+                mesh  <- pairL[[view_select]]$mesh2
                 if(!is.null(mesh)) {
                     try(rgl.close())
                     wire3d(mesh$mesh)
@@ -290,38 +476,38 @@ shiny::shinyApp(
                 NULL
             }
         })
-        output$rgl_mesh_union <- renderRglwidget({
-            mesh_uiL    <- react_mesh_ui()
-            view_select <- input$rgl_view_select
-            if(!is.null(mesh_uiL) && !is.null(view_select)) {
-                ui <- mesh_uiL[[view_select]]
-                if(!is.null(ui) && !is.null(ui$union)) {
-                    try(rgl.close())
-                    wire3d(ui$union)
-                    rglwidget()
-                } else {
-                    NULL
-                }
-            } else {
-                NULL
-            }
-        })
-        output$rgl_mesh_intersection <- renderRglwidget({
-            mesh_uiL    <- react_mesh_ui()
-            view_select <- input$rgl_view_select
-            if(!is.null(mesh_uiL) && !is.null(view_select)) {
-                ui <- mesh_uiL[[view_select]]
-                if(!is.null(ui) && !is.null(ui$intersection)) {
-                    try(rgl.close())
-                    wire3d(ui$intersection)
-                    rglwidget()
-                } else {
-                    NULL
-                }
-            } else {
-                NULL
-            }
-        })
+        # output$rgl_mesh_union <- renderRglwidget({
+        #     mesh_uiL    <- react_mesh_ui()
+        #     view_select <- input$rgl_view_select
+        #     if(!is.null(mesh_uiL) && !is.null(view_select)) {
+        #         ui <- mesh_uiL[[view_select]]
+        #         if(!is.null(ui) && !is.null(ui$union)) {
+        #             try(rgl.close())
+        #             wire3d(ui$union)
+        #             rglwidget()
+        #         } else {
+        #             NULL
+        #         }
+        #     } else {
+        #         NULL
+        #     }
+        # })
+        # output$rgl_mesh_intersection <- renderRglwidget({
+        #     mesh_uiL    <- react_mesh_ui()
+        #     view_select <- input$rgl_view_select
+        #     if(!is.null(mesh_uiL) && !is.null(view_select)) {
+        #         ui <- mesh_uiL[[view_select]]
+        #         if(!is.null(ui) && !is.null(ui$intersection)) {
+        #             try(rgl.close())
+        #             wire3d(ui$intersection)
+        #             rglwidget()
+        #         } else {
+        #             NULL
+        #         }
+        #     } else {
+        #         NULL
+        #     }
+        # })
         output$rgl_mesh_dist1 <- renderRglwidget({
             metroL      <- react_mesh_metro()
             view_select <- input$rgl_view_select

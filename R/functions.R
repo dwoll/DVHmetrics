@@ -19,9 +19,9 @@ read_mesh_one <- function(x, name,
                              choices=c("no", "afs", "poisson"))
     
     mesh_name <- if(missing(name)) {
-        basename(file_path_sans_ext(x))
+        basename(tools::file_path_sans_ext(x))
     } else {
-        basename(file_path_sans_ext(name))
+        basename(tools::file_path_sans_ext(name))
     }
     
     mesh_0 <- readMeshFile(x)
@@ -53,20 +53,45 @@ read_mesh_one <- function(x, name,
          centroid=ctr)
 }
 
+read_mesh_obs <- function(x, name,
+                          reconstruct=c("No", "AFS", "Poisson"),
+                          spacing=1) {
+    reconstruct <- match.arg(tolower(reconstruct),
+                             choices=c("no", "afs", "poisson"))
+    
+    mesh_names <- if(missing(name)) {
+        basename(tools::file_path_sans_ext(x))
+    } else {
+        basename(tools::file_path_sans_ext(name))
+    }
+    
+    Map(read_mesh_one,
+        setNames(x, mesh_names),
+        mesh_names,
+        reconstruct=reconstruct,
+        spacing=spacing)
+}
+
 read_mesh <- function(x, name,
                       reconstruct=c("No", "AFS", "Poisson"),
                       spacing=1) {
     reconstruct <- match.arg(tolower(reconstruct),
                              choices=c("no", "afs", "poisson"))
     
-    mesh_names <- if(missing(name)) {
-        basename(file_path_sans_ext(x))
+    obs_names <- if(missing(name)) {
+        names(x)
     } else {
-        basename(file_path_sans_ext(name))
+        names(name)
     }
     
-    Map(read_mesh_one,
-        setNames(x, mesh_names),
+    mesh_names <- if(missing(name)) {
+        lapply(x, function(fv) { basename(tools::file_path_sans_ext(fv)) })
+    } else {
+        name
+    }
+    
+    Map(read_mesh_obs,
+        setNames(x, obs_names),
         mesh_names,
         reconstruct=reconstruct,
         spacing=spacing)
@@ -90,33 +115,58 @@ print_mesh_one <- function(x) {
 }
 
 print_mesh <- function(x) {
-    invisible(Map(print_mesh_one, x))
+    invisible(Map(print_mesh_one, unlist(x, recursive=FALSE)))
 }
 
-## all pairs from list of meshes
-get_mesh_pairs <- function(x, sep=" <-> ") {
-    stopifnot(length(x) >= 1L)
-    l <- if(length(x) >= 2L) {
-        pairs_idx <- t(combn(seq_along(x), 2))
-        lapply(seq_len(nrow(pairs_idx)), function(i) {
-            idx1  <- pairs_idx[i, 1]
-            idx2  <- pairs_idx[i, 2]
-            mesh1 <- x[[idx1]]
-            mesh2 <- x[[idx2]]
-            list(name=get_name_pair(mesh1$name, mesh2$name, sep=sep),
-                 mesh1=mesh1,
-                 mesh2=mesh2)
-        })
-    } else {
-        mesh1 <- x[[1]]
-        mesh2 <- x[[1]]
-        list(list(name=get_name_pair(mesh1$name, mesh2$name, sep=sep),
-                  mesh1=mesh1,
-                  mesh2=mesh2))
+## starting from list of observers, each with a list of meshes
+## generate all observer-pairs for each corresponding mesh-list entry
+get_mesh_pairs <- function(x, sep=" <-> ", names_only=FALSE) {
+    if(length(x) <= 1L) { stop("Need more than 1 mesh for comparisons") }
+    
+    ## number of meshes per observer
+    n_obs_meshes <- lengths(x) # may be different per observer
+    n_meshes     <- max(n_obs_meshes)
+    
+    ## for given pair, put corresponding meshes in a list
+    get_pair_mesh <- function(pair, mesh) {
+        idx1  <- pairs_idx[pair, 1] # index observer 1
+        idx2  <- pairs_idx[pair, 2] # index observer 2
+        obs1  <- x[[idx1]]          # observer 1
+        obs2  <- x[[idx2]]          # observer 2
+        ## do both observers have the mesh?
+        if((length(obs1) >= mesh) && (length(obs2) >= mesh)) {
+            mesh1 <- x[[idx1]][[mesh]]
+            mesh2 <- x[[idx2]][[mesh]]
+            
+            ## add group information -> same structure
+            if(names_only) {
+                list(name=get_name_pair(mesh1$name, mesh2$name, sep=sep),
+                     group=sprintf("strct_%.3d", mesh))
+            } else {
+                list(name=get_name_pair(mesh1$name, mesh2$name, sep=sep),
+                     mesh1=mesh1,
+                     mesh2=mesh2,
+                     group=sprintf("strct_%.3d", mesh))
+            }
+        } else {
+            NULL
+        }
     }
     
-    pair_names <- lapply(l, function(x) { x$name })
-    setNames(l, pair_names)
+    pairs_idx <- if(length(x) >= 2L) {
+        t(combn(seq_along(x), 2))
+    } else {
+        matrix(c(1, 1), ncol=2)
+    }
+    
+    ll_outer <- lapply(seq_len(n_meshes), function(idx_mesh) {
+        lapply(seq_len(nrow(pairs_idx)), function(idx_pair) { get_pair_mesh(idx_pair, idx_mesh) })
+    })
+    
+    ## weed out NULL components
+    ll <- Filter(Negate(is.null), unlist(ll_outer, recursive=FALSE))
+    pair_names <- lapply(ll, function(x) { x$name })
+    setNames(ll, pair_names)
 }
 
 ## union and intersection for list of two meshes x
@@ -133,8 +183,9 @@ get_mesh_ui_pair <- function(x) {
     }
     
     list(name=get_name_pair(x$mesh1$name, x$mesh2$name),
+         group=x$group,
          union=union,
-         intersection=intersect)    
+         intersection=intersect)
 }
 
 get_mesh_ui <- function(x) {
@@ -154,7 +205,8 @@ get_mesh_metro_pair <- function(x, chop=TRUE, ...) {
         metro[["backward_hist"]] <- NULL
     }
     
-    metro[["name"]] <- get_name_pair(x$mesh1$name, x$mesh2$name)
+    metro[["name"]]  <- get_name_pair(x$mesh1$name, x$mesh2$name)
+    metro[["group"]] <- x$group
     metro
 }
 
@@ -173,7 +225,7 @@ get_mesh_agree_pair <- function(x, metro, ui, chop=TRUE, ...) {
     DCOM <- sqrt(sum((x$mesh2$centroid - x$mesh1$centroid)^2))
     HD_forward  <- metro$ForwardSampling$maxdist
     HD_backward <- metro$BackwardSampling$maxdist
-
+    
     if(is.finite(HD_forward) && is.finite(HD_backward)) {
         HD_max <- max(c(HD_forward, HD_backward))
         HD_avg <- (HD_forward + HD_backward) / 2
@@ -217,6 +269,7 @@ get_mesh_agree_pair <- function(x, metro, ui, chop=TRUE, ...) {
     
     data.frame(mesh1=x$mesh1$name,
                mesh2=x$mesh2$name,
+               group=x$group,
                DCOM=DCOM,
                HD_max=HD_max,
                HD_avg=HD_avg,
@@ -232,9 +285,10 @@ get_mesh_agree <- function(x, chop=TRUE, ...) {
     metroL <- Map(get_mesh_metro_pair, pairL, chop=chop, ...)
     agreeL <- Map(get_mesh_agree_pair,
                   pairL,
-                  metroL,
+                  metro=metroL,
+                  ui=uiL,
                   chop=chop)
-
+    
     d <- do.call("rbind", agreeL)
     rownames(d) <- NULL
     d
@@ -267,16 +321,16 @@ get_mesh_agree_aggr <- function(x, na.rm=FALSE) {
     d_agreeL <- get_mesh_agree_long(x)
     d_agreeL[["observed_ln"]] <- log(d_agreeL[["observed"]])
     
-    d_mean   <- aggregate(observed    ~ metric, FUN=mean,   data=d_agreeL, na.rm=na.rm)
-    d_median <- aggregate(observed    ~ metric, FUN=median, data=d_agreeL, na.rm=na.rm)
-    d_sd     <- aggregate(observed    ~ metric, FUN=sd,     data=d_agreeL, na.rm=na.rm)
-    d_var    <- aggregate(observed    ~ metric, FUN=var,    data=d_agreeL, na.rm=na.rm)
-    d_varlog <- aggregate(observed_ln ~ metric, FUN=var,    data=d_agreeL, na.rm=na.rm)
-
-    d_aggr <- Reduce(function(x, y) { suppressWarnings(merge(x, y, by="metric")) },
+    d_mean   <- aggregate(observed    ~ group + metric, FUN=mean,   data=d_agreeL, na.rm=na.rm)
+    d_median <- aggregate(observed    ~ group + metric, FUN=median, data=d_agreeL, na.rm=na.rm)
+    d_sd     <- aggregate(observed    ~ group + metric, FUN=sd,     data=d_agreeL, na.rm=na.rm)
+    d_var    <- aggregate(observed    ~ group + metric, FUN=var,    data=d_agreeL, na.rm=na.rm)
+    d_varlog <- aggregate(observed_ln ~ group + metric, FUN=var,    data=d_agreeL, na.rm=na.rm)
+    
+    d_aggr <- Reduce(function(x, y) { suppressWarnings(merge(x, y, by=c("group", "metric"))) },
                      list(d_mean, d_median, d_sd, d_var, d_varlog))
-
-    names(d_aggr)       <- c("metric", "Mean", "Median", "SD", "VAR", "VAR_log")
+    
+    names(d_aggr)       <- c("group", "metric", "Mean", "Median", "SD", "VAR", "VAR_log")
     d_aggr[["CV"]]      <- d_aggr[["SD"]] / d_aggr[["Mean"]]
     d_aggr[["CV_ln"]]   <- sqrt(exp(d_aggr[["VAR_log"]]) - 1)
     d_aggr[["VAR"]]     <- NULL
@@ -301,6 +355,14 @@ get_mesh_agree_aggr_long <- function(x) {
     dL[["statistic"]] <- factor(dL[["statistic"]],
                                 levels=seq_along(vars_varying),
                                 labels=vars_varying)
-
+    
     dL
+}
+
+mesh_list_to_observer_list <- function(x) {
+    ll <- Map(function(i, name) {
+        setNames(list(i), name)
+    }, x, names(x))
+    
+    setNames(ll, sprintf("Observer_%.2d", seq_along(ll)))
 }

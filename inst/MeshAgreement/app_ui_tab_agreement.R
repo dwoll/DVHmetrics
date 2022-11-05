@@ -51,6 +51,34 @@ fluidPage(
     fluidRow(
         column(
             width=12,
+            box(title="Pairwise agreement",
+                width=12,
+                height="620px",
+                status=NULL,
+                closable=FALSE,
+                maximizable=FALSE,
+                collapsible=FALSE,
+                plotlyOutput("diag_agree_pairwise")
+            )
+        )
+    ),
+    fluidRow(
+        column(
+            width=12,
+            box(title="Average agreement",
+                width=12,
+                height="620px",
+                status=NULL,
+                closable=FALSE,
+                maximizable=FALSE,
+                collapsible=FALSE,
+                plotlyOutput("diag_agree_aggr")
+            )
+        )
+    ),
+    fluidRow(
+        column(
+            width=12,
             box(title="Calculated agreement measures",
                 width=12,
                 p("See section",

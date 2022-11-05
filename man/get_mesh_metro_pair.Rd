@@ -9,13 +9,16 @@
   \item{...}{Options passed to \code{\link[Rvcg]{vcgMetro}}.}
 }
 \details{Thin front-end for \code{\link[Rvcg]{vcgMetro}}. Use \code{\link[MeshAgreement]{get_mesh_metro}} to process all pairs from a list of 3D meshes. Post-processing for agreement measures is done in \code{\link[MeshAgreement]{get_mesh_agree_pair}}.}
+\value{\code{list} with object returned by \code{\link[Rvcg]{vcgMetro}} together with the name of the comparison and a name for the structure.}
+\references{\url{http://vcg.isti.cnr.it/vcglib/}}
 \seealso{
-\code{\link[Rvcg]{vcgMetro}},
+\code{\link[MeshAgreement]{get_mesh_pairs}},
 \code{\link[MeshAgreement]{get_mesh_metro}},
-\code{\link[MeshAgreement]{get_mesh_agree_pair}}
+\code{\link[MeshAgreement]{get_mesh_agree_pair}},
+\code{\link[Rvcg]{vcgMetro}}
 }
 \examples{
-pairL <- get_mesh_pairs(data_heart_meshL)
+pairL <- get_mesh_pairs(data_heart_obsL)
 metro <- get_mesh_metro_pair(pairL[[1]], nSamples=500L, silent=TRUE)
 # Hausdorff distance
 get_HD_max <- function(x) {

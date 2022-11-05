@@ -2,19 +2,43 @@ fluidPage(
     fluidRow(
         column(
             width=12,
-            box(title="Load 3D mesh data",
+            box(title="Select 3D mesh data",
                 width=12,
                 # height="650px",
                 status=NULL,
                 closable=FALSE,
                 maximizable=FALSE,
                 collapsible=FALSE,
-                radioButtons("meshes_in",
-                             label=NULL,
-                             list("Use built-in data"=1,
-                                  "Upload 3D mesh files"=2)),
+                radioButtons("meshes_input_source",
+                             label="Data source",
+                             list("Use built-in data"="builtin",
+                                  "Upload 3D mesh files"="file"),
+                             inline=TRUE),
+                uiOutput("ui_surface_recon_method"),
+                uiOutput("ui_surface_recon_spacing"),
+                radioButtons("meshes_sel_mode",
+                             label="Comparison mode",
+                             list("All pairwise comparisons"="all_pairwise",
+                                  "Define comparisons individually"="indiv"),
+                             inline=TRUE),
+                uiOutput("ui_select_comparisons"),
                 uiOutput("ui_select_files"),
                 actionButton("apply_file_sel", "Apply")
+            )
+        )
+    ),
+    fluidRow(
+        column(
+            width=12,
+            box(title="Comparisons",
+                width=12,
+                # height="650px",
+                status=NULL,
+                closable=FALSE,
+                maximizable=FALSE,
+                collapsible=FALSE,
+                uiOutput("ui_ranklist_files"),
+                DT::dataTableOutput("ui_compare_table")
             )
         )
     ),

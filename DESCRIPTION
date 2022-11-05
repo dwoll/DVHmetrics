@@ -7,7 +7,7 @@ Authors@R: c(person("Daniel", "Wollschlaeger", role=c("aut", "cre"), email="woll
     person("Heiko", "Karle", role="aut"))
 Depends: R (>= 3.5)
 Imports: stats, Rvcg, SurfaceReconstruction, PolygonSoup, MeshesTools, Boov
-Suggests: knitr, shiny, DT, bs4Dash, rgl
+Suggests: knitr, shiny, DT, bs4Dash, sortable, rgl
 VignetteBuilder: knitr
 LazyData: yes
 Description: Calculates distance-based and volume-overlap-based

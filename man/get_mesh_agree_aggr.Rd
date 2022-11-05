@@ -10,6 +10,7 @@ get_mesh_agree_aggr(x, na.rm=FALSE)
   \item{na.rm}{\code{logical}. Remove missings before calculating statistical measures?}
 }
 \value{\code{data.frame} with the following variables:
+\item{group}{The grouping variable indicating which pairs belong to the same structure.}
 \item{metric}{The calculated agreement measure.}
 \item{Mean}{The arithmetic mean over mesh pairs.}
 \item{Median}{The median over mesh pairs.}
@@ -21,6 +22,6 @@ get_mesh_agree_aggr(x, na.rm=FALSE)
 \code{\link[MeshAgreement]{get_mesh_agree}}
 }
 \examples{
-d_agree_pair <- get_mesh_agree(data_heart_meshL)
+d_agree_pair <- get_mesh_agree(data_heart_obsL)
 get_mesh_agree_aggr(d_agree_pair)
 }

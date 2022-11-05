@@ -7,7 +7,8 @@
 Calculates distance-based and volume-overlap-based
 agreement measures for 3D meshes. Overall agreement for
 a set of meshes is calculated as the aggregate agreement
-for all pairwise comparisons.
+for all pairwise comparisons. Libraries CGAL and VCG
+are used as back-ends for mesh calculations.
 Includes web-based graphical user interface.
 }
 \details{
@@ -34,9 +35,11 @@ Heimann et al. Comparison and Evaluation of Methods for Liver Segmentation From 
 Sherer et al. Metrics to evaluate the performance of auto-segmentation for radiation treatment planning: A critical review. Radiother Oncol 2021; 160: 185-191.
 
 \url{https://www.cgal.org/}
+
+\url{http://vcg.isti.cnr.it/vcglib/}
 }
 \keyword{package}
 \examples{
-pairL <- get_mesh_pairs(data_heart_meshL)
+pairL <- get_mesh_pairs(data_heart_obsL)
 get_mesh_agree_pair(pairL[[1]])
 }

@@ -16,10 +16,10 @@ get_mesh_agree_pair(x, metro, ui, chop=TRUE, ...)
 \code{data.frame} with these variables
 \item{mesh1}{Name of the first mesh of the pair.}
 \item{mesh2}{Name of the second mesh of the pair.}
+\item{group}{The grouping variable indicating which pairs belong to the same structure.}
 \item{DCOM}{Euclidean distance between the respective center of mass of both meshes.}
 \item{HD_max}{Hausdorff distance - worst case, maximum of both directed Hausdorff distances.}
 \item{HD_avg}{Hausdorff distance - average, mean of both directed Hausdorff distancess.}
-\item{HD_95}{95th percentile Hausdorff distance - mean of both 0.95 quantiles of directed distances.}
 \item{ASD}{Average symmetric surface distance.}
 \item{RMSD}{Root mean squared symmetric surface distance.}
 \item{JSC}{Jaccard similarity coefficient.}
@@ -33,6 +33,10 @@ Hanna  et al. Geometrical Analysis of Radiotherapy Target Volume Delineation: a 
 Heimann et al. Comparison and Evaluation of Methods for Liver Segmentation From CT Datasets. IEEE Trans Med Imaging 2009; 28: 1251-1265.
 
 Sherer et al. Metrics to evaluate the performance of auto-segmentation for radiation treatment planning: A critical review. Radiother Oncol 2021; 160: 185-191.
+
+\url{https://www.cgal.org/}
+
+\url{http://vcg.isti.cnr.it/vcglib/}
 }
 \seealso{
 \code{\link[MeshAgreement]{get_mesh_pairs}},
@@ -40,6 +44,6 @@ Sherer et al. Metrics to evaluate the performance of auto-segmentation for radia
 \code{\link[MeshAgreement]{get_mesh_ui_pair}}
 }
 \examples{
-pairL <- get_mesh_pairs(data_heart_meshL)
+pairL <- get_mesh_pairs(data_heart_obsL)
 get_mesh_agree_pair(pairL[[1]], nSamples=500L, silent=TRUE)
 }

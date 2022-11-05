@@ -13,6 +13,7 @@ get_mesh_agree_long(x)
 \code{data.frame} with these variables
 \item{mesh1}{Name of the first mesh of the pair.}
 \item{mesh2}{Name of the second mesh of the pair.}
+\item{group}{The grouping variable indicating which pairs belong to the same structure.}
 \item{metric}{The calculated agreement measure.}
 \item{observed}{The value observed for the metric.}
 }
@@ -21,6 +22,6 @@ get_mesh_agree_long(x)
 \code{\link[stats]{reshape}}
 }
 \examples{
-agreeW <- get_mesh_agree(data_heart_meshL)
+agreeW <- get_mesh_agree(data_heart_obsL)
 get_mesh_agree_long(agreeW)
 }

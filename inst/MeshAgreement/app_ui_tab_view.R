@@ -43,36 +43,36 @@ fluidPage(
             )
         )
     ),
-    fluidRow(
-        column(
-            width=6,
-            box(title="Union",
-                width=12,
-                # height="650px",
-                status=NULL,
-                closable=FALSE,
-                maximizable=FALSE,
-                collapsible=FALSE,
-                rglwidgetOutput("rgl_mesh_union",
-                                width="512px",
-                                height="512px")
-            )
-        ),
-        column(
-            width=6,
-            box(title="Intersection",
-                width=12,
-                # height="650px",
-                status=NULL,
-                closable=FALSE,
-                maximizable=FALSE,
-                collapsible=FALSE,
-                rglwidgetOutput("rgl_mesh_intersection",
-                                width="512px",
-                                height="512px")
-            )
-        )
-    ),
+    # fluidRow(
+    #     column(
+    #         width=6,
+    #         box(title="Union",
+    #             width=12,
+    #             # height="650px",
+    #             status=NULL,
+    #             closable=FALSE,
+    #             maximizable=FALSE,
+    #             collapsible=FALSE,
+    #             rglwidgetOutput("rgl_mesh_union",
+    #                             width="512px",
+    #                             height="512px")
+    #         )
+    #     ),
+    #     column(
+    #         width=6,
+    #         box(title="Intersection",
+    #             width=12,
+    #             # height="650px",
+    #             status=NULL,
+    #             closable=FALSE,
+    #             maximizable=FALSE,
+    #             collapsible=FALSE,
+    #             rglwidgetOutput("rgl_mesh_intersection",
+    #                             width="512px",
+    #                             height="512px")
+    #         )
+    #     )
+    # ),
     fluidRow(
         column(
             width=6,

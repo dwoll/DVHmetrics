@@ -46,7 +46,6 @@ pdfauthor={Daniel Wollschlaeger, Heiko Karle}]{hyperref}
 %\VignetteEngine{knitr::knitr}
 
 \begin{document}
-\SweaveOpts{concordance=TRUE}
 
 \title{Assessing the agreement between 3D meshes using \texttt{MeshAgreement} for \textsf{R}}
 \author{Daniel Wollschlaeger\\
@@ -126,8 +125,8 @@ Users familiar with \textsf{R} can use the \texttt{MeshAgreement} package functi
 library(MeshAgreement, verbose=FALSE)
 
 ## get agreement measures for all pairs from list of meshes
-## data_heart_meshL: list of sample meshes included in MeshAgreement
-agreeW <- get_mesh_agree(data_heart_meshL, silent=TRUE)
+## data_heart_obsL: list of sample meshes included in MeshAgreement
+agreeW <- get_mesh_agree(data_heart_obsL, silent=TRUE)
 agreeW
 @
 
@@ -138,11 +137,11 @@ agreeW
 %%%%---------------------------------------------------------------------------
 %%%%---------------------------------------------------------------------------
 
-For users who are unfamiliar with \textsf{R}, \texttt{MeshAgreement} includes a \texttt{Shiny}-based web application \cite{Chang2022} running locally that eliminates the need to use \textsf{R} syntax. Note that packages \texttt{shiny} \cite{Chang2022}, \texttt{bs4Dash} \cite{Granjon2022}, \texttt{DT} \cite{Xie2022}, and \texttt{rgl} \cite{Murdoch2022} need to be installed to run the GUI.
+For users who are unfamiliar with \textsf{R}, \texttt{MeshAgreement} includes a \texttt{Shiny}-based web application \cite{Chang2022} running locally that eliminates the need to use \textsf{R} syntax. Note that packages \texttt{shiny} \cite{Chang2022}, \texttt{bs4Dash} \cite{Granjon2022}, \texttt{DT} \cite{Xie2022}, \texttt{sortable} \cite{deVries2022}, and \texttt{rgl} \cite{Murdoch2022} need to be installed to run the GUI.
 
 <<cStartShiny>>=
 ## install required packages
-# install.packages(c("shiny", "bs4Dash", "DT", "rgl"))
+# install.packages(c("shiny", "bs4Dash", "DT", "sortable", "rgl"))
 
 ## load MeshAgreement package
 # library(MeshAgreement, verbose=FALSE)
@@ -201,8 +200,8 @@ For users who are unfamiliar with \textsf{R}, \texttt{MeshAgreement} includes a 
 Information on the imported meshes can be printed.
 
 <<cPrintMesh>>=
-## data_heart_meshL: list of sample meshes included in MeshAgreement
-print_mesh(data_heart_meshL)
+## data_heart_obsL: list of sample meshes included in MeshAgreement
+print_mesh(data_heart_obsL)
 @
 
 %%%%---------------------------------------------------------------------------
@@ -232,7 +231,7 @@ You can calculate distance-based as well as volume-overlap-based agreement measu
 
 <<cMeshAgreementA>>=
 ## already called above
-# agreeW <- get_mesh_agree(data_heart_meshL, silent=TRUE)
+# agreeW <- get_mesh_agree(data_heart_obsL, silent=TRUE)
 agreeW
 @
 

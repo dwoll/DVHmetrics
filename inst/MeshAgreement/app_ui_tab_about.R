@@ -77,7 +77,8 @@ fluidPage(
                       tags$a(href="https://CRAN.R-project.org/package=RcppCGAL", "RcppCGAL")),
               tags$li(tags$a(href="http://www.vcglib.net/", "VCG Library"),
                       " - used as a backend for distance calculations via R package",
-                      tags$a(href="https://CRAN.R-project.org/package=Rvcg", "Rvcg")))
+                      tags$a(href="https://CRAN.R-project.org/package=Rvcg", "Rvcg")),
+              tags$li(tags$a(href="Export3D.cs", "ESAPI script"), "to export 3D mesh files in PLY format from Varian Eclipse."))
         )
     )
 )

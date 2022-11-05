@@ -22,7 +22,7 @@ dashboardSidebar(
             icon=icon("code-compare", lib="font-awesome")
         ),
         menuItem(
-            "View",
+            "View meshes",
             tabName="tab_view",
             icon=icon("image", lib="font-awesome")
         ),

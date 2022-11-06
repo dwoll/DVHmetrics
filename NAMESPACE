@@ -15,4 +15,5 @@ export(get_mesh_agree, get_mesh_agree_pair, get_mesh_agree_long,
        get_mesh_pairs,
        print_mesh, print_mesh_one,
        read_mesh, read_mesh_obs, read_mesh_one,
+       mesh_list_to_observer_list,
        run_gui)

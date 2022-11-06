@@ -12,7 +12,7 @@ fluidPage(
                 radioButtons("meshes_input_source",
                              label="Data source",
                              list("Use built-in data"="builtin",
-                                  "Upload 3D mesh files"="file"),
+                                  "Upload 3D mesh files (Supported file formats: STL, PLY, OBJ, OFF)"="file"),
                              inline=TRUE),
                 uiOutput("ui_surface_recon_method"),
                 uiOutput("ui_surface_recon_spacing"),

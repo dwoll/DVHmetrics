@@ -65,11 +65,14 @@ read_mesh_obs <- function(x, name,
         basename(tools::file_path_sans_ext(name))
     }
     
-    Map(read_mesh_one,
-        setNames(x, mesh_names),
-        mesh_names,
-        reconstruct=reconstruct,
-        spacing=spacing)
+    meshL <- lapply(seq_along(x), function(i) {
+        read_mesh_one(x[i],
+                      name=mesh_names[i],
+                      reconstruct=reconstruct,
+                      spacing=spacing)
+    })
+    
+    setNames(meshL, mesh_names)
 }
 
 read_mesh <- function(x, name,

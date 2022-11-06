@@ -132,17 +132,22 @@ shiny::shinyApp(
                         if(!is.null(input_file_sel)) {
                             ## list of meshes
                             read_mesh_obs(input_file_sel$datapath,
-                                          input_file_sel$name)
-                            
+                                          name=input_file_sel$name,
+                                          reconstruct=input$read_mesh_reconstruct,
+                                          spacing=input$read_mesh_reconstruct_pois_spacing)                            
                         } else {
                             NULL
                         }
                     })
                     
                     ll <- Filter(Negate(is.null), ll)
-                    setNames(ll, sprintf("Observer_%.2d", seq_along(ll)))
+                    if(input$meshes_sel_mode == "all_pairwise") {
+                        mesh_list_to_observer_list(unlist(ll, recursive=FALSE))
+                    } else {
+                        setNames(ll, sprintf("Observer_%.2d", seq_along(ll)))
+                    }
                 }
-                
+
                 meshL
             })
         })
@@ -268,7 +273,6 @@ shiny::shinyApp(
                 })
                 
                 ## weed out NULL components, convert the list to a tagList and return
-                # "Supported file formats: STL, PLY, OBJ, OFF")
                 file_selL <- Filter(Negate(is.null), file_selL)
                 fluidRow(do.call(tagList, file_selL))
             } else {
@@ -300,9 +304,11 @@ shiny::shinyApp(
                         })
                         
                         ## weed out NULL components, convert the list to a tagList and return
-                        # "Supported file formats: STL, PLY, OBJ, OFF")
                         ranklistL <- Filter(Negate(is.null), ranklistL)
-                        fluidRow(do.call(tagList, ranklistL))
+                        tagList(fluidRow(column(width=12,
+                                                p("Drag-and-drop fifle names to define comparison sets.",
+                                                  "All first elements are compared to each other between observers, and so on."))),
+                                fluidRow(do.call(tagList, ranklistL)))
                     } else {
                         NULL
                     }

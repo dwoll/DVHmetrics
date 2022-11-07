@@ -66,13 +66,16 @@ read_mesh_one <- function(x,
             warn_str <- paste0(warn_str, ". Trying to fix.")
             warning(warn_str)
             
-            if(!diag_closed || !diag_bv) {
+            if(!diag_closed) {
                 if(reconstruct == "no") {
                     reconstruct <- "afs"
                 }
                 
                 mesh_r <- reconstruct_mesh(mesh, method=reconstruct, spacing=spacing)
                 mesh   <- mesh_r
+            }
+            
+            if(!mesh$boundsVolume) {
                 mesh$orientToBoundVolume()
             }
             
@@ -448,10 +451,26 @@ get_mesh_agree_aggr_long <- function(x) {
     dL
 }
 
-mesh_list_to_observer_list <- function(x) {
+meshL_to_observerL <- function(x) {
     ll <- Map(function(i, name) {
         setNames(list(i), name)
     }, x, names(x))
     
     setNames(ll, sprintf("Observer_%.2d", seq_along(ll)))
+}
+
+mesh3dL_to_cgalMeshL <- function(x) {
+    convert_mesh_one <- function(y) {
+        if(inherits(y$mesh, "mesh3d")) {
+            y$mesh <- cgalMeshes::cgalMesh$new(y$mesh)
+        }
+        
+        y
+    }
+    
+    convert_meshL <- function(z) {
+        lapply(z, convert_mesh_one)
+    }
+    
+    lapply(x, convert_meshL)
 }

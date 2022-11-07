@@ -18,7 +18,8 @@ get_mesh_ui_pair(x)
 \code{\link[cgalMeshes]{cgalMesh}}
 }
 \examples{
-pairL <- get_mesh_pairs(data_heart_obsL)
-ui <- get_mesh_ui_pair(pairL[[1]])
+heartL <- mesh3dL_to_cgalMeshL(data_heart_obsL)
+pairL  <- get_mesh_pairs(heartL)
+ui     <- get_mesh_ui_pair(pairL[[1]])
 ui
 }

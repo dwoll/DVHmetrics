@@ -19,7 +19,8 @@
 }
 \references{\url{http://vcg.isti.cnr.it/vcglib/}}
 \examples{
-metroL <- get_mesh_metro(data_heart_obsL, nSamples=500L, silent=TRUE)
+heartL <- mesh3dL_to_cgalMeshL(data_heart_obsL)
+metroL <- get_mesh_metro(heartL, nSamples=500L, silent=TRUE)
 # Hausdorff distance
 get_HD_max <- function(x) {
     max(c(x$ForwardSampling$maxdist,

@@ -18,8 +18,9 @@
 \code{\link[Rvcg]{vcgMetro}}
 }
 \examples{
-pairL <- get_mesh_pairs(data_heart_obsL)
-metro <- get_mesh_metro_pair(pairL[[1]], nSamples=500L, silent=TRUE)
+heartL <- mesh3dL_to_cgalMeshL(data_heart_obsL)
+pairL  <- get_mesh_pairs(heartL)
+metro  <- get_mesh_metro_pair(pairL[[1]], nSamples=500L, silent=TRUE)
 # Hausdorff distance
 get_HD_max <- function(x) {
     max(c(x$ForwardSampling$maxdist,

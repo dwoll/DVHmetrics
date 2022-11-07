@@ -145,7 +145,7 @@ shiny::shinyApp(
                     
                     ll <- Filter(Negate(is.null), ll)
                     if(input$meshes_sel_mode == "all_pairwise") {
-                        mesh_list_to_observer_list(unlist(ll, recursive=FALSE))
+                        meshL_to_observerL(unlist(ll, recursive=FALSE))
                     } else {
                         setNames(ll, sprintf("Observer_%.2d", seq_along(ll)))
                     }

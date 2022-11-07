@@ -444,7 +444,7 @@ get_mesh_agree_aggr_long <- function(x) {
     dL
 }
 
-mesh_list_to_observer_list <- function(x) {
+meshL_to_observerL <- function(x) {
     ll <- Map(function(i, name) {
         setNames(list(i), name)
     }, x, names(x))

@@ -22,6 +22,7 @@ get_mesh_agree_aggr(x, na.rm=FALSE)
 \code{\link[MeshAgreement]{get_mesh_agree}}
 }
 \examples{
-d_agree_pair <- get_mesh_agree(data_heart_obsL)
+heartL       <- mesh3dL_to_cgalMeshL(data_heart_obsL)
+d_agree_pair <- get_mesh_agree(heartL, do_ui=FALSE)
 get_mesh_agree_aggr(d_agree_pair)
 }

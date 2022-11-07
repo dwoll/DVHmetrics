@@ -22,6 +22,7 @@ get_mesh_agree_long(x)
 \code{\link[stats]{reshape}}
 }
 \examples{
-agreeW <- get_mesh_agree(data_heart_obsL)
+heartL <- mesh3dL_to_cgalMeshL(data_heart_obsL)
+agreeW <- get_mesh_agree(heartL, do_ui=FALSE)
 get_mesh_agree_long(agreeW)
 }

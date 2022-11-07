@@ -124,7 +124,8 @@ library(MeshAgreement, verbose=FALSE)
 
 ## get agreement measures for all pairs from list of meshes
 ## data_heart_obsL: list of sample meshes included in MeshAgreement
-agreeW <- get_mesh_agree(data_heart_obsL, silent=TRUE)
+heartL <- mesh3dL_to_cgalMeshL(data_heart_obsL)
+agreeW <- get_mesh_agree(heartL, do_ui=FALSE, silent=TRUE)
 agreeW
 @
 
@@ -199,7 +200,8 @@ Information on the imported meshes can be printed.
 
 <<cPrintMesh>>=
 ## data_heart_obsL: list of sample meshes included in MeshAgreement
-print_mesh(data_heart_obsL)
+heartL <- mesh3dL_to_cgalMeshL(data_heart_obsL)
+print_mesh(heartL)
 @
 
 %%%%---------------------------------------------------------------------------
@@ -229,7 +231,8 @@ You can calculate distance-based as well as volume-overlap-based agreement measu
 
 <<cMeshAgreementA>>=
 ## already called above
-# agreeW <- get_mesh_agree(data_heart_obsL, silent=TRUE)
+# heartL <- mesh3dL_to_cgalMeshL(data_heart_obsL)
+# agreeW <- get_mesh_agree(heartL, silent=TRUE)
 agreeW
 @
 

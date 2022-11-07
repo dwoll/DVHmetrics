@@ -16,6 +16,7 @@ print_mesh_obs(x)
 \code{\link[MeshAgreement]{print_mesh}}
 }
 \examples{
-Obs01 <- data_heart_obsL[["Obs01"]]
+heartL <- mesh3dL_to_cgalMeshL(data_heart_obsL)
+Obs01  <- heartL[["Obs01"]]
 print_mesh_obs(Obs01)
 }

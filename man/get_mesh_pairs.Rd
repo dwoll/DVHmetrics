@@ -20,6 +20,7 @@ get_mesh_pairs(x, sep=" <-> ", names_only=FALSE)
 \code{\link[MeshAgreement]{get_mesh_ui_pair}}
 }
 \examples{
-pairL <- get_mesh_pairs(data_heart_obsL)
+heartL <- mesh3dL_to_cgalMeshL(data_heart_obsL)
+pairL  <- get_mesh_pairs(heartL)
 pairL[[1]]
 }

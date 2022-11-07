@@ -10,13 +10,14 @@
     \item{\code{Obs01_AOKL}}{Mesh object with the same structure as \code{Obs01_HEART}.}
   }
 }
-\details{Data courtesy of Department of Radiation Oncology, University Medical Center Mainz, Germany.}
+\details{Use \code{\link[MeshAgreement]{mesh3dL_to_cgalMeshL}} to convert \code{\link[rgl]{mesh3d}} objects to \code{\link[cgalMeshes]{cgalMesh}} objects that other functions expect. Data courtesy of the Department of Radiation Oncology, University Medical Center Mainz, Germany.}
 \seealso{
 \code{\link[rgl]{mesh3d}},
 \code{\link[MeshAgreement]{read_mesh}},
 \code{\link[MeshAgreement]{print_mesh}}
 }
 \examples{
-print_mesh(data_heart_obsL)
+heartL <- mesh3dL_to_cgalMeshL(data_heart_obsL)
+print_mesh(heartL)
 }
 \keyword{datasets}

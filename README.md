@@ -2,7 +2,7 @@
 
 Agreement measures for 3D structures saved as mesh files. R package containing an interactive [R](https://www.r-project.org/) [Shiny](https://shiny.rstudio.com/) app. You can upload mesh files (STL, PLY, OBJ, OFF) to generate agreement measures for all pairwise comparisons, as well as the corresponding aggregated agreement. The intended application is to compare delineated structures for radiotherapy treatment planning.
 
-**Currently unstable under heavy development.**
+  * Live demo here: [http://shiny.imbei.uni-mainz.de:3838/MeshAgreement/](http://shiny.imbei.uni-mainz.de:3838/MeshAgreement/)
 
 # Implemented agreement measures
 
@@ -30,8 +30,7 @@ Required packages on CRAN:
 
 # TODO
 
-  * Enable setting a mesh as gold standard for comparison instead of doing all pairwise comparisons
-  * convert included data to use `cgalMesh` objects instead of `mesh3d`
+  * Enable setting a mesh as gold standard for comparison instead of doing all pairwise comparisons - then calculate TP, FP, TN, FN from union/intersection
 
 # Literature (selection)
 

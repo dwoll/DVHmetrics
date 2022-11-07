@@ -117,8 +117,12 @@ print_mesh_one <- function(x) {
         "\n", sep="")
 }
 
+print_mesh_obs <- function(x) {
+    invisible(Map(print_mesh_one, x))
+}
+
 print_mesh <- function(x) {
-    invisible(Map(print_mesh_one, unlist(x, recursive=FALSE)))
+    invisible(Map(print_mesh_obs, x))
 }
 
 ## starting from list of observers, each with a list of meshes

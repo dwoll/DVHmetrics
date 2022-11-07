@@ -8,10 +8,11 @@ print_mesh_one(x)
 \arguments{
   \item{x}{A single mesh object as produced by \code{\link[MeshAgreement]{read_mesh_one}}.}
 }
-\details{Use \code{\link[MeshAgreement]{print_mesh}} for printing information for a list of mesh objects.}
+\details{Use \code{\link[MeshAgreement]{print_mesh}} for printing information for a list of mesh observer/objects. Use \code{\link[MeshAgreement]{print_mesh_obs}} for printing information for a list of meshes.}
 \value{Text output on the console.}
 \seealso{
 \code{\link[MeshAgreement]{read_mesh_one}},
+\code{\link[MeshAgreement]{print_mesh_obs}},
 \code{\link[MeshAgreement]{print_mesh}}
 }
 \examples{

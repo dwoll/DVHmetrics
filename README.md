@@ -34,6 +34,7 @@ Required packages on CRAN:
 
 # TODO
 
+  * Check naming of list components in `read_mesh_*` functions and `get_mesh_pairs()`
   * Enable setting a mesh as gold standard for comparison instead of doing all pairwise comparisons
   * Replace [PolygonSoup](https://CRAN.R-project.org/package=PolygonSoup), [SurfaceReconstruction](https://github.com/stla/SurfaceReconstruction), [SurfaceReconstruction](https://github.com/stla/Boov), and [MeshesTools](https://CRAN.R-project.org/package=MeshesTools) with [cgalMeshes](https://github.com/stla/cgalMeshes) once stable
 

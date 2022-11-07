@@ -236,7 +236,7 @@ shiny::shinyApp(
                 tagList(checkboxInput("read_mesh_fix_issues", "Try to fix mesh issues on import", TRUE),
                         radioButtons("read_mesh_reconstruct",
                                      "Surface reconstruction on import",
-                                     choices=c("No", "AFS", "Poisson"),
+                                     choices=c("No", "AFS"), # "Poisson"),
                                      selected="No",
                                      inline=TRUE))
             } else {

@@ -43,9 +43,9 @@ read_mesh_one <- function(x,
                              choices=c("no", "afs", "poisson"))
     
     mesh_name <- if(missing(name)) {
-        basename(file_path_sans_ext(x))
+        basename(tools::file_path_sans_ext(x))
     } else {
-        basename(file_path_sans_ext(name))
+        basename(tools::file_path_sans_ext(name))
     }
     
     mesh <- cgalMesh$new(x)
@@ -77,7 +77,7 @@ read_mesh_one <- function(x,
                 }
                 
                 mesh_r <- reconstruct_mesh(mesh, method=reconstruct, spacing=spacing)
-                mesh   <- cgalMesh$new(mesh_r)
+                mesh   <- mesh_r
                 mesh$orientToBoundVolume()
             }
             
@@ -108,6 +108,7 @@ read_mesh_one <- function(x,
 }
 
 read_mesh_obs <- function(x, name,
+                          fix_issues=TRUE,
                           reconstruct=c("No", "AFS", "Poisson"),
                           spacing=1) {
     reconstruct <- match.arg(tolower(reconstruct),
@@ -122,6 +123,7 @@ read_mesh_obs <- function(x, name,
     meshL <- lapply(seq_along(x), function(i) {
         read_mesh_one(x[i],
                       name=mesh_names[i],
+                      fix_issues=fix_issues,
                       reconstruct=reconstruct,
                       spacing=spacing)
     })
@@ -144,9 +146,9 @@ read_mesh <- function(x,
     }
     
     mesh_names <- if(missing(name)) {
-        basename(file_path_sans_ext(x))
+        basename(tools::file_path_sans_ext(x))
     } else {
-        basename(file_path_sans_ext(name))
+        basename(tools::file_path_sans_ext(name))
     }
     
     Map(read_mesh_obs,

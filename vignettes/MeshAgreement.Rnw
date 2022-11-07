@@ -85,7 +85,7 @@ options(replace.assign=TRUE,
 
 \texttt{MeshAgreement} is an add-on package for the free statistical environment \textsf{R}\footnote{A free short introduction to \textsf{R} can be found at \url{https://www.statmethods.net/}.} \cite{RDevelopmentCoreTeam2008c}. It provides functionality to read 3D mesh files, to calculate distance-based as well as volume-overlap-based agreement measures for 3D structures, and to plot the meshes.
 
-Computational geometry is carried out mainly using the \texttt{CGAL} library \cite{CGAL2022} via package \texttt{RcppCGAL} \cite{Dunipace2022} used in packages \texttt{MeshesTools} \cite{LaurentMT2022}, \texttt{SurfaceReconstruction} \cite{LaurentSR2022}, \texttt{PolygonSoup} \cite{LaurentPS2022}, and \texttt{Boov} \cite{LaurentBo2022}. Distance maps are calculated using the \texttt{VCG} library \cite{VCG2022} via package \texttt{Rvcg} \cite{Schlager2017}.
+Computational geometry is carried out mainly using the \texttt{CGAL} library \cite{CGAL2022} via package \texttt{RcppCGAL} \cite{Dunipace2022} used in package \texttt{cgalMeshes} \cite{LaurentCM2022}. Distance maps are calculated using the \texttt{VCG} library \cite{VCG2022} via package \texttt{Rvcg} \cite{Schlager2017}.
 
 To install \texttt{MeshAgreement}, you need a current version of \textsf{R} and be online. Preferably, a free development environment like \textsf{R}Studio \cite{RStudio2022} should be used.
 
@@ -96,9 +96,7 @@ Currently, some R packages are also required that are not available on CRAN. The
 # install.packages("remotes")
 
 ## install packages from GitHub
-# remotes::install_github(c("stla/SurfaceReconstruction"))
-
-## install 'MeshAgreement' from GitHub
+# remotes::install_github("stla/cgalMeshes")
 # remotes::install_github("dwoll/MeshAgreement")
 @
 

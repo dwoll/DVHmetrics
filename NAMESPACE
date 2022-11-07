@@ -2,10 +2,7 @@ importFrom(stats, median, sd, var, aggregate, quantile, reshape, setNames)
 importFrom(utils, combn, capture.output)
 importFrom(tools, file_path_sans_ext)
 importFrom(Rvcg, vcgMetro)
-importFrom(MeshesTools, meshVolume, meshCentroid)
-importFrom(PolygonSoup, readMeshFile, toRGL, Mesh)
-importFrom(SurfaceReconstruction, AFSreconstruction, PoissonReconstruction)
-importFrom(Boov, MeshesUnion, MeshesIntersection)
+importFrom(cgalMeshes, cgalMesh, AFSreconstruction)
 
 export(get_mesh_agree, get_mesh_agree_pair, get_mesh_agree_long,
        get_mesh_agree_aggr, get_mesh_agree_aggr_long,

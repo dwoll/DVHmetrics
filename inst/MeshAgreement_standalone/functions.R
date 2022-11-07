@@ -1,3 +1,10 @@
+library(cgalMeshes)
+library(Rvcg)
+
+#####---------------------------------------------------------------------------
+## functions
+#####---------------------------------------------------------------------------
+
 get_name_pair <- function(x, y, sep=" <-> ") {
     paste0(x, sep, y) 
 }
@@ -21,9 +28,7 @@ reconstruct_mesh <- function(x,
     if(method == "afs") {
         AFSreconstruction(x$vertices())
     } else if(method == "poisson") {
-        # PoissonReconstruction(x$vertices(), spacing=spacing)
-        warning("Poisson reconstruction currently not implemented. Using AFS method instead.")
-        AFSreconstruction(x$vertices())
+        PoissonReconstruction(x$vertices(), spacing=spacing)
     } else {
         stop("Wrong reconstruction method")
     }
@@ -72,7 +77,7 @@ read_mesh_one <- function(x,
                 }
                 
                 mesh_r <- reconstruct_mesh(mesh, method=reconstruct, spacing=spacing)
-                mesh   <- mesh_r
+                mesh   <- cgalMesh$new(mesh_r)
                 mesh$orientToBoundVolume()
             }
             
@@ -103,7 +108,6 @@ read_mesh_one <- function(x,
 }
 
 read_mesh_obs <- function(x, name,
-                          fix_issues=TRUE,
                           reconstruct=c("No", "AFS", "Poisson"),
                           spacing=1) {
     reconstruct <- match.arg(tolower(reconstruct),
@@ -118,7 +122,6 @@ read_mesh_obs <- function(x, name,
     meshL <- lapply(seq_along(x), function(i) {
         read_mesh_one(x[i],
                       name=mesh_names[i],
-                      fix_issues=fix_issues,
                       reconstruct=reconstruct,
                       spacing=spacing)
     })
@@ -178,12 +181,8 @@ print_mesh_one <- function(x) {
         "\n", sep="")
 }
 
-print_mesh_obs <- function(x) {
-    invisible(Map(print_mesh_one, x))
-}
-
 print_mesh <- function(x) {
-    invisible(Map(print_mesh_obs, x))
+    invisible(Map(print_mesh_one, unlist(x, recursive=FALSE)))
 }
 
 ## starting from list of observers, each with a list of meshes
@@ -364,13 +363,8 @@ get_mesh_agree_pair <- function(x, metro, ui, do_ui=FALSE, chop=TRUE, ...) {
 
 get_mesh_agree <- function(x, do_ui=FALSE, chop=TRUE, ...) {
     pairL  <- get_mesh_pairs(x)
+    uiL    <- Map(get_mesh_ui_pair,    pairL)
     metroL <- Map(get_mesh_metro_pair, pairL, chop=chop, ...)
-    uiL    <- if(do_ui) {
-        Map(get_mesh_ui_pair,    pairL)
-    } else {
-        list(NULL)
-    }
-
     agreeL <- Map(get_mesh_agree_pair,
                   pairL,
                   metro=metroL,

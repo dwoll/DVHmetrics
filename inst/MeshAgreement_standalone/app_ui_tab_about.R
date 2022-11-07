@@ -68,7 +68,7 @@ fluidPage(
                               ", ", tags$a(href="https://CRAN.R-project.org/package=rgl",         "rgl"),
                               ", ", tags$a(href="https://CRAN.R-project.org/package=Rvcg",        "Rvcg")),
                       tags$li("On GitHub:",
-                              tags$a(href="https://github.com/stla/cgalMeshes",  "cgalMeshes"))),
+                              tags$a(href="https://github.com/stla/cgalMeshes", "cgalMeshes"))),
               tags$li(tags$a(href="https://www.cgal.org/", "CGAL"),
                       " - used as a backend for computational geometry calculations via R package",
                       tags$a(href="https://CRAN.R-project.org/package=RcppCGAL", "RcppCGAL")),

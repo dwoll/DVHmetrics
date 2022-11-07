@@ -19,24 +19,19 @@ Agreement measures for 3D structures saved as mesh files. R package containing a
 
 `MeshAgreement` heavily relies on packages developed by Stéphane Laurent, which build on package [RcppCGAL](https://CRAN.R-project.org/package=RcppCGAL) to enable the functionality from the [CGAL](https://www.cgal.org/) library for computational geometry. The second back-end for geometry calculations is the [VCG Library](http://www.vcglib.net/). Some requried packages are currently only available from GitHub:
 
-  * [SurfaceReconstruction](https://github.com/stla/SurfaceReconstruction)
+  * [cgalMeshes](https://github.com/stla/cgalMeshes)
 
 Required packages on CRAN:
 
   * [shiny](https://CRAN.R-project.org/package=shiny)
   * [bs4Dash](https://CRAN.R-project.org/package=bs4Dash)
   * [sortable](https://CRAN.R-project.org/package=sortable)
-  * [rgl](https://CRAN.R-project.org/package=rgl)
   * [Rvcg](https://CRAN.R-project.org/package=Rvcg)
-  * [PolygonSoup](https://CRAN.R-project.org/package=PolygonSoup)
-  * [MeshesTools](https://CRAN.R-project.org/package=MeshesTools)
-  * [Boov](https://CRAN.R-project.org/package=Boov)
 
 # TODO
 
-  * Check naming of list components in `read_mesh_*` functions and `get_mesh_pairs()`
   * Enable setting a mesh as gold standard for comparison instead of doing all pairwise comparisons
-  * Replace [PolygonSoup](https://CRAN.R-project.org/package=PolygonSoup), [SurfaceReconstruction](https://github.com/stla/SurfaceReconstruction), [SurfaceReconstruction](https://github.com/stla/Boov), and [MeshesTools](https://CRAN.R-project.org/package=MeshesTools) with [cgalMeshes](https://github.com/stla/cgalMeshes) once stable
+  * convert included data to use `cgalMesh` objects instead of `mesh3d`
 
 # Literature (selection)
 

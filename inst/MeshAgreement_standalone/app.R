@@ -21,7 +21,7 @@ library(ggplot2)
 library(plotly)
 library(sortable)
 library(rgl)
-library(MeshAgreement)
+library(cgalMeshes)
 
 source("app_00_global.R")
 
@@ -130,11 +130,9 @@ shiny::shinyApp(
                     ll <- lapply(seq_len(n_file_sel), function(i) {
                         input_file_sel <- input[[sprintf("file_sel_%.2d", i)]]
                         if(!is.null(input_file_sel)) {
-                            f_files <- input_file_sel$datapath
-                            f_names <- input_file_sel$name
                             ## list of meshes
-                            read_mesh_obs(f_files,
-                                          name=f_names,
+                            read_mesh_obs(input_file_sel$datapath,
+                                          name=input_file_sel$name,
                                           fix_issues=input$read_mesh_fix_issues,
                                           reconstruct=input$read_mesh_reconstruct,
                                           spacing=input$read_mesh_reconstruct_pois_spacing)
@@ -210,7 +208,7 @@ shiny::shinyApp(
             } else {
                 list(NULL)
             }
-
+            
             if(!is.null(meshL) && !is.null(metroL)) {
                 mesh_pairL  <- get_mesh_pairs(meshL)
                 agree_pairL <- Map(get_mesh_agree_pair,
@@ -238,7 +236,7 @@ shiny::shinyApp(
                 tagList(checkboxInput("read_mesh_fix_issues", "Try to fix mesh issues on import", TRUE),
                         radioButtons("read_mesh_reconstruct",
                                      "Surface reconstruction on import",
-                                     choices=c("No", "AFS"), #, "Poisson"),
+                                     choices=c("No", "AFS", "Poisson"),
                                      selected="No",
                                      inline=TRUE))
             } else {
@@ -492,6 +490,38 @@ shiny::shinyApp(
                 NULL
             }
         })
+        # output$rgl_mesh_union <- renderRglwidget({
+        #     mesh_uiL    <- react_mesh_ui()
+        #     view_select <- input$rgl_view_select
+        #     if(!is.null(mesh_uiL) && !is.null(view_select)) {
+        #         ui <- mesh_uiL[[view_select]]
+        #         if(!is.null(ui) && !is.null(ui$union)) {
+        #             try(rgl.close())
+        #             wire3d(ui$union)
+        #             rglwidget()
+        #         } else {
+        #             NULL
+        #         }
+        #     } else {
+        #         NULL
+        #     }
+        # })
+        # output$rgl_mesh_intersection <- renderRglwidget({
+        #     mesh_uiL    <- react_mesh_ui()
+        #     view_select <- input$rgl_view_select
+        #     if(!is.null(mesh_uiL) && !is.null(view_select)) {
+        #         ui <- mesh_uiL[[view_select]]
+        #         if(!is.null(ui) && !is.null(ui$intersection)) {
+        #             try(rgl.close())
+        #             wire3d(ui$intersection)
+        #             rglwidget()
+        #         } else {
+        #             NULL
+        #         }
+        #     } else {
+        #         NULL
+        #     }
+        # })
         output$rgl_mesh_dist1 <- renderRglwidget({
             metroL      <- react_mesh_metro()
             view_select <- input$rgl_view_select

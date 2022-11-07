@@ -6,6 +6,13 @@
 
 options(rgl.useNULL=TRUE)
 library(shiny)
+source("functions.R")
+
+#####---------------------------------------------------------------------------
+## data
+#####---------------------------------------------------------------------------
+
+data_heart_obsL <- readRDS("data_heart_obsL.rda")
 
 ## saved data may be mesh3d, not cgalMesh
 if(exists("data_heart_obsL")) {

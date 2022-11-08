@@ -75,7 +75,7 @@ read_mesh_one <- function(x,
                 mesh   <- mesh_r
             }
             
-            if(!mesh$boundsVolume) {
+            if(!mesh$boundsVolume()) {
                 mesh$orientToBoundVolume()
             }
             

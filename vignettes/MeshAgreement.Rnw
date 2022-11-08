@@ -161,8 +161,15 @@ For users who are unfamiliar with \textsf{R}, \texttt{MeshAgreement} includes a 
 \begin{figure}[ht]
 \centering
 \includegraphics[width=12cm]{shiny02data}
-\caption{Importing files and printing information on the imported meshes in the \texttt{MeshAgreement} web application}
-\label{fig:shiny02data}
+\caption{Importing files with options in the \texttt{MeshAgreement} web application}
+\label{fig:shiny02data1}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=12cm]{shiny02data}
+\caption{Defining comparisons for agreement measures by drag-and-drop of file lists in the \texttt{MeshAgreement} web application}
+\label{fig:shiny02data2}
 \end{figure}
 
 \begin{figure}[ht]

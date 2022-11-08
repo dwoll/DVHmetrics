@@ -254,20 +254,20 @@ get_mesh_ui_pair <- function(x) {
         vol_u     <- NA_real_
         vol_i     <- NA_real_
     } else {
-        if(!union$boundsVolume()) {
-            union$orientToBoundVolume()
-        }
-        
-        if(!intersect$boundsVolume()) {
-            intersect$orientToBoundVolume()
-        }
-        
         if(union$selfIntersects()) {
             union$removeSelfIntersections()
         }
         
         if(intersect$selfIntersects()) {
             intersect$removeSelfIntersections()
+        }
+        
+        if(!union$boundsVolume()) {
+            union$orientToBoundVolume()
+        }
+        
+        if(!intersect$boundsVolume()) {
+            intersect$orientToBoundVolume()
         }
         
         vol_u_0 <- try(union$volume())

@@ -138,7 +138,7 @@ agreeW
 %%%%---------------------------------------------------------------------------
 %%%%---------------------------------------------------------------------------
 
-For users who are unfamiliar with \textsf{R}, \texttt{MeshAgreement} includes a \texttt{Shiny}-based web application \cite{Chang2022} running locally that eliminates the need to use \textsf{R} syntax.\footnote{A live demo is available at: \url{http://shiny.imbei.uni-mainz.de:3838/MeshAgreement/}} Note that packages \texttt{shiny} \cite{Chang2022}, \texttt{bs4Dash} \cite{Granjon2022}, \texttt{DT} \cite{Xie2022}, \texttt{sortable} \cite{deVries2022}, and \texttt{rgl} \cite{Murdoch2022} need to be installed to run the GUI. The different analysis steps are displayed in figures \ref{fig:shiny01home}, \ref{fig:shiny02data}, \ref{fig:shiny03agreement}, \ref{fig:shiny04view}, and \ref{fig:shiny05about}.
+For users who are unfamiliar with \textsf{R}, \texttt{MeshAgreement} includes a \texttt{Shiny}-based web application \cite{Chang2022} running locally that eliminates the need to use \textsf{R} syntax.\footnote{A live demo is available at: \url{http://shiny.imbei.uni-mainz.de:3838/MeshAgreement/}} Note that packages \texttt{shiny} \cite{Chang2022}, \texttt{bs4Dash} \cite{Granjon2022}, \texttt{DT} \cite{Xie2022}, \texttt{sortable} \cite{deVries2022}, and \texttt{rgl} \cite{Murdoch2022} need to be installed to run the GUI. The different analysis steps are displayed in figures \ref{fig:shiny01home}, \ref{fig:shiny02data1}, \ref{fig:shiny02data2}, \ref{fig:shiny03agreement}, \ref{fig:shiny04view}, and \ref{fig:shiny05about}.
 
 <<cStartShiny>>=
 ## install required packages
@@ -160,14 +160,14 @@ For users who are unfamiliar with \textsf{R}, \texttt{MeshAgreement} includes a 
 
 \begin{figure}[ht]
 \centering
-\includegraphics[width=12cm]{shiny02data}
+\includegraphics[width=12cm]{shiny02data1}
 \caption{Importing files with options in the \texttt{MeshAgreement} web application}
 \label{fig:shiny02data1}
 \end{figure}
 
 \begin{figure}[ht]
 \centering
-\includegraphics[width=12cm]{shiny02data}
+\includegraphics[width=12cm]{shiny02data2}
 \caption{Defining comparisons for agreement measures by drag-and-drop of file lists in the \texttt{MeshAgreement} web application}
 \label{fig:shiny02data2}
 \end{figure}

@@ -28,7 +28,9 @@ reconstruct_mesh <- function(x,
     if(method == "afs") {
         AFSreconstruction(x$vertices())
     } else if(method == "poisson") {
-        PoissonReconstruction(x$vertices(), spacing=spacing)
+        # PoissonReconstruction(x$vertices(), spacing=spacing)
+        warning("Poisson reconstruction currently not implemented. Using AFS method instead.")
+        AFSreconstruction(x$vertices())
     } else {
         stop("Wrong reconstruction method")
     }
@@ -71,13 +73,16 @@ read_mesh_one <- function(x,
             warn_str <- paste0(warn_str, ". Trying to fix.")
             warning(warn_str)
             
-            if(!diag_closed || !diag_bv) {
+            if(!diag_closed) {
                 if(reconstruct == "no") {
                     reconstruct <- "afs"
                 }
                 
                 mesh_r <- reconstruct_mesh(mesh, method=reconstruct, spacing=spacing)
                 mesh   <- mesh_r
+            }
+            
+            if(!mesh$boundsVolume()) {
                 mesh$orientToBoundVolume()
             }
             

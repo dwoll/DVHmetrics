@@ -245,15 +245,26 @@ get_mesh_pairs <- function(x, sep=" <-> ", names_only=FALSE) {
 
 ## union and intersection for list of two meshes x
 get_mesh_ui_pair <- function(x) {
-    union     <- try(x$mesh1$mesh$union(x$mesh2$mesh))
-    intersect <- try(x$mesh1$mesh$intersection(x$mesh2$mesh))
+    # union     <- try(x$mesh1$mesh$union(x$mesh2$mesh))
+    # intersect <- try(x$mesh1$mesh$intersection(x$mesh2$mesh))
+    mesh1_rgl <- x$mesh1$mesh$getMesh(rgl=TRUE, normals=FALSE)
+    mesh2_rgl <- x$mesh2$mesh$getMesh(rgl=TRUE, normals=FALSE)
+
+    union_0     <- try(Boov::MeshesUnion(       list(mesh1_rgl, mesh2_rgl), clean=TRUE))
+    intersect_0 <- try(Boov::MeshesIntersection(list(mesh1_rgl, mesh2_rgl), clean=TRUE))
     
-    if(inherits(union, "try-error") || inherits(intersect, "try-error")) {
+    if(inherits(union_0, "try-error") || inherits(intersect_0, "try-error")) {
         union     <- NULL
         intersect <- NULL
         vol_u     <- NA_real_
         vol_i     <- NA_real_
     } else {
+        union_rgl     <- PolygonSoup::toRGL(union_0)
+        intersect_rgl <- PolygonSoup::toRGL(intersect_0)
+        
+        union     <- cgalMesh$new(union_rgl)
+        intersect <- cgalMesh$new(intersect_rgl)
+        
         if(union$selfIntersects()) {
             union$removeSelfIntersections()
         }
@@ -278,7 +289,7 @@ get_mesh_ui_pair <- function(x) {
         } else {
             vol_u_0
         }
-
+        
         vol_i <- if(inherits(vol_i_0, "try-error") || is.na(vol_i_0)) {
             NA_real_
         } else {

@@ -17,20 +17,19 @@ Agreement measures for 3D structures saved as mesh files. R package containing a
 
 # Required packages
 
-`MeshAgreement` heavily relies on packages developed by Stéphane Laurent, which build on package [RcppCGAL](https://CRAN.R-project.org/package=RcppCGAL) to enable the functionality from the [CGAL](https://www.cgal.org/) library for computational geometry. The second back-end for geometry calculations is the [VCG Library](http://www.vcglib.net/). Some requried packages are currently only available from GitHub:
+`MeshAgreement` heavily relies on packages developed by Stéphane Laurent, which build on package [RcppCGAL](https://CRAN.R-project.org/package=RcppCGAL) to enable the functionality from the [CGAL](https://www.cgal.org/) library for computational geometry. The second back-end for geometry calculations is the [VCG Library](http://www.vcglib.net/).
 
-  * [cgalMeshes](https://github.com/stla/cgalMeshes)
-
-Required packages on CRAN:
-
+  * [Rvcg](https://CRAN.R-project.org/package=Rvcg)
+  * [cgalMeshes](https://CRAN.R-project.org/package=cgalMeshes)
   * [shiny](https://CRAN.R-project.org/package=shiny)
   * [bs4Dash](https://CRAN.R-project.org/package=bs4Dash)
+  * [DT](https://CRAN.R-project.org/package=DT)
   * [sortable](https://CRAN.R-project.org/package=sortable)
-  * [Rvcg](https://CRAN.R-project.org/package=Rvcg)
 
 # TODO
 
   * Enable setting a mesh as gold standard for comparison instead of doing all pairwise comparisons - then calculate TP, FP, TN, FN from union/intersection
+  * Include ESAPI mesh export script in package
 
 # Literature (selection)
 

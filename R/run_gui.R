@@ -16,7 +16,7 @@ function(...) {
     if(!have_DT)       { warning("Package 'DT' not found.") }
     if(!have_sortable) { warning("Package 'sortable' not found.") }
     if(!have_rgl)      { warning("Package 'rgl' not found.") }
-    
+
     if(have_shiny && have_bs4Dash && have_DT && have_rgl) {
         shiny::runApp(appDir, ...)
     } else {

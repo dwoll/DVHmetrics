@@ -2,7 +2,7 @@ fluidPage(
     fluidRow(
         column(
             width=12,
-            box(title="Options for agreement calculations",
+            box(title="Options for volume-overlap calculations",
                 width=12,
                 # height="650px",
                 status=NULL,
@@ -10,8 +10,7 @@ fluidPage(
                 maximizable=FALSE,
                 collapsible=FALSE,
                 collapsed=FALSE,
-                p("Volume-overlap based metrics (DSC, JSC) are available, but take more time to compute than distance-based metrics."),
-                checkboxInput("mesh_agree_do_ui", "Calculate DSC, JSC", FALSE)
+                uiOutput("ui_mesh_agree_ui")
             )
         )
     ),

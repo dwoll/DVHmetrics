@@ -89,17 +89,6 @@ Computational geometry is carried out mainly using the \texttt{CGAL} library \ci
 
 To install \texttt{MeshAgreement}, you need a current version of \textsf{R} and be online. Preferably, a free development environment like \textsf{R}Studio \cite{RStudio2022} should be used.
 
-Currently, some R packages are also required that are not available on CRAN. These packages need to be installed from GitHub via package \texttt{remotes} \cite{Csardi2021}. The same currently holds for \texttt{MeshAgreement} itself.
-
-<<cIntro>>=
-## install package 'remotes' to be able to install directly from GitHub
-# install.packages("remotes")
-
-## install packages from GitHub
-# remotes::install_github("stla/cgalMeshes")
-# remotes::install_github("dwoll/MeshAgreement")
-@
-
 %%%%---------------------------------------------------------------------------
 %%%%---------------------------------------------------------------------------
 \section{Interfaces}

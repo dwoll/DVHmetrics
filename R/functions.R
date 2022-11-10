@@ -244,11 +244,36 @@ get_mesh_pairs <- function(x, sep=" <-> ", names_only=FALSE) {
 }
 
 ## union and intersection for list of two meshes x
-get_mesh_ui_pair <- function(x) {
-    union     <- try(x$mesh1$mesh$union(x$mesh2$mesh))
-    intersect <- try(x$mesh1$mesh$intersection(x$mesh2$mesh))
+get_mesh_ui_pair <- function(x, boov=FALSE) {
+    if(!boov) {
+        union     <- try(x$mesh1$mesh$union(x$mesh2$mesh))
+        intersect <- try(x$mesh1$mesh$intersection(x$mesh2$mesh))
+        ui_ok     <- !(inherits(union, "try-error") || inherits(intersect, "try-error"))
+    } else {
+        have_PolygonSoup <- requireNamespace("PolygonSoup", quietly=TRUE)
+        have_Boov        <- requireNamespace("Boov",        quietly=TRUE)
+
+        if(!have_PolygonSoup) { warning("Package 'PolygonSoup' required for 'boov=TRUE' but not found.") }
+        if(!have_Boov)        { warning("Package 'Boov' required for 'boov=TRUE' but not found.") }
+        stopifnot(have_PolygonSoup, have_Boov)
+
+        mesh1_rgl <- x$mesh1$mesh$getMesh(rgl=TRUE, normals=FALSE)
+        mesh2_rgl <- x$mesh2$mesh$getMesh(rgl=TRUE, normals=FALSE)
+
+        union_0     <- try(Boov::MeshesUnion(       list(mesh1_rgl, mesh2_rgl), clean=TRUE))
+        intersect_0 <- try(Boov::MeshesIntersection(list(mesh1_rgl, mesh2_rgl), clean=TRUE))
+
+        ui_ok <- !(inherits(union, "try-error") || inherits(intersect, "try-error"))
+        if(ui_ok) {
+            union_rgl     <- PolygonSoup::toRGL(union_0)
+            intersect_rgl <- PolygonSoup::toRGL(intersect_0)
+            
+            union     <- cgalMesh$new(union_rgl)
+            intersect <- cgalMesh$new(intersect_rgl)
+        }
+    }
     
-    if(inherits(union, "try-error") || inherits(intersect, "try-error")) {
+    if(!ui_ok) {
         union     <- NULL
         intersect <- NULL
         vol_u     <- NA_real_
@@ -293,9 +318,9 @@ get_mesh_ui_pair <- function(x) {
          vol_i=vol_i)    
 }
 
-get_mesh_ui <- function(x) {
+get_mesh_ui <- function(x, boov=FALSE) {
     pairL <- get_mesh_pairs(x)
-    Map(get_mesh_ui_pair, pairL)
+    Map(get_mesh_ui_pair, pairL, boov=boov)
 }
 
 get_mesh_metro_pair <- function(x, chop=TRUE, ...) {
@@ -321,7 +346,7 @@ get_mesh_metro <- function(x, chop=TRUE, ...) {
 }
 
 ## distance measures, union, intersection for each mesh pair
-get_mesh_agree_pair <- function(x, metro, ui, do_ui=FALSE, chop=TRUE, ...) {
+get_mesh_agree_pair <- function(x, metro, ui, boov=FALSE, do_ui=FALSE, chop=TRUE, ...) {
     ## distance-based measures
     if(missing(metro)) {
         metro <- get_mesh_metro_pair(x, chop=chop, ...)
@@ -356,7 +381,7 @@ get_mesh_agree_pair <- function(x, metro, ui, do_ui=FALSE, chop=TRUE, ...) {
     ## volume-overlap-based measures
     ## check if union/intersection are supplied
     if(missing(ui) && do_ui) {
-        ui <- get_mesh_ui_pair(x)
+        ui <- get_mesh_ui_pair(x, boov=boov)
     }
     
     if(do_ui && !is.null(ui) && !is.null(ui$union) && !is.null(ui$intersection)) {
@@ -384,7 +409,7 @@ get_mesh_agree_pair <- function(x, metro, ui, do_ui=FALSE, chop=TRUE, ...) {
                DSC=DSC)
 }
 
-get_mesh_agree <- function(x, do_ui=FALSE, chop=TRUE, ...) {
+get_mesh_agree <- function(x, boov=FALSE, do_ui=FALSE, chop=TRUE, ...) {
     pairL  <- get_mesh_pairs(x)
     metroL <- Map(get_mesh_metro_pair, pairL, chop=chop, ...)
     uiL    <- if(do_ui) {
@@ -397,6 +422,7 @@ get_mesh_agree <- function(x, do_ui=FALSE, chop=TRUE, ...) {
                   pairL,
                   metro=metroL,
                   ui=uiL,
+                  boov=boov,
                   do_ui=do_ui,
                   chop=chop)
 

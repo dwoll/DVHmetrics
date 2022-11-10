@@ -173,7 +173,7 @@ shiny::shinyApp(
         react_mesh_ui <- reactive({
             meshL <- react_file_sel_sorted()
             if(!is.null(meshL)) {
-                get_mesh_ui(meshL)
+                get_mesh_ui(meshL, boov=(input$mesh_agree_do_ui == "boov"))
             } else {
                 NULL
             }
@@ -205,25 +205,45 @@ shiny::shinyApp(
         react_mesh_agree <- reactive({
             meshL  <- react_file_sel_sorted()
             metroL <- react_mesh_metro()
-            uiL    <- if(input$mesh_agree_do_ui) {
+            uiL    <- if(!is.null(input$mesh_agree_do_ui) && (input$mesh_agree_do_ui != "no")) {
                 react_mesh_ui()
             } else {
                 list(NULL)
             }
 
             if(!is.null(meshL) && !is.null(metroL)) {
+                do_boov <- !is.null(input$mesh_agree_do_ui) && (input$mesh_agree_do_ui == "boov")
+                do_ui   <- !is.null(input$mesh_agree_do_ui) && (input$mesh_agree_do_ui != "no")
                 mesh_pairL  <- get_mesh_pairs(meshL)
                 agree_pairL <- Map(get_mesh_agree_pair,
                                    mesh_pairL,
                                    metro=metroL,
                                    ui   =uiL,
-                                   do_ui=input$mesh_agree_do_ui)
+                                   boov =do_boov,
+                                   do_ui=do_ui)
                 
                 d <- do.call("rbind", agree_pairL)
                 rownames(d) <- NULL
                 d
             } else {
                 NULL
+            }
+        })
+        output$ui_mesh_agree_ui <- renderUI({
+            if(requireNamespace("PolygonSoup", quietly=TRUE) &&
+               requireNamespace("Boov", quietly=TRUE)) {
+                tagList(p("Volume-overlap based metrics (DSC, JSC) are available, but take more time to compute than distance-based metrics.",
+                          "Depending on the mesh, calculating union / intersection via package 'Boov' may be faster than via package 'cgalMeshes'."),
+                        radioButtons("mesh_agree_do_ui", "Calculate DSC, JSC",
+                                     choices=c("No"="no", "Via cgalMeshes"="cgalMeshes", "Via Boov"="boov"),
+                                     selected="no",
+                                     inline=TRUE))
+            } else {
+                tagList(p("Volume-overlap based metrics (DSC, JSC) are available, but take more time to compute than distance-based metrics."),
+                        radioButtons("mesh_agree_do_ui", "Calculate DSC, JSC",
+                                     choices=c("No"="no", "Via cgalMeshes"="cgalMeshes"),
+                                     selected="no",
+                                     inline=TRUE))
             }
         })
         output$ui_select_comparisons <- renderUI({

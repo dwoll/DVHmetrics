@@ -53,8 +53,11 @@ fluidPage(
                 maximizable=FALSE,
                 collapsible=FALSE,
                 p("Note: If information on mesh volume and mesh centroid are missing ('NA'), the mesh is not proper.",
-                  "Likely, the mesh does not bound a volume, or has self-intersections. Some agreement measures will be unavailable.",
-                  "Maybe, this can be fixed using surface reconstruction on import."),
+                  "This means that the mesh may not be closed, may not bound a volume, or may have self-intersections.",
+                  "Some agreement measures will then be unavailable.",
+                  "Ticking the 'fix mesh issues' box or using surface reconstruction on import may help.",
+                  "Otherwise, inspection of the mesh with a tool such as",
+                  tags$a(href="https://www.meshlab.net/", "MeshLab"), "is advised."),
                 htmlOutput("print_mesh_info")
             )
         )

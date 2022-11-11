@@ -6,7 +6,7 @@ fluidPage(
             width=12,
             p("This app provides distance-based and volume-overlap-based agreement measures for 3D structures stored in mesh files.",
               "The general approach is to calculate agreement measures for all pairwise comparisons, and aggregate the individual results.",
-              "The intended application is to compare delineated structures for radiotherapy treatment planning."),
+              "The application motivating development of MeshAgreement is to compare delineated structures for radiotherapy treatment planning."),
             p("In order to export 3D mesh files in PLY format from Varian Eclipse, you can use an",
               tags$a(href="Export3D.cs", "ESAPI script"),
               "."),

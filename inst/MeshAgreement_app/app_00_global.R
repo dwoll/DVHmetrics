@@ -33,8 +33,8 @@ print_mesh_html_one <- function(x) {
     ctr_fmt_str <- if(any(is.na(x$centroid))) { "[%s, %s, %s]" } else { "[%.2f, %.2f, %.2f]" }
     tags$p(
         sprintf("Mesh: %s", x$name),
-        tags$br(),
-        capture.output(print(x$mesh)),
+        # tags$br(),
+        # capture.output(x$mesh$print()),
         tags$br(),
         sprintf(paste0("Volume: ", vol_fmt_str), x$volume),
         tags$br(),

@@ -29,7 +29,6 @@ Agreement measures for 3D structures saved as mesh files. R package containing a
 # TODO
 
   * Enable setting a mesh as gold standard for comparison instead of doing all pairwise comparisons - then calculate TP, FP, TN, FN from union/intersection
-  * Include ESAPI mesh export script in package
 
 # Literature (selection)
 

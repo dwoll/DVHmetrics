@@ -1,6 +1,8 @@
 #####---------------------------------------------------------------------------
 #####---------------------------------------------------------------------------
 ## Daniel Wollschläger <wollschlaeger@uni-mainz.de>
+## Package MeshAgreement
+## https://github.com/dwoll/MeshAgreement
 ## Agreement measures for 3D structures
 ## Pairwise distance-based and volume-overlap-based metrics
 ## DCOM:   Distance between centers of mass
@@ -10,8 +12,6 @@
 ## HD_avg: Hausdorff distance - average of both directed HDs
 ## JSC:    Jaccard similarity coefficient
 ## DSC:    Dice similarity coefficient
-##
-## TODO check input numeric ranges, types
 #####---------------------------------------------------------------------------
 #####---------------------------------------------------------------------------
 
@@ -181,12 +181,30 @@ shiny::shinyApp(
         react_mesh_metro <- reactive({
             meshL <- react_file_sel_sorted()
             if(!is.null(meshL)) {
+                valid_nSamples <- !is.null(input$vcgMetro_nSamples) &&
+                                  (input$vcgMetro_nSamples >= 0L)
+                
+                valid_nSamplesArea <- !is.null(input$vcgMetro_nSamplesArea) &&
+                    (input$vcgMetro_nSamplesArea >= 0L)
+
+                nSamples <- if(valid_nSamples) {
+                    input$vcgMetro_nSamples
+                } else {
+                    0L
+                }
+                
+                nSamplesArea <- if(valid_nSamples) {
+                    input$vcgMetro_nSamplesArea
+                } else {
+                    0L
+                }
+
                 argL <- list(meshL,
                              chop        =TRUE,
                              silent      =TRUE,
                              colormeshes =TRUE,
-                             nSamples    =input$vcgMetro_nSamples,
-                             nSamplesArea=input$vcgMetro_nSamplesArea,
+                             nSamples    =nSamples,
+                             nSamplesArea=nSamplesArea,
                              vertSamp    =input$vcgMetro_vertSamp,
                              edgeSamp    =input$vcgMetro_edgeSamp,
                              faceSamp    =input$vcgMetro_faceSamp,
@@ -230,8 +248,7 @@ shiny::shinyApp(
             }
         })
         output$ui_mesh_agree_ui <- renderUI({
-            if(requireNamespace("PolygonSoup", quietly=TRUE) &&
-               requireNamespace("Boov", quietly=TRUE)) {
+            if(requireNamespace("Boov", quietly=TRUE)) {
                 tagList(p("Volume-overlap based metrics (DSC, JSC) are available, but take more time to compute than distance-based metrics.",
                           "Depending on the mesh, calculating union / intersection via package 'Boov' may be faster than via package 'cgalMeshes'."),
                         radioButtons("mesh_agree_do_ui", "Calculate DSC, JSC",
@@ -248,7 +265,7 @@ shiny::shinyApp(
         })
         output$ui_select_comparisons <- renderUI({
             if(input$meshes_sel_mode == "indiv") {
-                numericInput("num_observers", "Number of observers", value=2)
+                numericInput("num_observers", "Number of observers", min=2L, value=2L, step=1L)
             } else {
                 NULL
             }
@@ -272,6 +289,7 @@ shiny::shinyApp(
                (input$read_mesh_reconstruct == "Poisson")) {
                 numericInput("read_mesh_reconstruct_pois_spacing",
                              "Spacing parameter for Poisson reconstruction",
+                             min=0.001,
                              value=1)
             } else {
                 NULL
@@ -283,10 +301,14 @@ shiny::shinyApp(
                     n_observers <- 1L
                     sel_label   <- ""
                 } else {
-                    n_observers <- if(is.null(input$num_observers)) {
+                    valid_n <- !is.null(input$num_observers) &&
+                               (input$num_observers >= 2L)   &&
+                               (input$num_observers <=100L)
+                    
+                    n_observers <- if(!valid_n) {
                         2L
                     } else {
-                        input$num_observers
+                        round(input$num_observers)
                     }
                     
                     sel_label <- paste0(" (Observer ", sprintf("%.2d", seq_len(n_observers)), ")")
@@ -365,16 +387,16 @@ shiny::shinyApp(
             }
         })
         output$ui_mesh_agree_metro_options <- renderUI({
-            tagList( numericInput("vcgMetro_nSamples",     "Number of samples", value=0),
-                     numericInput("vcgMetro_nSamplesArea", "Number of samples per area (overrides nSamples)", value=0),
+            tagList( numericInput("vcgMetro_nSamples",     "Number of samples (0 for automatic setting)", value=0L, min=0L, step=1L),
+                     numericInput("vcgMetro_nSamplesArea", "Number of samples per area (overrides nSamples)", value=0L, min=0L, step=1L),
                     checkboxInput("vcgMetro_vertSamp",     "Vertex sampling",            value=TRUE),
                     checkboxInput("vcgMetro_edgeSamp",     "Edge sampling",              value=TRUE),
                     checkboxInput("vcgMetro_faceSamp",     "Face sampling",              value=TRUE),
                     checkboxInput("vcgMetro_unrefVert",    "Ignore unreferred vertices", value=FALSE),
                      radioButtons("vcgMetro_samplingTyp",  "Face sampling mode", choices=c("SS", "MC", "SD"), selected="SS", inline=TRUE),
                      radioButtons("vcgMetro_searchStruct", "Search structure",   choices=c("SGRID", "AABB", "OCTREE", "HGRID"), selected="SGRID", inline=TRUE),
-                     numericInput("vcgMetro_from",         "Color mapping: minimum", value=0),
-                     numericInput("vcgMetro_to",           "Color mapping: maximum", value=0)
+                     numericInput("vcgMetro_from",         "Color mapping: minimum", value=0, min=0),
+                     numericInput("vcgMetro_to",           "Color mapping: maximum", value=0, min=0)
             )
         })
         output$rgl_view_selection <- renderUI({

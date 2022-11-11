@@ -1,6 +1,6 @@
 run_gui <-
 function(...) {
-    appDir <- system.file("MeshAgreement", package="MeshAgreement")
+    appDir <- system.file("MeshAgreement_app", package="MeshAgreement")
     if(!nzchar(appDir)) {
         stop("Could not find Shiny directory. Try re-installing 'MeshAgreement'.", call.=FALSE)
     }

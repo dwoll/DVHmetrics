@@ -21,6 +21,11 @@ get_mesh_ui_pair(x, boov=FALSE)
 \examples{
 heartL <- mesh3dL_to_cgalMeshL(data_heart_obsL)
 pairL  <- get_mesh_pairs(heartL)
-ui     <- get_mesh_ui_pair(pairL[[1]])
-ui
+## check whether package Boov is available
+have_boov <- requireNamespace("Boov", quietly=TRUE, partial=TRUE)
+ui <- get_mesh_ui_pair(pairL[[1]], boov=have_boov)
+
+## volume of union/intersection
+ui$vol_u
+ui$vol_i
 }

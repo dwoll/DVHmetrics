@@ -19,6 +19,16 @@ get_mesh_ui(x, boov=FALSE)
 \code{\link[cgalMeshes]{cgalMesh}}}
 \examples{
 heartL <- mesh3dL_to_cgalMeshL(data_heart_obsL)
-uiL    <- get_mesh_ui(heartL)
-uiL
+## remove one structure to save time in running example
+heartL$Obs01$Obs01_AOKL <- NULL
+heartL$Obs02$Obs02_AOKL <- NULL
+heartL$Obs03$Obs03_AOKL <- NULL
+
+## check whether package Boov is available
+have_boov <- requireNamespace("Boov", quietly=TRUE, partial=TRUE)
+uiL <- get_mesh_ui(heartL, boov=have_boov)
+
+## volume of union/intersection for first pair
+uiL[[1]]$vol_u
+uiL[[1]]$vol_i
 }

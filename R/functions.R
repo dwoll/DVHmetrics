@@ -22,6 +22,7 @@ reconstruct_mesh <- function(x,
         AFSreconstruction(x$vertices())
     } else if(method == "poisson") {
         # PoissonReconstruction(x$vertices(), spacing=spacing)
+        stopifnot(spacing > 0)
         warning("Poisson reconstruction currently not implemented. Using AFS method instead.")
         AFSreconstruction(x$vertices())
     } else {
@@ -161,20 +162,15 @@ read_mesh <- function(x,
 }
 
 print_mesh_one <- function(x) {
-    x_vol <- x$volume
-    x_ctr <- x$centroid
-    mesh_info_0 <- try(capture.output(print(x$mesh)))
-    mesh_info   <- if(!inherits(mesh_info_0, "try-error")) {
-        mesh_info_0
-    } else {
-        "Error in printing mesh"
-    }
+    x_vol     <- x$volume
+    x_ctr     <- x$centroid
+    # mesh_info <- capture.output(x$mesh$print())
     
     vol_fmt_str <- if(is.na(x_vol))      { "%s" }           else { "%.2f" }
     ctr_fmt_str <- if(any(is.na(x_ctr))) { "[%s, %s, %s]" } else { "[%.2f, %.2f, %.2f]" }
     cat(sprintf("Mesh: %s", x$name),
-        "\n",
-        mesh_info,
+        # "\n",
+        # mesh_info,
         "\n",
         sprintf(paste0("Volume: ", vol_fmt_str), x_vol),
         "\n",
@@ -250,23 +246,20 @@ get_mesh_ui_pair <- function(x, boov=FALSE) {
         intersect <- try(x$mesh1$mesh$intersection(x$mesh2$mesh))
         ui_ok     <- !(inherits(union, "try-error") || inherits(intersect, "try-error"))
     } else {
-        have_PolygonSoup <- requireNamespace("PolygonSoup", quietly=TRUE)
-        have_Boov        <- requireNamespace("Boov",        quietly=TRUE)
-
-        if(!have_PolygonSoup) { warning("Package 'PolygonSoup' required for 'boov=TRUE' but not found.") }
-        if(!have_Boov)        { warning("Package 'Boov' required for 'boov=TRUE' but not found.") }
-        stopifnot(have_PolygonSoup, have_Boov)
-
         mesh1_rgl <- x$mesh1$mesh$getMesh(rgl=TRUE, normals=FALSE)
         mesh2_rgl <- x$mesh2$mesh$getMesh(rgl=TRUE, normals=FALSE)
+        
+        have_Boov <- requireNamespace("Boov", quietly=TRUE, partial=TRUE)
+        if(!have_Boov) { warning("Package 'Boov' required for 'boov=TRUE' but not found.") }
+        stopifnot(have_Boov)
 
         union_0     <- try(Boov::MeshesUnion(       list(mesh1_rgl, mesh2_rgl), clean=TRUE))
         intersect_0 <- try(Boov::MeshesIntersection(list(mesh1_rgl, mesh2_rgl), clean=TRUE))
 
         ui_ok <- !(inherits(union, "try-error") || inherits(intersect, "try-error"))
         if(ui_ok) {
-            union_rgl     <- PolygonSoup::toRGL(union_0)
-            intersect_rgl <- PolygonSoup::toRGL(intersect_0)
+            union_rgl     <- Boov::toRGL(union_0)
+            intersect_rgl <- Boov::toRGL(intersect_0)
             
             union     <- cgalMesh$new(union_rgl)
             intersect <- cgalMesh$new(intersect_rgl)

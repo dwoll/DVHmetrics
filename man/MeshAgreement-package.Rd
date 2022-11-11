@@ -15,8 +15,8 @@ Includes web-based graphical user interface.
 \tabular{ll}{
 Package: \tab MeshAgreement\cr
 Type: \tab Package\cr
-Version: \tab 0.1.0.999\cr
-Date: \tab 2022-10-28\cr
+Version: \tab 0.1\cr
+Date: \tab 2022-11-10\cr
 License: \tab GPL (>= 2)\cr
 }
 }

@@ -5,18 +5,23 @@
 \title{Agreement measures for 3D meshes}
 \description{
 Calculates distance-based and volume-overlap-based
-agreement measures for 3D meshes. Overall agreement for
+agreement measures for triangular 3D meshes. These include
+the Hausdorff distance, the average surface distance, the
+Dice similarity coefficient, and the Jaccard similarity
+coefficient as documented in Stockinger et al. (2021)
+<doi:10.1186/s13014-021-01965-5>. Overall agreement for
 a set of meshes is calculated as the aggregate agreement
-for all pairwise comparisons. Libraries CGAL and VCG
-are used as back-ends for mesh calculations.
+for all pairwise comparisons. Based on algorithms
+provided by the 'VCGLIB' <http://vcg.isti.cnr.it/vcglib/>
+and 'CGAL' <https://www.cgal.org/> libraries.
 Includes web-based graphical user interface.
 }
 \details{
 \tabular{ll}{
 Package: \tab MeshAgreement\cr
 Type: \tab Package\cr
-Version: \tab 0.1\cr
-Date: \tab 2022-11-10\cr
+Version: \tab 0.1.1\cr
+Date: \tab 2022-11-11\cr
 License: \tab GPL (>= 2)\cr
 }
 }

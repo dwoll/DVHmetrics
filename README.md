@@ -3,6 +3,7 @@
 Agreement measures for 3D structures saved as mesh files. R package containing an interactive [R](https://www.r-project.org/) [Shiny](https://shiny.rstudio.com/) app. You can upload mesh files (STL, PLY, OBJ, OFF) to generate agreement measures for all pairwise comparisons, as well as the corresponding aggregated agreement. The intended application is to compare delineated structures for radiotherapy treatment planning.
 
   * Live demo here: [http://shiny.imbei.uni-mainz.de:3838/MeshAgreement/](http://shiny.imbei.uni-mainz.de:3838/MeshAgreement/)
+  * [ESAPI export script](https://github.com/dwoll/MeshAgreement/tree/main/inst/extdata) for getting 3D mesh files from Varian Eclipse
 
 # Implemented agreement measures
 

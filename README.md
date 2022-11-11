@@ -22,6 +22,7 @@ Agreement measures for 3D structures saved as mesh files. R package containing a
 
   * [Rvcg](https://CRAN.R-project.org/package=Rvcg)
   * [cgalMeshes](https://CRAN.R-project.org/package=cgalMeshes)
+  * [Boov](https://CRAN.R-project.org/package=Boov) - useful for getting better performance in union/intersection calculation for some meshes
   * [shiny](https://CRAN.R-project.org/package=shiny)
   * [bs4Dash](https://CRAN.R-project.org/package=bs4Dash)
   * [DT](https://CRAN.R-project.org/package=DT)

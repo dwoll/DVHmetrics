@@ -21,11 +21,14 @@
 \code{\link[MeshAgreement]{read_mesh_one}},
 }
 \examples{
-\dontrun{
-ff1 <- list.files("c:/meshes/obs1", pattern="PLY$", full.names=TRUE)
-ff2 <- list.files("c:/meshes/obs2", pattern="PLY$", full.names=TRUE)
-ff3 <- list.files("c:/meshes/obs3", pattern="PLY$", full.names=TRUE)
-obsL <- read_mesh(list(Obs01=ff1, Obs02=ff2, Obs03=ff3),
-                  reconstruct="AFS")
+if(interactive()) {
+    src_dir <- system.file("extdata", package="MeshAgreement")
+    ff1     <- list.files(src_dir, pattern="^Obs01", full.names=TRUE)
+    ff2     <- list.files(src_dir, pattern="^Obs02", full.names=TRUE)
+    ff3     <- list.files(src_dir, pattern="^Obs03", full.names=TRUE)
+    obsL    <- read_mesh(list(Obs01=ff1,
+                              Obs02=ff2,
+                              Obs03=ff3),
+                         reconstruct="AFS")
 }
 }

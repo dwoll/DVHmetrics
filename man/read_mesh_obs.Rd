@@ -20,8 +20,9 @@
 \code{\link[MeshAgreement]{read_mesh_one}},
 }
 \examples{
-\dontrun{
-ff <- list.files("c:/meshes/", pattern="PLY$", full.names=TRUE)
-meshL <- read_mesh_obs(ff, reconstruct="AFS")
+if(interactive()) {
+    src_dir <- system.file("extdata", package="MeshAgreement")
+    ff      <- list.files(src_dir, pattern="^Obs01", full.names=TRUE)
+    meshL   <- read_mesh_obs(ff, reconstruct="AFS")
 }
 }

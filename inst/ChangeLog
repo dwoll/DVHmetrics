@@ -1,6 +1,9 @@
-$Date: 2022-11-11 19:42:29 +0000 (Fri, 11 Nov 2022) $
+$Date: 2022-11-14 19:27:29 +0000 (Mon, 14 Nov 2022) $
 
 MESHAGREEMENT RELEASE VERSIONS at https://cran.r-project.org/
+
+Version 0.1.2 (November 14, 2022)
+    * Provide PLY files in extdata as suggested by CRAN
 
 Version 0.1.1 (November 11, 2022)
     * Documentation fixes as suggested by CRAN

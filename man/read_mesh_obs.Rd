@@ -24,5 +24,6 @@ if(interactive()) {
     src_dir <- system.file("extdata", package="MeshAgreement")
     ff      <- list.files(src_dir, pattern="^Obs01", full.names=TRUE)
     meshL   <- read_mesh_obs(ff, reconstruct="AFS")
+    get_mesh_info_obs(meshL)
 }
 }

@@ -18,4 +18,5 @@ meshL_to_observerL(x)
 heartL <- mesh3dL_to_cgalMeshL(data_heart_obsL)
 meshL  <- heartL[["Obs01"]]
 obsL   <- meshL_to_observerL(meshL)
+get_mesh_info(obsL)
 }

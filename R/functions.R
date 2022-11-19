@@ -49,10 +49,6 @@ read_mesh_one <- function(x,
     if(reconstruct != "no") {
         mesh_r <- reconstruct_mesh(mesh, method=reconstruct, spacing=spacing)
         mesh   <- mesh_r
-        
-        if(!mesh$boundsVolume()) {
-            mesh$orientToBoundVolume()
-        }
     }
     
     diag_nsi    <- !mesh$selfIntersects()
@@ -92,7 +88,7 @@ read_mesh_one <- function(x,
     vol_0 <- try(mesh$volume())
     ctr_0 <- try(mesh$centroid())
     vol <- if(!inherits(vol_0, "try-error")) {
-        vol_0
+        abs(vol_0)
     } else {
         NA_real_
     }
@@ -148,9 +144,9 @@ read_mesh <- function(x,
     }
     
     mesh_names <- if(missing(name)) {
-        basename(file_path_sans_ext(x))
+        lapply(x, function(y) { basename(tools::file_path_sans_ext(y)) })
     } else {
-        basename(file_path_sans_ext(name))
+        lapply(x, function(y) { basename(tools::file_path_sans_ext(name)) })
     }
     
     Map(read_mesh_obs,
@@ -161,31 +157,29 @@ read_mesh <- function(x,
         spacing=spacing)
 }
 
-print_mesh_one <- function(x) {
-    x_vol     <- x$volume
-    x_ctr     <- x$centroid
-    # mesh_info <- capture.output(x$mesh$print())
-    
-    vol_fmt_str <- if(is.na(x_vol))      { "%s" }           else { "%.2f" }
-    ctr_fmt_str <- if(any(is.na(x_ctr))) { "[%s, %s, %s]" } else { "[%.2f, %.2f, %.2f]" }
-    cat(sprintf("Mesh: %s", x$name),
-        # "\n",
-        # mesh_info,
-        "\n",
-        sprintf(paste0("Volume: ", vol_fmt_str), x_vol),
-        "\n",
-        sprintf(paste0("Centroid: ", ctr_fmt_str),
-                x_ctr[1], x_ctr[2], x_ctr[3]),
-        "\n",
-        "\n", sep="")
+get_mesh_info_one <- function(x) {
+    mesh_list <- x[["mesh"]]$getMesh(rgl=FALSE, normals=FALSE)
+    data.frame(name=x[["name"]],
+               n_verts=nrow(mesh_list[["vertices"]]),
+               n_faces=ncol(mesh_list[["faces"]]),
+               volume=x[["volume"]],
+               ctr_x=x[["centroid"]][1],
+               ctr_y=x[["centroid"]][2],
+               ctr_z=x[["centroid"]][3])
 }
 
-print_mesh_obs <- function(x) {
-    invisible(Map(print_mesh_one, x))
+get_mesh_info_obs <- function(x) {
+    d_out <- do.call("rbind", Map(get_mesh_info_one, x))
+    rownames(d_out) <- NULL
+    d_out
 }
 
-print_mesh <- function(x) {
-    invisible(Map(print_mesh_obs, x))
+get_mesh_info <- function(x) {
+    x_lens <- lengths(x)
+    d_out  <- do.call("rbind", Map(get_mesh_info_obs, x))
+    rownames(d_out) <- NULL
+    cbind(observer=rep(names(x), times=x_lens),
+          d_out)
 }
 
 ## starting from list of observers, each with a list of meshes
@@ -205,17 +199,17 @@ get_mesh_pairs <- function(x, sep=" <-> ", names_only=FALSE) {
         obs2  <- x[[idx2]]          # observer 2
         ## do both observers have the mesh?
         if((length(obs1) >= mesh) && (length(obs2) >= mesh)) {
-            mesh1 <- x[[idx1]][[mesh]]
-            mesh2 <- x[[idx2]][[mesh]]
+            mesh_1 <- x[[idx1]][[mesh]]
+            mesh_2 <- x[[idx2]][[mesh]]
             
             ## add group information -> same structure
             if(names_only) {
-                list(name=get_name_pair(mesh1$name, mesh2$name, sep=sep),
+                list(name=get_name_pair(mesh_1[["name"]], mesh_2[["name"]], sep=sep),
                      group=sprintf("strct_%.3d", mesh))
             } else {
-                list(name=get_name_pair(mesh1$name, mesh2$name, sep=sep),
-                     mesh1=mesh1,
-                     mesh2=mesh2,
+                list(name=get_name_pair(mesh_1[["name"]], mesh_2[["name"]], sep=sep),
+                     mesh_1=mesh_1,
+                     mesh_2=mesh_2,
                      group=sprintf("strct_%.3d", mesh))
             }
         } else {
@@ -235,19 +229,19 @@ get_mesh_pairs <- function(x, sep=" <-> ", names_only=FALSE) {
     
     ## weed out NULL components
     ll <- Filter(Negate(is.null), unlist(ll_outer, recursive=FALSE))
-    pair_names <- lapply(ll, function(x) { x$name })
+    pair_names <- lapply(ll, function(x) { x[["name"]] })
     setNames(ll, pair_names)
 }
 
 ## union and intersection for list of two meshes x
 get_mesh_ui_pair <- function(x, boov=FALSE) {
     if(!boov) {
-        union     <- try(x$mesh1$mesh$union(x$mesh2$mesh))
-        intersect <- try(x$mesh1$mesh$intersection(x$mesh2$mesh))
+        union     <- try(x[["mesh_1"]][["mesh"]]$union(       x[["mesh_2"]][["mesh"]]))
+        intersect <- try(x[["mesh_1"]][["mesh"]]$intersection(x[["mesh_2"]][["mesh"]]))
         ui_ok     <- !(inherits(union, "try-error") || inherits(intersect, "try-error"))
     } else {
-        mesh1_rgl <- x$mesh1$mesh$getMesh(rgl=TRUE, normals=FALSE)
-        mesh2_rgl <- x$mesh2$mesh$getMesh(rgl=TRUE, normals=FALSE)
+        mesh1_rgl <- x[["mesh_1"]][["mesh"]]$getMesh(rgl=TRUE, normals=FALSE)
+        mesh2_rgl <- x[["mesh_2"]][["mesh"]]$getMesh(rgl=TRUE, normals=FALSE)
         
         have_Boov <- requireNamespace("Boov", quietly=TRUE, partial=TRUE)
         if(!have_Boov) { warning("Package 'Boov' required for 'boov=TRUE' but not found.") }
@@ -304,7 +298,7 @@ get_mesh_ui_pair <- function(x, boov=FALSE) {
         }
     }
     
-    list(name=x$name,
+    list(name=x[["name"]],
          union=union,
          intersection=intersect,
          vol_u=vol_u,
@@ -317,8 +311,8 @@ get_mesh_ui <- function(x, boov=FALSE) {
 }
 
 get_mesh_metro_pair <- function(x, chop=TRUE, ...) {
-    metro <- vcgMetro(x$mesh1$mesh$getMesh(normals=FALSE),
-                      x$mesh2$mesh$getMesh(normals=FALSE),
+    metro <- vcgMetro(x[["mesh_1"]][["mesh"]]$getMesh(normals=FALSE),
+                      x[["mesh_2"]][["mesh"]]$getMesh(normals=FALSE),
                       ...)
     
     if(chop) {
@@ -328,8 +322,12 @@ get_mesh_metro_pair <- function(x, chop=TRUE, ...) {
         metro[["backward_hist"]] <- NULL
     }
     
-    metro[["name"]]  <- x$name
-    metro[["group"]] <- x$group
+    metro[["mesh_1"]] <- metro[["mesh1"]]
+    metro[["mesh_2"]] <- metro[["mesh2"]]
+    metro[["mesh1"]]  <- NULL
+    metro[["mesh2"]]  <- NULL
+    metro[["name"]]   <- x[["name"]]
+    metro[["group"]]  <- x[["group"]]
     metro
 }
 
@@ -345,9 +343,10 @@ get_mesh_agree_pair <- function(x, metro, ui, boov=FALSE, do_ui=FALSE, chop=TRUE
         metro <- get_mesh_metro_pair(x, chop=chop, ...)
     }
     
-    DCOM <- sqrt(sum((x$mesh2$centroid - x$mesh1$centroid)^2))
-    HD_forward  <- metro$ForwardSampling$maxdist
-    HD_backward <- metro$BackwardSampling$maxdist
+    DCOM        <- sqrt(sum((x[["mesh_2"]][["centroid"]] -
+                             x[["mesh_1"]][["centroid"]])^2))
+    HD_forward  <- metro[["ForwardSampling"]][["maxdist"]]
+    HD_backward <- metro[["BackwardSampling"]][["maxdist"]]
 
     if(is.finite(HD_forward) && is.finite(HD_backward)) {
         HD_max <- max(c(HD_forward, HD_backward))
@@ -359,13 +358,15 @@ get_mesh_agree_pair <- function(x, metro, ui, boov=FALSE, do_ui=FALSE, chop=TRUE
     
     ## average surface distance based on weighted average of sampled distances
     ## not on actual vertex distances as stored in distances1, distances2
-    n1 <- metro$ForwardSampling$nsamples
-    n2 <- metro$BackwardSampling$nsamples
+    n1 <- metro[["ForwardSampling"]][["nsamples"]]
+    n2 <- metro[["BackwardSampling"]][["nsamples"]]
     if((n1 > 0L) && (n2 > 0L)) {
         w1   <- n1 / (n1+n2)
         w2   <- n2 / (n1+n2)
-        ASD  <-      w1* metro$ForwardSampling$meandist   + w2* metro$BackwardSampling$meandist
-        RMSD <- sqrt(w1*(metro$ForwardSampling$RMSdist^2) + w2*(metro$BackwardSampling$RMSdist^2))
+        ASD  <-      w1* metro[["ForwardSampling"]][["meandist"]]   +
+                     w2* metro[["BackwardSampling"]][["meandist"]]
+        RMSD <- sqrt(w1*(metro[["ForwardSampling"]][["RMSdist"]]^2) +
+                     w2*(metro[["BackwardSampling"]][["RMSdist"]]^2))
     } else {
         ASD  <- NA_real_
         RMSD <- NA_real_
@@ -377,36 +378,42 @@ get_mesh_agree_pair <- function(x, metro, ui, boov=FALSE, do_ui=FALSE, chop=TRUE
         ui <- get_mesh_ui_pair(x, boov=boov)
     }
     
-    if(do_ui && !is.null(ui) && !is.null(ui$union) && !is.null(ui$intersection)) {
-        vol_mesh1     <- x$mesh1$volume
-        vol_mesh2     <- x$mesh2$volume
-        vol_union     <- ui$vol_u
-        vol_intersect <- ui$vol_i
-        
-        JSC <- vol_intersect   / vol_union
-        DSC <- 2*vol_intersect / (vol_mesh1 + vol_mesh2)
+    vol_1 <- x[["mesh_1"]][["volume"]]
+    vol_2 <- x[["mesh_2"]][["volume"]]
+    
+    if(do_ui && !is.null(ui) && !is.null(ui[["union"]]) && !is.null(ui[["intersection"]])) {
+        vol_u <- ui[["vol_u"]]
+        vol_i <- ui[["vol_i"]]
+        JSC   <-   vol_i / vol_u
+        DSC   <- 2*vol_i / (vol_1 + vol_2)
     } else {
-        JSC <- NA_real_
-        DSC <- NA_real_
+        vol_u <- NA_real_
+        vol_i <- NA_real_
+        JSC   <- NA_real_
+        DSC   <- NA_real_
     }
     
-    data.frame(mesh1=x$mesh1$name,
-               mesh2=x$mesh2$name,
-               group=x$group,
-               DCOM=DCOM,
+    data.frame(mesh_1=x[["mesh_1"]][["name"]],
+               mesh_2=x[["mesh_2"]][["name"]],
+               group =x[["group"]],
+               vol_1 =vol_1,
+               vol_2 =vol_2,
+               vol_u =vol_u,
+               vol_i =vol_i,
+               DCOM  =DCOM,
                HD_max=HD_max,
                HD_avg=HD_avg,
-               ASD=ASD,
-               RMSD=RMSD,
-               JSC=JSC,
-               DSC=DSC)
+               ASD   =ASD,
+               RMSD  =RMSD,
+               JSC   =JSC,
+               DSC   =DSC)
 }
 
 get_mesh_agree <- function(x, boov=FALSE, do_ui=FALSE, chop=TRUE, ...) {
     pairL  <- get_mesh_pairs(x)
     metroL <- Map(get_mesh_metro_pair, pairL, chop=chop, ...)
     uiL    <- if(do_ui) {
-        Map(get_mesh_ui_pair,    pairL)
+        Map(get_mesh_ui_pair, pairL)
     } else {
         list(NULL)
     }
@@ -414,10 +421,10 @@ get_mesh_agree <- function(x, boov=FALSE, do_ui=FALSE, chop=TRUE, ...) {
     agreeL <- Map(get_mesh_agree_pair,
                   pairL,
                   metro=metroL,
-                  ui=uiL,
-                  boov=boov,
+                  ui   =uiL,
+                  boov =boov,
                   do_ui=do_ui,
-                  chop=chop)
+                  chop =chop)
 
     d <- do.call("rbind", agreeL)
     rownames(d) <- NULL
@@ -427,16 +434,17 @@ get_mesh_agree <- function(x, boov=FALSE, do_ui=FALSE, chop=TRUE, ...) {
 get_mesh_agree_long <- function(x) {
     vars_varying <- c("DCOM",
                       "HD_max", "HD_avg", "ASD", "RMSD",
+                      "vol_u", "vol_i",
                       "JSC", "DSC")
     
     vars_id <- names(x)[!(names(x) %in% vars_varying)]
     
     dL <- reshape(x,
                   direction="long",
-                  idvar=vars_id,
-                  varying=vars_varying,
-                  v.names="observed",
-                  timevar="metric")
+                  idvar    =vars_id,
+                  varying  =vars_varying,
+                  v.names  ="observed",
+                  timevar  ="metric")
     
     rownames(dL) <- NULL
     
@@ -475,10 +483,10 @@ get_mesh_agree_aggr_long <- function(x) {
     
     dL <- reshape(x,
                   direction="long",
-                  idvar=vars_id,
-                  varying=vars_varying,
-                  v.names="observed",
-                  timevar="statistic")
+                  idvar    =vars_id,
+                  varying  =vars_varying,
+                  v.names  ="observed",
+                  timevar  ="statistic")
     
     rownames(dL) <- NULL
     
@@ -499,8 +507,8 @@ meshL_to_observerL <- function(x) {
 
 mesh3dL_to_cgalMeshL <- function(x) {
     convert_mesh_one <- function(y) {
-        if(inherits(y$mesh, "mesh3d")) {
-            y$mesh <- cgalMeshes::cgalMesh$new(y$mesh)
+        if(inherits(y[["mesh"]], "mesh3d")) {
+            y[["mesh"]] <- cgalMeshes::cgalMesh$new(y[["mesh"]])
         }
         
         y

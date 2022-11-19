@@ -9,46 +9,7 @@ library(shiny)
 
 ## saved data may be mesh3d, not cgalMesh
 if(exists("data_heart_obsL")) {
-    convert_mesh_one <- function(x) {
-        if(inherits(x$mesh, "mesh3d")) {
-            x$mesh <- cgalMeshes::cgalMesh$new(x$mesh)
-        }
-        
-        x
-    }
-    
-    convert_meshL <- function(x) {
-        lapply(x, convert_mesh_one)
-    }
-    
-    data_heart_obsL <- lapply(data_heart_obsL, convert_meshL)
-}
-
-#####---------------------------------------------------------------------------
-## print mesh info in html
-#####---------------------------------------------------------------------------
-
-print_mesh_html_one <- function(x) {
-    vol_fmt_str <- if(is.na(x$volume))        { "%s" }           else { "%.2f" }
-    ctr_fmt_str <- if(any(is.na(x$centroid))) { "[%s, %s, %s]" } else { "[%.2f, %.2f, %.2f]" }
-    tags$p(
-        sprintf("Mesh: %s", x$name),
-        # tags$br(),
-        # capture.output(x$mesh$print()),
-        tags$br(),
-        sprintf(paste0("Volume: ", vol_fmt_str), x$volume),
-        tags$br(),
-        sprintf(paste0("Centroid: ", ctr_fmt_str),
-                x$centroid[1],
-                x$centroid[2],
-                x$centroid[3]),
-        tags$br(),
-        tags$br()
-    )
-}
-
-print_mesh_html <- function(x) {
-    Map(print_mesh_html_one, unlist(x, recursive=FALSE))
+    data_heart_obsL <- mesh3dL_to_cgalMeshL(data_heart_obsL)
 }
 
 #####---------------------------------------------------------------------------

@@ -10,7 +10,7 @@ export(get_mesh_agree, get_mesh_agree_pair, get_mesh_agree_long,
        get_mesh_ui, get_mesh_ui_pair,
        get_name_elem,
        get_mesh_pairs,
-       print_mesh, print_mesh_obs, print_mesh_one,
+       get_mesh_info, get_mesh_info_obs, get_mesh_info_one,
        read_mesh, read_mesh_obs, read_mesh_one,
        meshL_to_observerL, mesh3dL_to_cgalMeshL,
        run_gui)

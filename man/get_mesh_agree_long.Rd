@@ -11,8 +11,8 @@ get_mesh_agree_long(x)
 \details{Front-end for \code{\link[stats]{reshape}}.}
 \value{
 \code{data.frame} with these variables
-\item{mesh1}{Name of the first mesh of the pair.}
-\item{mesh2}{Name of the second mesh of the pair.}
+\item{mesh_1}{Name of the first mesh of the pair.}
+\item{mesh_2}{Name of the second mesh of the pair.}
 \item{group}{The grouping variable indicating which pairs belong to the same structure.}
 \item{metric}{The calculated agreement measure.}
 \item{observed}{The value observed for the metric.}

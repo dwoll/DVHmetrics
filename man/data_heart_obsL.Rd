@@ -14,10 +14,10 @@
 \seealso{
 \code{\link[rgl]{mesh3d}},
 \code{\link[MeshAgreement]{read_mesh}},
-\code{\link[MeshAgreement]{print_mesh}}
+\code{\link[MeshAgreement]{get_mesh_info}}
 }
 \examples{
 heartL <- mesh3dL_to_cgalMeshL(data_heart_obsL)
-print_mesh(heartL)
+get_mesh_info(heartL)
 }
 \keyword{datasets}

@@ -157,7 +157,7 @@ shiny::shinyApp(
         react_file_sel_sorted <- reactive({
             meshL <- react_file_sel()
             if(!is.null(meshL)) {
-                lapply(seq_along(meshL), function(i) {
+                ll <- lapply(seq_along(meshL), function(i) {
                     observer <- meshL[[i]]
                     ranklist <- input[[sprintf("ranklist_obs%.2d", i)]]
                     observer_sorted <- if(!is.null(ranklist)) {
@@ -166,6 +166,8 @@ shiny::shinyApp(
                         observer
                     }
                 })
+                
+                setNames(ll, names(meshL))
             } else {
                 NULL
             }
@@ -348,7 +350,7 @@ shiny::shinyApp(
                             ranklist_ui_name <- sprintf("ui_ranklist_obs%.2d", i)
                             ranklist_inputid <- sprintf("ranklist_obs%.2d",    i)
                             meshL_obs <- meshL[[i]]
-                            ranklist_labels <- vapply(meshL_obs, function(x) { x$name }, character(1))
+                            ranklist_labels <- vapply(meshL_obs, function(x) { x[["name"]] }, character(1))
                             column(width=12/n_obs_max,
                                    rank_list(sprintf("Files Observer %.2d", i),
                                              labels=ranklist_labels,
@@ -378,10 +380,16 @@ shiny::shinyApp(
                 NULL
             }
         })
-        output$print_mesh_info <- renderUI({
+        output$print_mesh_info <- DT::renderDataTable({
             meshL <- react_file_sel_sorted()
             if(!is.null(meshL)) {
-                print_mesh_html(meshL)
+                d_mesh_info <- get_mesh_info(meshL)
+                cols_numeric <- unname(which(vapply(d_mesh_info, is.numeric, logical(1))))
+                DT_out <- DT::datatable(d_mesh_info,
+                                        extensions="Buttons",
+                                        options=list(dom='Bfrtip',
+                                                     buttons=c("csv", "excel")))
+                DT::formatRound(DT_out, columns=cols_numeric, digits=3)
             } else {
                 NULL
             }
@@ -462,8 +470,8 @@ shiny::shinyApp(
             
             if(!is.null(d_agree_pairW)) {
                 d_agree_pairL <- get_mesh_agree_long(d_agree_pairW)
-                d_agree_pairL[["pair"]] <- paste(d_agree_pairL[["mesh1"]],
-                                                 d_agree_pairL[["mesh2"]],
+                d_agree_pairL[["pair"]] <- paste(d_agree_pairL[["mesh_1"]],
+                                                 d_agree_pairL[["mesh_2"]],
                                                  sep=" <-> ")
                 p <- ggplot(d_agree_pairL, aes(x=pair, y=observed)) +
                     geom_point() +
@@ -505,10 +513,10 @@ shiny::shinyApp(
             view_select <- input$rgl_view_select
             if(!is.null(meshL) && !is.null(view_select)) {
                 pairL <- get_mesh_pairs(meshL, names_only=FALSE)
-                mesh  <- pairL[[view_select]]$mesh1
+                mesh  <- pairL[[view_select]][["mesh_1"]]
                 if(!is.null(mesh)) {
                     try(rgl.close())
-                    wire3d(mesh$mesh$getMesh(rgl=TRUE))
+                    wire3d(mesh[["mesh"]]$getMesh(rgl=TRUE))
                     rglwidget()
                 } else {
                     NULL
@@ -522,10 +530,10 @@ shiny::shinyApp(
             view_select <- input$rgl_view_select
             if(!is.null(meshL) && !is.null(view_select)) {
                 pairL <- get_mesh_pairs(meshL, names_only=FALSE)
-                mesh  <- pairL[[view_select]]$mesh2
+                mesh  <- pairL[[view_select]][["mesh_2"]]
                 if(!is.null(mesh)) {
                     try(rgl.close())
-                    wire3d(mesh$mesh$getMesh(rgl=TRUE))
+                    wire3d(mesh[["mesh"]]$getMesh(rgl=TRUE))
                     rglwidget()
                 } else {
                     NULL
@@ -542,7 +550,7 @@ shiny::shinyApp(
                 metro <- metroL[[view_select]]
                 if(!is.null(metro)) {
                     try(rgl.close())
-                    shade3d(metro$mesh1)
+                    shade3d(metro[["mesh_1"]])
                     rglwidget()
                 } else {
                     NULL
@@ -559,7 +567,7 @@ shiny::shinyApp(
                 metro <- metroL[[view_select]]
                 if(!is.null(metro)) {
                     try(rgl.close())
-                    shade3d(metro$mesh2)
+                    shade3d(metro[["mesh_2"]])
                     rglwidget()
                 } else {
                     NULL

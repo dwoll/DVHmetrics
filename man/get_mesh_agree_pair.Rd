@@ -14,12 +14,16 @@ get_mesh_agree_pair(x, metro, ui, boov=FALSE, do_ui=FALSE, chop=TRUE, ...)
   \item{chop}{\code{logical}. Delete the components from output of \code{\link[Rvcg]{vcgMetro}} that will not be used later on.}
   \item{...}{Options passed to \code{\link[Rvcg]{vcgMetro}}.}
 }
-\details{Currently, no mesh can be designated gold standard. \code{\link[MeshAgreement]{get_mesh_agree}} calculates the agreement for a list of observer/mesh objects. \code{\link[MeshAgreement]{get_mesh_metro_pair}} calculates the pairwise distances. \code{\link[MeshAgreement]{get_mesh_ui_pair}} calculates the mesh union and intersection. For \code{boov=TRUE}, packages \code{PolygonSoup} and \code{Boov} have to be installed separately.}
+\details{Currently, no mesh can be designated gold standard. \code{\link[MeshAgreement]{get_mesh_agree}} calculates the agreement for a list of observer/mesh objects. \code{\link[MeshAgreement]{get_mesh_metro_pair}} calculates the pairwise distances. \code{\link[MeshAgreement]{get_mesh_ui_pair}} calculates the mesh union and intersection. For \code{boov=TRUE}, package \code{Boov} has to be installed separately.}
 \value{
 \code{data.frame} with these variables
-\item{mesh1}{Name of the first mesh of the pair.}
-\item{mesh2}{Name of the second mesh of the pair.}
+\item{mesh_1}{Name of the first mesh of the pair.}
+\item{mesh_2}{Name of the second mesh of the pair.}
 \item{group}{The grouping variable indicating which pairs belong to the same structure.}
+\item{vol_1}{Volume of the first mesh of the pair.}
+\item{vol_2}{Volume of the second mesh of the pair.}
+\item{vol_u}{Volume of the union.}
+\item{vol_i}{Volume of the intersection.}
 \item{DCOM}{Euclidean distance between the respective center of mass of both meshes.}
 \item{HD_max}{Hausdorff distance - worst case, maximum of both directed Hausdorff distances.}
 \item{HD_avg}{Hausdorff distance - average, mean of both directed Hausdorff distancess.}

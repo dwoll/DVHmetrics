@@ -16,4 +16,5 @@ mesh3dL_to_cgalMeshL(x)
 }
 \examples{
 heartL <- mesh3dL_to_cgalMeshL(data_heart_obsL)
+get_mesh_info(heartL)
 }

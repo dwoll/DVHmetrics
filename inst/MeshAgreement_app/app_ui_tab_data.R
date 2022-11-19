@@ -58,7 +58,7 @@ fluidPage(
                   "Ticking the 'fix mesh issues' box or using surface reconstruction on import may help.",
                   "Otherwise, inspection of the mesh with a tool such as",
                   tags$a(href="https://www.meshlab.net/", "MeshLab"), "is advised."),
-                htmlOutput("print_mesh_info")
+                DT::dataTableOutput("print_mesh_info")
             )
         )
     )

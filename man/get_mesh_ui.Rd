@@ -24,9 +24,12 @@ heartL$Obs01$Obs01_HEART <- NULL
 heartL$Obs02$Obs02_HEART <- NULL
 heartL$Obs03$Obs03_HEART <- NULL
 
-uiL <- get_mesh_ui(heartL)
-
-## volume of union/intersection for first pair
-uiL[[1]]$vol_u
-uiL[[1]]$vol_i
+## takes more time than reasonable for automated checking
+if(interactive()) {
+    uiL <- get_mesh_ui(heartL)
+    
+    ## volume of union/intersection for first pair
+    uiL[[1]]$vol_u
+    uiL[[1]]$vol_i
+}
 }

@@ -1,8 +1,8 @@
 Package: MeshAgreement
 Type: Package
 Title: Agreement Measures for 3D Meshes
-Version: 0.1.4
-Date: 2022-11-25
+Version: 0.1.5
+Date: 2023-02-11
 Authors@R: c(person("Daniel", "Wollschlaeger", role=c("aut", "cre"), email="wollschlaeger@uni-mainz.de"),
     person("Heiko", "Karle", role="aut"))
 Depends: R (>= 3.5)

@@ -7,9 +7,15 @@
 options(rgl.useNULL=TRUE)
 library(shiny)
 
-## saved data may be mesh3d, not cgalMesh
-if(exists("data_heart_obsL")) {
-    data_heart_obsL <- mesh3dL_to_cgalMeshL(data_heart_obsL)
+## saved builtin data has class mesh3d, not cgalMesh
+src_dir <- "www" # system.file("extdata", package="MeshAgreement")
+f_name  <- paste0(src_dir, "/mesh3d_heart_obsL.rda")
+
+cgalMesh_heart_obsL <- if(file.exists(f_name)) {
+    mesh3d_heart_obsL <- readRDS(paste0(f_name))
+    mesh3dL_to_cgalMeshL(mesh3d_heart_obsL)
+} else {
+    NULL
 }
 
 #####---------------------------------------------------------------------------

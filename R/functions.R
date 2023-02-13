@@ -13,18 +13,69 @@ get_name_elem <- function(x, which=1L, sep=" <-> ") {
 }
 
 reconstruct_mesh <- function(x,
-                             method=c("No", "AFS", "Poisson"),
-                             spacing=1) {
+                             method=c("No", "AFS", "SSS", "Poisson"),
+                             jetSmoothing=NULL,
+                             scaleIterations=1,
+                             neighbors=12,
+                             samples=300,
+                             separateShells=FALSE,
+                             forceManifold=TRUE,
+                             borderAngle=45,
+                             normals="jet(12)",
+                             spacing="ave(12)",
+                             sm_angle=20,
+                             sm_radius=30,
+                             sm_distance=0.375) {
     method <- match.arg(tolower(method),
-                        choices=c("no", "afs", "poisson"))
+                        choices=c("no", "afs", "sss", "poisson"))
+    
+    ## check functions available in cgalMeshes version
+    cgalMeshes_has     <- ls(getNamespace("cgalMeshes"), all.names=TRUE)
+    cgalMeshes_version <- packageVersion("cgalMeshes")
+    cgalMeshes_atleast110 <- compareVersion("1.1.0", as.character(cgalMeshes_version))
     
     if(method == "afs") {
-        AFSreconstruction(x$vertices())
+        if(cgalMeshes_atleast110 <= 0) {
+            AFSreconstruction(x$getVertices(),
+                              jetSmoothing=jetSmoothing) # for cgalMeshes 1.1.0
+        } else {
+            AFSreconstruction(x$vertices()) # for cgalMeshes 1.0.0
+        }
+    } else if(method == "sss") {
+        if("SSSreconstruction" %in% cgalMeshes_has) {
+            cgalMeshes::SSSreconstruction(x$getVertices(),
+                                          scaleIterations=scaleIterations,
+                                          neighbors=neighbors,
+                                          samples=samples,
+                                          separateShells=separateShells,
+                                          forceManifold=forceManifold,
+                                          borderAngle=borderAngle)
+        } else {
+            warning("SSS reconstruction not implemented. Using AFS instead.")
+            if(cgalMeshes_atleast110 <= 0) {
+                AFSreconstruction(x$getVertices(),
+                                  jetSmoothing=jetSmoothing) # for cgalMeshes 1.1.0
+            } else {
+                AFSreconstruction(x$vertices()) # for cgalMeshes 1.0.0
+            }
+        }
     } else if(method == "poisson") {
-        # PoissonReconstruction(x$vertices(), spacing=spacing)
-        stopifnot(spacing > 0)
-        warning("Poisson reconstruction currently not implemented. Using AFS method instead.")
-        AFSreconstruction(x$vertices())
+        if("PoissonReconstruction" %in% cgalMeshes_has) {
+            cgalMeshes::PoissonReconstruction(x$getVertices(),
+                                              normals=normals,
+                                              spacing=spacing,
+                                              sm_angle=sm_angle,
+                                              sm_radius=sm_radius,
+                                              sm_distance=sm_distance)
+        } else {
+            warning("Poisson reconstruction not implemented. Using AFS instead.")
+            if(cgalMeshes_atleast110 <= 0) {
+                AFSreconstruction(x$getVertices(),
+                                  jetSmoothing=jetSmoothing) # for cgalMeshes 1.1.0
+            } else {
+                AFSreconstruction(x$vertices()) # for cgalMeshes 1.0.0
+            }
+        }
     } else {
         stop("Wrong reconstruction method")
     }
@@ -33,10 +84,21 @@ reconstruct_mesh <- function(x,
 read_mesh_one <- function(x,
                           name,
                           fix_issues=TRUE,
-                          reconstruct=c("No", "AFS", "Poisson"),
-                          spacing=1) {
+                          reconstruct=c("No", "AFS", "SSS", "Poisson"),
+                          jetSmoothing=NULL,
+                          scaleIterations=1,
+                          neighbors=12,
+                          samples=300,
+                          separateShells=FALSE,
+                          forceManifold=TRUE,
+                          borderAngle=45,
+                          normals="jet(12)",
+                          spacing="ave(12)",
+                          sm_angle=20,
+                          sm_radius=30,
+                          sm_distance=0.375) {
     reconstruct <- match.arg(tolower(reconstruct),
-                             choices=c("no", "afs", "poisson"))
+                             choices=c("no", "afs", "sss", "poisson"))
     
     mesh_name <- if(missing(name)) {
         basename(file_path_sans_ext(x))
@@ -47,8 +109,20 @@ read_mesh_one <- function(x,
     mesh <- cgalMesh$new(x)
     
     if(reconstruct != "no") {
-        mesh_r <- reconstruct_mesh(mesh, method=reconstruct, spacing=spacing)
-        mesh   <- mesh_r
+        mesh_r <- reconstruct_mesh(mesh,
+                                   method=reconstruct,
+                                   jetSmoothing=jetSmoothing,
+                                   neighbors=neighbors,
+                                   samples=samples,
+                                   separateShells=separateShells,
+                                   forceManifold=forceManifold,
+                                   borderAngle=borderAngle,
+                                   normals=normals,
+                                   spacing=spacing,
+                                   sm_angle=sm_angle,
+                                   sm_radius=sm_radius,
+                                   sm_distance=sm_distance)
+        mesh <- mesh_r
     }
     
     diag_nsi    <- !mesh$selfIntersects()
@@ -105,12 +179,24 @@ read_mesh_one <- function(x,
          centroid=ctr)
 }
 
-read_mesh_obs <- function(x, name,
+read_mesh_obs <- function(x,
+                          name,
                           fix_issues=TRUE,
-                          reconstruct=c("No", "AFS", "Poisson"),
-                          spacing=1) {
+                          reconstruct=c("No", "AFS", "SSS", "Poisson"),
+                          jetSmoothing=NULL,
+                          scaleIterations=1,
+                          neighbors=12,
+                          samples=300,
+                          separateShells=FALSE,
+                          forceManifold=TRUE,
+                          borderAngle=45,
+                          normals="jet(12)",
+                          spacing="ave(12)",
+                          sm_angle=20,
+                          sm_radius=30,
+                          sm_distance=0.375) {
     reconstruct <- match.arg(tolower(reconstruct),
-                             choices=c("no", "afs", "poisson"))
+                             choices=c("no", "afs", "sss", "poisson"))
     
     mesh_names <- if(missing(name)) {
         basename(tools::file_path_sans_ext(x))
@@ -123,7 +209,17 @@ read_mesh_obs <- function(x, name,
                       name=mesh_names[i],
                       fix_issues=fix_issues,
                       reconstruct=reconstruct,
-                      spacing=spacing)
+                      jetSmoothing=jetSmoothing,
+                      neighbors=neighbors,
+                      samples=samples,
+                      separateShells=separateShells,
+                      forceManifold=forceManifold,
+                      borderAngle=borderAngle,
+                      normals=normals,
+                      spacing=spacing,
+                      sm_angle=sm_angle,
+                      sm_radius=sm_radius,
+                      sm_distance=sm_distance)
     })
     
     setNames(meshL, mesh_names)
@@ -132,10 +228,21 @@ read_mesh_obs <- function(x, name,
 read_mesh <- function(x,
                       name,
                       fix_issues=TRUE,
-                      reconstruct=c("No", "AFS", "Poisson"),
-                      spacing=1) {
+                      reconstruct=c("No", "AFS", "SSS", "Poisson"),
+                      jetSmoothing=NULL,
+                      scaleIterations=1,
+                      neighbors=12,
+                      samples=300,
+                      separateShells=FALSE,
+                      forceManifold=TRUE,
+                      borderAngle=45,
+                      normals="jet(12)",
+                      spacing="ave(12)",
+                      sm_angle=20,
+                      sm_radius=30,
+                      sm_distance=0.375) {
     reconstruct <- match.arg(tolower(reconstruct),
-                             choices=c("no", "afs", "poisson"))
+                             choices=c("no", "afs", "sss", "poisson"))
     
     obs_names <- if(missing(name)) {
         names(x)
@@ -149,16 +256,30 @@ read_mesh <- function(x,
         lapply(x, function(y) { basename(tools::file_path_sans_ext(name)) })
     }
     
+    if(is.null(jetSmoothing)) {
+        jetSmoothing <- list(NULL)
+    }
+    
     Map(read_mesh_obs,
         setNames(x, obs_names),
         mesh_names,
         fix_issues=fix_issues,
         reconstruct=reconstruct,
-        spacing=spacing)
-}
+        jetSmoothing=jetSmoothing,
+        neighbors=neighbors,
+        samples=samples,
+        separateShells=separateShells,
+        forceManifold=forceManifold,
+        borderAngle=borderAngle,
+        normals=normals,
+        spacing=spacing,
+        sm_angle=sm_angle,
+        sm_radius=sm_radius,
+        sm_distance=sm_distance)
+    }
 
 get_mesh_info_one <- function(x) {
-    mesh_list <- x[["mesh"]]$getMesh(rgl=FALSE, normals=FALSE)
+    mesh_list <- x[["mesh"]]$getMesh(rgl=FALSE)
     data.frame(name=x[["name"]],
                n_verts=nrow(mesh_list[["vertices"]]),
                n_faces=ncol(mesh_list[["faces"]]),
@@ -236,54 +357,60 @@ get_mesh_pairs <- function(x, sep=" <-> ", names_only=FALSE) {
 ## union and intersection for list of two meshes x
 get_mesh_ui_pair <- function(x, boov=FALSE) {
     if(!boov) {
-        union     <- try(x[["mesh_1"]][["mesh"]]$union(       x[["mesh_2"]][["mesh"]]))
-        intersect <- try(x[["mesh_1"]][["mesh"]]$intersection(x[["mesh_2"]][["mesh"]]))
-        ui_ok     <- !(inherits(union, "try-error") || inherits(intersect, "try-error"))
+        m_union     <- try(x[["mesh_1"]][["mesh"]]$union(       x[["mesh_2"]][["mesh"]]))
+        m_intersect <- try(x[["mesh_1"]][["mesh"]]$intersection(x[["mesh_2"]][["mesh"]]))
+        ui_ok       <- !(inherits(m_union,     "try-error") ||
+                         inherits(m_intersect, "try-error"))
     } else {
-        mesh1_rgl <- x[["mesh_1"]][["mesh"]]$getMesh(rgl=TRUE, normals=FALSE)
-        mesh2_rgl <- x[["mesh_2"]][["mesh"]]$getMesh(rgl=TRUE, normals=FALSE)
-        
         have_Boov <- requireNamespace("Boov", quietly=TRUE, partial=TRUE)
         if(!have_Boov) { warning("Package 'Boov' required for 'boov=TRUE' but not found.") }
         stopifnot(have_Boov)
 
-        union_0     <- try(Boov::MeshesUnion(       list(mesh1_rgl, mesh2_rgl), clean=TRUE))
-        intersect_0 <- try(Boov::MeshesIntersection(list(mesh1_rgl, mesh2_rgl), clean=TRUE))
-
-        ui_ok <- !(inherits(union, "try-error") || inherits(intersect, "try-error"))
+        m1_rgl <- x[["mesh_1"]][["mesh"]]$getMesh(rgl=TRUE)
+        m2_rgl <- x[["mesh_2"]][["mesh"]]$getMesh(rgl=TRUE)
+        
+        m_union_0     <- try(Boov::MeshesUnion(       list(m1_rgl, m2_rgl), clean=TRUE))
+        m_intersect_0 <- try(Boov::MeshesIntersection(list(m1_rgl, m2_rgl), clean=TRUE))
+        ui_ok         <- !(inherits(m_union_0,     "try-error") ||
+                           inherits(m_intersect_0, "try-error"))
+        
         if(ui_ok) {
-            union_rgl     <- Boov::toRGL(union_0)
-            intersect_rgl <- Boov::toRGL(intersect_0)
+            m_union_rgl     <- Boov::toRGL(m_union_0)
+            m_intersect_rgl <- Boov::toRGL(m_intersect_0)
             
-            union     <- cgalMesh$new(union_rgl)
-            intersect <- cgalMesh$new(intersect_rgl)
+            m_union     <- try(cgalMesh$new(m_union_rgl))
+            m_intersect <- try(cgalMesh$new(m_intersect_rgl))
+            
+            ## intersection might be empty
+            ui_ok <- !(inherits(m_union,     "try-error") ||
+                       inherits(m_intersect, "try-error"))
         }
     }
     
     if(!ui_ok) {
-        union     <- NULL
-        intersect <- NULL
-        vol_u     <- NA_real_
-        vol_i     <- NA_real_
+        m_union     <- NULL
+        m_intersect <- NULL
+        vol_u       <- NA_real_
+        vol_i       <- NA_real_
     } else {
-        if(union$selfIntersects()) {
-            union$removeSelfIntersections()
+        if(m_union$selfIntersects()) {
+            m_union$removeSelfIntersections()
         }
         
-        if(intersect$selfIntersects()) {
-            intersect$removeSelfIntersections()
+        if(m_intersect$selfIntersects()) {
+            m_intersect$removeSelfIntersections()
         }
         
-        if(!union$boundsVolume()) {
-            union$orientToBoundVolume()
+        if(!m_union$boundsVolume()) {
+            m_union$orientToBoundVolume()
         }
         
-        if(!intersect$boundsVolume()) {
-            intersect$orientToBoundVolume()
+        if(!m_intersect$boundsVolume()) {
+            m_intersect$orientToBoundVolume()
         }
         
-        vol_u_0 <- try(union$volume())
-        vol_i_0 <- try(intersect$volume())
+        vol_u_0 <- try(m_union$volume())
+        vol_i_0 <- try(m_intersect$volume())
         
         vol_u <- if(inherits(vol_u_0, "try-error") || is.na(vol_u_0)) {
             NA_real_
@@ -299,8 +426,8 @@ get_mesh_ui_pair <- function(x, boov=FALSE) {
     }
     
     list(name=x[["name"]],
-         union=union,
-         intersection=intersect,
+         union=m_union,
+         intersection=m_intersect,
          vol_u=vol_u,
          vol_i=vol_i)    
 }
@@ -311,8 +438,8 @@ get_mesh_ui <- function(x, boov=FALSE) {
 }
 
 get_mesh_metro_pair <- function(x, chop=TRUE, ...) {
-    metro <- vcgMetro(x[["mesh_1"]][["mesh"]]$getMesh(normals=FALSE),
-                      x[["mesh_2"]][["mesh"]]$getMesh(normals=FALSE),
+    metro <- vcgMetro(x[["mesh_1"]][["mesh"]]$getMesh(),
+                      x[["mesh_2"]][["mesh"]]$getMesh(),
                       ...)
     
     if(chop) {
@@ -386,6 +513,8 @@ get_mesh_agree_pair <- function(x, metro, ui, boov=FALSE, do_ui=FALSE, chop=TRUE
         vol_i <- ui[["vol_i"]]
         JSC   <-   vol_i / vol_u
         DSC   <- 2*vol_i / (vol_1 + vol_2)
+        
+        ## TODO TP, FP, TN, FN
     } else {
         vol_u <- NA_real_
         vol_i <- NA_real_

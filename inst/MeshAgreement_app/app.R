@@ -110,12 +110,16 @@ shiny::shinyApp(
                 }
                 
                 meshL <- if(input$meshes_input_source == "builtin") {
-                    ## use builtin data
-                    ll <- data_heart_obsL
-                    if(input$meshes_sel_mode == "indiv") {
-                        ll[seq_len(min(c(length(ll), n_observers)))]
+                    if(exists("cgalMesh_heart_obsL") && !is.null(cgalMesh_heart_obsL)) {
+                        ## use builtin data
+                        ll <- cgalMesh_heart_obsL
+                        if(input$meshes_sel_mode == "indiv") {
+                            ll[seq_len(min(c(length(ll), n_observers)))]
+                        } else {
+                            ll
+                        }
                     } else {
-                        ll
+                        NULL
                     }
                 } else {
                     ## read data from file
@@ -133,11 +137,32 @@ shiny::shinyApp(
                             f_files <- input_file_sel$datapath
                             f_names <- input_file_sel$name
                             ## list of meshes
-                            read_mesh_obs(f_files,
-                                          name=f_names,
-                                          fix_issues=input$read_mesh_fix_issues,
-                                          reconstruct=input$read_mesh_reconstruct,
-                                          spacing=input$read_mesh_reconstruct_pois_spacing)
+                            afs_jetsm_int <- if(!is.null(input$read_mesh_reconstruct_afs_jetsm_bool) &&
+                                                (input$read_mesh_reconstruct_afs_jetsm_bool)) {
+                                input$read_mesh_reconstruct_afs_jetsm_int
+                            } else {
+                                NULL
+                            }
+                            
+                            pois_spacing <- if(!is.null(input$read_mesh_reconstruct_pois_method) &&
+                                               (input$read_mesh_reconstruct_pois_method == "knn")) {
+                                k <- round(input$read_mesh_reconstruct_pois_spacing)
+                                stopifnot(k > 0)
+                                paste0("ave(", k, ")")
+                            } else {
+                                val <- input$read_mesh_reconstruct_pois_spacing
+                                stopifnot(val > 0)
+                                val
+                            }
+                            
+                            argL <- list(x           =f_files,
+                                         name        =f_names,
+                                         fix_issues  =input$read_mesh_fix_issues,
+                                         reconstruct =input$read_mesh_reconstruct,
+                                         jetSmoothing=afs_jetsm_int,
+                                         spacing     =pois_spacing)
+                            
+                            do.call("read_mesh_obs", Filter(Negate(is.null), argL))
                         } else {
                             NULL
                         }
@@ -277,22 +302,70 @@ shiny::shinyApp(
                 tagList(checkboxInput("read_mesh_fix_issues", "Try to fix mesh issues on import", TRUE),
                         radioButtons("read_mesh_reconstruct",
                                      "Surface reconstruction on import",
-                                     choices=c("No", "AFS"), #, "Poisson"),
+                                     choices=c("No", "AFS", "SSS", "Poisson"),
                                      selected="No",
                                      inline=TRUE))
             } else {
                 NULL
             }
         })
-        output$ui_surface_recon_spacing <- renderUI({
+        output$ui_surface_recon_pois_method <- renderUI({
             if(!is.null(input$meshes_input_source) &&
                !is.null(input$read_mesh_reconstruct) &&
                (input$meshes_input_source == "file") &&
                (input$read_mesh_reconstruct == "Poisson")) {
+                radioButtons("read_mesh_reconstruct_pois_method",
+                             "Spacing: k-NN or numeric",
+                             choices=c("k-Nearest Neighbor -> integer"="knn", "numeric -> positive number"="num"),
+                             selected="knn",
+                             inline=TRUE)
+            } else {
+                NULL
+            }
+        })
+        output$ui_surface_recon_pois_spacing <- renderUI({
+            if(!is.null(input$meshes_input_source) &&
+               !is.null(input$read_mesh_reconstruct) &&
+               (input$meshes_input_source == "file") &&
+               (input$read_mesh_reconstruct == "Poisson") &&
+               !is.null(input$read_mesh_reconstruct_pois_method)) {
+                default_value <- if(input$read_mesh_reconstruct_pois_method == "knn") {
+                    12
+                } else {
+                    2
+                }
+                
                 numericInput("read_mesh_reconstruct_pois_spacing",
-                             "Spacing parameter for Poisson reconstruction",
+                             "Spacing parameter",
                              min=0.001,
-                             value=1)
+                             value=default_value)
+            } else {
+                NULL
+            }
+        })
+        output$ui_surface_recon_afs_jetsm_bool <- renderUI({
+            if(!is.null(input$meshes_input_source) &&
+               !is.null(input$read_mesh_reconstruct) &&
+               (input$meshes_input_source == "file") &&
+               (input$read_mesh_reconstruct == "AFS")) {
+                checkboxInput("read_mesh_reconstruct_afs_jetsm_bool",
+                              "Jet Smoothing for AFS reconstruction?",
+                              value=FALSE)
+            } else {
+                NULL
+            }
+        })
+        output$ui_surface_recon_afs_jetsm_int <- renderUI({
+            if(!is.null(input$meshes_input_source) &&
+               !is.null(input$read_mesh_reconstruct) &&
+               (input$meshes_input_source == "file") &&
+               (input$read_mesh_reconstruct == "AFS") &&
+               !is.null(input$read_mesh_reconstruct_afs_jetsm_bool) &&
+               (input$read_mesh_reconstruct_afs_jetsm_bool)) {
+                numericInput("read_mesh_reconstruct_afs_jetsm_int",
+                             "Jet Smoothing integer for AFS reconstruction",
+                             min=2,
+                             value=2)
             } else {
                 NULL
             }
@@ -515,7 +588,7 @@ shiny::shinyApp(
                 pairL <- get_mesh_pairs(meshL, names_only=FALSE)
                 mesh  <- pairL[[view_select]][["mesh_1"]]
                 if(!is.null(mesh)) {
-                    try(rgl.close())
+                    try(close3d())
                     wire3d(mesh[["mesh"]]$getMesh(rgl=TRUE))
                     rglwidget()
                 } else {
@@ -532,7 +605,7 @@ shiny::shinyApp(
                 pairL <- get_mesh_pairs(meshL, names_only=FALSE)
                 mesh  <- pairL[[view_select]][["mesh_2"]]
                 if(!is.null(mesh)) {
-                    try(rgl.close())
+                    try(close3d())
                     wire3d(mesh[["mesh"]]$getMesh(rgl=TRUE))
                     rglwidget()
                 } else {
@@ -549,7 +622,7 @@ shiny::shinyApp(
             if(!is.null(metroL) && !is.null(view_select)) {
                 metro <- metroL[[view_select]]
                 if(!is.null(metro)) {
-                    try(rgl.close())
+                    try(close3d())
                     shade3d(metro[["mesh_1"]])
                     rglwidget()
                 } else {
@@ -566,7 +639,7 @@ shiny::shinyApp(
             if(!is.null(metroL) && !is.null(view_select)) {
                 metro <- metroL[[view_select]]
                 if(!is.null(metro)) {
-                    try(rgl.close())
+                    try(close3d())
                     shade3d(metro[["mesh_2"]])
                     rglwidget()
                 } else {

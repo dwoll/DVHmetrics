@@ -36,20 +36,20 @@ parseRayStation <- function(x, planInfo=FALSE, courseAsID=FALSE, ...) {
             NA_character_
         } else {
             line <- ll[grep("^#Rx dose:", ll)]
-            elem <- sub("^.+:[[:blank:]]+[[:digit:].]+ (GY|CGY)$", "\\1", line, perl=TRUE, ignore.case=TRUE)
+            elem <- sub("^.+:[[:blank:]]+[[:digit:].]+ (GY|CGY).*$", "\\1", line, perl=TRUE, ignore.case=TRUE)
             toupper(trimWS(elem))
         }
     }
 
     ## regex matching pattern for finding dose unit line
     ## depends on RayStation version -> needs to be flexible
-    pattern_dose_unit <- "^#[[:alpha:]]*[[:blank:]]*unit:[[:blank:]]+(GY|CGY)$"
+    pattern_dose_unit <- "^#[[:alpha:]]*[[:blank:]]*unit:[[:blank:]]+(GY|CGY).*$"
     getDoseUnit <- function(ll) {
         if(!any(grepl(pattern_dose_unit, ll, ignore.case=TRUE))) {
             NA_character_
         } else {
             line <- ll[grep(pattern_dose_unit, ll, ignore.case=TRUE)]
-            elem <- sub("^.+:[[:blank:]]+(GY|CGY)$", "\\1", line, perl=TRUE, ignore.case=TRUE)
+            elem <- sub("^.+:[[:blank:]]+(GY|CGY).*$", "\\1", line, perl=TRUE, ignore.case=TRUE)
             toupper(trimWS(elem))
         }
     }

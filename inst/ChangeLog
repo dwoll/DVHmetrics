@@ -10,6 +10,8 @@ Version 0.4.2.0.99999 (August 22, 2022)
     * readDVH(..., type="RayStation")
       - relax parsing of dose unit line for newer versions
         (thanks: H53-OOF)
+      - allow dose units with "RBE"
+        (thanks: marmo2)
 
 Version 0.4.2 (March 22, 2022)
     * readDVH(..., type="RayStation")

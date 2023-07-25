@@ -25,7 +25,7 @@ Daniel Wollschlaeger and Heiko Karle
 Maintainer: Daniel Wollschlaeger <wollschlaeger@uni-mainz.de>
 }
 \references{
-For a solution that also reads files in DICOM-RT format, see the \code{RadOnc} package: \url{https://CRAN.R-project.org/package=RadOnc}.
+For solutions that also read files in DICOM format, see packages \code{espadon} (\url{https://espadon.cnrs.fr/}, \url{https://CRAN.R-project.org/package=espadon}) and \code{RadOnc} (\url{https://CRAN.R-project.org/package=RadOnc}).
 }
 \keyword{package}
 \examples{

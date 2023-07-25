@@ -11,6 +11,7 @@ https://doi.org/10.1016/j.phro.2022.09.002
 https://doi.org/10.1016/j.radonc.2016.01.020
 https://doi.org/10.1016/j.radonc.2019.09.017
 https://doi.org/10.1016/j.radonc.2020.07.009
+https://doi.org/10.1016/j.tipsro.2023.100206
 https://doi.org/10.1017/S1460396921000327
 https://doi.org/10.1016/10.1017/S1460396921000327
 https://doi.org/10.1017/S1460396921000327
@@ -32,6 +33,7 @@ https://doi.org/10.3390/cancers11030294
 https://doi.org/10.3389/fonc.2020.00568
 https://doi.org/10.48550/arXiv.2112.11503
 https://doi.org/10.5505/tjo.2022.3657
+https://doi.org/10.21203/rs.3.rs-2079502/v1
 
 https://arxiv.org/abs/2112.11503
 https://www.zora.uzh.ch/id/eprint/178931/1/Mayinger.pdf
@@ -47,6 +49,7 @@ https://doi.org/10.1016/j.comnet.2020.107285
 https://doi.org/10.1016/j.csda.2016.05.015 (Statistics)
 https://doi.org/10.1080/23737484.2017.1406317 (Statistics)
 https://doi.org/10.1093/jnci/djab186
+https://doi.org/10.1098/rstb.2022.0068
 https://doi.org/10.1101/406439 (Psychologie) (preprint)
 https://doi.org/10.1111/mmi.14417 (Molekularbiologie)
 https://doi.org/10.1111/2041-210X.13347 (Ökologie)
@@ -56,6 +59,7 @@ https://doi.org/10.33612/diss.127742005
 https://doi.org/10.3389/feart.2019.00264 (Geosciences)
 https://doi.org/10.5194/nhess-2016-44 (Geosciences)
 https://doi.org/10.5194/nhess-16-2021-2016 (Geosciences)
+https://doi.org/10.5937/vojtehg67-18522
 https://doi.org/10.15252/embj.2021107896
 https://arxiv.org/abs/2002.03490
 https://yonghwi-kwon.github.io/data/swarmbug-fse21.pdf

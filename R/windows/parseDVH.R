@@ -1,6 +1,6 @@
 parseDVH <- function(x, type=c("Eclipse", "Cadplan", "Masterplan",
                                "Pinnacle", "Monaco", "HiArt", "RayStation",
-                               "ProSoma", "PRIMO"), ...) {
+                               "ProSoma", "PRIMO", "Mirada"), ...) {
     type <- match.arg(type)
     dots <- list(...)
     if(hasName(dots, "hiart")) {
@@ -32,6 +32,10 @@ parseDVH <- function(x, type=c("Eclipse", "Cadplan", "Masterplan",
             gsub("[^a-z0-9]", "\\1", tempfile(pattern="", tmpdir=""))
         } else if(type == "ProSoma") {
             patName <- paste(substr(trimWS(rev(strsplit(txt[1], ",")[[1]])), 1, 1), collapse="")
+            randStr <- gsub("[^a-z0-9]", "\\1", tempfile(pattern="", tmpdir=""))
+            paste(randStr, patName, sep="_")
+        } else if(type == "Mirada") {
+            patName <- strsplit(txt[1], "\t")[[1]][2]
             randStr <- gsub("[^a-z0-9]", "\\1", tempfile(pattern="", tmpdir=""))
             paste(randStr, patName, sep="_")
         } else if(type != "Pinnacle") {
@@ -68,8 +72,9 @@ parseDVH <- function(x, type=c("Eclipse", "Cadplan", "Masterplan",
             ## are we are in interactive mode AND under Windows?
         	## we are under Windows since this sits in a platform-specific directory
             ## choose files interactively
-            myFilt <- rbind(Filters, txtCsvDat=c("Data files (*.txt, *.csv, *.dat)",
-                                                 "*.txt;*.csv;*.dat"))
+            myFilt <- rbind(Filters,
+                            txtCsvDat=c("Data files (*.txt, *.csv, *.dat)",
+                                        "*.txt;*.csv;*.dat"))
             choose.files(filters=myFilt[c("txtCsvDat", "All"), ], index=1)
         } else {
             character(0)

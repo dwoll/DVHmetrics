@@ -16,7 +16,8 @@ parseMirada <- function(x, planInfo=FALSE, courseAsID=FALSE, ...) {
     doseUnit   <- NA_character_
     volumeUnit <- NA_character_
     doseRx     <- NA_real_
-
+    doseRxUnit <- NA_character_
+    
     ## Mirada provides no information on prescribed dose
     ## check if additional information is given via option mirada
     dots <- list(...)

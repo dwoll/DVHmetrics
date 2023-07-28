@@ -9,6 +9,10 @@ parseDVH <- function(x, type=c("Eclipse", "Cadplan", "Masterplan",
         dots[["hiart"]] <- NULL
     }
 
+    if(hasName(dots, "mirada")) {
+        dots[["mirada"]] <- NULL
+    }
+    
     if(hasName(dots, "raystation")) {
         dots[["raystation"]] <- NULL
     }

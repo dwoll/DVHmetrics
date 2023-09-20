@@ -1,6 +1,9 @@
 DVHmetrics cited/mentioned
 
 https://doi.org/10.1002/mp.12980
+https://doi.org/10.1007/978-3-031-17721-7_6
+https://doi.org/10.1007/s10552-023-01760-5
+https://doi.org/10.1016/j.ctro.2023.100675
 https://doi.org/10.1016/j.ejca.2019.11.008
 https://doi.org/10.1016/j.ejmp.2019.05.003
 https://doi.org/10.1016/j.hrthm.2019.04.030
@@ -39,6 +42,7 @@ https://doi.org/10.21203/rs.3.rs-2079502/v1
 https://arxiv.org/abs/2112.11503
 https://www.zora.uzh.ch/id/eprint/178931/1/Mayinger.pdf
 https://search.proquest.com/docview/2287496008
+https://search.proquest.com/docview/2672414120
 https://repositorio-aberto.up.pt/bitstream/10216/147391/2/602527.pdf
 https://dyplomy.fizyka.pw.edu.pl/zgloszenia/26e5c395fbb7dcd3fa78ee3961aaa74d7f49d4eb.pdf
 https://espace.library.uq.edu.au/data/UQ_5b06d39/UQ5b06d39_OA.pdf
@@ -48,10 +52,13 @@ shotGroups cited/mentioned
 https://doi.org/10.1007/978-1-4842-2256-0
 https://doi.org/10.1016/j.comnet.2020.107285
 https://doi.org/10.1016/j.csda.2016.05.015 (Statistics)
+https://doi.org/10.1016/j.jvolgeores.2023.107872
 https://doi.org/10.1080/23737484.2017.1406317 (Statistics)
 https://doi.org/10.1093/jnci/djab186
 https://doi.org/10.1098/rstb.2022.0068
 https://doi.org/10.1101/406439 (Psychologie) (preprint)
+https://doi.org/10.1109/ACCESS.2023.3240660
+https://doi.org/10.1109/ACCESS.2023.3242127
 https://doi.org/10.1111/mmi.14417 (Molekularbiologie)
 https://doi.org/10.1111/2041-210X.13347 (Ökologie)
 https://doi.org/10.1145/3468264.3468601

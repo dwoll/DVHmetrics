@@ -5,7 +5,7 @@
 \alias{getDMEAN.DVHLstLst}
 \title{DMEAN and other dose metrics}
 \description{
-Calculate DMEAN and other dose metrics from the (interpolated) differential DVH without relying on the values exported by the TPS.
+Calculate DMEAN and other dose metrics from the (interpolated) differential DVH without relying on the pre-calculated values for these metrics as exported by the TPS.
 }
 \usage{
 getDMEAN(x, interp=c("linear", "spline", "ksmooth", "smoothSpl"),

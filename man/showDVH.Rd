@@ -45,7 +45,7 @@ showDVH(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL,
   \item{fun}{\code{list}. Used only when \code{addMSD=TRUE}. Provides functions for point-wise aggregation of the average location (default: mean) and uncertainty (default: standard deviation).}
 }
 \details{
-If multiple diagrams are produced, they are shown in the same graphics device. If interactive inspection is required, make sure you use an R development environment that saves previous diagrams and allows navigating between them - e.g., \href{https://www.rstudio.com/products/rstudio/download/}{RStudio} or \href{https://www.getarchitect.io/}{OpenAnalytics Architect}.
+If multiple diagrams are produced, they are shown in the same graphics device. If interactive inspection is required, make sure you use an R development environment that saves previous diagrams and allows navigating between them.
 
 For \code{addMSD=TRUE}, the number of DVH nodes (dose values) is reduced by 1/3 of the maximum number of nodes in \code{x}. Before calculating the point-wise mean and SD, DVHs in \code{x} are first linearly interpolated using the same set of nodes.
 }

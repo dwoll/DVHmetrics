@@ -21,22 +21,22 @@ readDVH(x,
   \item{...}{Additional arguments passed on to \code{\link[base:connections]{file}}. Specify UTF-8 file encoding with \code{encoding="UTF-8"} or \code{encoding="UTF-8-BOM"} (when a byte-order-mark is used). Passing additional arguments is currently not supported when reading Pinnacle files. Additional arguments are also used for \code{type="HiArt"} where a list \code{hiart} may be supplied that specifies patient IDs, absolute structure volumes, and prescription dose. Same for \code{type="RayStation"} with a list \code{"raystation"}. If Eclipse uncertainty plans are present, specify \code{uncertainty=TRUE} (see Details).}
 }
 \details{
-Absolute dose values need to be given in Gy, cGy, or eV/g for uncalibrated dose in DVHs exported by PRIMO. Absolute volume values need to be given in in cm^3.
+Absolute dose values need to be given in Gy, cGy, or eV/g for uncalibrated dose in DVHs exported by PRIMO.
+
+Absolute volume values need to be given in in cm^3.
 
 Differential DVHs are automatically converted to cumulative DVHs, but the differential DVH information is kept.
 
 Sum plans are supported.
 
-For Eclipse starting with version 13, the date format is locale dependent as it uses words for day and month. Importing those dates as class \code{Date} requires that the correct locale is set (see \code{\link[base:locales]{Sys.setlocale}}), and that files containing accents are read using the correct encoding (see above). Otherwise, date is stored as a character string.
-
-For RayStation, only cumulative DVHs with absolute volume are currently supported. Volume is assumed to be measured in cm^3.
+For Eclipse starting with version 13, the date format is locale dependent as it uses words for day and month. Importing those dates as class \code{Date} requires that the correct locale is set (see \code{\link[base:locales]{Sys.setlocale}}), and that files containing accents are read using the correct encoding (see above). Otherwise, the date is stored as a character string.
 
 For files with absolute volume exported from Masterplan and Tomo HiArt, you can specify \code{volume_from_dvh=TRUE} if the structure volume should be guessed from the maximal volume given in the DVH for each structure.
 
 Since files from HiArt, ProSoma and PRIMO do not contain info on patient ID, the current workaround is to generate a random ID.
 
-To export data from Tomo HiArt, copy to clipboard and then save to file from a text editor. Support for Tomo HiArt files is currently limited to those with absolute dose. Please send an anonymized sample file if you need to read files with relative dose. You can provide a list \code{hiart} with more information about patients and structures. The list should have one component for each file you import. Each component itself has to be a named list with optional components
-\itemize{
+To export data from Tomo HiArt, copy to clipboard and then save to file from a text editor. Support for Tomo HiArt files is currently limited to those with absolute dose. Please send an anonymized sample file if you need to read files with relative dose. You can provide a list \code{hiart} with more information about patients and structures. The list should have one component for each file you import. Each component itself has to be a named list with optional components:
+\describe{
 \item{\code{date} - a character string like \code{"2022-01-16"} for the date}
 \item{\code{patName} - a character string for patient name}
 \item{\code{patID} - a character string for patient ID}
@@ -47,14 +47,14 @@ To export data from Tomo HiArt, copy to clipboard and then save to file from a t
 The same approach can be used for RayStation files with a list \code{raystation}.
 
 Pinnacle3 files have to be exported using its own scripting facility such that information from one patient is contained in one directory. A suitable export script is available on request from the package authors. The directory layout for one patient has to be as follows (experimental, likely to change in future versions):
-\itemize{
+\describe{
 \item{Files (CSV format with column headers):
-\itemize{
+\describe{
 \item{\code{DoseInfo.csv} (variables \code{"PrescriptionDose cGy"}, \code{"NumberOfFractions"}, \code{"Dosis cGy"})}
 \item{\code{PatInfo.csv} (variables \code{"LastName"}, \code{"FirstName"}, \code{"MedicalRecordNumber"})}
 \item{\code{PlanInfo.csv} (variable \code{"PlanName"})}}}
 \item{Directory: \code{Data}:
-\itemize{
+\describe{
 \item{\code{Info.csv} (variables \code{"Filename"}, \code{"RegionOfInterestName"},  \code{"DoseMin cGy"}, \code{"DoseMax cGy"}, \code{"DoseMean cGy"}, \code{"Volume ccm"})}
 \item{DVH1.csv, DVH2.csv, ...  - the actual DVH data files with names defined in \code{Info.csv} variable \code{"Filename"}. They should look like
 \verb{NumberOfDimensions = 2;

@@ -15,6 +15,9 @@ Version 0.4.2.0.99999 (July 25, 2023)
         (thanks: H53-OOF)
       - allow dose units with "RBE"
         (thanks: marmo2)
+    * getEUD(), getNTCP()
+      - enable EUD calculation for DVHs with relative volume only
+        (thanks: Mel A McIntyre)
 
 Version 0.4.2 (March 22, 2022)
     * readDVH(..., type="RayStation")

@@ -109,7 +109,8 @@ parseHiArt <- function(x, planInfo=FALSE, courseAsID=FALSE, ...) {
 
     ## read all data
     ## remove all non numbers / delimiters first
-    x[-1]  <- gsub("[^[:digit:],.]", "", x[-1])
+    ## don't do this as there may be numbers such as 4.326174454782894E-4
+    # x[-1]  <- gsub("[^[:digit:],.]", "", x[-1])
     datAll <- data.matrix(read.csv(text=x[-1], header=FALSE,
                                    stringsAsFactors=FALSE, comment.char=""))
 

@@ -1,4 +1,4 @@
-$Date: 2023-07-25 14:40:29 +0000 (Tue, 25 Jul 2023) $
+$Date: 2024-03-02 19:02:29 +0000 (Sat, 02 Mar 2024) $
 
 DVHMETRICS RELEASE VERSIONS at https://cran.r-project.org/
 
@@ -15,6 +15,9 @@ Version 0.4.2.0.99999 (July 25, 2023)
         (thanks: H53-OOF)
       - allow dose units with "RBE"
         (thanks: marmo2)
+    * readDVH(..., type="HiArt")
+      - fix reading number such as 4.32....E-4
+        (thanks: sudo-bluee)
     * getEUD(), getNTCP()
       - enable EUD calculation for DVHs with relative volume only
         (thanks: Mel A McIntyre)

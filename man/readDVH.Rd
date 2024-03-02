@@ -48,15 +48,17 @@ The same approach can be used for RayStation files with a list \code{raystation}
 
 Pinnacle3 files have to be exported using its own scripting facility such that information from one patient is contained in one directory. A suitable export script is available on request from the package authors. The directory layout for one patient has to be as follows (experimental, likely to change in future versions):
 \describe{
-\item{Files (CSV format with column headers):
-\describe{
-\item{\code{DoseInfo.csv} (variables \code{"PrescriptionDose cGy"}, \code{"NumberOfFractions"}, \code{"Dosis cGy"})}
-\item{\code{PatInfo.csv} (variables \code{"LastName"}, \code{"FirstName"}, \code{"MedicalRecordNumber"})}
-\item{\code{PlanInfo.csv} (variable \code{"PlanName"})}}}
-\item{Directory: \code{Data}:
-\describe{
-\item{\code{Info.csv} (variables \code{"Filename"}, \code{"RegionOfInterestName"},  \code{"DoseMin cGy"}, \code{"DoseMax cGy"}, \code{"DoseMean cGy"}, \code{"Volume ccm"})}
-\item{DVH1.csv, DVH2.csv, ...  - the actual DVH data files with names defined in \code{Info.csv} variable \code{"Filename"}. They should look like
+  \item{Files (CSV format with column headers):
+    \describe{
+      \item{\code{DoseInfo.csv} (variables \code{"PrescriptionDose cGy"},                             \code{"NumberOfFractions"}, \code{"Dosis cGy"})}
+      \item{\code{PatInfo.csv} (variables \code{"LastName"}, \code{"FirstName"},                      \code{"MedicalRecordNumber"})}
+      \item{\code{PlanInfo.csv} (variable \code{"PlanName"})}
+    }
+  }
+  \item{Directory: \code{Data}:
+    \describe{
+      \item{\code{Info.csv} (variables \code{"Filename"}, \code{"RegionOfInterestName"},              \code{"DoseMin cGy"}, \code{"DoseMax cGy"}, \code{"DoseMean cGy"}, \code{"Volume ccm"})}
+      \item{DVH1.csv, DVH2.csv, ...  - the actual DVH data files with names defined in                \code{Info.csv} variable \code{"Filename"}. They should look like
 \verb{NumberOfDimensions = 2;
 NumberOfPoints = 431;
 Points[] =\{
@@ -64,10 +66,7 @@ Points[] =\{
   10,0
   ...
   4000,100
-\};
-  }
-}}}}
-}
+\};}}}}}}
 \value{
 Returns an object of class \code{DVHLstLst}. This is a list (one component with class \code{DVHLst} for each original file from one patient) of lists (each component is an object of class \code{DVHs}). A \code{DVHs} object is a list with the following components:
 \describe{

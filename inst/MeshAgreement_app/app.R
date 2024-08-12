@@ -589,7 +589,8 @@ shiny::shinyApp(
                 mesh  <- pairL[[view_select]][["mesh_1"]]
                 if(!is.null(mesh)) {
                     try(close3d())
-                    wire3d(mesh[["mesh"]]$getMesh(rgl=TRUE))
+                    mesh_rgl <- mesh[["mesh"]]$getMesh(rgl=TRUE)
+                    wire3d(mesh_rgl)
                     rglwidget()
                 } else {
                     NULL
@@ -606,7 +607,8 @@ shiny::shinyApp(
                 mesh  <- pairL[[view_select]][["mesh_2"]]
                 if(!is.null(mesh)) {
                     try(close3d())
-                    wire3d(mesh[["mesh"]]$getMesh(rgl=TRUE))
+                    mesh_rgl <- mesh[["mesh"]]$getMesh(rgl=TRUE)
+                    wire3d(mesh_rgl)
                     rglwidget()
                 } else {
                     NULL

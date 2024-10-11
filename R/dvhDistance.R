@@ -3,7 +3,7 @@ dvhDistance <-
 function(x, DV) {
     ## relevant dose + volume data as matrix
     oneDistance <- function(x, oneDV) {
-        if(any(is.na(oneDV))) {
+        if(anyNA(oneDV)) {
             return(list(dstMin=NA_real_, dstMinRel=NA_real_, dstCnstr=NA_real_,
                         ptMinD=NA_real_, ptMinV=NA_real_))
         }

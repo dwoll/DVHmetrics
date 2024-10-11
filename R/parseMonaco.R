@@ -99,10 +99,10 @@ parseMonaco <- function(x, planInfo=FALSE, courseAsID=FALSE, ...) {
 
         ## check if structure volume should be assumed
         ## to be equal to max given volume in DVH
-        structVol <- if(hasName(dots, "volume_from_dvh")) {
-            if((dots[["volume_from_dvh"]] == TRUE) && ("volume" %in% haveVars)) {
-                max(dvh[ , "volume"])
-            }
+        structVol <- if(hasName(dots, "volume_from_dvh") &&
+                        dots[["volume_from_dvh"]]        &&
+                        ("volume" %in% haveVars)) {
+            max(dvh[ , "volume"])
         } else {
             NA_real_
         }

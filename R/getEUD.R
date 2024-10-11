@@ -8,7 +8,7 @@ function(x, EUDa, EUDfd=NULL, EUDab=NULL, ...) {
 getEUD.DVHs <-
 function(x, EUDa, EUDfd=NULL, EUDab=NULL, ...) {
     if(length(EUDa) > 1L) {
-		warning(paste0("Will only use EUDa=", EUDa[1]))
+		warning("Will only use EUDa=", EUDa[1])
 		EUDa <- EUDa[1]
 	}
 

@@ -127,7 +127,7 @@ mergeDVH <- function(...)  {
 #####---------------------------------------------------------------------------
 ## check DVH matrix for having increasing dose
 isIncreasing <- function(x)  {
-    dose <- if(!any(is.na(x[ , "dose"]))) {
+    dose <- if(!anyNA(x[ , "dose"])) {
         x[ , "dose"]
     } else {
         x[ , "doseRel"]
@@ -140,7 +140,7 @@ isIncreasing <- function(x)  {
 ## check DVH matrix if differential or cumulative
 dvhType <- function(x)  {
     ## check if volume is already sorted -> cumulative DVH
-    volume <- if(!any(is.na(x[ , "volumeRel"]))) {
+    volume <- if(!anyNA(x[ , "volumeRel"])) {
         x[ , "volumeRel"]
     } else {
         x[ , "volume"]

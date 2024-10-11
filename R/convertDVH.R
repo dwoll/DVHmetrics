@@ -92,7 +92,7 @@ function(x, toType=c("asis", "cumulative", "differential"),
             ## if differential && perDose == FALSE
             ## normalize -> interpolate -> re-normalize 
             ## check if volume is already sorted -> cumulative DVH
-            volumeSel <- if(!any(is.na(volumeRel))) {
+            volumeSel <- if(!anyNA(volumeRel)) {
                 volumeRel
             } else {
                 volume
@@ -104,7 +104,7 @@ function(x, toType=c("asis", "cumulative", "differential"),
                 "differential"
             }
             
-            if((DVHtype == "differential") && (perDose == FALSE)) {
+            if((DVHtype == "differential") && !perDose)Q {
                 ## if perDose == FALSE: normalize -> interpolate -> re-normalize
                 binW         <- diff(c(-doseConv[1], doseConv))
                 volumeNew    <- -diff(volume)    / binW
@@ -117,7 +117,7 @@ function(x, toType=c("asis", "cumulative", "differential"),
             doseNew    <- sm[ , "dose"]
             doseRelNew <- sm[ , "doseRel"]
 
-            if((DVHtype == "differential") && (perDose == FALSE)) {
+            if((DVHtype == "differential") && !perDose) {
                 ## re-normalize to non-per-dose volume
                 ## start bin at 0 because no out-of-range interpolation
                 binW         <- diff(c(0, doseConv))
@@ -149,12 +149,12 @@ function(x, toType=c("asis", "cumulative", "differential"),
         doseNew    <- c(doseMidPt,    doseConv[N] + doseCatHW[N-1])
         doseRelNew <- c(doseRelMidPt, doseRel[N]  + doseRelCatHW[N-1])
         
-        if(perDose == TRUE) {
+        if(perDose) {
             ## differential DVH -> volume is per Gy -> mult with bin-width
             binW         <- diff(c(-doseConv[1], doseConv))
             volumeBin    <- volume*binW
             volumeRelBin <- volumeRel*binW
-        } else if(perDose == FALSE) {
+        } else if(!perDose) {
             volumeBin    <- volume
             volumeRelBin <- volumeRel
         }
@@ -194,15 +194,15 @@ function(x, toType=c("asis", "cumulative", "differential"),
 
         ## differential DVH -> volume is per Gy -> divide by bin-width
         binW <- 2*doseCatHW
-        volumeNew <- if(perDose == TRUE) {
+        volumeNew <- if(perDose) {
             -diff(volume) / binW
-        } else if(perDose == FALSE) {
+        } else if(!perDose) {
             -diff(volume)
         }
 
-        volumeRelNew <- if(perDose == TRUE) {
+        volumeRelNew <- if(perDose) {
             -diff(volumeRel) / binW
-        } else if(perDose == FALSE) {
+        } else if(!perDose) {
             -diff(volumeRel)
         }
     }

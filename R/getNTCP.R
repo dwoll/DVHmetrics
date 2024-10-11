@@ -38,7 +38,7 @@ function(x,
     stopifnot(!is.null(NTCPtd50))
 
     if(length(NTCPtd50) > 1L) {
-    	warning(paste0("Will only use NTCPtd50=", NTCPtd50[1]))
+    	warning("Will only use NTCPtd50=", NTCPtd50[1])
     	NTCPtd50 <- NTCPtd50[1]
     }
 
@@ -51,7 +51,7 @@ function(x,
         stopifnot(!is.null(NTCPgamma50))
         
         if(length(NTCPgamma50) > 1L) {
-    		warning(paste0("Will only use NTCPgamma50=", NTCPgamma50[1]))
+    		warning("Will only use NTCPgamma50=", NTCPgamma50[1])
     		NTCPgamma50 <- NTCPgamma50[1]
         }
 
@@ -63,7 +63,7 @@ function(x,
         NTCPm <- 1 / (NTCPgamma50*sqrt(2*pi))
     } else {
         if(length(NTCPm) > 1L) {
-    		warning(paste0("Will only use NTCPm=", NTCPm[1]))
+    		warning("Will only use NTCPm=", NTCPm[1])
     		NTCPm <- NTCPm[1]
         }
 
@@ -78,7 +78,7 @@ function(x,
     if(NTCPtype %in% c("probit", "logit", "poisson")) {
         if(!is.null(EUDa)) {
             if(length(EUDa) > 1L) {
-                warning(paste0("Will only use EUDa=", EUDa[1]))
+                warning("Will only use EUDa=", EUDa[1])
                 EUDa <- EUDa[1]
             }
             
@@ -92,7 +92,7 @@ function(x,
             stopifnot(!is.null(NTCPn))
             
             if(length(NTCPn) > 1L) {
-                warning(paste0("Will only use NTCPn=", NTCPn[1]))
+                warning("Will only use NTCPn=", NTCPn[1])
                 NTCPn <- NTCPn[1]
             }
             
@@ -124,7 +124,7 @@ function(x,
         ## relative seriality model
         stopifnot(!is.null(NTCPs))
         if(length(NTCPs) > 1L) {
-            warning(paste0("Will only use NTCPs=", NTCPs[1]))
+            warning("Will only use NTCPs=", NTCPs[1])
             NTCPs <- NTCPs[1]
         }
         

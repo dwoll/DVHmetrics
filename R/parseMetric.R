@@ -98,7 +98,7 @@ parseMetric <- function(x, doseUnit=NULL, volUnit=NULL) {
 
     valid <- validPattern & validUnitRef & validUnitDV
     if(!all(valid)) {
-        warning(c("Pattern ", paste(x[!valid], collapse=", "), " is invalid"))
+        warning(c("Pattern ", toString(x[!valid]), " is invalid"))
     }
  
     return(data.frame(metric=metric, valid=valid,

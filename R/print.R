@@ -8,7 +8,7 @@ print.DVHs <- function(x, ...) {
         "? CC"
     }
 
-    if(("noID" %in% names(dots)) && (dots$noID == TRUE)) {
+    if(("noID" %in% names(dots)) && dots$noID) {
         cat("DVH: Structure '", x$structure,
             "' (", structVol, "),",
             " Dose: ", paste(signif(range(x$dvh[ , "dose"], na.rm=TRUE), 2), collapse="-"),
@@ -34,25 +34,25 @@ print.DVHLst <- function(x, ...) {
         NULL
     }
 
-    if(!is.null(attributes(x)$byPat) && (attributes(x)$byPat == TRUE)) {
+    if(!is.null(attributes(x)$byPat) && attributes(x)$byPat) {
         cat("DVH list:\nPatient '",  x[[1]]$patName,
             "' (ID ", x[[1]]$patID, doseRx, ") with ", length(x), sep="")
-    } else if(!is.null(attributes(x)$byPat) && (attributes(x)$byPat == FALSE)) {
+    } else if(!is.null(attributes(x)$byPat) && !(attributes(x)$byPat)) {
         cat("DVH list:\nStructure '", x[[1]]$structure, "' with ", length(x), sep="")
     } else {
         cat("DVH list with", length(x))
     }
 
-    if(!is.null(attributes(x)$byPat) && (attributes(x)$byPat == TRUE)) {
+    if(!is.null(attributes(x)$byPat) && attributes(x)$byPat) {
         cat(" Structures:\n")
-    } else if(!is.null(attributes(x)$byPat) && (attributes(x)$byPat == FALSE)) {
+    } else if(!is.null(attributes(x)$byPat) && !(attributes(x)$byPat)) {
         cat(" Patient IDs:\n")
     } else {
         cat(" DVHs:\n")
     }
 
-    if(("verbose" %in% names(dots)) && (dots$verbose == TRUE)) {
-        if(!is.null(attributes(x)$byPat) && (attributes(x)$byPat == TRUE)) {
+    if(hasName(dots, "verbose") && dots$verbose) {
+        if(!is.null(attributes(x)$byPat) && attributes(x)$byPat) {
             Map(print, x, noID=TRUE, ...)
         } else {
             Map(print, x, noID=FALSE, ...)
@@ -71,9 +71,9 @@ print.DVHLstLst <- function(x, ...) {
         cat(attributes(x)$comment, "\n\n")
     }
 
-    if(!is.null(attributes(x)$byPat) && (attributes(x)$byPat == TRUE)) {
+    if(!is.null(attributes(x)$byPat) && attributes(x)$byPat) {
         cat("DVH list of", length(x), "lists - 1 for each patient:\n\n")
-    } else if(!is.null(attributes(x)$byPat) && (attributes(x)$byPat == FALSE)) {
+    } else if(!is.null(attributes(x)$byPat) && !(attributes(x)$byPat)) {
         cat("DVH list of", length(x), "lists - 1 for each structure:\n\n")
     } else {
         cat("DVH list of", length(x), "lists:\n\n")

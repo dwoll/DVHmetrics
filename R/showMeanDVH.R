@@ -98,9 +98,9 @@ function(x, byPat=TRUE, patID=NULL, structure=NULL, rel=TRUE,
 
     ## title string
     strTitle <- if(byPat) {
-        paste0("structures ", paste(sort(unique(dvhDF$structure)), collapse=", "))
+        paste0("structures ", toString(sort(unique(dvhDF$structure))))
     } else {
-        paste0("patients ",   paste(sort(unique(dvhDF$patID)),     collapse=", "))
+        paste0("patients ",   toString(sort(unique(dvhDF$patID))))
     }
 
     ## do we have many structure/ID categories? -> more legend columns

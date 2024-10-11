@@ -5,7 +5,7 @@
 recycle <-
 function(...) {
     dots <- list(...)
-    maxL <- max(sapply(dots, length))
+    maxL <- max(lengths(dots))
     lapply(dots, rep, length=maxL)
 }
 

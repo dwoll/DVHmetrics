@@ -117,7 +117,7 @@ parseMasterplan <- function(x, planInfo=FALSE, courseAsID=FALSE, ...) {
         
         if(length(vars2) != hits) {
             stop(c("Could not identify all DVH columns"),
-        		 paste(vars2, collapse=", "))
+        		 toString(vars2))
         }
 
         ## final column headers

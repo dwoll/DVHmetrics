@@ -26,7 +26,8 @@ function(conversion="CGY2GY") {
               idxCGY2CGY | idxGY2GY   | idxEVG2EVG | idxCC2CC
 
     if(!all(idxAll)) {
-        warning(c('Conversion type(s) "', paste(conversion[!idxAll], collapse=", "),
+        warning(c('Conversion type(s) "',
+                  toString(conversion[!idxAll]),
                   '" not found - conversion factor set to NA'))
     }
 
@@ -60,14 +61,14 @@ function(x="CGY2GY", first=TRUE) {
     }
 
     units    <- strsplit(x, "2")         # first and second part of string
-    unitLens <- sapply(units, length)    # count parts
-    if(!all(unitLens == 2)) {            # check that there are two parts
+    unitLens <- lengths(units)           # count parts
+    if(!all(unitLens == 2L)) {           # check that there are two parts
         warning("Unit not recognized - input must have form like CGY2GY")
         return(NA_character_)
     }
 
     knownUnits <- c("CGY", "GY", "EV/G", "CC")
-    isKnown    <- sapply(units, function(x) { all(x %in% knownUnits) })
+    isKnown    <- vapply(units, function(x) { all(x %in% knownUnits) }, logical(1))
     if(!all(isKnown)) {
         warning(c("Unit not recognized - needs to be one of\n",
                   paste(knownUnits, collapse=" ")))

@@ -72,7 +72,7 @@ function(x, doseUnit=NULL, volUnit=NULL) {
     valid        <- pm$valid & validPattern & validUnitCmp & validCmp & validUnitDV
 
     if(!all(valid)) {
-        warning(c("Constraint ", paste(constraint[!valid], collapse=", "),
+        warning(c("Constraint ", toString(constraint[!valid]),
                   " is invalid"))
     }
 
@@ -136,7 +136,7 @@ function(constr, byPat=TRUE, dvhID, dvhStruct) {
         ## replace patID pattern with actual patIDs
         IDpat  <- glob2rx(constrDF$patID)
         IDL    <- lapply(IDpat, function(x) dvhID[grepl(x, dvhID, ignore.case=TRUE)])
-        IDlens <- vapply(IDL, length, 1)
+        IDlens <- lengths(IDL)
         expID  <- constrDF[rep(seq_len(nrow(constrDF)), IDlens), ]
         expID$patID <- unlist(IDL)
         
@@ -150,7 +150,7 @@ function(constr, byPat=TRUE, dvhID, dvhStruct) {
             ## replace structure pattern with actual structures
             strPat  <- glob2rx(x$structure)
             strL    <- lapply(strPat, function(y) struct[grepl(y, struct, ignore.case=TRUE)])
-            strLens <- vapply(strL, length, 1)
+            strLens <- lengths(strL)
             expStr  <- x[rep(seq_len(nrow(x)), strLens), ]
             expStr$structure <- unlist(strL)
             expStr
@@ -178,7 +178,7 @@ function(constr, byPat=TRUE, dvhID, dvhStruct) {
         ## replace structure pattern with actual structures
         strPat  <- glob2rx(constrDF$structure)
         strL    <- lapply(strPat, function(x) dvhStruct[grepl(x, dvhStruct, ignore.case=TRUE)])
-        strLens <- vapply(strL, length, 1)
+        strLens <- lengths(strL)
         expStr  <- constrDF[rep(seq_len(nrow(constrDF)), strLens), ]
         expStr$structure <- unlist(strL)
         
@@ -192,7 +192,7 @@ function(constr, byPat=TRUE, dvhID, dvhStruct) {
             ## replace ID pattern with actual IDs
             IDpat  <- glob2rx(x$patID)
             IDL    <- lapply(IDpat, function(y) ID[grepl(y, ID, ignore.case=TRUE)])
-            IDlens <- vapply(IDL, length, 1)
+            IDlens <- lengths(IDL)
             expID  <- x[rep(seq_len(nrow(x)), IDlens), ]
             expID$patID <- unlist(IDL)
             expID

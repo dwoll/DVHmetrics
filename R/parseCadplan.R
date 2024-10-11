@@ -196,7 +196,7 @@ parseCadplan <- function(x, planInfo=FALSE, courseAsID=FALSE) {
         hits <- sum(c(grepl(patDose, vars2), grepl(patDoseRel, vars2), grepl(patVol, vars2)))
         if(length(vars2) != hits) {
             stop(c("Could not identify all DVH columns"),
-        		 paste(vars2, collapse=", "))
+        		 toString(vars2))
         }
 
         ## replace column headers

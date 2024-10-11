@@ -139,10 +139,10 @@ parseHiArt <- function(x, planInfo=FALSE, courseAsID=FALSE, ...) {
 
         ## check if structure volume should be assumed
         ## to be equal to max given volume in DVH
-        if(hasName(dots, "volume_from_dvh")) {
-            if((dots[["volume_from_dvh"]] == TRUE) && ("volume" %in% haveVars)) {
-                structVol <- max(dvh[ , "volume"])
-            }
+        if(hasName(dots, "volume_from_dvh") &&
+           dots[["volume_from_dvh"]]        &&
+           ("volume" %in% haveVars)) {
+            structVol <- max(dvh[ , "volume"])
         }
 
         ## add information we don't have yet

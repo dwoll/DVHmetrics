@@ -12,7 +12,7 @@ function(D1=NULL, D2=NULL, fd1=NULL, fd2=NULL, ab=NULL) {
     stopifnot(!is.null(D1), !is.null(fd1), !is.null(ab))
 
     argL <- suppressWarnings(recycle(D1, D2, fd1, fd2, ab))
-    maxL <- max(sapply(argL, length))
+    maxL <- max(lengths(argL))
     D1   <- argL[[1]]
     D2   <- argL[[2]]
     fd1  <- argL[[3]]

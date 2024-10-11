@@ -37,7 +37,7 @@ getKSmooth <- function(d, dR, v, vR, nodes=NULL, rangeD=NULL, ...) {
     }
 
     ## dose rel -> just use equally spaced grid points as is done in locpoly()
-    doseRel <- if(!any(is.na(dR))) {
+    doseRel <- if(!anyNA(dR)) {
         rangeD <- range(dR)
         seq(rangeD[1], rangeD[2], length.out=nodes)
     } else {
@@ -85,7 +85,7 @@ getSmoothSpl <- function(d, dR, v, vR, nodes=NULL, rangeD=NULL, ...) {
 
     ## dose, dose rel -> just use equally spaced grid points
     dose    <- seq(rangeD[1],  rangeD[2], length.out=nodes)
-    doseRel <- if(!any(is.na(dR))) {
+    doseRel <- if(!anyNA(dR)) {
         rangeDR <- range(dR)
         seq(rangeDR[1], rangeDR[2], length.out=nodes)
     } else {
@@ -136,7 +136,7 @@ getInterpSpl <- function(d, dR, v, vR, nodes=NULL, rangeD=NULL,
     
     ## dose, dose rel -> just use equally spaced grid points
     dose    <- seq(rangeD[1],  rangeD[2], length.out=nodes)
-    doseRel <- if(!any(is.na(dR))) {
+    doseRel <- if(!anyNA(dR)) {
         rangeDR <- range(dR)
         seq(rangeDR[1], rangeDR[2], length.out=nodes)
     } else {
@@ -186,7 +186,7 @@ getInterpLin <- function(d, dR, v, vR, nodes=NULL, rangeD=NULL, ...) {
     
     ## dose, dose rel -> just use equally spaced grid points
     dose    <- seq(rangeD[1],  rangeD[2], length.out=nodes)
-    doseRel <- if(!any(is.na(dR))) {
+    doseRel <- if(!anyNA(dR)) {
         rangeDR <- range(dR)
         seq(rangeDR[1], rangeDR[2], length.out=nodes)
     } else {

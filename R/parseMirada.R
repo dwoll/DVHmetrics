@@ -59,7 +59,7 @@ parseMirada <- function(x, planInfo=FALSE, courseAsID=FALSE, ...) {
     volumeUnit <- if(volumeUnit1 == "cm") {
         "CC"
     } else {
-        stop(paste0("Volume unit cm3 expected, but found ", volumeUnit1))
+        stop("Volume unit cm3 expected, but found ", volumeUnit1)
     }
 
     DVHall <- read.table(text=DVHspan[-1], header=FALSE, sep="\t",
@@ -86,10 +86,9 @@ parseMirada <- function(x, planInfo=FALSE, courseAsID=FALSE, ...) {
         } else {
             ## check if structure volume should be assumed
             ## to be equal to max given volume in DVH
-            structVol <- if(hasName(dots, "volume_from_dvh")) {
-                if(dots[["volume_from_dvh"]]) {
-                    max(dvh[ , "volume"])
-                }
+            structVol <- if(hasName(dots, "volume_from_dvh") &&
+                            dots[["volume_from_dvh"]]) {
+                max(dvh[ , "volume"])
             } else {
                 NA_real_
             }

@@ -14,8 +14,8 @@ for the DVH. Includes web-based graphical user interface.
 \tabular{ll}{
 Package: \tab DVHmetrics\cr
 Type: \tab Package\cr
-Version: \tab 0.4.2\cr
-Date: \tab 2022-03-23\cr
+Version: \tab 0.4.2.0.999\cr
+Date: \tab 2022-08-22\cr
 License: \tab GPL (>= 2)\cr
 }
 }
@@ -25,7 +25,7 @@ Daniel Wollschlaeger and Heiko Karle
 Maintainer: Daniel Wollschlaeger <wollschlaeger@uni-mainz.de>
 }
 \references{
-For a solution that also reads files in DICOM-RT format, see the \code{RadOnc} package: \url{https://CRAN.R-project.org/package=RadOnc}.
+For solutions that also read files in DICOM format, see packages \code{espadon} (\url{https://espadon.cnrs.fr/}, \url{https://CRAN.R-project.org/package=espadon}) and \code{RadOnc} (\url{https://CRAN.R-project.org/package=RadOnc}).
 }
 \keyword{package}
 \examples{

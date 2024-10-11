@@ -1,8 +1,28 @@
-$Date: 2022-03-23 11:00:29 +0000 (Wed, 23 Mar 2022) $
+$Date: 2024-03-02 19:02:29 +0000 (Sat, 02 Mar 2024) $
 
 DVHMETRICS RELEASE VERSIONS at https://cran.r-project.org/
 
-Version 0.4.2 (March 23, 2022)
+Version 0.4.2.0.99999 (July 25, 2023)
+    * showDVH()
+      - add option 'fun' to pass list for point-wise aggregation of
+        DVHs when using 'addMSD=TRUE'
+        (thanks: Daniella Elisabet Ostergaard)
+    * readDVH()
+      - add support for Mirada
+        (thanks: sometune)
+    * readDVH(..., type="RayStation")
+      - relax parsing of dose unit line for newer versions
+        (thanks: H53-OOF)
+      - allow dose units with "RBE"
+        (thanks: marmo2)
+    * readDVH(..., type="HiArt")
+      - fix reading number such as 4.32....E-4
+        (thanks: sudo-bluee)
+    * getEUD(), getNTCP()
+      - enable EUD calculation for DVHs with relative volume only
+        (thanks: Mel A McIntyre)
+
+Version 0.4.2 (March 22, 2022)
     * readDVH(..., type="RayStation")
       - additional information on date, prescription dose,
         structure volumes can be passed via option raystation

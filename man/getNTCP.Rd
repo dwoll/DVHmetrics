@@ -32,7 +32,7 @@ getNTCP(x,
   \item{x}{One cumulative DVH (object of class \code{DVHs}, multiple cumulative DVHs from one patient with multiple structures (object of class \code{DVHLst}), or multiple cumulative DVHs from many patients, each with multiple structures (object of class \code{DVHLstLst}). See \code{\link[DVHmetrics]{readDVH}}.}
   \item{NTCPtd50}{Tolerance dose with 50\% complication probability.}
   \item{NTCPm}{Probit/logit Parameter m. Equal to 1 / (NTCPgamma50*sqrt(2*pi)).}
-  \item{NTCPn}{Parameter n. Equal to 1/a with exponential gEUD paramter a.}
+  \item{NTCPn}{Parameter n. Equal to 1/a with exponential gEUD parameter a.}
   \item{NTCPgamma50}{Poisson parameter gamma50. Equal to 1 / (NTCPm*sqrt(2*pi))}
   \item{NTCPs}{Relative seriality parameter s.}
   \item{EUDa}{If gEUD should be based on EQD2: Exponential parameter a.}

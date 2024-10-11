@@ -29,7 +29,16 @@ function(x, EUDa, EUDfd=NULL, EUDab=NULL, ...) {
         xD <- convertDVH(x, toType="differential", toDoseUnit="asis", perDose=FALSE)
 
         ## convert dose to EQD2 if possible
-        volume <- xD$dvhDiff[ , "volume"]
+        ## check if absolute volume is available
+        ## else use relative volume
+        if(!all(is.na(xD$dvhDiff[ , "volume"]))) {
+            structVol <- xD$structVol
+            volume    <- xD$dvhDiff[ , "volume"]
+        } else {
+            structVol <- 100
+            volume    <- xD$dvhDiff[ , "volumeRel"]
+        }
+
         dose   <- if(!is.null(EUDfd) && !is.null(EUDab)) {
             getEQD2(D=xD$dvhDiff[ , "dose"], fd=EUDfd, ab=EUDab)$EQD2
         } else {
@@ -47,7 +56,7 @@ function(x, EUDa, EUDfd=NULL, EUDab=NULL, ...) {
         ## rescale dose first, then scale back weighted mean
         ## https://stackoverflow.com/a/47296640/484139
         maxVal <- if(EUDa > 0) {
-            max((volume/xD$structVol)^(1/EUDa) * dose)
+            max((volume/structVol)^(1/EUDa) * dose)
         } else if(EUDa < 0) { # avoid 1 / 0^EUDa problem
             max(dose)
         } else {

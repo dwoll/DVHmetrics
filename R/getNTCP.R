@@ -110,6 +110,8 @@ function(x,
     NTCP <- if(NTCPtype == "probit") {
         ## Lyman probit model based on EUD
         ## quantile at which to evaluate standard normal cdf
+        ## equivalent to
+        ## 0.5*(1+pracma::erf((EUD-NTCPtd50)/(sqrt(2)*NTCPm*NTCPtd50)))
         qq <- (EUD-NTCPtd50) / (NTCPm*NTCPtd50)
         pnorm(qq, mean=0, sd=1, lower.tail=TRUE)
     } else if(NTCPtype == "logit") {

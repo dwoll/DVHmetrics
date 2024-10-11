@@ -46,11 +46,11 @@ A DVH constraint is a character string that consists of three parts: The DVH met
 
 Some example constraints are \code{"V10Gy > 80\%"} (more than 80\% of the structure should have received 10Gy), \code{"V20\% < 10CC"} (less than 10cm^3 of the structure should have received 20\% of the prescription dose), or \code{"D10CC > 500cGy"} (The "hottest" 10cm^3 of the structure should have received more than 500cGy).
 
-For constraints on \code{DEUD}, \code{DNTCP} and \code{DTCP} (see \code{\link[DVHmetrics]{getMetric}}), the reference measurement unit must be \code{Gy}, \code{cGy}, even though NTCP and TCP are probabilities. Example: \code{"DNTCP < 0.5Gy"}.
+For constraints on \code{DEUD}, \code{DNTCP} and \code{DTCP} (see \code{\link[DVHmetrics]{getMetric}}), the reference measurement unit currently must be \code{Gy}, \code{cGy}, even though NTCP and TCP are probabilities. Example: \code{"DNTCP < 0.5Gy"}. The fix for this limitation is an open TODO.
 
 A DVH constraint can apply to a specific patient or to all patients, and to a specific structure or to all structures.
 \itemize{
-\item If constraints apply to all patients/structures in \code{x}, \code{constr} can be a \code{character} vector with elements like the examples above.
+\item If constraints apply to all patients/structures in \code{x}, \code{constr} can be a \code{character} vector with elements such as the examples above.
 \item If constraints apply only to some patients/structures, \code{constr} must be a data frame with variables \code{constraint}, \code{patID} and \code{structure}. Each row then defines one constraint and its scope: \code{constraint} must be a character string with one constraint definition as in the examples above. \code{patID} must be either a character string with a valid patient ID or \code{"*"} if the the constraint applies to all patients. \code{structure} must be either a character string with a valid structure or \code{"*"} if the the constraint applies to all structures. If variable \code{patID} is missing from the data frame, the constraints apply to all available patients. If variable \code{structure} is missing from the data frame, the constraints apply to all available structures. See \code{\link[DVHmetrics]{readConstraint}} for reading appropriate constraint \code{data.frames} from external text files.
 }
 

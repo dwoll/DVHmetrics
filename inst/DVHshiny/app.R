@@ -83,7 +83,8 @@ shinyApp(
                     if(!is.null(input$DVHupload)) {
                         types <- c('1'="Eclipse", '2'="Cadplan", '3'="Masterplan",
                                    '4'="Pinnacle", '5'="Monaco", '6'="HiArt",
-                                   '7'="RayStation", '8'="ProSoma", '9'="PRIMO")
+                                   '7'="RayStation", '8'="ProSoma", '9'="PRIMO",
+                                   '10'="Mirada")
                         plans <- c('1'="none", '2'="doseRx")
                         # encodings <- c('1'="Default", '2'="UTF-8", '3'="UTF-8-BOM")
                         # enc <- encodings[input$fileenc]

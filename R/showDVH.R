@@ -256,20 +256,21 @@ function(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL, rel=TRUE,
     doseUnit <- if(isDoseRel) {
         "%"
     } else {
-        x[[1]]$doseUnit
+        unname(c(MGY="mGy", CGY="cGy", GY="Gy")[x[[1]]$doseUnit])
     }
 
-    volUnit <- if(rel) {
+    volStr <- if(rel) {
         if(cumul) {
-            "%"
+            "Volume (%)"
         } else {
-            paste0("%/", doseUnit)
+            paste0("Volume (%/", doseUnit, ")")
         }
     } else {
+        volU <- c(CC="cm^{3}")[x[[1]]$volumeUnit]
         if(cumul) {
-            x[[1]]$volumeUnit
+            str2expression(paste0("Volume~(", volU, ")"))
         } else {
-            paste0(x[[1]]$volumeUnit, "/", doseUnit)
+            str2expression(paste0("Volume~(", volU, "/", doseUnit, ")"))
         }
     }
 
@@ -333,8 +334,8 @@ function(x, cumul=TRUE, byPat=TRUE, patID=NULL, structure=NULL, rel=TRUE,
         # expand_limits(y=0) +                      # make sure 0 is included
         scale_y_continuous(expand=c(0, 0.6)) +
         guides(color=guide_legend(ncol=nLegendCols)) +
-        xlab(paste0("Dose [",   doseUnit, "]")) +
-        ylab(paste0("Volume [", volUnit,  "]"))
+        xlab(paste0("Dose (",   doseUnit, ")")) +
+        ylab(volStr)
 
     if(show) {
         print(diag)

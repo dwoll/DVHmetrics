@@ -36,29 +36,27 @@ For files with absolute volume exported from Masterplan and Tomo HiArt, you can 
 Since files from HiArt, ProSoma and PRIMO do not contain info on patient ID, the current workaround is to generate a random ID.
 
 To export data from Tomo HiArt, copy to clipboard and then save to file from a text editor. Support for Tomo HiArt files is currently limited to those with absolute dose. Please send an anonymized sample file if you need to read files with relative dose. You can provide a list \code{hiart} with more information about patients and structures. The list should have one component for each file you import. Each component itself has to be a named list with optional components:
-\describe{
+\itemize{
 \item{\code{date} - a character string like \code{"2022-01-16"} for the date}
 \item{\code{patName} - a character string for patient name}
 \item{\code{patID} - a character string for patient ID}
 \item{\code{doseRx} - a character string like \code{"50.4Gy"} for prescription dose in the same dose unit as used in the DVHs}
 \item{\code{structVol} - a named character vector like \code{c("PTV"=750, "LUNG"=1250)} giving the absolute structure volumes with names equal to structure names}
-\item{\code{volumeUnit} - a character string, either \code{"CC"} or \code{"cm3"}, for the structure volume unit)}
+\item{\code{volumeUnit} - a character string, either \code{"CC"} or \code{"cm3"}, for the structure volume unit}
 }
 The same approach can be used for RayStation files with a list \code{raystation}.
 
 Pinnacle3 files have to be exported using its own scripting facility such that information from one patient is contained in one directory. A suitable export script is available on request from the package authors. The directory layout for one patient has to be as follows (experimental, likely to change in future versions):
-\describe{
-  \item{Files (CSV format with column headers):
-    \describe{
-      \item{\code{DoseInfo.csv} (variables \code{"PrescriptionDose cGy"},                             \code{"NumberOfFractions"}, \code{"Dosis cGy"})}
-      \item{\code{PatInfo.csv} (variables \code{"LastName"}, \code{"FirstName"},                      \code{"MedicalRecordNumber"})}
-      \item{\code{PlanInfo.csv} (variable \code{"PlanName"})}
-    }
-  }
-  \item{Directory: \code{Data}:
-    \describe{
-      \item{\code{Info.csv} (variables \code{"Filename"}, \code{"RegionOfInterestName"},              \code{"DoseMin cGy"}, \code{"DoseMax cGy"}, \code{"DoseMean cGy"}, \code{"Volume ccm"})}
-      \item{DVH1.csv, DVH2.csv, ...  - the actual DVH data files with names defined in                \code{Info.csv} variable \code{"Filename"}. They should look like
+\itemize{
+\item{Files (CSV format with column headers):
+\itemize{
+\item{\code{DoseInfo.csv} (variables \code{"PrescriptionDose cGy"}, \code{"NumberOfFractions"}, \code{"Dosis cGy"})}
+\item{\code{PatInfo.csv} (variables \code{"LastName"}, \code{"FirstName"}, \code{"MedicalRecordNumber"})}
+\item{\code{PlanInfo.csv} (variable \code{"PlanName"})}}}
+\item{Directory: \code{Data}:
+\itemize{
+\item{\code{Info.csv} (variables \code{"Filename"}, \code{"RegionOfInterestName"},  \code{"DoseMin cGy"}, \code{"DoseMax cGy"}, \code{"DoseMean cGy"}, \code{"Volume ccm"})}
+\item{DVH1.csv, DVH2.csv, ...  - the actual DVH data files with names defined in \code{Info.csv} variable \code{"Filename"}. They should look like
 \verb{NumberOfDimensions = 2;
 NumberOfPoints = 431;
 Points[] =\{

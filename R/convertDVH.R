@@ -104,7 +104,7 @@ function(x, toType=c("asis", "cumulative", "differential"),
                 "differential"
             }
             
-            if((DVHtype == "differential") && !perDose)Q {
+            if((DVHtype == "differential") && !perDose) {
                 ## if perDose == FALSE: normalize -> interpolate -> re-normalize
                 binW         <- diff(c(-doseConv[1], doseConv))
                 volumeNew    <- -diff(volume)    / binW

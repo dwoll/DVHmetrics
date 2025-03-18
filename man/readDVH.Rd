@@ -31,7 +31,7 @@ Sum plans are supported.
 
 For Eclipse starting with version 13, the date format is locale dependent as it uses words for day and month. Importing those dates as class \code{Date} requires that the correct locale is set (see \code{\link[base:locales]{Sys.setlocale}}), and that files containing accents are read using the correct encoding (see above). Otherwise, the date is stored as a character string.
 
-For files with absolute volume exported from Masterplan and Tomo HiArt, you can specify \code{volume_from_dvh=TRUE} if the structure volume should be guessed from the maximal volume given in the DVH for each structure.
+For files with absolute volume exported from Masterplan, Tomo HiArt, and Mirada, you can specify \code{volume_from_dvh=TRUE} if the structure volume should be guessed from the maximal volume given in the DVH for each structure.
 
 Since files from HiArt, ProSoma and PRIMO do not contain info on patient ID, the current workaround is to generate a random ID.
 

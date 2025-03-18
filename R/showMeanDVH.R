@@ -50,7 +50,7 @@ function(x, byPat=TRUE, patID=NULL, structure=NULL, rel=TRUE,
     } else {
         1.1*max(c(guessX, dvhDF$dose))
     }
-    
+
     ## set plot volume to absolute or relative
     ## and choose upper y-axis limit (volume) - add 3%
     if(rel) {
@@ -132,7 +132,7 @@ function(x, byPat=TRUE, patID=NULL, structure=NULL, rel=TRUE,
     } else {
         ggplot(dvhDF, aes_string(x="dose", y="volPlot",
                                  group="ID_struct", color="ID_struct", fill="ID_struct"))
-    } 
+    }
 
     diag <- if(byPat && (nGroup > 1L) && facet) {
         diag + facet_grid(as.formula("structure ~ ."))
@@ -156,7 +156,7 @@ function(x, byPat=TRUE, patID=NULL, structure=NULL, rel=TRUE,
             diag
         }
     }
-    
+
     ## point-wise 1-SD, 2-SD shaded areas
     diag <- if(showSD) {
         diag +
@@ -167,7 +167,7 @@ function(x, byPat=TRUE, patID=NULL, structure=NULL, rel=TRUE,
     } else {
         diag
     }
-    
+
     ## im grey -> linetype
     diag <- if(color) {
         diag +

@@ -24,6 +24,20 @@ readDVH <- function(x, type=c("Eclipse", "Cadplan", "Masterplan", "Pinnacle",
                        PRIMO=parsePRIMO,
                        Mirada=parseMirada)
 
+    ## if both volume_from_dvh and hiart / mirada / raystation are
+    ## provided as additional arguments, need to put them in the same
+    ## list here so nothing gets lost in call to Map()
+    # dots <- list(...)
+    # type_special <- c("hiart", "mirada", "raystation")
+    # if(hasName(dots, "volume_from_dvh") && any(hasName(dots, type_special))) {
+    #     idx <- which(names(dots) %in% type_special)
+    #     stopifnot(length(idx) == 1L)
+    #     type_special_have <- type_special[type_special == names(dots)[idx]]
+    #     dots[[idx]][["volume_from_dvh"]] <- dots[["volume_from_dvh"]]
+    #     dots[["volume_from_dvh"]] <- NULL
+    #     dots <- setNames(list(dots), type_special_have)
+    # }
+
     dvhLL <- if(length(dvhRawL) >= 1L) {
         res <- Map(parseFun, dvhRawL, planInfo=planInfo, courseAsID=courseAsID, ...)
         Filter(Negate(is.null), res)

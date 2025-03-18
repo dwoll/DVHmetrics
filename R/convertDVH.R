@@ -37,7 +37,7 @@ function(x, toType=c("asis", "cumulative", "differential"),
         ## split matrix into rows with unique dose
         ## preserve matrix class and keep col names with split.data.frame()
         xL <- split.data.frame(x, dose)
-        
+
         ## function to keep row with max volume
         keepMaxVol <- function(xSub) {
             idx <- if(!all(is.na(xSub[ , "volume"]))) {
@@ -45,10 +45,10 @@ function(x, toType=c("asis", "cumulative", "differential"),
             } else{
                 xSub[ , "volumeRel"] == max(xSub[ , "volumeRel"])
             }
-            
+
             xSub[idx, ]
         }
-    
+
         ## apply keepMaxVol and re-bind to matrix
         x <- do.call("rbind", lapply(xL, keepMaxVol))
         rownames(x) <- NULL
@@ -74,7 +74,7 @@ function(x, toType=c("asis", "cumulative", "differential"),
     doseRel   <- x[ , "doseRel"]
     volume    <- x[ , "volume"]
     volumeRel <- x[ , "volumeRel"]
-    
+
     ## convert dose unit
     doseConv <- if(toDoseUnit == "asis") {
         dose                          # nothing to do
@@ -90,27 +90,27 @@ function(x, toType=c("asis", "cumulative", "differential"),
         ## linear interpolation?
         if(interp == "linear") {
             ## if differential && perDose == FALSE
-            ## normalize -> interpolate -> re-normalize 
+            ## normalize -> interpolate -> re-normalize
             ## check if volume is already sorted -> cumulative DVH
             volumeSel <- if(!anyNA(volumeRel)) {
                 volumeRel
             } else {
                 volume
             }
-    
+
             DVHtype <- if(isTRUE(all.equal(volumeSel, sort(volumeSel, decreasing=TRUE)))) {
                 "cumulative"
             } else {
                 "differential"
             }
-            
-            if((DVHtype == "differential") && !perDose)Q {
+
+            if((DVHtype == "differential") && !perDose) {
                 ## if perDose == FALSE: normalize -> interpolate -> re-normalize
                 binW         <- diff(c(-doseConv[1], doseConv))
                 volumeNew    <- -diff(volume)    / binW
                 volumeRelNew <- -diff(volumeRel) / binW
             }
-            
+
             ## linear interpolation
             sm <- getInterpLin(doseConv, doseRel, volume, volumeRel,
                                nodes=nodes, rangeD=rangeD)
@@ -144,11 +144,11 @@ function(x, toType=c("asis", "cumulative", "differential"),
         N <- nrow(x)
         doseMidPt    <- c(0, doseConv[-N] + doseCatHW)
         doseRelMidPt <- c(0, doseRel[-N]  + doseRelCatHW)
-        
+
         ## add one more category beyond max dose
         doseNew    <- c(doseMidPt,    doseConv[N] + doseCatHW[N-1])
         doseRelNew <- c(doseRelMidPt, doseRel[N]  + doseRelCatHW[N-1])
-        
+
         if(perDose) {
             ## differential DVH -> volume is per Gy -> mult with bin-width
             binW         <- diff(c(-doseConv[1], doseConv))
@@ -331,7 +331,7 @@ function(x, toType=c("asis", "cumulative", "differential"),
         DVH$doseSD    <- cf*x$doseSD
         DVH$doseUnit  <- toDoseUnit
     }
-    
+
     return(DVH)
 }
 
@@ -368,7 +368,7 @@ function(x, toType=c("asis", "cumulative", "differential"),
     toType     <- match.arg(toType)
     toDoseUnit <- match.arg(toDoseUnit)
     interp     <- match.arg(interp)
-    
+
     if(!is.null(nodes)) { stopifnot(nodes > 2L) }
 
     dvhLL <- Map(convertDVH, x, toType=toType,

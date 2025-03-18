@@ -103,7 +103,7 @@ function(x, toType=c("asis", "cumulative", "differential"),
             } else {
                 "differential"
             }
-
+            
             if((DVHtype == "differential") && !perDose) {
                 ## if perDose == FALSE: normalize -> interpolate -> re-normalize
                 binW         <- diff(c(-doseConv[1], doseConv))

@@ -23,6 +23,9 @@ Version 0.4.2.0.99999 (12 Nov, 2024)
     * getEUD(), getNTCP()
       - enable EUD calculation for DVHs with relative volume only
         (thanks: Mel A McIntyre)
+      - correct bug: consider fraction dose (EUDfd), not number of
+        fractions for EUD calculation
+        (thanks: Trinhhuyvu)
 
 Version 0.4.2 (March 22, 2022)
     * readDVH(..., type="RayStation")

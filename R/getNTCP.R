@@ -3,7 +3,7 @@
 getTCP <-
 function(x,
          TCPtcd50=NULL, TCPm=NULL, TCPn=NULL, TCPgamma50=NULL, NTCPs=NULL,
-         EUDa=NULL, EUDfn=NULL, EUDab=NULL,
+         EUDa=NULL, EUDfd=NULL, EUDab=NULL,
          TCPtype=c("probit", "logit", "poisson", "relative_seriality"), ...) {
     out <- getNTCP(x=x,
                    NTCPtd50=TCPtcd50,
@@ -12,7 +12,7 @@ function(x,
                    NTCPgamma50=TCPgamma50,
                    NTCPs=NTCPs,
                    EUDa=EUDa,
-                   EUDfn=EUDfn,
+                   EUDfd=EUDfd,
                    EUDab=EUDab,
                    NTCPtype=TCPtype)
     outNames <- names(out)
@@ -23,7 +23,7 @@ function(x,
 getNTCP <-
 function(x,
          NTCPtd50=NULL, NTCPm=NULL, NTCPn=NULL, NTCPgamma50=NULL, NTCPs=NULL,
-         EUDa=NULL, EUDfn=NULL, EUDab=NULL,
+         EUDa=NULL, EUDfd=NULL, EUDab=NULL,
          NTCPtype=c("probit", "logit", "poisson", "relative_seriality"), ...) {
     UseMethod("getNTCP")
 }
@@ -31,7 +31,7 @@ function(x,
 getNTCP.DVHs <-
 function(x,
          NTCPtd50=NULL, NTCPm=NULL, NTCPn=NULL, NTCPgamma50=NULL, NTCPs=NULL,
-         EUDa=NULL, EUDfn=NULL, EUDab=NULL,
+         EUDa=NULL, EUDfd=NULL, EUDab=NULL,
          NTCPtype=c("probit", "logit", "poisson", "relative_seriality"), ...) {
     NTCPtype <- tolower(NTCPtype)
     NTCPtype <- match.arg(NTCPtype)
@@ -49,7 +49,7 @@ function(x,
 
     if(is.null(NTCPm)) {
         stopifnot(!is.null(NTCPgamma50))
-        
+
         if(length(NTCPgamma50) > 1L) {
     		warning("Will only use NTCPgamma50=", NTCPgamma50[1])
     		NTCPgamma50 <- NTCPgamma50[1]
@@ -81,32 +81,32 @@ function(x,
                 warning("Will only use EUDa=", EUDa[1])
                 EUDa <- EUDa[1]
             }
-            
+
             if(isTRUE(all.equal(EUDa, 0))) {
                 warning("'EUDa' must not be zero")
                 return(NA_real_)
             }
-            
+
             NTCPn <- 1/EUDa
         } else {
             stopifnot(!is.null(NTCPn))
-            
+
             if(length(NTCPn) > 1L) {
                 warning("Will only use NTCPn=", NTCPn[1])
                 NTCPn <- NTCPn[1]
             }
-            
+
             if(is.infinite(NTCPn)) {
                 warning("'NTCPn' must not be infinite")
                 return(NA_real_)
             }
-            
+
             EUDa <- 1/NTCPn
         }
-        
-        EUD <- getEUD(x, EUDa=EUDa, EUDfn=EUDfn, EUDab=EUDab)$EUD
+
+        EUD <- getEUD(x, EUDa=EUDa, EUDfd=EUDfd, EUDab=EUDab)$EUD
     }
-    
+
     NTCP <- if(NTCPtype == "probit") {
         ## Lyman probit model based on EUD
         ## quantile at which to evaluate standard normal cdf
@@ -127,7 +127,7 @@ function(x,
             warning("Will only use NTCPs=", NTCPs[1])
             NTCPs <- NTCPs[1]
         }
-        
+
         if(NTCPs <= 0) {
             warning("'NTCPs' must be > 0")
             return(NA_real_)
@@ -154,7 +154,7 @@ function(x,
 getNTCP.DVHLst <-
 function(x,
          NTCPtd50=NULL, NTCPm=NULL, NTCPn=NULL, NTCPgamma50=NULL, NTCPs=NULL,
-         EUDa=NULL, EUDfn=NULL, EUDab=NULL,
+         EUDa=NULL, EUDfd=NULL, EUDab=NULL,
          NTCPtype=c("probit", "logit", "poisson", "relative_seriality"), ...) {
     NTCPl <- Map(getNTCP, x,
                  NTCPtd50=list(NTCPtd50),
@@ -163,7 +163,7 @@ function(x,
                  NTCPgamma50=list(NTCPgamma50),
                  NTCPs=list(NTCPs),
                  EUDa=list(EUDa),
-                 EUDfn=list(EUDfn),
+                 EUDfd=list(EUDfd),
                  EUDab=list(EUDab),
                  NTCPtype=list(NTCPtype))
     NTCPdf <- do.call("rbind", NTCPl)
@@ -174,7 +174,7 @@ function(x,
 getNTCP.DVHLstLst <-
 function(x,
          NTCPtd50=NULL, NTCPm=NULL, NTCPn=NULL, NTCPgamma50=NULL, NTCPs=NULL,
-         EUDa=NULL, EUDfn=NULL, EUDab=NULL,
+         EUDa=NULL, EUDfd=NULL, EUDab=NULL,
          NTCPtype=c("probit", "logit", "poisson", "relative_seriality"), ...) {
     NTCPl <- Map(getNTCP, x,
                  NTCPtd50=list(NTCPtd50),
@@ -183,7 +183,7 @@ function(x,
                  NTCPgamma50=list(NTCPgamma50),
                  NTCPs=list(NTCPs),
                  EUDa=list(EUDa),
-                 EUDfn=list(EUDfn),
+                 EUDfd=list(EUDfd),
                  EUDab=list(EUDab),
                  NTCPtype=list(NTCPtype))
     NTCPdf <- do.call("rbind", NTCPl)

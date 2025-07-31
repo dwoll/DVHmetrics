@@ -1,8 +1,8 @@
-$Date: 2024-11-12 12:48:29 +0000 (Tue, 12 Nov 2024) $
+$Date: 2025-07-31 16:48:29 +0000 (Thu, 31 Jul 2025) $
 
 DVHMETRICS RELEASE VERSIONS at https://cran.r-project.org/
 
-Version 0.4.2.0.99999 (12 Nov, 2024)
+Version 0.4.3 (31 Jul, 2025)
     * showDVH()
       - add option 'fun' to pass list for point-wise aggregation of
         DVHs when using 'addMSD=TRUE'

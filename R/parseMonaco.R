@@ -6,7 +6,7 @@ parseMonaco <- function(x, planInfo=FALSE, courseAsID=FALSE, ...) {
     dots     <- list(...)
 
     ## extract file header and header info
-    header   <- unlist(strsplit(x[1], " [|] "))
+    header   <- unlist(strsplit(x[1], " | ", fixed=TRUE))
     patName  <- trimWS(sub("^Patient ID: (.+)[~].+$", "\\1", header[1]))
     patID    <- trimWS(sub("^Patient ID: .+[~](.+)$", "\\1", header[1]))
     plan     <- trimWS(sub("^Plan Name: (.+)$",       "\\1", header[2]))

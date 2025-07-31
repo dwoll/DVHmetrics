@@ -4,20 +4,20 @@ function(conversion="CGY2GY") {
     conversion <- toupper(removeWS(conversion))
 
     ## check how the conversion factor is indicated
-    idxCGY2GY  <- conversion == c("CGY2GY")
-    idxCGY2EVG <- conversion == c("CGY2EV/G")
+    idxCGY2GY  <- conversion == "CGY2GY"
+    idxCGY2EVG <- conversion == "CGY2EV/G"
 
-    idxGY2CGY  <- conversion == c("GY2CGY")
-    idxGY2EVG  <- conversion == c("GY2EV/G")
+    idxGY2CGY  <- conversion == "GY2CGY"
+    idxGY2EVG  <- conversion == "GY2EV/G"
 
-    idxEVG2CGY <- conversion == c("EV/G2CGY")
-    idxEVG2GY  <- conversion == c("EV/G2GY")
+    idxEVG2CGY <- conversion == "EV/G2CGY"
+    idxEVG2GY  <- conversion == "EV/G2GY"
 
-    idxCGY2CGY <- conversion == c("CGY2CGY")
-    idxGY2GY   <- conversion == c("GY2GY")
-    idxEVG2EVG <- conversion == c("EV/G2EV/G")
+    idxCGY2CGY <- conversion == "CGY2CGY"
+    idxGY2GY   <- conversion == "GY2GY"
+    idxEVG2EVG <- conversion == "EV/G2EV/G"
 
-    idxCC2CC   <- conversion == c("CC2CC")
+    idxCC2CC   <- conversion == "CC2CC"
 
     ## did we catch all requested conversion types?
     idxAll <- idxCGY2GY  | idxCGY2EVG |
@@ -57,12 +57,12 @@ getUnits <-
 function(x="CGY2GY", first=TRUE) {
     if(!is.character(x)) {
         warning("Unit not recognized - input must have form like CGY2GY")
-        return(" ")
+        return(NA_character_)
     }
 
-    units    <- strsplit(x, "2")         # first and second part of string
-    unitLens <- lengths(units)           # count parts
-    if(!all(unitLens == 2L)) {           # check that there are two parts
+    units    <- strsplit(x, "2", fixed=TRUE)  # first and second part of string
+    unitLens <- lengths(units)                # count parts
+    if(!all(unitLens == 2L)) {                # check that there are two parts
         warning("Unit not recognized - input must have form like CGY2GY")
         return(NA_character_)
     }
@@ -72,7 +72,7 @@ function(x="CGY2GY", first=TRUE) {
     if(!all(isKnown)) {
         warning(c("Unit not recognized - needs to be one of\n",
                   paste(knownUnits, collapse=" ")))
-        return("")
+        return(NA_character_)
     }
 
     if(first) {

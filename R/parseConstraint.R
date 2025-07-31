@@ -11,10 +11,14 @@ function(x, doseUnit=NULL, volUnit=NULL) {
     specMetr <- getSpecialMetrics()
 
     ## split constraints into metric and comparison
-    cnstrSpl <- strsplit(x, ">|<|<=|>=")
-    metric   <- vapply(cnstrSpl, function(x) head(x, n=1), character(1)) # metric part
-    comp     <- vapply(cnstrSpl, function(x) tail(x, n=1), character(1)) # comparison part
-    cmp      <- sub("^.+(>|<|<=|>=).+", "\\1", x) # the comparison
+    cnstrSpl  <- strsplit(x, ">|<|<=|>=")
+    cnstrLens <- lengths(cnstrSpl)
+    if(any(cnstrLens != 2L)) { stop("Invalid constraint format") }
+    
+    metric <- vapply(cnstrSpl, function(x) head(x, n=1), character(1)) # metric part
+    comp   <- vapply(cnstrSpl, function(x) tail(x, n=1), character(1)) # comparison part
+    cmp    <- sub("^.+(>|<|<=|>=).+", "\\1", x) # the comparison
+    if(!all(cmp %in% c(">", "<", "<=", ">="))) { stop("Invalid constraint format") }
 
     ## metric details
     pm <- parseMetric(metric, doseUnit=doseUnit, volUnit=volUnit)

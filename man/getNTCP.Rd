@@ -10,22 +10,22 @@ Calculate normal tissue complication probability (NTCP) from Lyman's probit mode
 \usage{
 getNTCP(x,
         NTCPtd50=NULL, NTCPm=NULL, NTCPn=NULL, NTCPgamma50=NULL, NTCPs=NULL,
-        EUDa=NULL, EUDfn=NULL, EUDab=NULL,
+        EUDa=NULL, EUDfd=NULL, EUDab=NULL,
         NTCPtype=c("probit", "logit", "poisson", "relative_seriality"), ...)
 
 \method{getNTCP}{DVHs}(x,
         NTCPtd50=NULL, NTCPm=NULL, NTCPn=NULL, NTCPgamma50=NULL, NTCPs=NULL,
-        EUDa=NULL, EUDfn=NULL, EUDab=NULL,
+        EUDa=NULL, EUDfd=NULL, EUDab=NULL,
         NTCPtype=c("probit", "logit", "poisson", "relative_seriality"), ...)
 
 \method{getNTCP}{DVHLst}(x,
         NTCPtd50=NULL, NTCPm=NULL, NTCPn=NULL, NTCPgamma50=NULL, NTCPs=NULL,
-        EUDa=NULL, EUDfn=NULL, EUDab=NULL,
+        EUDa=NULL, EUDfd=NULL, EUDab=NULL,
         NTCPtype=c("probit", "logit", "poisson", "relative_seriality"), ...)
 
 \method{getNTCP}{DVHLstLst}(x,
         NTCPtd50=NULL, NTCPm=NULL, NTCPn=NULL, NTCPgamma50=NULL, NTCPs=NULL,
-        EUDa=NULL, EUDfn=NULL, EUDab=NULL,
+        EUDa=NULL, EUDfd=NULL, EUDab=NULL,
         NTCPtype=c("probit", "logit", "poisson", "relative_seriality"), ...)
 }
 \arguments{
@@ -36,7 +36,7 @@ getNTCP(x,
   \item{NTCPgamma50}{Poisson parameter gamma50. Equal to 1 / (NTCPm*sqrt(2*pi))}
   \item{NTCPs}{Relative seriality parameter s.}
   \item{EUDa}{If gEUD should be based on EQD2: Exponential parameter a.}
-  \item{EUDfn}{If gEUD should be based on EQD2: Number of fractions.}
+  \item{EUDfd}{If gEUD should be based on EQD2: Fraction dose.}
   \item{EUDab}{If gEUD should be based on EQD2: alpha/beta ratio for the relevant tissue.}
   \item{NTCPtype}{\code{"probit"} - Lyman probit model, \code{"logit"} - Niemierko logit model, \code{"poisson"} - Poisson model, \code{"relative_seriality"} - Kaellmann relative seriality model.}
   \item{...}{Ignored. Used to catch additional arguments passed from \code{\link[DVHmetrics]{getMetric}}.}

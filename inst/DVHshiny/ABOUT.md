@@ -7,7 +7,7 @@ This web application is a front-end for the [R](https://www.r-project.org/) pack
 [`DVHmetrics`](https://cloud.r-project.org/package=DVHmetrics) and this web application are written by:
 
 Daniel Wollschläger [<wollschlaeger@uni-mainz.de>](mailto:wollschlaeger@uni-mainz.de)  
-Institute for Medical Statistics, Epidemiology und Informatics ([IMBEI](http://www.imbei.de/))  
+Institute for Medical Statistics, Epidemiology und Informatics ([IMBEI](https://www.unimedizin-mainz.de/imbei/))  
 University Medical Center Mainz  
 Germany
 

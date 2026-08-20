@@ -106,7 +106,8 @@ function(x, fun=list(mean=mean, median=median, sd=sd),
     ## combine list to data frame
     dvhDF <- do.call("rbind", dvhDFL)
 
-    ## generate point-wise mean/sd for dose -> aggregate over dose
+    ## generate point-wise mean/sd for dose
+    ## -> stratify by patID / structure and dose
     getAggr <- function(fun, symbol) {
         dat <- if(byPat) {
             aggregate(cbind(volume, volumeRel) ~ patID + dose,
@@ -141,6 +142,13 @@ function(x, fun=list(mean=mean, median=median, sd=sd),
                                           minlength=20)
         }
 
+        ## add max structure volume
+        structVolMax <- try(max(vapply(x, function(z) { z[["structVol"]] }, numeric(1))))
+        dfMSD$structVolMax <- if(!inherits(structVolMax, "try-error")) {
+            structVolMax
+        } else {
+            NA_real_
+        }
         dfMSD
     } else {
         if(length(fun) > 1L) {

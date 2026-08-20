@@ -2,6 +2,11 @@ $Date: 2025-07-31 16:48:29 +0000 (Thu, 31 Jul 2025) $
 
 DVHMETRICS RELEASE VERSIONS at https://cran.r-project.org/
 
+Version 0.4.4 (31 Aug, 2026)
+    * showMeanDVH()
+      - make sure uncertainty bands representing +/- 1 and 2
+        SD do not extend beyond possible volume values
+
 Version 0.4.3 (31 Jul, 2025)
     * showDVH()
       - add option 'fun' to pass list for point-wise aggregation of

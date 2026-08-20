@@ -82,10 +82,21 @@ function(x, byPat=TRUE, patID=NULL, structure=NULL, rel=TRUE,
     }
 
     ## add +/- 1 SD, 2SD areas
-    dvhDF$volLo1SD <- dvhDF$volPlot -   dvhDF$volSD
-    dvhDF$volHi1SD <- dvhDF$volPlot +   dvhDF$volSD
-    dvhDF$volLo2SD <- dvhDF$volPlot - 2*dvhDF$volSD
-    dvhDF$volHi2SD <- dvhDF$volPlot + 2*dvhDF$volSD
+    ## make sure region does not extend beyond 100% / 0%
+    dvhDF$volLo1SD <- pmax(0, dvhDF$volPlot -   dvhDF$volSD)
+    dvhDF$volLo2SD <- pmax(0, dvhDF$volPlot - 2*dvhDF$volSD)
+    if(rel) {
+        dvhDF$volHi1SD <- pmin(100, dvhDF$volPlot +   dvhDF$volSD)
+        dvhDF$volHi2SD <- pmin(100, dvhDF$volPlot + 2*dvhDF$volSD)
+    } else if(hasName(dvhDF, "structVolMax") &&
+              all(!is.na(dvhDF$structVolMax))) {
+        volmax <- dvhDF$structVolMax
+        dvhDF$volHi1SD <- pmin(volmax, dvhDF$volPlot +   dvhDF$volSD)
+        dvhDF$volHi2SD <- pmin(volmax, dvhDF$volPlot + 2*dvhDF$volSD)
+    } else {
+        dvhDF$volHi1SD <- dvhDF$volPlot +   dvhDF$volSD
+        dvhDF$volHi2SD <- dvhDF$volPlot + 2*dvhDF$volSD
+    }
 
     ## check if absolute dose is available
     isDoseRel <- if(all(is.na(dvhDF$dose))) {
